@@ -54,3 +54,4 @@ playwright-browsers/
 # Cloudflare (we add this tomorrow)
 .wrangler/
 node_modules/
+
