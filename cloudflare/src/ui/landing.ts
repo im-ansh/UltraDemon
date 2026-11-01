@@ -1,7 +1,8 @@
 // UltraSearch — Developer Console & Landing Page UI
 // High-performance, reactive developer platform served directly from Cloudflare Edge.
+// Includes Supabase Email Authentication (Sign Up, Sign In, Sign Out, Session Persistence).
 
-export function renderLandingPage(origin: string): string {
+export function renderLandingPage(origin: string, supabaseUrl: string, supabaseAnonKey: string): string {
   return `<!DOCTYPE html>
 <html lang="en" class="dark scroll-smooth">
 <head>
@@ -16,6 +17,9 @@ export function renderLandingPage(origin: string): string {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
     tailwind.config = {
@@ -83,8 +87,10 @@ export function renderLandingPage(origin: string): string {
   <header class="sticky top-0 z-50 backdrop-blur-md bg-[#090a0f]/80 border-b border-white/5">
     <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <span class="text-2xl">⚡</span>
-        <span class="font-extrabold text-xl tracking-tight text-white">UltraSearch</span>
+        <a href="/" class="flex items-center gap-3">
+          <span class="text-2xl">⚡</span>
+          <span class="font-extrabold text-xl tracking-tight text-white">UltraSearch</span>
+        </a>
         <span class="px-2 py-0.5 text-[10px] font-semibold bg-brand-500/10 text-brand-400 border border-brand-500/20 rounded-full">v1.0 Edge</span>
       </div>
 
@@ -93,17 +99,93 @@ export function renderLandingPage(origin: string): string {
         <a href="#console" class="hover:text-white transition">Developer Console</a>
         <a href="#crawler" class="hover:text-white transition">Crawler</a>
         <a href="#mcp" class="hover:text-white transition">MCP Setup</a>
-        <a href="#docs" class="hover:text-white transition">API Docs</a>
         <a href="#pricing" class="hover:text-white transition">Pricing</a>
       </nav>
 
-      <div class="flex items-center gap-4">
-        <a href="#console" class="px-4 py-2 text-xs font-semibold rounded-lg bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white shadow-lg shadow-brand-600/25 transition">
-          Get API Key
-        </a>
+      <!-- Auth Bar in Navbar -->
+      <div class="flex items-center gap-3">
+        <div id="navAuthLoggedOut" class="flex items-center gap-2">
+          <button onclick="openAuthModal('signin')" class="px-3.5 py-1.5 text-xs font-medium text-gray-300 hover:text-white transition">
+            Sign In
+          </button>
+          <button onclick="openAuthModal('signup')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white shadow-lg shadow-brand-600/25 transition">
+            Sign Up
+          </button>
+        </div>
+
+        <div id="navAuthLoggedIn" class="hidden flex items-center gap-3">
+          <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-gray-200">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span id="navUserEmail" class="max-w-[140px] truncate font-mono text-[11px]"></span>
+          </div>
+          <button onclick="handleSignOut()" class="px-3 py-1.5 text-xs font-medium text-gray-400 hover:text-red-400 border border-white/10 hover:border-red-500/30 rounded-lg transition">
+            Sign Out
+          </button>
+        </div>
       </div>
     </div>
   </header>
+
+  <!-- Auth Modal (Sign In / Sign Up) -->
+  <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md hidden">
+    <div class="card-glass p-6 sm:p-8 rounded-3xl w-full max-w-md shadow-2xl relative border border-white/10">
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">✕</button>
+      
+      <div class="flex items-center gap-2 mb-6">
+        <span class="text-2xl">⚡</span>
+        <div>
+          <h3 id="authModalTitle" class="text-lg font-bold text-white">Sign In to UltraSearch</h3>
+          <p class="text-xs text-gray-400">Manage your sovereign search keys & usage</p>
+        </div>
+      </div>
+
+      <!-- Tabs: Sign In vs Sign Up -->
+      <div class="grid grid-cols-2 gap-2 p-1 bg-[#0e1017] rounded-xl mb-5 text-xs border border-white/10">
+        <button id="authTabSignIn" onclick="switchAuthMode('signin')" class="py-2 rounded-lg font-semibold bg-brand-600 text-white transition">Sign In</button>
+        <button id="authTabSignUp" onclick="switchAuthMode('signup')" class="py-2 rounded-lg font-semibold text-gray-400 hover:text-white transition">Create Account</button>
+      </div>
+
+      <!-- Auth Form -->
+      <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-gray-400 mb-1">Email Address</label>
+          <input 
+            type="email" 
+            id="authEmail" 
+            placeholder="name@example.com" 
+            required 
+            class="w-full px-3.5 py-2.5 bg-[#0e1017] border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500"
+          />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-400 mb-1">Password</label>
+          <input 
+            type="password" 
+            id="authPassword" 
+            placeholder="••••••••" 
+            required 
+            minlength="6"
+            class="w-full px-3.5 py-2.5 bg-[#0e1017] border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500"
+          />
+        </div>
+
+        <div id="authAlert" class="hidden p-3 rounded-xl text-xs font-medium"></div>
+
+        <button 
+          type="submit" 
+          id="authSubmitBtn"
+          class="w-full py-3 bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white font-semibold text-xs rounded-xl transition shadow-lg flex items-center justify-center gap-2"
+        >
+          <span id="authSubmitText">Sign In</span>
+          <span id="authSpinner" class="hidden animate-spin">⟳</span>
+        </button>
+      </form>
+
+      <div class="mt-4 pt-4 border-t border-white/5 text-center text-[11px] text-gray-500">
+        Protected by Supabase Auth · Passwords encrypted with bcrypt
+      </div>
+    </div>
+  </div>
 
   <!-- Hero Section -->
   <section class="max-w-7xl mx-auto px-6 pt-20 pb-16 text-center">
@@ -238,6 +320,20 @@ export function renderLandingPage(origin: string): string {
       <p class="text-gray-400 text-sm">Provision, manage, and monitor your UltraSearch API keys directly on Cloudflare D1.</p>
     </div>
 
+    <!-- Auth Status Banner -->
+    <div id="authPromptBanner" class="card-glass p-4 rounded-2xl mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-brand-500/20 bg-brand-950/20">
+      <div class="flex items-center gap-3">
+        <span class="text-xl">🔒</span>
+        <div class="text-xs">
+          <span class="font-semibold text-white">Sync your keys across devices:</span>
+          <span class="text-gray-400"> Sign in with Supabase Email Auth to bind your API keys permanently to your account.</span>
+        </div>
+      </div>
+      <button onclick="openAuthModal('signin')" class="px-4 py-2 text-xs font-semibold rounded-xl bg-white text-gray-900 hover:bg-gray-100 transition whitespace-nowrap">
+        Sign In / Sign Up
+      </button>
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Create Key Card -->
       <div class="card-glass p-6 rounded-2xl">
@@ -246,7 +342,7 @@ export function renderLandingPage(origin: string): string {
         </h3>
         <form onsubmit="handleCreateKey(event)" class="space-y-4">
           <div>
-            <label class="block text-xs font-medium text-gray-400 mb-1">User Identifier</label>
+            <label class="block text-xs font-medium text-gray-400 mb-1">User Identifier / Account</label>
             <input 
               type="text" 
               id="newKeyUserId" 
@@ -332,9 +428,9 @@ export function renderLandingPage(origin: string): string {
         <div class="card-glass p-6 rounded-2xl">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-base font-bold flex items-center gap-2">
-              <span>🗄️</span> Your Active Keys in Session
+              <span>🗄️</span> Your Active Keys
             </h3>
-            <span class="text-xs text-gray-500">Stored locally in your browser</span>
+            <span id="keysStatusSubtext" class="text-xs text-gray-500">Stored in your browser & account</span>
           </div>
 
           <div class="overflow-x-auto">
@@ -349,7 +445,7 @@ export function renderLandingPage(origin: string): string {
               </thead>
               <tbody id="keysTableBody" class="divide-y divide-white/5">
                 <tr>
-                  <td colspan="4" class="py-4 text-center text-gray-500">No keys generated in this browser yet. Use the form to create one.</td>
+                  <td colspan="4" class="py-4 text-center text-gray-500">No keys generated yet. Use the form to create one.</td>
                 </tr>
               </tbody>
             </table>
@@ -654,10 +750,161 @@ console.log(data);</pre>
     </div>
   </footer>
 
-  <!-- Frontend Logic -->
+  <!-- Frontend Logic with Supabase Auth -->
   <script>
-    let currentMode = 1;
+    const SUPABASE_URL = "${supabaseUrl}";
+    const SUPABASE_ANON_KEY = "${supabaseAnonKey}";
     const STORAGE_KEY = 'ultrasearch_local_keys';
+
+    let supabase = null;
+    let currentUser = null;
+    let currentAuthMode = 'signin';
+    let currentMode = 1;
+
+    // Initialize Supabase client
+    if (window.supabase) {
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+
+    // Modal controls
+    function openAuthModal(mode) {
+      currentAuthMode = mode;
+      switchAuthMode(mode);
+      document.getElementById('authAlert').classList.add('hidden');
+      document.getElementById('authModal').classList.remove('hidden');
+    }
+
+    function closeAuthModal() {
+      document.getElementById('authModal').classList.add('hidden');
+    }
+
+    function switchAuthMode(mode) {
+      currentAuthMode = mode;
+      const isSignIn = mode === 'signin';
+      document.getElementById('authModalTitle').innerText = isSignIn ? 'Sign In to UltraSearch' : 'Create an Account';
+      document.getElementById('authSubmitText').innerText = isSignIn ? 'Sign In' : 'Sign Up';
+
+      const tabIn = document.getElementById('authTabSignIn');
+      const tabUp = document.getElementById('authTabSignUp');
+      if (isSignIn) {
+        tabIn.className = 'py-2 rounded-lg font-semibold bg-brand-600 text-white transition';
+        tabUp.className = 'py-2 rounded-lg font-semibold text-gray-400 hover:text-white transition';
+      } else {
+        tabIn.className = 'py-2 rounded-lg font-semibold text-gray-400 hover:text-white transition';
+        tabUp.className = 'py-2 rounded-lg font-semibold bg-brand-600 text-white transition';
+      }
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('authEmail').value.trim();
+      const password = document.getElementById('authPassword').value;
+      const alertBox = document.getElementById('authAlert');
+      const spinner = document.getElementById('authSpinner');
+      const submitBtn = document.getElementById('authSubmitBtn');
+
+      if (!supabase) {
+        alert('Supabase client failed to load');
+        return;
+      }
+
+      spinner.classList.remove('hidden');
+      submitBtn.disabled = true;
+      alertBox.classList.add('hidden');
+
+      try {
+        if (currentAuthMode === 'signup') {
+          const { data, error } = await supabase.auth.signUp({ email, password });
+          if (error) throw error;
+
+          alertBox.className = 'p-3 rounded-xl text-xs font-medium bg-emerald-950/50 border border-emerald-500/30 text-emerald-300';
+          alertBox.innerText = data.session 
+            ? 'Account created and signed in successfully!'
+            : 'Account created! Please check your email for the confirmation link.';
+          alertBox.classList.remove('hidden');
+
+          if (data.session) {
+            setTimeout(() => closeAuthModal(), 1200);
+          }
+        } else {
+          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+
+          alertBox.className = 'p-3 rounded-xl text-xs font-medium bg-emerald-950/50 border border-emerald-500/30 text-emerald-300';
+          alertBox.innerText = 'Signed in successfully!';
+          alertBox.classList.remove('hidden');
+
+          setTimeout(() => closeAuthModal(), 800);
+        }
+      } catch (err) {
+        alertBox.className = 'p-3 rounded-xl text-xs font-medium bg-red-950/50 border border-red-500/30 text-red-300';
+        alertBox.innerText = err.message || 'Authentication error';
+        alertBox.classList.remove('hidden');
+      } finally {
+        spinner.classList.add('hidden');
+        submitBtn.disabled = false;
+      }
+    }
+
+    async function handleSignOut() {
+      if (supabase) {
+        await supabase.auth.signOut();
+      }
+    }
+
+    function updateAuthUI(user) {
+      currentUser = user;
+      const loggedOutNav = document.getElementById('navAuthLoggedOut');
+      const loggedInNav = document.getElementById('navAuthLoggedIn');
+      const userEmailSpan = document.getElementById('navUserEmail');
+      const banner = document.getElementById('authPromptBanner');
+      const subtext = document.getElementById('keysStatusSubtext');
+      const userIdInput = document.getElementById('newKeyUserId');
+
+      if (user) {
+        loggedOutNav.classList.add('hidden');
+        loggedInNav.classList.remove('hidden');
+        userEmailSpan.innerText = user.email || user.id;
+        banner.classList.add('hidden');
+        subtext.innerText = 'Synced with your Supabase account (' + (user.email || user.id) + ')';
+        if (userIdInput && !userIdInput.value) {
+          userIdInput.value = user.email || user.id;
+        }
+        loadRemoteKeys(user.id);
+      } else {
+        loggedOutNav.classList.remove('hidden');
+        loggedInNav.classList.add('hidden');
+        banner.classList.remove('hidden');
+        subtext.innerText = 'Stored locally in this browser';
+        renderKeysTable();
+      }
+    }
+
+    async function loadRemoteKeys(userId) {
+      try {
+        const session = (await supabase.auth.getSession())?.data?.session;
+        const headers = {};
+        if (session) {
+          headers['Authorization'] = 'Bearer ' + session.access_token;
+        }
+        const resp = await fetch('/v1/keys?user_id=' + encodeURIComponent(userId), { headers });
+        const data = await resp.json();
+        if (data.keys) {
+          // Merge with local storage
+          const localKeys = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+          const remoteKeyIds = new Set(data.keys.map(k => k.key_id));
+          const merged = [...data.keys];
+          localKeys.forEach(k => {
+            if (!remoteKeyIds.has(k.key_id)) merged.push(k);
+          });
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+          renderKeysTable();
+        }
+      } catch (e) {
+        console.warn('Could not sync keys:', e);
+        renderKeysTable();
+      }
+    }
 
     function setMode(m) {
       currentMode = m;
@@ -764,10 +1011,18 @@ console.log(data);</pre>
       const plan = document.getElementById('newKeyPlan').value;
       const label = document.getElementById('newKeyLabel').value.trim();
 
+      const headers = { 'Content-Type': 'application/json' };
+      if (supabase) {
+        const session = (await supabase.auth.getSession())?.data?.session;
+        if (session) {
+          headers['Authorization'] = 'Bearer ' + session.access_token;
+        }
+      }
+
       try {
         const resp = await fetch('/v1/keys', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify({ user_id: userId, plan, label })
         });
         const data = await resp.json();
@@ -780,6 +1035,7 @@ console.log(data);</pre>
           const keys = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
           keys.unshift({
             plain_key: data.plain_key,
+            key_id: data.key_id,
             plan: data.plan,
             label: data.label || 'Default',
             created_at: new Date().toLocaleDateString()
@@ -800,22 +1056,22 @@ console.log(data);</pre>
       const tbody = document.getElementById('keysTableBody');
 
       if (keys.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-gray-500">No keys generated in this browser yet. Use the form to create one.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-gray-500">No keys generated yet. Use the form to create one.</td></tr>';
         return;
       }
 
       tbody.innerHTML = keys.map((k, idx) => \`
         <tr class="hover:bg-white/[0.02]">
           <td class="py-3 font-mono text-white flex items-center gap-2">
-            <span class="truncate max-w-[140px] sm:max-w-[200px]">\${k.plain_key}</span>
-            <button onclick="copyToClipboard('\${k.plain_key}')" class="text-gray-400 hover:text-white">📋</button>
+            <span class="truncate max-w-[140px] sm:max-w-[200px]">\${k.plain_key || (k.key_id ? 'Key ID: ' + k.key_id : 'us_••••••••')}</span>
+            \${k.plain_key ? \`<button onclick="copyToClipboard('\${k.plain_key}')" class="text-gray-400 hover:text-white" title="Copy Key">📋</button>\` : ''}
           </td>
           <td class="py-3">
             <span class="px-2 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/20 text-[10px] font-semibold uppercase">\${k.plan}</span>
           </td>
-          <td class="py-3 text-gray-300">\${k.label}</td>
+          <td class="py-3 text-gray-300">\${k.label || 'Key'}</td>
           <td class="py-3 text-right">
-            <button onclick="revokeKey('\${k.plain_key}', \${idx})" class="text-red-400 hover:text-red-300 font-medium">Revoke</button>
+            <button onclick="revokeKey('\${k.plain_key || k.key_id}', \${idx})" class="text-red-400 hover:text-red-300 font-medium">Revoke</button>
           </td>
         </tr>
       \`).join('');
@@ -920,11 +1176,22 @@ console.log(data);</pre>
       } catch {}
     }
 
-    // Initialize
-    window.addEventListener('DOMContentLoaded', () => {
+    // Initialize Auth state listener
+    window.addEventListener('DOMContentLoaded', async () => {
       renderKeysTable();
       refreshUsage();
       refreshCrawlerStats();
+
+      if (supabase) {
+        // Check current session
+        const { data: { session } } = await supabase.auth.getSession();
+        updateAuthUI(session?.user || null);
+
+        // Listen for auth state changes
+        supabase.auth.onAuthStateChange((_event, session) => {
+          updateAuthUI(session?.user || null);
+        });
+      }
     });
   </script>
 </body>

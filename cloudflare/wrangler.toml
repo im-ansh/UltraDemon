@@ -37,6 +37,8 @@ crons = ["*/15 * * * *"]
 
 # ── Environment Variables ─────────────────────────────────────────────────────
 [vars]
-APP_NAME    = "UltraSearch API"
-APP_VERSION = "1.0.0"
-ENVIRONMENT = "production"
+APP_NAME          = "UltraSearch API"
+APP_VERSION       = "1.0.0"
+ENVIRONMENT       = "production"
+SUPABASE_URL      = "https://vozafbpozwlyxvqklhnl.supabase.co"
+SUPABASE_ANON_KEY = "sb_publishable_6Lgd-9CCZJ7ymStk5SsP-Q_r9oNAnf7"

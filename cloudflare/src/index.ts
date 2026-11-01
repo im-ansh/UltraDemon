@@ -43,7 +43,7 @@ app.get('/', (c) => {
 
   // Serve landing page and console to browsers
   if (accept.includes('text/html') || !accept.includes('application/json')) {
-    return c.html(renderLandingPage(origin));
+    return c.html(renderLandingPage(origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
   }
 
   // Fallback to JSON API info for curl / programmatic requests
@@ -69,12 +69,12 @@ app.get('/', (c) => {
 // Alias for direct console access
 app.get('/console', (c) => {
   const origin = new URL(c.req.url).origin;
-  return c.html(renderLandingPage(origin));
+  return c.html(renderLandingPage(origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
 });
 
 app.get('/docs', (c) => {
   const origin = new URL(c.req.url).origin;
-  return c.html(renderLandingPage(origin));
+  return c.html(renderLandingPage(origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
 });
 
 // Health check

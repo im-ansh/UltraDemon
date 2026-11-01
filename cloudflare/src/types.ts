@@ -16,9 +16,11 @@ export interface Env {
   INDEX_BUCKET: R2Bucket;
 
   // Vars (wrangler.toml [vars])
-  APP_NAME:    string;
-  APP_VERSION: string;
-  ENVIRONMENT: string;
+  APP_NAME:          string;
+  APP_VERSION:       string;
+  ENVIRONMENT:       string;
+  SUPABASE_URL:      string;
+  SUPABASE_ANON_KEY: string;
 
   // Security secret for signing and hashing API keys
   ULTRASEARCH_SECRET: string;

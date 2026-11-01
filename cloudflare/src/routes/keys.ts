@@ -3,21 +3,26 @@
 import { Hono } from 'hono';
 import type { Env } from '../types';
 import { createApiKey, listUserKeys, revokeApiKey, getUsage } from '../lib/api-keys';
-import { authMiddleware } from '../lib/auth';
+import { authMiddleware, getSupabaseUser } from '../lib/auth';
 
 export const keysRouter = new Hono<{ Bindings: Env }>();
 
 // ── POST /v1/keys — create a new key ────────────────────────────────────────
 keysRouter.post('/', async (c) => {
-  const body = await c.req.json<{ user_id: string; plan?: string; label?: string }>();
-  if (!body.user_id) return c.json({ error: 'user_id is required' }, 400);
+  const body = await c.req.json<{ user_id?: string; plan?: string; label?: string }>().catch(() => ({ user_id: undefined, plan: undefined, label: undefined }));
+  const sbUser = await getSupabaseUser(c.env, c.req.header('authorization'));
+  const userId = sbUser?.id || body.user_id;
+
+  if (!userId) {
+    return c.json({ error: 'user_id is required or authenticate with Supabase' }, 400);
+  }
 
   try {
     const { plainKey, record } = await createApiKey(
       c.env,
-      body.user_id,
+      userId,
       body.plan ?? 'free',
-      body.label ?? '',
+      body.label ?? (sbUser?.email ? `Key for ${sbUser.email}` : ''),
     );
     return c.json({
       message: '✅ API key created. Save the plain_key — it will NOT be shown again.',
@@ -35,8 +40,12 @@ keysRouter.post('/', async (c) => {
 
 // ── GET /v1/keys?user_id=... — list keys ────────────────────────────────────
 keysRouter.get('/', async (c) => {
-  const userId = c.req.query('user_id');
-  if (!userId) return c.json({ error: 'user_id is required' }, 400);
+  const sbUser = await getSupabaseUser(c.env, c.req.header('authorization'));
+  const userId = sbUser?.id || c.req.query('user_id');
+
+  if (!userId) {
+    return c.json({ error: 'user_id is required or authenticate with Supabase' }, 400);
+  }
   const keys = await listUserKeys(c.env, userId);
   return c.json({ keys });
 });

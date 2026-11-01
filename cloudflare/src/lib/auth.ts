@@ -127,3 +127,39 @@ async function checkRateLimit(env: Env, record: ApiKeyRecord): Promise<RateLimit
   };
 }
 
+// ── Supabase User Verification ────────────────────────────────────────────────
+
+export async function getSupabaseUser(
+  env: Env,
+  authHeader?: string,
+): Promise<{ id: string; email?: string } | null> {
+  if (!authHeader || !authHeader.toLowerCase().startsWith('bearer ')) return null;
+  const token = authHeader.slice(7).trim();
+  if (!token || token.startsWith('us_')) return null; // 'us_' is an UltraSearch API key
+
+  const cacheKey = `sb_user:${token.slice(-32)}`;
+  const cached = await env.KEY_CACHE.get<{ id: string; email?: string }>(cacheKey, 'json');
+  if (cached) return cached;
+
+  try {
+    const res = await fetch(`${env.SUPABASE_URL}/auth/v1/user`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'apikey': env.SUPABASE_ANON_KEY,
+      },
+    });
+
+    if (!res.ok) return null;
+    const user = await res.json<{ id: string; email?: string }>();
+    if (user && user.id) {
+      await env.KEY_CACHE.put(cacheKey, JSON.stringify({ id: user.id, email: user.email }), {
+        expirationTtl: 300, // 5 min cache
+      });
+      return { id: user.id, email: user.email };
+    }
+  } catch (err) {
+    console.warn('Supabase auth verification failed:', err);
+  }
+  return null;
+}
+
