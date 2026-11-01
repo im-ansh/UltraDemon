@@ -2,12 +2,14 @@
 // Full Model Context Protocol server running on Cloudflare Workers edge.
 // Compatible with Claude Desktop, Cursor, Windsurf, and any MCP client.
 // Supports both HTTP POST (stateless) and SSE (streaming) transports.
+// 100% Autonomous — powered by your own D1 FTS5 search index and web crawler.
 
 import { Hono } from 'hono';
 import { streamSSE } from 'hono/streaming';
 import type { Env } from '../types';
 import { runSearch } from '../lib/search-engine';
 import { createApiKey, getUsage } from '../lib/api-keys';
+import { crawlAndIndexUrl } from '../lib/crawler';
 
 export const mcpRouter = new Hono<{ Bindings: Env }>();
 
@@ -15,7 +17,7 @@ const PROTOCOL_VERSION = '2024-11-05';
 const SERVER_INFO = {
   name:        'ultrasearch',
   version:     '1.0.0',
-  description: 'Ultra-fast web search API for AI agents — <200ms globally via Cloudflare edge',
+  description: 'UltraSearch Autonomous Search Engine & Web Index — <50ms edge search for AI agents',
 };
 
 // ── Tool Definitions ──────────────────────────────────────────────────────────
@@ -23,40 +25,45 @@ const SERVER_INFO = {
 const TOOLS = [
   {
     name: 'ultrasearch_web',
-    description: '⚡ Ultra-fast web search. Fans out to Brave, Serper, Exa & Tavily in parallel from Cloudflare edge (<200ms globally). Use for any question requiring current web data.',
+    description: '⚡ Ultra-fast web search powered by your own Cloudflare D1 FTS5 index. Returns BM25-ranked passages, matched snippets, and PageRank scores. Latency: <50ms globally.',
     inputSchema: {
       type: 'object',
       properties: {
-        query:       { type: 'string', description: 'Search query', minLength: 1, maxLength: 500 },
+        query:       { type: 'string', description: 'Search query to look up in the web index', minLength: 1, maxLength: 500 },
         num_results: { type: 'integer', description: 'Number of results (1–50)', default: 10, minimum: 1, maximum: 50 },
-        use_cache:   { type: 'boolean', description: 'Use cached results (default: true)', default: true },
+        mode:        { type: 'integer', description: 'Search mode: 1 (Instant <50ms), 2 (Standard), 3 (Deep Research)', enum: [1, 2, 3], default: 1 },
       },
       required: ['query'],
     },
   },
   {
-    name: 'ultrasearch_news',
-    description: '📰 Real-time news search. Returns breaking news and recent articles (no cache). Use for current events, stocks, sports, weather.',
+    name: 'ultrasearch_research',
+    description: '🔬 Deep multi-hop research search. Expands query into multi-angled sub-queries, cross-references sources across the index, and synthesizes structured evidence with citations.',
     inputSchema: {
       type: 'object',
       properties: {
-        query:       { type: 'string', description: 'News topic to search' },
-        num_results: { type: 'integer', description: 'Number of articles (1–20)', default: 10, minimum: 1, maximum: 20 },
+        query:       { type: 'string', description: 'Complex research topic or analytical query' },
+        num_results: { type: 'integer', description: 'Number of sources to retrieve (1–20)', default: 10, minimum: 1, maximum: 20 },
       },
       required: ['query'],
     },
   },
   {
-    name: 'ultrasearch_semantic',
-    description: '🧠 Semantic / neural web search. Finds conceptually relevant pages using embeddings — not just keyword matching. Best for research and multi-hop reasoning. Requires Pro+ plan.',
+    name: 'ultrasearch_crawl',
+    description: '🕷️ Web Crawler: Fetch, parse, extract main content, and index any live URL or website directly into the UltraSearch index.',
     inputSchema: {
       type: 'object',
       properties: {
-        query:       { type: 'string', description: 'Natural language question or concept' },
-        num_results: { type: 'integer', description: 'Results (1–20)', default: 10, minimum: 1, maximum: 20 },
+        url:   { type: 'string', description: 'Full URL to crawl and index (e.g. https://docs.python.org)' },
+        depth: { type: 'integer', description: 'Crawl depth for discovering outgoing links (0 to 2)', default: 0, minimum: 0, maximum: 2 },
       },
-      required: ['query'],
+      required: ['url'],
     },
+  },
+  {
+    name: 'ultrasearch_index_stats',
+    description: '📊 Check UltraSearch index statistics: total documents indexed, total words, domains covered, and crawler queue health.',
+    inputSchema: { type: 'object', properties: {}, required: [] },
   },
   {
     name: 'ultrasearch_usage',
@@ -87,13 +94,40 @@ async function handleTool(
   apiKey?: string,
 ): Promise<unknown> {
   if (name === 'ultrasearch_web') {
-    return runSearch(env, String(args.query), Number(args.num_results ?? 10), false, false);
+    const mode = args.mode ? (Number(args.mode) as 1 | 2 | 3) : undefined;
+    return runSearch(env, String(args.query), Number(args.num_results ?? 10), mode);
   }
-  if (name === 'ultrasearch_news') {
-    return runSearch(env, String(args.query), Number(args.num_results ?? 10), false, true);
+  if (name === 'ultrasearch_research') {
+    return runSearch(env, String(args.query), Number(args.num_results ?? 10), 3);
   }
-  if (name === 'ultrasearch_semantic') {
-    return runSearch(env, String(args.query), Number(args.num_results ?? 10), true, false);
+  if (name === 'ultrasearch_crawl') {
+    const url = String(args.url);
+    const depth = Number(args.depth ?? 0);
+    const res = await crawlAndIndexUrl(env, url, depth);
+    return {
+      message: res.status === 'indexed' ? `✅ Successfully crawled and indexed ${url}` : `⚠️ Status: ${res.status} (${res.error || ''})`,
+      document: {
+        title: res.title,
+        url: res.url,
+        wordCount: res.wordCount,
+        snippet: res.snippet,
+        outlinksDiscovered: res.outlinks.length,
+      },
+    };
+  }
+  if (name === 'ultrasearch_index_stats') {
+    const [docsCount, wordsCount, domainsCount, queueCount] = await Promise.all([
+      env.DB.prepare('SELECT COUNT(*) as cnt FROM documents').first<{ cnt: number }>(),
+      env.DB.prepare('SELECT SUM(word_count) as words FROM documents').first<{ words: number }>(),
+      env.DB.prepare('SELECT COUNT(*) as domains FROM (SELECT DISTINCT domain FROM documents)').first<{ domains: number }>(),
+      env.DB.prepare('SELECT COUNT(*) as queue_size FROM crawl_queue').first<{ queue_size: number }>(),
+    ]);
+    return {
+      total_documents: docsCount?.cnt ?? 0,
+      total_words:     wordsCount?.words ?? 0,
+      domains_covered: domainsCount?.domains ?? 0,
+      pending_queue:   queueCount?.queue_size ?? 0,
+    };
   }
   if (name === 'ultrasearch_usage') {
     if (!apiKey) return { error: 'ULTRASEARCH_API_KEY not configured in MCP env' };
@@ -158,11 +192,9 @@ mcpRouter.post('/', async (c) => {
 // ── SSE endpoint (streaming / persistent connection) ──────────────────────────
 mcpRouter.get('/sse', (c) => {
   return streamSSE(c, async (stream) => {
-    // Send initial server info
     await stream.writeSSE({
       data: JSON.stringify({ jsonrpc: '2.0', method: 'notifications/initialized', params: {} }),
     });
-    // Keep alive
     while (true) {
       await stream.writeSSE({ data: '{}', event: 'ping' });
       await stream.sleep(30_000);

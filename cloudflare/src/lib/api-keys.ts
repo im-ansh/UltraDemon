@@ -154,10 +154,9 @@ export async function getUsage(
   const hashedKey = await hashKey(plainKey, env.ULTRASEARCH_SECRET);
   const today = new Date().toISOString().slice(0, 10);
 
-  const [keyRow, usageRow, planRow] = await Promise.all([
+  const [keyRow, usageRow] = await Promise.all([
     env.DB.prepare('SELECT plan, label, created_at FROM api_keys WHERE hashed_key = ?').bind(hashedKey).first<{ plan: string; label: string; created_at: number }>(),
     env.DB.prepare('SELECT request_count, last_used_at FROM usage WHERE hashed_key = ? AND date = ?').bind(hashedKey, today).first<{ request_count: number; last_used_at: number }>(),
-    env.DB.prepare('SELECT daily_limit FROM plans WHERE plan_id = ?').bind('').first<{ daily_limit: number }>(),
   ]);
 
   if (!keyRow) throw new Error('Key not found');
@@ -180,3 +179,4 @@ export async function getUsage(
     reset_at:       `${today}T00:00:00Z (next day)`,
   };
 }
+

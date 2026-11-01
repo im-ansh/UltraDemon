@@ -62,7 +62,7 @@ export async function authMiddleware(c: Context<{ Bindings: Env }>, next: Next) 
   c.header('X-RateLimit-Remaining', String(rateLimitResult.remaining));
   c.header('X-RateLimit-Reset',     rateLimitResult.reset_at);
 
-  await next();
+  return await next();
 }
 
 // ── Rate Limit via Durable Object ────────────────────────────────────────────
@@ -88,16 +88,42 @@ async function checkRateLimit(env: Env, record: ApiKeyRecord): Promise<RateLimit
     return { allowed: true, limit: -1, remaining: -1, reset_at: 'never' };
   }
 
-  // Durable Object — one DO instance per user per day (globally consistent)
   const today = new Date().toISOString().slice(0, 10);
-  const doId = env.RATE_LIMITER.idFromName(`${record.hashed_key}:${today}`);
-  const stub = env.RATE_LIMITER.get(doId);
+  const tomorrow = new Date(today);
+  tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+  const resetAt = `${today}T00:00:00Z (next day)`;
 
-  const resp = await stub.fetch('https://internal/check', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ limit }),
-  });
+  // Try Durable Object first if bound
+  if (env.RATE_LIMITER) {
+    try {
+      const doId = env.RATE_LIMITER.idFromName(`${record.hashed_key}:${today}`);
+      const stub = env.RATE_LIMITER.get(doId);
 
-  return resp.json<RateLimitResult>();
+      const resp = await stub.fetch('https://internal/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ limit }),
+      });
+
+      return await resp.json<RateLimitResult>();
+    } catch (doErr) {
+      console.warn('DO rate limiter fallback to D1:', doErr);
+    }
+  }
+
+  // Graceful D1 fallback for rate checking
+  const usage = await env.DB.prepare(
+    'SELECT request_count FROM usage WHERE hashed_key = ? AND date = ?'
+  ).bind(record.hashed_key, today).first<{ request_count: number }>();
+
+  const currentCount = usage?.request_count ?? 0;
+  const allowed = currentCount < limit;
+
+  return {
+    allowed,
+    limit,
+    remaining: Math.max(0, limit - currentCount),
+    reset_at: resetAt,
+  };
 }
+

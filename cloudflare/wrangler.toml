@@ -7,55 +7,41 @@ compatibility_flags = ["nodejs_compat"]
 [build]
 command = "npm install"
 
-# ── D1 Database (API keys, usage, lightweight index) ─────────────────────────
+# ── D1 Database (Autonomous SQLite FTS5 Index & Storage) ─────────────────────
 [[d1_databases]]
-binding  = "DB"
+binding       = "DB"
 database_name = "ultrasearch-db"
-database_id   = "PASTE_YOUR_D1_ID_HERE"  # run: wrangler d1 create ultrasearch-db
+database_id   = "e33e57e5-9245-4f15-ae51-d4138bde9b46"
 
-# ── KV Namespaces ─────────────────────────────────────────────────────────────
+# ── KV Namespaces (Hot Search Cache & Key Cache) ─────────────────────────────
 [[kv_namespaces]]
-binding  = "SEARCH_CACHE"
-id       = "PASTE_SEARCH_CACHE_KV_ID"    # run: wrangler kv namespace create SEARCH_CACHE
-preview_id = "PASTE_SEARCH_CACHE_KV_PREVIEW_ID"
+binding    = "SEARCH_CACHE"
+id         = "ce2fd35f2a6146daa715d7e1c756df36"
 
 [[kv_namespaces]]
-binding  = "KEY_CACHE"
-id       = "PASTE_KEY_CACHE_KV_ID"       # run: wrangler kv namespace create KEY_CACHE
-preview_id = "PASTE_KEY_CACHE_KV_PREVIEW_ID"
+binding    = "KEY_CACHE"
+id         = "3dbed12421bf4ad9b5c21ac6fa2f9f8f"
 
-# ── Durable Objects (per-user rate limiting) ──────────────────────────────────
+# ── Durable Objects (Per-User Rate Limiting) ──────────────────────────────────
 [[durable_objects.bindings]]
 name       = "RATE_LIMITER"
 class_name = "RateLimiter"
 
 [[migrations]]
 tag = "v1"
-new_classes = ["RateLimiter"]
+new_sqlite_classes = ["RateLimiter"]
 
-# ── R2 Bucket (search index storage) ─────────────────────────────────────────
-[[r2_buckets]]
-binding     = "INDEX_BUCKET"
-bucket_name = "ultrasearch-index"
+# ── Crawler Background Cron Triggers (Every 15 minutes) ──────────────────────
+[triggers]
+crons = ["*/15 * * * *"]
 
-# ── Environment variables ─────────────────────────────────────────────────────
+# ── Environment Variables ─────────────────────────────────────────────────────
 [vars]
 APP_NAME    = "UltraSearch API"
 APP_VERSION = "1.0.0"
 ENVIRONMENT = "production"
 
-# ── Secrets (set via: wrangler secret put SECRET_NAME) ───────────────────────
-# ULTRASEARCH_SECRET   — used to sign/verify API keys
-# BRAVE_API_KEY        — Brave Search backend
-# SERPER_API_KEY       — Serper/Google backend
-# EXA_API_KEY          — Exa neural search backend
-# TAVILY_API_KEY       — Tavily AI search backend
 
-# ── Rate limits (requests per second per IP, handled by Workers) ──────────────
-[limits]
-cpu_ms = 50   # 50ms CPU per request (enough for search fan-out)
-
-# ── Dev environment overrides ─────────────────────────────────────────────────
 [env.dev]
 name = "ultrasearch-api-dev"
 [env.dev.vars]

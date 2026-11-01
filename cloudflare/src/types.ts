@@ -1,8 +1,8 @@
 // UltraSearch — Cloudflare Workers Types
-// Bindings available on every Worker request
+// Bindings available on every Worker request (100% Sovereign Search)
 
 export interface Env {
-  // D1 — SQLite database at the edge
+  // D1 — SQLite database with native FTS5 & BM25 at the edge
   DB: D1Database;
 
   // KV — ultra-fast global key-value cache
@@ -12,7 +12,7 @@ export interface Env {
   // Durable Objects — stateful per-user rate limiting
   RATE_LIMITER: DurableObjectNamespace;
 
-  // R2 — object storage for the search index
+  // R2 — object storage for deep index archives & raw HTML
   INDEX_BUCKET: R2Bucket;
 
   // Vars (wrangler.toml [vars])
@@ -20,15 +20,11 @@ export interface Env {
   APP_VERSION: string;
   ENVIRONMENT: string;
 
-  // Secrets (wrangler secret put ...)
+  // Security secret for signing and hashing API keys
   ULTRASEARCH_SECRET: string;
-  BRAVE_API_KEY:      string;
-  SERPER_API_KEY:     string;
-  EXA_API_KEY:        string;
-  TAVILY_API_KEY:     string;
 }
 
-// Plan config shape (mirrors Python config.py)
+// Plan config shape
 export interface Plan {
   plan_id:             string;
   daily_limit:         number;   // -1 = unlimited
@@ -41,13 +37,13 @@ export interface Plan {
 
 // A search result item
 export interface SearchResult {
-  title:          string;
-  url:            string;
-  snippet:        string;
-  source:         string;
-  score:          number;
+  title:           string;
+  url:             string;
+  snippet:         string;
+  source:          string;
+  score:           number;
   published_date?: string;
-  full_content?:  string;
+  full_content?:   string;
 }
 
 // Full search response shape

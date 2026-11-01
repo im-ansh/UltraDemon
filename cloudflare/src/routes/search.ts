@@ -1,4 +1,5 @@
 // UltraSearch — Search Route (/v1/search)
+// 100% Autonomous Search powered by D1 FTS5 BM25 Engine
 
 import { Hono } from 'hono';
 import type { Env } from '../types';
@@ -14,11 +15,10 @@ searchRouter.use('*', authMiddleware);
 // ── POST /v1/search ──────────────────────────────────────────────────────────
 searchRouter.post('/', async (c) => {
   const body = await c.req.json<{
-    query: string;
+    query:        string;
     num_results?: number;
-    semantic?: boolean;
-    news_only?: boolean;
-    use_cache?: boolean;
+    mode?:        1 | 2 | 3;
+    use_cache?:   boolean;
   }>();
 
   if (!body.query?.trim()) {
@@ -27,16 +27,15 @@ searchRouter.post('/', async (c) => {
 
   const record = c.get('keyRecord');
   const planRow = await c.env.DB
-    .prepare('SELECT results_per_query, semantic_search FROM plans WHERE plan_id = ?')
+    .prepare('SELECT results_per_query FROM plans WHERE plan_id = ?')
     .bind(record.plan)
-    .first<{ results_per_query: number; semantic_search: number }>();
+    .first<{ results_per_query: number }>();
 
-  const numResults = Math.min(body.num_results ?? 10, planRow?.results_per_query ?? 5);
-  const semantic   = (body.semantic ?? false) && Boolean(planRow?.semantic_search);
+  const numResults = Math.min(body.num_results ?? 10, planRow?.results_per_query ?? 10);
   const useCache   = body.use_cache ?? true;
 
   // Cache check
-  const cacheParams = { n: numResults, semantic, news: body.news_only ?? false };
+  const cacheParams = { n: numResults, mode: body.mode ?? 0 };
   if (useCache) {
     const cached = await getCachedSearch(c.env, body.query, cacheParams);
     if (cached) {
@@ -50,8 +49,7 @@ searchRouter.post('/', async (c) => {
     c.env,
     body.query,
     numResults,
-    semantic,
-    body.news_only ?? false,
+    body.mode,
   );
 
   // Cache the result (non-blocking)
@@ -64,12 +62,14 @@ searchRouter.post('/', async (c) => {
   return c.json(result);
 });
 
-// ── GET /v1/search?q=...&n=... ───────────────────────────────────────────────
+// ── GET /v1/search?q=...&n=...&mode=... ───────────────────────────────────────
 searchRouter.get('/', async (c) => {
   const query = c.req.query('q') ?? '';
   const n     = parseInt(c.req.query('n') ?? '10', 10);
+  const modeParam = c.req.query('mode');
+  const mode  = modeParam ? (parseInt(modeParam, 10) as 1 | 2 | 3) : undefined;
 
-  if (!query.trim()) return c.json({ error: 'q is required' }, 400);
+  if (!query.trim()) return c.json({ error: 'q parameter is required' }, 400);
 
   const record = c.get('keyRecord');
   const planRow = await c.env.DB
@@ -77,13 +77,17 @@ searchRouter.get('/', async (c) => {
     .bind(record.plan)
     .first<{ results_per_query: number }>();
 
-  const numResults = Math.min(n, planRow?.results_per_query ?? 5);
+  const numResults = Math.min(n, planRow?.results_per_query ?? 10);
 
   // Cache check
-  const cached = await getCachedSearch(c.env, query, { n: numResults });
-  if (cached) { cached.cached = true; return c.json(cached); }
+  const cacheParams = { n: numResults, mode: mode ?? 0 };
+  const cached = await getCachedSearch(c.env, query, cacheParams);
+  if (cached) {
+    cached.cached = true;
+    return c.json(cached);
+  }
 
-  const result = await runSearch(c.env, query, numResults);
-  c.executionCtx.waitUntil(setCachedSearch(c.env, query, { n: numResults }, result));
+  const result = await runSearch(c.env, query, numResults, mode);
+  c.executionCtx.waitUntil(setCachedSearch(c.env, query, cacheParams, result));
   return c.json(result);
 });

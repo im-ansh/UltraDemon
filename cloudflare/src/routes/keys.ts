@@ -62,3 +62,4 @@ keysRouter.get('/usage', authMiddleware, async (c) => {
     return c.json({ error: (e as Error).message }, 404);
   }
 });
+

@@ -5,7 +5,6 @@
 import type { Env, SearchResponse } from '../types';
 
 const CACHE_TTL_SECONDS = 60;   // 1 min for search results
-const KEY_TTL_SECONDS   = 300;  // 5 min for API key metadata
 
 function buildCacheKey(query: string, params: Record<string, unknown>): string {
   const normalized = query.toLowerCase().trim();
@@ -36,3 +35,4 @@ export async function setCachedSearch(
     expirationTtl: CACHE_TTL_SECONDS,
   });
 }
+

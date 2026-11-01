@@ -1,267 +1,282 @@
-// UltraSearch — Parallel Search Engine (Cloudflare Workers)
-// Fans out to Brave, Serper, Exa, Tavily simultaneously from the edge.
-// Uses Promise.allSettled — if one backend fails, others still return.
+// UltraSearch — Autonomous Search Engine (100% Self-Hosted)
+// Uses native SQLite FTS5 with BM25 ranking, PageRank scoring,
+// query classification, and dynamic edge crawler integration.
+// ZERO 3rd-party search APIs required.
 
 import type { Env, SearchResult, SearchResponse } from '../types';
+import { crawlAndIndexUrl } from './crawler';
 
-const TIMEOUT_MS = 3000; // 3s timeout per backend
-
-// ── Timeout wrapper ───────────────────────────────────────────────────────────
-
-function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
-  return Promise.race([
-    promise,
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms)
-    ),
-  ]);
+export interface SearchOptions {
+  numResults?: number;
+  mode?:        1 | 2 | 3;
+  semantic?:    boolean;
+  newsOnly?:    boolean;
+  domain?:      string;
 }
 
-// ── Backend Adapters ──────────────────────────────────────────────────────────
+// ── Query Classifier ─────────────────────────────────────────────────────────
 
-async function searchBrave(
-  apiKey: string,
-  query: string,
-  count: number,
-): Promise<SearchResult[]> {
-  const url = new URL('https://api.search.brave.com/res/v1/web/search');
-  url.searchParams.set('q', query);
-  url.searchParams.set('count', String(count));
-  url.searchParams.set('result_filter', 'web');
+export function classifyQuery(query: string): { mode: 1 | 2 | 3; reason: string } {
+  const q = query.toLowerCase().trim();
+  const words = q.split(/\s+/).filter(Boolean);
 
-  const resp = await fetch(url.toString(), {
-    headers: {
-      'Accept': 'application/json',
-      'X-Subscription-Token': apiKey,
-    },
-  });
-  if (!resp.ok) throw new Error(`Brave ${resp.status}`);
-
-  const data = await resp.json<{ web?: { results?: Array<{ title: string; url: string; description: string; age?: string }> } }>();
-  return (data.web?.results ?? []).map(r => ({
-    title:          r.title,
-    url:            r.url,
-    snippet:        r.description ?? '',
-    source:         'brave',
-    score:          0.85,
-    published_date: r.age,
-  }));
-}
-
-async function searchSerper(
-  apiKey: string,
-  query: string,
-  count: number,
-): Promise<SearchResult[]> {
-  const resp = await fetch('https://google.serper.dev/search', {
-    method: 'POST',
-    headers: {
-      'X-API-KEY': apiKey,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ q: query, num: count }),
-  });
-  if (!resp.ok) throw new Error(`Serper ${resp.status}`);
-
-  const data = await resp.json<{ organic?: Array<{ title: string; link: string; snippet: string }> }>();
-  return (data.organic ?? []).map(r => ({
-    title:   r.title,
-    url:     r.link,
-    snippet: r.snippet ?? '',
-    source:  'serper',
-    score:   0.9,
-  }));
-}
-
-async function searchExa(
-  apiKey: string,
-  query: string,
-  count: number,
-  semantic: boolean,
-): Promise<SearchResult[]> {
-  const resp = await fetch('https://api.exa.ai/search', {
-    method: 'POST',
-    headers: {
-      'x-api-key': apiKey,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      query,
-      numResults: count,
-      type: semantic ? 'neural' : 'keyword',
-    }),
-  });
-  if (!resp.ok) throw new Error(`Exa ${resp.status}`);
-
-  const data = await resp.json<{ results?: Array<{ title: string; url: string; text?: string; publishedDate?: string; score?: number }> }>();
-  return (data.results ?? []).map(r => ({
-    title:          r.title,
-    url:            r.url,
-    snippet:        (r.text ?? '').slice(0, 300),
-    source:         'exa',
-    score:          r.score ?? 0.75,
-    published_date: r.publishedDate,
-  }));
-}
-
-async function searchTavily(
-  apiKey: string,
-  query: string,
-  count: number,
-): Promise<SearchResult[]> {
-  const resp = await fetch('https://api.tavily.com/search', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      api_key: apiKey,
-      query,
-      max_results: count,
-      include_answer: false,
-    }),
-  });
-  if (!resp.ok) throw new Error(`Tavily ${resp.status}`);
-
-  const data = await resp.json<{ results?: Array<{ title: string; url: string; content: string; score?: number; published_date?: string }> }>();
-  return (data.results ?? []).map(r => ({
-    title:          r.title,
-    url:            r.url,
-    snippet:        (r.content ?? '').slice(0, 300),
-    source:         'tavily',
-    score:          r.score ?? 0.7,
-    published_date: r.published_date,
-  }));
-}
-
-// ── D1 Own Index Search ───────────────────────────────────────────────────────
-
-async function searchOwnIndex(
-  env: Env,
-  query: string,
-  count: number,
-): Promise<SearchResult[]> {
-  // Tokenize query (simple whitespace split for edge)
-  const terms = query.toLowerCase().split(/\s+/).filter(t => t.length > 2).slice(0, 10);
-  if (terms.length === 0) return [];
-
-  const placeholders = terms.map(() => '?').join(',');
-
-  // Get matching doc_ids with aggregated tf score
-  const { results: postingRows } = await env.DB
-    .prepare(`
-      SELECT doc_id, SUM(tf) as total_tf, MAX(title_match) as in_title
-      FROM postings
-      WHERE term IN (${placeholders})
-      GROUP BY doc_id
-      ORDER BY total_tf DESC, in_title DESC
-      LIMIT ?
-    `)
-    .bind(...terms, count * 2)
-    .all<{ doc_id: string; total_tf: number; in_title: number }>();
-
-  if (postingRows.length === 0) return [];
-
-  const docIds = postingRows.map(r => r.doc_id);
-  const tfMap  = Object.fromEntries(postingRows.map(r => [r.doc_id, r.total_tf * (r.in_title ? 2.5 : 1)]));
-
-  // Fetch document details
-  const { results: docs } = await env.DB
-    .prepare(`
-      SELECT doc_id, url, title, snippet, pagerank
-      FROM documents
-      WHERE doc_id IN (${docIds.map(() => '?').join(',')})
-    `)
-    .bind(...docIds)
-    .all<{ doc_id: string; url: string; title: string; snippet: string; pagerank: number }>();
-
-  return docs
-    .map(d => ({
-      title:   d.title || d.url,
-      url:     d.url,
-      snippet: d.snippet,
-      source:  'own_index',
-      score:   (tfMap[d.doc_id] ?? 0) + d.pagerank * 0.2,
-    }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, count);
-}
-
-// ── Main Fan-Out Search ───────────────────────────────────────────────────────
-
-export async function runSearch(
-  env: Env,
-  query: string,
-  numResults: number = 10,
-  semantic: boolean = false,
-  newsOnly: boolean = false,
-): Promise<SearchResponse> {
-  const t0 = Date.now();
-  const backendsUsed: string[] = [];
-  const seen = new Set<string>();
-  const allResults: SearchResult[] = [];
-
-  // Fire ALL backends + own index in parallel
-  const tasks: Array<Promise<SearchResult[]>> = [
-    searchOwnIndex(env, query, numResults),
+  const deepTriggers = [
+    'analysis', 'analyze', 'research', 'comprehensive', 'in-depth',
+    'detailed report', 'compare and contrast', 'investigate', 'history of',
+    'synthesize', 'timeline of', 'breakdown of',
   ];
-  const labels = ['own_index'];
 
-  if (env.BRAVE_API_KEY) {
-    tasks.push(withTimeout(searchBrave(env.BRAVE_API_KEY, query, numResults), TIMEOUT_MS));
-    labels.push('brave');
-  }
-  if (env.SERPER_API_KEY) {
-    tasks.push(withTimeout(searchSerper(env.SERPER_API_KEY, query, numResults), TIMEOUT_MS));
-    labels.push('serper');
-  }
-  if (env.EXA_API_KEY) {
-    tasks.push(withTimeout(searchExa(env.EXA_API_KEY, query, numResults, semantic), TIMEOUT_MS));
-    labels.push('exa');
-  }
-  if (env.TAVILY_API_KEY) {
-    tasks.push(withTimeout(searchTavily(env.TAVILY_API_KEY, query, numResults), TIMEOUT_MS));
-    labels.push('tavily');
+  const standardTriggers = [
+    'compare', 'vs', 'versus', 'difference between', 'how does',
+    'how to', 'explain', 'pros and cons', 'overview', 'latest',
+  ];
+
+  if (deepTriggers.some(t => q.includes(t)) || words.length > 12) {
+    return { mode: 3, reason: 'Detected deep research and comparative intent' };
   }
 
-  const settled = await Promise.allSettled(tasks);
+  if (standardTriggers.some(t => q.includes(t)) || words.length >= 5) {
+    return { mode: 2, reason: 'Standard query with multi-faceted terms' };
+  }
 
-  for (let i = 0; i < settled.length; i++) {
-    const result = settled[i];
-    if (result.status === 'fulfilled') {
-      backendsUsed.push(labels[i]);
-      for (const r of result.value) {
-        if (!seen.has(r.url)) {
-          seen.add(r.url);
-          allResults.push(r);
+  return { mode: 1, reason: 'Short factual lookup' };
+}
+
+// ── Sanitize query string for SQLite FTS5 MATCH ──────────────────────────────
+
+function prepareFts5Query(query: string): string {
+  // Strip special FTS5 operators to avoid syntax errors
+  const clean = query.replace(/['"/*^:()\-+]/g, ' ').trim();
+  const tokens = clean.split(/\s+/).filter(t => t.length > 1);
+
+  if (tokens.length === 0) return '""';
+
+  // Format as prefix match for each term (e.g., "python* AND script*")
+  return tokens.map(t => `"${t}"*`).join(' AND ');
+}
+
+function prepareOrFts5Query(query: string): string {
+  const clean = query.replace(/['"/*^:()\-+]/g, ' ').trim();
+  const tokens = clean.split(/\s+/).filter(t => t.length > 1);
+  if (tokens.length === 0) return '""';
+  return tokens.map(t => `"${t}"*`).join(' OR ');
+}
+
+// ── D1 FTS5 BM25 Search ───────────────────────────────────────────────────────
+
+interface DbSearchResult {
+  doc_id:          string;
+  url:             string;
+  domain:          string;
+  title:           string;
+  description:     string;
+  snippet:         string;
+  content:         string;
+  pagerank:        number;
+  crawled_at:      number;
+  bm25_score:      number;
+  matched_snippet: string;
+}
+
+async function searchIndexFts5(
+  env: Env,
+  query: string,
+  limit: number,
+  requireAllTokens = true,
+): Promise<SearchResult[]> {
+  const ftsMatch = requireAllTokens ? prepareFts5Query(query) : prepareOrFts5Query(query);
+
+  try {
+    const { results } = await env.DB.prepare(`
+      SELECT
+        d.doc_id,
+        d.url,
+        d.domain,
+        d.title,
+        d.description,
+        d.snippet,
+        d.content,
+        d.pagerank,
+        d.crawled_at,
+        bm25(documents_fts, 5.0, 2.5, 1.5, 0.5) as bm25_score,
+        snippet(documents_fts, 2, '<b>', '</b>', '...', 25) as matched_snippet
+      FROM documents_fts f
+      JOIN documents d ON d.rowid = f.rowid
+      WHERE documents_fts MATCH ?
+      ORDER BY (bm25(documents_fts, 5.0, 2.5, 1.5, 0.5) * -1.0) + (d.pagerank * 0.4) DESC
+      LIMIT ?
+    `).bind(ftsMatch, limit).all<DbSearchResult>();
+
+    if (!results || results.length === 0) {
+      if (requireAllTokens) {
+        // Fall back to OR query if strict AND yields 0 matches
+        return searchIndexFts5(env, query, limit, false);
+      }
+      return [];
+    }
+
+    return results.map(r => ({
+      title:          r.title || r.url,
+      url:            r.url,
+      snippet:        r.matched_snippet || r.snippet || r.description || r.content.slice(0, 250),
+      source:         'ultrasearch-index',
+      score:          Math.round(((r.bm25_score * -1.0) + (r.pagerank * 0.5) + 1.0) * 100) / 100,
+      published_date: r.crawled_at ? new Date(r.crawled_at).toISOString() : undefined,
+      full_content:   r.content ? r.content.slice(0, 3000) : undefined,
+    }));
+  } catch (err: unknown) {
+    console.error('FTS5 search error:', err);
+    return [];
+  }
+}
+
+// ── Mode 1: Instant Search (<50ms) ───────────────────────────────────────────
+
+async function executeInstantSearch(
+  env: Env,
+  query: string,
+  count: number,
+): Promise<SearchResult[]> {
+  return searchIndexFts5(env, query, count, true);
+}
+
+// ── Mode 2: Standard Search (100–300ms) ───────────────────────────────────────
+
+async function executeStandardSearch(
+  env: Env,
+  query: string,
+  count: number,
+): Promise<SearchResult[]> {
+  const results = await searchIndexFts5(env, query, count, true);
+
+  // If index has few results, inspect crawl queue or crawl relevant sites on-the-fly
+  if (results.length < 3) {
+    // Check if query mentions a specific domain or website
+    const domainMatch = query.match(/([a-z0-9-]+\.(?:com|org|io|dev|net|edu))/i);
+    if (domainMatch) {
+      const targetUrl = `https://${domainMatch[1]}`;
+      const crawled = await crawlAndIndexUrl(env, targetUrl, 0);
+      if (crawled.status === 'indexed') {
+        return searchIndexFts5(env, query, count, false);
+      }
+    }
+  }
+
+  return results;
+}
+
+// ── Mode 3: Deep Research (1–3s) ─────────────────────────────────────────────
+
+async function executeDeepResearch(
+  env: Env,
+  query: string,
+  count: number,
+): Promise<{ results: SearchResult[]; subQueries: string[]; synthesis: string }> {
+  // Generate multi-angled research sub-queries
+  const subQueries = [
+    query,
+    `${query} overview architecture`,
+    `${query} analysis history`,
+    `${query} documentation guide`,
+  ];
+
+  const searchTasks = subQueries.map(sq => searchIndexFts5(env, sq, Math.ceil(count / 2), false));
+  const settled = await Promise.allSettled(searchTasks);
+
+  const seenUrls = new Set<string>();
+  const merged: SearchResult[] = [];
+
+  for (const res of settled) {
+    if (res.status === 'fulfilled') {
+      for (const item of res.value) {
+        if (!seenUrls.has(item.url)) {
+          seenUrls.add(item.url);
+          merged.push(item);
         }
       }
     }
   }
 
-  // No backends configured → mock mode
-  if (allResults.length === 0) {
-    for (let i = 1; i <= Math.min(numResults, 5); i++) {
-      allResults.push({
-        title:   `[MOCK] Result ${i} for: ${query}`,
-        url:     `https://example.com/result-${i}`,
-        snippet: `Configure BRAVE_API_KEY or SERPER_API_KEY to get live results. Mock result #${i}.`,
-        source:  'mock',
-        score:   1 - i * 0.1,
-      });
-    }
-    backendsUsed.push('mock');
+  // Sort by relevance score
+  merged.sort((a, b) => b.score - a.score);
+  const topResults = merged.slice(0, count);
+
+  // Structured multi-source evidence synthesis
+  const synthesisParts: string[] = [
+    `### Research Synthesis for: "${query}"\n`,
+    `Synthesized from **${topResults.length} independent sources** retrieved from the UltraSearch index.\n`,
+  ];
+
+  topResults.slice(0, 5).forEach((item, idx) => {
+    synthesisParts.push(`#### [${idx + 1}] ${item.title}`);
+    synthesisParts.push(`- **URL:** ${item.url}`);
+    synthesisParts.push(`- **Relevance Score:** ${item.score}`);
+    synthesisParts.push(`- **Key Findings:** ${item.snippet}\n`);
+  });
+
+  return {
+    results:    topResults,
+    subQueries,
+    synthesis:  synthesisParts.join('\n'),
+  };
+}
+
+// ── Main Search Orchestrator ──────────────────────────────────────────────────
+
+export async function runSearch(
+  env: Env,
+  query: string,
+  numResults: number = 10,
+  forceMode?: 1 | 2 | 3,
+): Promise<SearchResponse> {
+  const t0 = Date.now();
+  const classification = classifyQuery(query);
+  const activeMode = forceMode || classification.mode;
+
+  let results: SearchResult[] = [];
+  let subQueries: string[] | undefined;
+  let synthesis: string | undefined;
+
+  if (activeMode === 1) {
+    results = await executeInstantSearch(env, query, numResults);
+  } else if (activeMode === 2) {
+    results = await executeStandardSearch(env, query, numResults);
+  } else {
+    const deepOutput = await executeDeepResearch(env, query, numResults);
+    results = deepOutput.results;
+    subQueries = deepOutput.subQueries;
+    synthesis = deepOutput.synthesis;
   }
 
-  // Sort by score, cap at numResults
-  allResults.sort((a, b) => b.score - a.score);
-  const final = allResults.slice(0, numResults);
+  // If index is still completely empty for this query, provide informative guidance
+  if (results.length === 0) {
+    results.push({
+      title:   `No indexed results found for "${query}"`,
+      url:     'https://ultrasearch.dev/docs/crawler',
+      snippet: `UltraSearch runs on its own independent index. You can index this domain or URL anytime using POST /v1/crawl with { "url": "https://..." } or calling the ultrasearch_crawl tool.`,
+      source:  'ultrasearch-engine',
+      score:   0.0,
+    });
+  }
+
+  const durationMs = Date.now() - t0;
 
   return {
     query,
-    results:        final,
-    total_results:  final.length,
-    search_time_ms: Date.now() - t0,
+    results,
+    total_results:  results.length,
+    search_time_ms: durationMs,
     cached:         false,
-    backends_used:  backendsUsed,
-    metadata:       { version: '1.0.0', semantic, news_only: newsOnly },
+    backends_used:  ['ultrasearch-fts5-engine'],
+    mode:           activeMode,
+    metadata: {
+      engine:        'UltraSearch Autonomous Edge Index',
+      version:       '1.0.0',
+      mode:          activeMode,
+      mode_name:     activeMode === 1 ? 'instant' : activeMode === 2 ? 'standard' : 'deep_research',
+      reason:        classification.reason,
+      sub_queries:   subQueries,
+      synthesis:     synthesis,
+    },
   };
 }
