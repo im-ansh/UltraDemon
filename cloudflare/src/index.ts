@@ -9,6 +9,7 @@ import { prettyJSON } from 'hono/pretty-json';
 import type { Env } from './types';
 import { searchRouter }  from './routes/search';
 import { keysRouter }    from './routes/keys';
+import { memoryRouter }  from './routes/memory';
 import { mcpRouter }     from './routes/mcp';
 import { crawlerRouter } from './routes/crawler';
 import { openapiRouter } from './routes/openapi';
@@ -55,13 +56,16 @@ app.get('/', (c) => {
     status:      'operational',
     web_console: origin,
     endpoints: {
-      search:     `${origin}/v1/search`,
-      keys:       `${origin}/v1/keys`,
-      crawler:    `${origin}/v1/crawl`,
-      stats:      `${origin}/v1/crawler/stats`,
-      mcp:        `${origin}/mcp`,
-      openapi:    `${origin}/openapi.json`,
-      tools:      `${origin}/v1/tools`,
+      search:       `${origin}/v1/search`,
+      memory:       `${origin}/v1/memory`,
+      memory_query: `${origin}/v1/memory/query`,
+      memory_file:  `${origin}/v1/memory/file`,
+      keys:         `${origin}/v1/keys`,
+      crawler:      `${origin}/v1/crawl`,
+      stats:        `${origin}/v1/crawler/stats`,
+      mcp:          `${origin}/mcp`,
+      openapi:      `${origin}/openapi.json`,
+      tools:        `${origin}/v1/tools`,
     },
     docs: 'https://github.com/im-ansh/UltraDemon',
   });
@@ -107,6 +111,7 @@ app.get('/v1/plans', async (c) => {
 
 // Mounted sub-routers
 app.route('/v1/search', searchRouter);
+app.route('/v1/memory', memoryRouter);
 app.route('/v1/keys',   keysRouter);
 app.route('/v1/usage',  keysRouter);
 app.route('/v1',        crawlerRouter);
@@ -120,6 +125,9 @@ app.notFound(c => c.json({
     '/',
     '/console',
     '/v1/search',
+    '/v1/memory',
+    '/v1/memory/query',
+    '/v1/memory/file',
     '/v1/keys',
     '/v1/usage',
     '/v1/crawl',

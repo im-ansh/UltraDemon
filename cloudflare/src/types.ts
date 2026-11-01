@@ -70,3 +70,45 @@ export interface ApiKeyRecord {
   created_at: number;
   revoked:    boolean;
 }
+
+// ── UltraMemory Types ─────────────────────────────────────────────────────────
+
+export type MemoryType = 'fact' | 'preference' | 'entity' | 'document' | 'file' | 'conversation';
+
+export interface MemoryRecord {
+  memory_id:     string;
+  user_id:       string;
+  container_tag: string;
+  session_id:    string;
+  memory_type:   MemoryType;
+  title:         string;
+  content:       string;
+  metadata_json: string;
+  file_name?:    string | null;
+  file_type?:    string | null;
+  file_size?:    number;
+  chunk_index?:  number;
+  created_at:    number;
+  updated_at:    number;
+}
+
+export interface MemoryQueryResult {
+  memory_id:     string;
+  container_tag: string;
+  session_id:    string;
+  memory_type:   MemoryType;
+  title:         string;
+  content:       string;
+  metadata:      Record<string, unknown>;
+  file_name?:    string | null;
+  score:         number;
+  created_at:    string;
+}
+
+export interface MemoryQueryResponse {
+  query:             string;
+  memories:          MemoryQueryResult[];
+  total:             number;
+  retrieval_time_ms: number;
+  container_tag?:    string;
+}

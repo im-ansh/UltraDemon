@@ -119,6 +119,110 @@ export function getOpenAPISpec(origin: string) {
           },
         },
       },
+      '/v1/memory': {
+        post: {
+          summary: 'Store Agent Memory',
+          description: 'Store structured long-term memory for an AI agent (fact, preference, profile, conversation, or document). Indexed instantly into edge D1 FTS5 for sub-15ms recall.',
+          operationId: 'storeMemory',
+          security: [{ ApiKeyAuth: [] }, { BearerAuth: [] }],
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['content'],
+                  properties: {
+                    content: { type: 'string', description: 'Content or fact to remember' },
+                    title: { type: 'string', description: 'Short summary title' },
+                    container_tag: { type: 'string', default: 'default', description: 'Agent namespace or container tag' },
+                    session_id: { type: 'string', description: 'Optional session ID' },
+                    memory_type: { type: 'string', enum: ['fact', 'preference', 'entity', 'document', 'file', 'conversation'], default: 'fact' },
+                    metadata: { type: 'object', description: 'Custom JSON metadata' },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            '201': { description: 'Memory saved successfully' },
+            '401': { description: 'Missing or invalid API key' },
+          },
+        },
+        get: {
+          summary: 'List Agent Memories',
+          description: 'Paginated list of memories stored for the authenticated user/agent.',
+          operationId: 'listMemories',
+          security: [{ ApiKeyAuth: [] }, { BearerAuth: [] }],
+          parameters: [
+            { name: 'container_tag', in: 'query', schema: { type: 'string' } },
+            { name: 'memory_type', in: 'query', schema: { type: 'string' } },
+            { name: 'limit', in: 'query', schema: { type: 'integer', default: 20 } },
+            { name: 'offset', in: 'query', schema: { type: 'integer', default: 0 } },
+          ],
+          responses: {
+            '200': { description: 'Array of memory records' },
+          },
+        },
+      },
+      '/v1/memory/query': {
+        post: {
+          summary: 'Recall / Query Memories',
+          description: 'BM25-ranked sub-15ms memory retrieval over edge SQLite FTS5 index. Outperforms centralized vector databases in speed and consistency.',
+          operationId: 'queryMemories',
+          security: [{ ApiKeyAuth: [] }, { BearerAuth: [] }],
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['query'],
+                  properties: {
+                    query: { type: 'string', description: 'Question or query to recall relevant context for' },
+                    container_tag: { type: 'string', description: 'Filter by container tag' },
+                    session_id: { type: 'string', description: 'Filter by session ID' },
+                    memory_type: { type: 'string', description: 'Filter by memory type' },
+                    limit: { type: 'integer', default: 5 },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            '200': { description: 'Ranked relevant memories with search time' },
+          },
+        },
+      },
+      '/v1/memory/file': {
+        post: {
+          summary: 'Ingest File or Long Document',
+          description: 'Ingest a file or long text document into chunks and index into edge memory.',
+          operationId: 'ingestFile',
+          security: [{ ApiKeyAuth: [] }, { BearerAuth: [] }],
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['content', 'file_name'],
+                  properties: {
+                    content: { type: 'string', description: 'Full text content of document' },
+                    file_name: { type: 'string', description: 'Document name or filename' },
+                    file_type: { type: 'string', description: 'MIME type or file extension' },
+                    container_tag: { type: 'string', default: 'documents' },
+                    metadata: { type: 'object' },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            '201': { description: 'File chunked and indexed' },
+          },
+        },
+      },
       '/v1/crawl': {
         post: {
           summary: 'Trigger Web Crawl & Ingestion',
@@ -269,11 +373,47 @@ openapiRouter.get('/v1/tools', (c) => {
           },
         },
       },
+      {
+        type: 'function',
+        function: {
+          name: 'ultramemory_store',
+          description: 'Store long-term memory, fact, preference, profile, or context for an AI agent with sub-15ms edge indexing.',
+          parameters: {
+            type: 'object',
+            properties: {
+              content: { type: 'string', description: 'Content or insight to store' },
+              title: { type: 'string', description: 'Optional short summary title' },
+              container_tag: { type: 'string', description: 'Agent namespace or container tag' },
+              session_id: { type: 'string', description: 'Optional session ID' },
+              memory_type: { type: 'string', enum: ['fact', 'preference', 'entity', 'document', 'file', 'conversation'] },
+            },
+            required: ['content'],
+          },
+        },
+      },
+      {
+        type: 'function',
+        function: {
+          name: 'ultramemory_query',
+          description: 'Recall and retrieve relevant memories for an AI agent with sub-15ms edge BM25 search.',
+          parameters: {
+            type: 'object',
+            properties: {
+              query: { type: 'string', description: 'Recall query or context needle' },
+              container_tag: { type: 'string', description: 'Filter by container tag' },
+              limit: { type: 'integer', description: 'Maximum memories to retrieve (default 5)' },
+            },
+            required: ['query'],
+          },
+        },
+      },
     ],
     endpoints: {
-      search: `${origin}/v1/search`,
-      crawl:  `${origin}/v1/crawl`,
-      mcp:    `${origin}/mcp`,
+      search:       `${origin}/v1/search`,
+      memory:       `${origin}/v1/memory`,
+      memory_query: `${origin}/v1/memory/query`,
+      crawl:        `${origin}/v1/crawl`,
+      mcp:          `${origin}/mcp`,
     },
   });
 });
