@@ -9,20 +9,22 @@ export const keysRouter = new Hono<{ Bindings: Env }>();
 
 // ── POST /v1/keys — create a new key ────────────────────────────────────────
 keysRouter.post('/', async (c) => {
-  const body = await c.req.json<{ user_id?: string; plan?: string; label?: string }>().catch(() => ({ user_id: undefined, plan: undefined, label: undefined }));
   const sbUser = await getSupabaseUser(c.env, c.req.header('authorization'));
-  const userId = sbUser?.id || body.user_id;
-
-  if (!userId) {
-    return c.json({ error: 'user_id is required or authenticate with Supabase' }, 400);
+  if (!sbUser) {
+    return c.json({
+      error: 'Authentication required. You must first log in or create an account with Supabase to generate an API key.',
+      requires_auth: true,
+    }, 401);
   }
+
+  const body = await c.req.json<{ plan?: string; label?: string }>().catch(() => ({ plan: undefined, label: undefined }));
 
   try {
     const { plainKey, record } = await createApiKey(
       c.env,
-      userId,
+      sbUser.id,
       body.plan ?? 'free',
-      body.label ?? (sbUser?.email ? `Key for ${sbUser.email}` : ''),
+      body.label?.trim() || (sbUser.email ? `Key for ${sbUser.email}` : 'Default Key'),
     );
     return c.json({
       message: '✅ API key created. Save the plain_key — it will NOT be shown again.',
@@ -38,20 +40,30 @@ keysRouter.post('/', async (c) => {
   }
 });
 
-// ── GET /v1/keys?user_id=... — list keys ────────────────────────────────────
+// ── GET /v1/keys — list keys for authenticated user ─────────────────────────
 keysRouter.get('/', async (c) => {
   const sbUser = await getSupabaseUser(c.env, c.req.header('authorization'));
-  const userId = sbUser?.id || c.req.query('user_id');
-
-  if (!userId) {
-    return c.json({ error: 'user_id is required or authenticate with Supabase' }, 400);
+  if (!sbUser) {
+    return c.json({
+      error: 'Authentication required. You must first log in or create an account with Supabase to view your API keys.',
+      requires_auth: true,
+    }, 401);
   }
-  const keys = await listUserKeys(c.env, userId);
+
+  const keys = await listUserKeys(c.env, sbUser.id);
   return c.json({ keys });
 });
 
 // ── DELETE /v1/keys/:key — revoke ───────────────────────────────────────────
 keysRouter.delete('/:key', async (c) => {
+  const sbUser = await getSupabaseUser(c.env, c.req.header('authorization'));
+  if (!sbUser) {
+    return c.json({
+      error: 'Authentication required. You must first log in or create an account with Supabase to manage API keys.',
+      requires_auth: true,
+    }, 401);
+  }
+
   const key = c.req.param('key');
   try {
     await revokeApiKey(c.env, key);

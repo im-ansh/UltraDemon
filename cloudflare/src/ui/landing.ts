@@ -2,6 +2,7 @@
 // High-performance, reactive developer platform served directly from Cloudflare Edge.
 // Theme: Light, Pure White & Monochrome. Zero gradients, zero purple/pink.
 // Typography: Michelangelus Bold Italic (Uploaded Font Embedded via WOFF2 Data URI), Geist (Sans), Geist Mono (Numbers).
+// Strict Authentication Flow: Login/Signup required before creating and using API keys.
 
 import { MICHELANGELUS_BOLD_ITALIC_WOFF2_B64, MICHELANGELUS_REGULAR_WOFF2_B64 } from './font-data';
 
@@ -110,7 +111,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
     /* Serif Texts: Michelangelus Bold Italic */
     .font-serif, .serif-italic, .serif-text, em.serif {
-      font-family: 'Michelangelus', 'Newsreader', 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+      font-family: 'Michelangelus', serif;
       font-weight: 700;
       font-style: italic;
       font-size-adjust: from-font;
@@ -212,7 +213,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           <h3 id="authModalTitle" class="text-lg font-bold text-neutral-950 flex items-center gap-1.5">
             Sign In to <span class="font-serif font-bold italic text-black">UltraSearch</span>
           </h3>
-          <p class="text-xs text-neutral-500">Manage your sovereign search keys & usage quota</p>
+          <p class="text-xs text-neutral-500">Sign in to create, manage, and use your API keys</p>
         </div>
       </div>
 
@@ -259,7 +260,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </form>
 
       <div class="mt-4 pt-4 border-t border-neutral-100 text-center text-[11px] text-neutral-500">
-        Protected by Supabase Auth · Encrypted with bcrypt
+        Protected by Supabase Auth · Passwords encrypted with bcrypt
       </div>
     </div>
   </div>
@@ -296,9 +297,9 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       <a href="#playground" class="px-5 py-3 text-sm font-semibold rounded-xl bg-black text-white hover:bg-neutral-800 transition shadow-sm flex items-center gap-2">
         <span>⚡ Try Live Playground</span>
       </a>
-      <a href="#console" class="px-5 py-3 text-sm font-semibold rounded-xl bg-white hover:bg-neutral-50 text-neutral-950 border border-neutral-300 transition flex items-center gap-2">
+      <button onclick="handleProvisionKeyClick()" class="px-5 py-3 text-sm font-semibold rounded-xl bg-white hover:bg-neutral-50 text-neutral-950 border border-neutral-300 transition flex items-center gap-2 cursor-pointer">
         <span>🔑 Provision API Key</span>
-      </a>
+      </button>
       <a href="/openapi.json" target="_blank" class="px-4 py-3 text-sm font-num text-neutral-600 hover:text-black transition flex items-center gap-1.5">
         <span>/openapi.json</span>
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
@@ -507,31 +508,55 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       <div class="flex items-center gap-3">
         <span class="text-xl">🔒</span>
         <div class="text-xs">
-          <span class="font-semibold text-neutral-950">Sync your API keys across devices:</span>
-          <span class="text-neutral-600"> Sign in with Supabase Auth to bind generated keys permanently to your verified email.</span>
+          <span class="font-bold text-neutral-950">Authentication Required:</span>
+          <span class="text-neutral-600"> You must first sign in or create an account before creating and using an API key.</span>
         </div>
       </div>
-      <button onclick="openAuthModal('signin')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition whitespace-nowrap shadow-xs">
-        Sign In / Sign Up
-      </button>
+      <div class="flex items-center gap-2">
+        <button onclick="openAuthModal('signin')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition whitespace-nowrap shadow-xs">
+          Sign In
+        </button>
+        <button onclick="openAuthModal('signup')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-white text-neutral-900 border border-neutral-300 hover:bg-neutral-100 transition whitespace-nowrap">
+          Create Account
+        </button>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Create Key Card -->
-      <div class="card-mono p-6 rounded-2xl">
+      <div class="card-mono p-6 rounded-2xl relative">
         <h3 class="text-base font-bold text-neutral-950 mb-4 flex items-center gap-2">
           <span>🔑</span> Generate New API Key
         </h3>
-        <form onsubmit="handleCreateKey(event)" class="space-y-4">
+
+        <!-- Locked Card View (When Logged Out) -->
+        <div id="createKeyLocked" class="p-6 rounded-xl bg-neutral-50 border border-neutral-200 text-center space-y-3">
+          <div class="w-10 h-10 mx-auto rounded-full bg-neutral-200 flex items-center justify-center text-base">🔒</div>
           <div>
-            <label class="block text-xs font-medium text-neutral-700 mb-1">User Identifier / Account</label>
-            <input 
-              type="text" 
-              id="newKeyUserId" 
-              placeholder="e.g. dev_agent_01" 
-              required
-              class="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-950 text-sm focus:outline-none focus:bg-white focus:border-black transition"
-            />
+            <h4 class="text-sm font-bold text-neutral-950">Authentication Required</h4>
+            <p class="text-xs text-neutral-600 mt-1">
+              You must first log in or create an account before creating and using an API key.
+            </p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-2 pt-2 justify-center">
+            <button onclick="openAuthModal('signin')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition shadow-xs">
+              Sign In
+            </button>
+            <button onclick="openAuthModal('signup')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-white hover:bg-neutral-100 text-neutral-950 border border-neutral-300 transition">
+              Create Account
+            </button>
+          </div>
+        </div>
+
+        <!-- Unlocked Key Form (When Logged In) -->
+        <form id="createKeyForm" onsubmit="handleCreateKey(event)" class="space-y-4 hidden">
+          <div>
+            <label class="block text-xs font-medium text-neutral-700 mb-1">Authenticated Account</label>
+            <div class="flex items-center gap-2 px-3.5 py-2.5 bg-neutral-100 border border-neutral-200 rounded-xl text-neutral-950 text-xs">
+              <span class="w-2 h-2 rounded-full bg-black"></span>
+              <span id="keyUserAccountDisplay" class="font-num font-semibold truncate"></span>
+              <span class="ml-auto text-[10px] uppercase font-bold text-neutral-500 bg-neutral-200 px-1.5 py-0.5 rounded font-sans">Verified</span>
+            </div>
           </div>
           <div>
             <label class="block text-xs font-medium text-neutral-700 mb-1">Plan Tier</label>
@@ -553,9 +578,11 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           </div>
           <button 
             type="submit" 
-            class="w-full py-2.5 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl transition shadow-xs"
+            id="createKeyBtn"
+            class="w-full py-2.5 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl transition shadow-xs flex items-center justify-center gap-2"
           >
-            Create API Key
+            <span>Create Sovereign API Key</span>
+            <span id="createKeySpinner" class="hidden animate-spin font-num">⟳</span>
           </button>
         </form>
 
@@ -612,7 +639,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             <h3 class="text-base font-bold text-neutral-950 flex items-center gap-2">
               <span>🗄️</span> Your Active Keys
             </h3>
-            <span id="keysStatusSubtext" class="text-xs text-neutral-500">Stored in your browser & account</span>
+            <span id="keysStatusSubtext" class="text-xs text-neutral-500">Sign in to sync your keys</span>
           </div>
 
           <div class="overflow-x-auto">
@@ -627,7 +654,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
               </thead>
               <tbody id="keysTableBody" class="divide-y border-b border-neutral-200 divide-neutral-100">
                 <tr>
-                  <td colspan="4" class="py-4 text-center text-neutral-500">No keys generated yet. Use the form to create one.</td>
+                  <td colspan="4" class="py-4 text-center text-neutral-500">No keys generated yet.</td>
                 </tr>
               </tbody>
             </table>
@@ -877,7 +904,7 @@ console.log(data);</pre>
             <li class="flex items-center gap-2"><span>✓</span> KV Hot Cache (<span class="font-num">5ms</span>)</li>
           </ul>
         </div>
-        <a href="#console" class="w-full py-2 text-center text-xs font-semibold rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-300 transition">Get Free Key</a>
+        <button onclick="handleProvisionKeyClick('free')" class="w-full py-2 text-center text-xs font-semibold rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-300 transition cursor-pointer">Get Free Key</button>
       </div>
 
       <!-- Pro (Featured with solid black border) -->
@@ -897,7 +924,7 @@ console.log(data);</pre>
             <li class="flex items-center gap-2"><span>✓</span> Full MCP Server Access</li>
           </ul>
         </div>
-        <a href="#console" class="w-full py-2 text-center text-xs font-semibold rounded-lg bg-black hover:bg-neutral-800 text-white transition shadow-xs">Choose Pro</a>
+        <button onclick="handleProvisionKeyClick('pro')" class="w-full py-2 text-center text-xs font-semibold rounded-lg bg-black hover:bg-neutral-800 text-white transition shadow-xs cursor-pointer">Choose Pro</button>
       </div>
 
       <!-- Ultra -->
@@ -916,7 +943,7 @@ console.log(data);</pre>
             <li class="flex items-center gap-2"><span>✓</span> Priority Edge Execution</li>
           </ul>
         </div>
-        <a href="#console" class="w-full py-2 text-center text-xs font-semibold rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-300 transition">Choose Ultra</a>
+        <button onclick="handleProvisionKeyClick('ultra')" class="w-full py-2 text-center text-xs font-semibold rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-300 transition cursor-pointer">Choose Ultra</button>
       </div>
 
       <!-- Enterprise -->
@@ -1035,7 +1062,10 @@ console.log(data);</pre>
           alertBox.classList.remove('hidden');
 
           if (data.session) {
-            setTimeout(() => closeAuthModal(), 1200);
+            setTimeout(() => {
+              closeAuthModal();
+              document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
+            }, 1000);
           }
         } else {
           const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -1045,7 +1075,10 @@ console.log(data);</pre>
           alertBox.innerText = 'Signed in successfully!';
           alertBox.classList.remove('hidden');
 
-          setTimeout(() => closeAuthModal(), 800);
+          setTimeout(() => {
+            closeAuthModal();
+            document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
+          }, 800);
         }
       } catch (err) {
         alertBox.className = 'p-3 rounded-xl text-xs font-medium bg-neutral-100 border border-neutral-300 text-red-600';
@@ -1061,6 +1094,19 @@ console.log(data);</pre>
       if (supabase) {
         await supabase.auth.signOut();
       }
+      localStorage.removeItem(STORAGE_KEY);
+      updateAuthUI(null);
+    }
+
+    function handleProvisionKeyClick(plan) {
+      if (currentUser) {
+        if (plan && document.getElementById('newKeyPlan')) {
+          document.getElementById('newKeyPlan').value = plan;
+        }
+        document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        openAuthModal('signup');
+      }
     }
 
     function updateAuthUI(user) {
@@ -1070,45 +1116,83 @@ console.log(data);</pre>
       const userEmailSpan = document.getElementById('navUserEmail');
       const banner = document.getElementById('authPromptBanner');
       const subtext = document.getElementById('keysStatusSubtext');
-      const userIdInput = document.getElementById('newKeyUserId');
+      const createKeyLocked = document.getElementById('createKeyLocked');
+      const createKeyForm = document.getElementById('createKeyForm');
+      const userAccountDisplay = document.getElementById('keyUserAccountDisplay');
 
       if (user) {
         loggedOutNav.classList.add('hidden');
         loggedInNav.classList.remove('hidden');
         userEmailSpan.innerText = user.email || user.id;
-        banner.classList.add('hidden');
-        subtext.innerText = 'Synced with your Supabase account (' + (user.email || user.id) + ')';
-        if (userIdInput && !userIdInput.value) {
-          userIdInput.value = user.email || user.id;
+
+        // Unlock key creation form
+        createKeyLocked.classList.add('hidden');
+        createKeyForm.classList.remove('hidden');
+        if (userAccountDisplay) {
+          userAccountDisplay.innerText = user.email || user.id;
         }
+
+        // Update banner to signed-in state
+        banner.innerHTML = \`
+          <div class="flex items-center gap-3">
+            <span class="text-xl">✅</span>
+            <div class="text-xs">
+              <span class="font-bold text-neutral-950">Signed in as \${user.email || user.id}:</span>
+              <span class="text-neutral-600"> Your sovereign API keys and daily quotas are active.</span>
+            </div>
+          </div>
+          <button onclick="handleSignOut()" class="px-3.5 py-1.5 text-xs font-medium text-neutral-600 hover:text-black border border-neutral-300 rounded-lg hover:bg-neutral-100 transition">
+            Sign Out
+          </button>
+        \`;
+
+        subtext.innerText = 'Synced with your account (' + (user.email || user.id) + ')';
         loadRemoteKeys(user.id);
       } else {
         loggedOutNav.classList.remove('hidden');
         loggedInNav.classList.add('hidden');
-        banner.classList.remove('hidden');
-        subtext.innerText = 'Stored locally in this browser';
+
+        // Lock key creation form
+        createKeyLocked.classList.remove('hidden');
+        createKeyForm.classList.add('hidden');
+
+        // Restore prompt banner
+        banner.innerHTML = \`
+          <div class="flex items-center gap-3">
+            <span class="text-xl">🔒</span>
+            <div class="text-xs">
+              <span class="font-bold text-neutral-950">Authentication Required:</span>
+              <span class="text-neutral-600"> You must first sign in or create an account before creating and using an API key.</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="openAuthModal('signin')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition whitespace-nowrap shadow-xs">
+              Sign In
+            </button>
+            <button onclick="openAuthModal('signup')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-white text-neutral-900 border border-neutral-300 hover:bg-neutral-100 transition whitespace-nowrap">
+              Create Account
+            </button>
+          </div>
+        \`;
+
+        subtext.innerText = 'Sign in to view your API keys';
         renderKeysTable();
+        refreshUsage();
       }
     }
 
     async function loadRemoteKeys(userId) {
       try {
         const session = (await supabase.auth.getSession())?.data?.session;
-        const headers = {};
-        if (session) {
-          headers['Authorization'] = 'Bearer ' + session.access_token;
-        }
-        const resp = await fetch('/v1/keys?user_id=' + encodeURIComponent(userId), { headers });
+        if (!session) return;
+        const resp = await fetch('/v1/keys', {
+          headers: { 'Authorization': 'Bearer ' + session.access_token }
+        });
         const data = await resp.json();
         if (data.keys) {
-          const localKeys = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-          const remoteKeyIds = new Set(data.keys.map(k => k.key_id));
-          const merged = [...data.keys];
-          localKeys.forEach(k => {
-            if (!remoteKeyIds.has(k.key_id)) merged.push(k);
-          });
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data.keys));
           renderKeysTable();
+          refreshUsage();
         }
       } catch (e) {
         console.warn('Could not sync keys:', e);
@@ -1171,12 +1255,51 @@ console.log(data);</pre>
 
       if (!query) return;
 
+      // STRICT AUTH GATE: Must be logged in
+      if (!currentUser) {
+        resultsDiv.innerHTML = \`
+          <div class="p-8 rounded-xl bg-neutral-50 border border-neutral-300 text-center space-y-3">
+            <div class="w-10 h-10 mx-auto rounded-full bg-neutral-200 flex items-center justify-center text-lg">🔒</div>
+            <h4 class="text-sm font-bold text-neutral-950">Authentication Required to Search</h4>
+            <p class="text-xs text-neutral-600 max-w-md mx-auto">
+              You must first log in or sign up before you can create and use your API key to search the sovereign index.
+            </p>
+            <div class="flex items-center justify-center gap-2 pt-2">
+              <button onclick="openAuthModal('signin')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition shadow-xs">Sign In</button>
+              <button onclick="openAuthModal('signup')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-white text-neutral-900 border border-neutral-300 hover:bg-neutral-100 transition">Create Account</button>
+            </div>
+          </div>
+        \`;
+        openAuthModal('signin');
+        return;
+      }
+
+      // STRICT KEY GATE: Must have created an API key
+      const apiKey = getActiveKey();
+      if (!apiKey) {
+        resultsDiv.innerHTML = \`
+          <div class="p-8 rounded-xl bg-neutral-50 border border-neutral-300 text-center space-y-3">
+            <div class="w-10 h-10 mx-auto rounded-full bg-neutral-200 flex items-center justify-center text-lg">🔑</div>
+            <h4 class="text-sm font-bold text-neutral-950">Generate an API Key to Search</h4>
+            <p class="text-xs text-neutral-600 max-w-md mx-auto">
+              You are signed in as <strong>\${currentUser.email || currentUser.id}</strong>, but you need to generate an API key first before querying.
+            </p>
+            <button onclick="document.getElementById('console').scrollIntoView({ behavior: 'smooth' })" class="px-4 py-2 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition">
+              Generate API Key in Console ↓
+            </button>
+          </div>
+        \`;
+        document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+
       spinner.classList.remove('hidden');
       resultsDiv.innerHTML = '<div class="text-center py-6 text-neutral-500 text-sm">Searching sovereign BM25 index across Cloudflare edge...</div>';
 
-      const apiKey = getActiveKey();
-      const headers = { 'Content-Type': 'application/json' };
-      if (apiKey) headers['X-API-Key'] = apiKey;
+      const headers = { 
+        'Content-Type': 'application/json',
+        'X-API-Key': apiKey 
+      };
 
       const t0 = performance.now();
       try {
@@ -1193,6 +1316,17 @@ console.log(data);</pre>
 
         const data = await resp.json();
         const duration = Math.round(performance.now() - t0);
+
+        if (resp.status === 401) {
+          resultsDiv.innerHTML = \`
+            <div class="p-6 rounded-xl bg-neutral-100 border border-neutral-300 text-center space-y-2">
+              <div class="font-bold text-neutral-950 text-sm">Authentication Error</div>
+              <div class="text-xs text-neutral-600">\${data.error || 'Invalid API key'}</div>
+              <button onclick="document.getElementById('console').scrollIntoView({ behavior: 'smooth' })" class="mt-2 px-3 py-1.5 text-xs font-semibold rounded bg-black text-white">Generate Valid Key ↓</button>
+            </div>
+          \`;
+          return;
+        }
 
         latencyBadge.innerText = (data.search_time_ms || duration) + 'ms' + (data.cached ? ' (KV Hit)' : '');
         latencyBadge.classList.remove('hidden');
@@ -1225,23 +1359,33 @@ console.log(data);</pre>
 
     async function handleCreateKey(e) {
       e.preventDefault();
-      const userId = document.getElementById('newKeyUserId').value.trim();
+      if (!currentUser) {
+        openAuthModal('signin');
+        return;
+      }
+
       const plan = document.getElementById('newKeyPlan').value;
       const label = document.getElementById('newKeyLabel').value.trim();
+      const spinner = document.getElementById('createKeySpinner');
+      const submitBtn = document.getElementById('createKeyBtn');
 
-      const headers = { 'Content-Type': 'application/json' };
-      if (supabase) {
-        const session = (await supabase.auth.getSession())?.data?.session;
-        if (session) {
-          headers['Authorization'] = 'Bearer ' + session.access_token;
-        }
+      const session = (await supabase.auth.getSession())?.data?.session;
+      if (!session) {
+        openAuthModal('signin');
+        return;
       }
+
+      spinner.classList.remove('hidden');
+      submitBtn.disabled = true;
 
       try {
         const resp = await fetch('/v1/keys', {
           method: 'POST',
-          headers,
-          body: JSON.stringify({ user_id: userId, plan, label })
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + session.access_token
+          },
+          body: JSON.stringify({ plan, label })
         });
         const data = await resp.json();
 
@@ -1266,15 +1410,34 @@ console.log(data);</pre>
         }
       } catch (err) {
         alert('Request failed: ' + err.message);
+      } finally {
+        spinner.classList.add('hidden');
+        submitBtn.disabled = false;
       }
     }
 
     function renderKeysTable() {
-      const keys = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
       const tbody = document.getElementById('keysTableBody');
 
+      if (!currentUser) {
+        tbody.innerHTML = \`
+          <tr>
+            <td colspan="4" class="py-8 text-center text-neutral-500">
+              <div class="text-base mb-1">🔒</div>
+              <div class="text-xs font-semibold text-neutral-800">Authentication Required</div>
+              <div class="text-[11px] text-neutral-500 mb-3">You must first sign in or create an account to view and manage your API keys.</div>
+              <button onclick="openAuthModal('signin')" class="px-3.5 py-1.5 text-xs font-semibold rounded bg-black text-white hover:bg-neutral-800 transition">
+                Sign In
+              </button>
+            </td>
+          </tr>
+        \`;
+        return;
+      }
+
+      const keys = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
       if (keys.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-neutral-500">No keys generated yet. Use the form to create one.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" class="py-6 text-center text-neutral-500">No keys generated yet. Use the form on the left to create your first API key.</td></tr>';
         return;
       }
 
@@ -1298,7 +1461,10 @@ console.log(data);</pre>
     async function revokeKey(key, index) {
       if (!confirm('Are you sure you want to revoke this API key?')) return;
       try {
-        await fetch('/v1/keys/' + key, { method: 'DELETE' });
+        const session = (await supabase.auth.getSession())?.data?.session;
+        const headers = {};
+        if (session) headers['Authorization'] = 'Bearer ' + session.access_token;
+        await fetch('/v1/keys/' + key, { method: 'DELETE', headers });
         const keys = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
         keys.splice(index, 1);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(keys));
@@ -1311,10 +1477,10 @@ console.log(data);</pre>
 
     async function refreshUsage() {
       const key = getActiveKey();
-      if (!key) {
-        document.getElementById('statUsed').innerText = '0';
-        document.getElementById('statLimit').innerText = '100';
-        document.getElementById('statRemaining').innerText = '100';
+      if (!currentUser || !key) {
+        document.getElementById('statUsed').innerText = '—';
+        document.getElementById('statLimit').innerText = '—';
+        document.getElementById('statRemaining').innerText = '—';
         document.getElementById('usagePercent').innerText = '0%';
         document.getElementById('usageBar').style.width = '0%';
         return;
@@ -1346,6 +1512,19 @@ console.log(data);</pre>
 
     async function handleCrawl(e) {
       e.preventDefault();
+      if (!currentUser) {
+        alert('Authentication required. Please log in or sign up first.');
+        openAuthModal('signin');
+        return;
+      }
+
+      const apiKey = getActiveKey();
+      if (!apiKey) {
+        alert('API key required. Please generate an API key in the console first.');
+        document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+
       const url = document.getElementById('crawlUrlInput').value.trim();
       const depth = parseInt(document.getElementById('crawlDepthInput').value, 10);
       const spinner = document.getElementById('crawlSpinner');
@@ -1358,14 +1537,13 @@ console.log(data);</pre>
       statusMsg.innerText = 'Crawling, parsing HTML and indexing into D1 FTS5...';
       details.innerText = '';
 
-      const apiKey = getActiveKey();
-      const headers = { 'Content-Type': 'application/json' };
-      if (apiKey) headers['X-API-Key'] = apiKey;
-
       try {
         const resp = await fetch('/v1/crawl', {
           method: 'POST',
-          headers,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': apiKey
+          },
           body: JSON.stringify({ url, depth })
         });
         const data = await resp.json();
@@ -1396,8 +1574,6 @@ console.log(data);</pre>
 
     // Initialize Auth state listener
     window.addEventListener('DOMContentLoaded', async () => {
-      renderKeysTable();
-      refreshUsage();
       refreshCrawlerStats();
 
       if (supabase) {
@@ -1407,6 +1583,8 @@ console.log(data);</pre>
         supabase.auth.onAuthStateChange((_event, session) => {
           updateAuthUI(session?.user || null);
         });
+      } else {
+        updateAuthUI(null);
       }
     });
   </script>

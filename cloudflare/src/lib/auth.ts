@@ -26,7 +26,8 @@ export async function authMiddleware(c: Context<{ Bindings: Env }>, next: Next) 
 
   if (!plainKey) {
     return c.json({
-      error: 'API key required. Pass X-API-Key: us_xxxx or Authorization: Bearer us_xxxx',
+      error: 'API key required. You must first log in or sign up at the developer console to generate an API key.',
+      requires_key: true,
     }, 401);
   }
 

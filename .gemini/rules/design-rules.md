@@ -15,3 +15,4 @@
    - **Serif Texts**: Michelangelus Font with **bold italic** (`font-family: 'Michelangelus', 'Newsreader', 'Cormorant Garamond', 'Playfair Display', Georgia, serif; font-weight: 700; font-style: italic;`).
    - **Sans Texts**: Geist Sans for all general interface text, body paragraphs, and labels.
    - **Numbers & Telemetry**: Geist Mono with tabular figures (`font-family: 'Geist Mono', monospace; font-variant-numeric: tabular-nums;`) for all counts, latencies, dates, limits, scores, and pricing amounts.
+
