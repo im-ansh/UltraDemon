@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "ultrasearch-api"
+version = "1.0.0"
+description = "Ultra-fast web search API & MCP server for AI agents"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+keywords = ["search", "api", "mcp", "ai", "agents", "llm", "websearch"]
+
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "httpx>=0.27.0",
+    "pydantic>=2.0.0",
+    "redis>=5.0.0",
+    "python-dotenv>=1.0.0",
+    "aiohttp>=3.9.0",        # for SSE transport
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "httpx>=0.27.0",         # for TestClient
+    "black>=24.0.0",
+    "ruff>=0.4.0",
+]
+
+[project.scripts]
+ultrasearch-api    = "ultrasearch_api.src.api.server:main"
+ultrasearch-mcp    = "ultrasearch_api.src.mcp.server:main"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
