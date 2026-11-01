@@ -1,7 +1,9 @@
 // UltraSearch — Developer Console & Landing Page UI
 // High-performance, reactive developer platform served directly from Cloudflare Edge.
 // Theme: Light, Pure White & Monochrome. Zero gradients, zero purple/pink.
-// Typography: Michelangelus Bold Italic (Serif), Geist (Sans), Geist Mono (Numbers).
+// Typography: Michelangelus Bold Italic (Uploaded Font Embedded via WOFF2 Data URI), Geist (Sans), Geist Mono (Numbers).
+
+import { MICHELANGELUS_BOLD_ITALIC_WOFF2_B64, MICHELANGELUS_REGULAR_WOFF2_B64 } from './font-data';
 
 export function renderLandingPage(origin: string, supabaseUrl: string, supabaseAnonKey: string): string {
   return `<!DOCTYPE html>
@@ -16,10 +18,10 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Fonts: Geist Sans, Geist Mono & Editorial Serif fallback for Michelangelus -->
+  <!-- Fonts: Geist Sans & Geist Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@300;400;500;600;700;800&family=Newsreader:ital,opsz,wght@1,6..72,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -31,7 +33,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         extend: {
           fontFamily: {
             sans: ['"Geist"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
-            serif: ['"Michelangelus"', '"Newsreader"', '"Cormorant Garamond"', '"Playfair Display"', 'Georgia', 'serif'],
+            serif: ['"Michelangelus"', 'serif'],
             mono: ['"Geist Mono"', '"JetBrains Mono"', 'monospace'],
             num: ['"Geist Mono"', 'monospace'],
           },
@@ -56,21 +58,39 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   </script>
 
   <style>
-    /* System & web @font-face for Michelangelus */
+    /* Direct Data-URI Embedded WOFF2 of the uploaded Michelangelus font */
     @font-face {
       font-family: 'Michelangelus';
-      src: local('Michelangelus-BoldItalic'), local('Michelangelus Bold Italic'), local('Michelangelus lowercaseRegularItalic'), local('Michelangelus'),
-           url('/fonts/Michelangelus-BoldItalic.ttf') format('truetype'),
-           url('https://fonts.cdnfonts.com/s/97960/Michelangelus.woff') format('woff');
+      src: url('data:font/woff2;base64,${MICHELANGELUS_BOLD_ITALIC_WOFF2_B64}') format('woff2');
       font-weight: 700;
       font-style: italic;
       font-display: swap;
     }
     @font-face {
       font-family: 'Michelangelus';
-      src: local('Michelangelus-Regular'), local('Michelangelus'),
-           url('https://fonts.cdnfonts.com/s/97960/Michelangelus.woff') format('woff');
+      src: url('data:font/woff2;base64,${MICHELANGELUS_BOLD_ITALIC_WOFF2_B64}') format('woff2');
+      font-weight: 600;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Michelangelus';
+      src: url('data:font/woff2;base64,${MICHELANGELUS_BOLD_ITALIC_WOFF2_B64}') format('woff2');
       font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Michelangelus';
+      src: url('data:font/woff2;base64,${MICHELANGELUS_REGULAR_WOFF2_B64}') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Michelangelus';
+      src: url('data:font/woff2;base64,${MICHELANGELUS_BOLD_ITALIC_WOFF2_B64}') format('woff2');
+      font-weight: 700;
       font-style: normal;
       font-display: swap;
     }
