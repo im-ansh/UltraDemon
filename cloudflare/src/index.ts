@@ -13,6 +13,7 @@ import { mcpRouter }     from './routes/mcp';
 import { crawlerRouter } from './routes/crawler';
 import { openapiRouter } from './routes/openapi';
 import { renderLandingPage } from './ui/landing';
+import { MICHELANGELUS_BOLD_ITALIC_B64 } from './ui/font';
 import { processCrawlQueue } from './lib/crawler';
 
 // Re-export Durable Object (required by Cloudflare runtime)
@@ -79,6 +80,22 @@ app.get('/docs', (c) => {
 
 // Health check
 app.get('/health', c => c.json({ status: 'ok', ts: new Date().toISOString() }));
+
+// Serve custom Michelangelus font directly from edge
+app.get('/fonts/Michelangelus-BoldItalic.ttf', () => {
+  const binaryString = atob(MICHELANGELUS_BOLD_ITALIC_B64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return new Response(bytes.buffer, {
+    headers: {
+      'Content-Type': 'font/ttf',
+      'Cache-Control': 'public, max-age=31536000, immutable',
+      'Access-Control-Allow-Origin': '*',
+    },
+  });
+});
 
 // Plans (public)
 app.get('/v1/plans', async (c) => {
