@@ -11,6 +11,8 @@ import { searchRouter }  from './routes/search';
 import { keysRouter }    from './routes/keys';
 import { mcpRouter }     from './routes/mcp';
 import { crawlerRouter } from './routes/crawler';
+import { openapiRouter } from './routes/openapi';
+import { renderLandingPage } from './ui/landing';
 import { processCrawlQueue } from './lib/crawler';
 
 // Re-export Durable Object (required by Cloudflare runtime)
@@ -34,16 +36,48 @@ app.use('*', prettyJSON());
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 
-// Health & System Info
-app.get('/', c => c.json({
-  name:    c.env.APP_NAME || 'UltraSearch API',
-  version: c.env.APP_VERSION || '1.0.0',
-  engine:  'Autonomous SQLite FTS5 BM25 Edge Search Index',
-  status:  'operational',
-  mcp:     `${new URL(c.req.url).origin}/mcp`,
-  docs:    'https://github.com/im-ansh/Ultrademon',
-}));
+// Landing Page & Developer Platform UI
+app.get('/', (c) => {
+  const accept = c.req.header('accept') || '';
+  const origin = new URL(c.req.url).origin;
 
+  // Serve landing page and console to browsers
+  if (accept.includes('text/html') || !accept.includes('application/json')) {
+    return c.html(renderLandingPage(origin));
+  }
+
+  // Fallback to JSON API info for curl / programmatic requests
+  return c.json({
+    name:        c.env.APP_NAME || 'UltraSearch API',
+    version:     c.env.APP_VERSION || '1.0.0',
+    engine:      'Autonomous SQLite FTS5 BM25 Edge Search Index',
+    status:      'operational',
+    web_console: origin,
+    endpoints: {
+      search:     `${origin}/v1/search`,
+      keys:       `${origin}/v1/keys`,
+      crawler:    `${origin}/v1/crawl`,
+      stats:      `${origin}/v1/crawler/stats`,
+      mcp:        `${origin}/mcp`,
+      openapi:    `${origin}/openapi.json`,
+      tools:      `${origin}/v1/tools`,
+    },
+    docs: 'https://github.com/im-ansh/UltraDemon',
+  });
+});
+
+// Alias for direct console access
+app.get('/console', (c) => {
+  const origin = new URL(c.req.url).origin;
+  return c.html(renderLandingPage(origin));
+});
+
+app.get('/docs', (c) => {
+  const origin = new URL(c.req.url).origin;
+  return c.html(renderLandingPage(origin));
+});
+
+// Health check
 app.get('/health', c => c.json({ status: 'ok', ts: new Date().toISOString() }));
 
 // Plans (public)
@@ -60,9 +94,24 @@ app.route('/v1/keys',   keysRouter);
 app.route('/v1/usage',  keysRouter);
 app.route('/v1',        crawlerRouter);
 app.route('/mcp',       mcpRouter);
+app.route('/',          openapiRouter); // /openapi.json and /v1/tools
 
 // 404 handler
-app.notFound(c => c.json({ error: 'Endpoint not found', available_endpoints: ['/v1/search', '/v1/keys', '/v1/crawl', '/v1/crawler/stats', '/mcp'] }, 404));
+app.notFound(c => c.json({
+  error: 'Endpoint not found',
+  available_endpoints: [
+    '/',
+    '/console',
+    '/v1/search',
+    '/v1/keys',
+    '/v1/usage',
+    '/v1/crawl',
+    '/v1/crawler/stats',
+    '/mcp',
+    '/openapi.json',
+    '/v1/tools'
+  ]
+}, 404));
 
 // 500 handler
 app.onError((err, c) => {
@@ -75,7 +124,7 @@ app.onError((err, c) => {
 export default {
   fetch: app.fetch,
 
-  // Scheduled background crawler job (e.g. every 15-30 mins)
+  // Scheduled background crawler job (every 15 mins)
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
     console.log(`[Crawler Cron] Running scheduled crawler tick at ${new Date(event.scheduledTime).toISOString()}`);
     ctx.waitUntil(processCrawlQueue(env, 15));
