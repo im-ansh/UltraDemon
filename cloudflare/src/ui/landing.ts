@@ -188,15 +188,19 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       }
     }
 
-    /* Scroll-reveal animations */
+    /* Scroll-reveal animations - safe fallback so page is NEVER blank */
     .reveal-on-scroll {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .reveal-on-scroll.is-revealed {
       opacity: 1;
       transform: translateY(0);
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-ready .reveal-on-scroll:not(.is-revealed):not(#overview) {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    .reveal-ready .reveal-on-scroll.is-revealed {
+      opacity: 1 !important;
+      transform: translateY(0) !important;
     }
 
     /* Horizontal Side-Scroll Smooth Snap Track */
@@ -229,7 +233,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-neutral-200">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
       <!-- Brand Logo with Grey Vector Spark Icon -->
-      <a href="/" class="flex items-center gap-2.5 group">
+      <a href="/" class="flex items-center gap-2.5 group flex-shrink-0">
         <div class="w-7 h-7 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:bg-black group-hover:text-white group-hover:border-black transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
@@ -239,31 +243,23 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           ultrademon
           <span class="font-serif text-xs font-bold italic text-neutral-500">engine</span>
         </span>
-        <span class="hidden sm:inline-flex items-center gap-1.5 ml-2 px-2 py-0.5 rounded-full bg-neutral-100 border border-neutral-200 text-[10px] font-num text-neutral-600">
-          <span class="w-1.5 h-1.5 rounded-full bg-neutral-900 animate-pulse"></span>
-          <span>D1 Edge Operational</span>
-        </span>
       </a>
 
-      <!-- Desktop Nav Links -->
-      <nav class="hidden md:flex items-center gap-6 text-xs font-medium text-neutral-600">
-        <a href="#overview" class="hover:text-black transition">Overview</a>
-        <a href="#sidescroll" class="hover:text-black transition">Architecture</a>
-        <a href="#memory" class="hover:text-black transition flex items-center gap-1">
+      <!-- Minimal Essential Nav Links -->
+      <nav class="hidden md:flex items-center gap-8 text-xs font-medium text-neutral-600">
+        <a href="#memory" class="hover:text-black transition flex items-center gap-1.5">
           <span>Memory</span>
-          <span class="font-num text-[9px] bg-neutral-100 text-neutral-900 border border-neutral-200 px-1 py-0.2 rounded font-bold">&lt;15ms</span>
+          <span class="font-num text-[9px] bg-neutral-100 text-neutral-800 border border-neutral-200 px-1 py-0.2 rounded font-semibold">&lt;15ms</span>
         </a>
         <a href="#search" class="hover:text-black transition">Search</a>
         <a href="#benchmarks" class="hover:text-black transition">Benchmarks</a>
-        <a href="#usecases" class="hover:text-black transition">Use Cases</a>
-        <a href="#integrations" class="hover:text-black transition">Integrations</a>
         <a href="#pricing" class="hover:text-black transition">Pricing</a>
       </nav>
 
       <!-- Nav Auth Buttons -->
-      <div class="flex items-center gap-2.5">
-        <div id="navAuthLoggedOut" class="flex items-center gap-2">
-          <a href="/login" class="px-3 py-1.5 text-xs font-medium text-neutral-700 hover:text-black transition cursor-pointer">
+      <div class="flex items-center gap-2.5 flex-shrink-0">
+        <div id="navAuthLoggedOut" class="flex items-center gap-3">
+          <a href="/login" class="px-2.5 py-1.5 text-xs font-medium text-neutral-600 hover:text-black transition cursor-pointer">
             Sign In
           </a>
           <a href="/signup" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition shadow-xs cursor-pointer">
@@ -1780,6 +1776,10 @@ curl "${origin}/v1/memory/context?q=preference" \\
       supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }
 
+    function scrollToConsole() {
+      document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
+    }
+
     function openAuthModal(mode) {
       currentAuthMode = mode;
       switchAuthMode(mode);
@@ -2209,7 +2209,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
           '<td class=\"py-2 font-mono text-neutral-600\">' + m.container_tag + '</td>' +
           '<td class=\"py-2\"><span class=\"px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-800 text-[10px] uppercase font-semibold\">' + m.memory_type + '</span></td>' +
           '<td class=\"py-2 text-neutral-900 truncate max-w-xs font-sans\">' + (m.title || m.content) + '</td>' +
-          '<td class=\"py-2 text-right font-sans\"><button onclick=\"handleDeleteMemory(\\'' + m.memory_id + '\\')\" class=\"text-neutral-500 hover:text-black font-semibold cursor-pointer\">Delete</button></td>' +
+          '<td class=\"py-2 text-right font-sans\"><button data-id=\"' + m.memory_id + '\" onclick=\"handleDeleteMemory(this.dataset.id)\" class=\"text-neutral-500 hover:text-black font-semibold cursor-pointer\">Delete</button></td>' +
         '</tr>'
       ).join('');
     }
@@ -2243,15 +2243,15 @@ curl "${origin}/v1/memory/context?q=preference" \\
       if (!query) return;
 
       if (!currentUser) {
-        resultsDiv.innerHTML = '<div class=\"p-6 rounded-xl bg-neutral-50 border border-neutral-200 text-center space-y-2\"><div class=\"w-8 h-8 mx-auto rounded-full bg-neutral-200 flex items-center justify-center text-neutral-600\"><svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\" ry=\"2\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg></div><div class=\"text-xs font-bold text-neutral-950\">Authentication Required</div><p class=\"text-[11px] text-neutral-500\">Please log in or sign up before querying the index.</p><button onclick=\"openAuthModal(\\'signin\\')\" class=\"mt-2 px-3 py-1.5 text-xs font-semibold rounded bg-black text-white cursor-pointer\">Sign In</button></div>';
+        resultsDiv.innerHTML = '<div class=\"p-6 rounded-xl bg-neutral-50 border border-neutral-200 text-center space-y-2\"><div class=\"w-8 h-8 mx-auto rounded-full bg-neutral-200 flex items-center justify-center text-neutral-600\"><svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\" ry=\"2\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg></div><div class=\"text-xs font-bold text-neutral-950\">Authentication Required</div><p class=\"text-[11px] text-neutral-500\">Please log in or sign up before querying the index.</p><button data-mode=\"signin\" onclick=\"openAuthModal(this.dataset.mode)\" class=\"mt-2 px-3 py-1.5 text-xs font-semibold rounded bg-black text-white cursor-pointer\">Sign In</button></div>';
         openAuthModal('signin');
         return;
       }
 
       const apiKey = getActiveKey();
       if (!apiKey) {
-        resultsDiv.innerHTML = '<div class=\"p-6 rounded-xl bg-neutral-50 border border-neutral-200 text-center space-y-2\"><div class=\"w-8 h-8 mx-auto rounded-full bg-neutral-200 flex items-center justify-center text-neutral-600\"><svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5-1.5 2-2z\"/><circle cx=\"17.5\" cy=\"6.5\" r=\"1.5\"/></svg></div><div class=\"text-xs font-bold text-neutral-950\">API Key Required</div><p class=\"text-[11px] text-neutral-500\">Generate an API key in the Developer Console first.</p><button onclick=\"document.getElementById(\\'console\\').scrollIntoView({behavior:\\'smooth\\'})\" class=\"mt-2 px-3 py-1.5 text-xs font-semibold rounded bg-black text-white cursor-pointer\">Generate Key ↓</button></div>';
-        document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
+        resultsDiv.innerHTML = '<div class=\"p-6 rounded-xl bg-neutral-50 border border-neutral-200 text-center space-y-2\"><div class=\"w-8 h-8 mx-auto rounded-full bg-neutral-200 flex items-center justify-center text-neutral-600\"><svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5-1.5 2-2z\"/><circle cx=\"17.5\" cy=\"6.5\" r=\"1.5\"/></svg></div><div class=\"text-xs font-bold text-neutral-950\">API Key Required</div><p class=\"text-[11px] text-neutral-500\">Generate an API key in the Developer Console first.</p><button onclick=\"scrollToConsole()\" class=\"mt-2 px-3 py-1.5 text-xs font-semibold rounded bg-black text-white cursor-pointer\">Generate Key &darr;</button></div>';
+        scrollToConsole();
         return;
       }
 
@@ -2384,12 +2384,12 @@ curl "${origin}/v1/memory/context?q=preference" \\
         return '<tr class=\"hover:bg-neutral-50\">' +
           '<td class=\"py-2 font-mono text-neutral-900\">' +
             '<span class=\"truncate max-w-[140px] inline-block\">' + (k.plain_key || 'Key: ' + k.key_id) + '</span>' +
-            (k.plain_key ? ' <button onclick=\"copyToClipboard(\\'' + k.plain_key + '\\')\" class=\"text-neutral-400 hover:text-black cursor-pointer inline-flex items-center ml-1\"><svg class=\"w-3 h-3\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\" ry=\"2\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"/></svg></button>' : '') +
+            (k.plain_key ? ' <button data-key=\"' + k.plain_key + '\" onclick=\"copyToClipboard(this.dataset.key)\" class=\"text-neutral-400 hover:text-black cursor-pointer inline-flex items-center ml-1\"><svg class=\"w-3 h-3\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\" ry=\"2\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"/></svg></button>' : '') +
           '</td>' +
           '<td class=\"py-2\">' + scopeBadge + '</td>' +
           '<td class=\"py-2\"><span class=\"px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-800 text-[10px] uppercase font-semibold\">' + k.plan + '</span></td>' +
           '<td class=\"py-2 text-neutral-600\">' + (k.label || 'Key') + '</td>' +
-          '<td class=\"py-2 text-right\"><button onclick=\"revokeKey(\\'' + (k.plain_key || k.key_id) + '\\', ' + idx + ')\" class=\"text-neutral-500 hover:text-black font-semibold cursor-pointer\">Revoke</button></td>' +
+          '<td class=\"py-2 text-right\"><button data-key=\"' + (k.plain_key || k.key_id) + '\" data-idx=\"' + idx + '\" onclick=\"revokeKey(this.dataset.key, parseInt(this.dataset.idx, 10))\" class=\"text-neutral-500 hover:text-black font-semibold cursor-pointer\">Revoke</button></td>' +
         '</tr>';
       }).join('');
     }
@@ -2542,12 +2542,19 @@ curl "${origin}/v1/memory/context?q=preference" \\
         });
       }, { threshold: 0.08 });
 
-      window.addEventListener('DOMContentLoaded', () => {
+      function bind() {
+        document.body.classList.add('reveal-ready');
         document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
-      });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bind);
+      } else {
+        bind();
+      }
     })();
 
-    window.addEventListener('DOMContentLoaded', async () => {
+    async function initAuth() {
       // 1. Check local edge session
       const token = getAuthToken();
       if (token) {
@@ -2581,7 +2588,13 @@ curl "${origin}/v1/memory/context?q=preference" \\
       }
 
       updateAuthUI(null);
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', initAuth);
+    } else {
+      initAuth();
+    }
   </script>
 </body>
 </html>`;
