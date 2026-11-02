@@ -156,6 +156,58 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       border-radius: 4px;
     }
 
+    /* Custom Inverted Cursor (Cursor Hijack with Difference Blend) */
+    .custom-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 14px;
+      height: 14px;
+      background-color: #ffffff;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      mix-blend-mode: difference;
+      transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1), height 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.08s ease-out, opacity 0.2s ease;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+    }
+    .custom-cursor.active {
+      opacity: 1;
+    }
+    .custom-cursor.hovered {
+      width: 48px;
+      height: 48px;
+    }
+    .custom-cursor.clicked {
+      transform: translate(-50%, -50%) scale(0.75);
+    }
+    @media (pointer: coarse) {
+      .custom-cursor {
+        display: none !important;
+      }
+    }
+
+    /* Scroll-reveal animations */
+    .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-on-scroll.is-revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Horizontal Side-Scroll Smooth Snap Track */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
     /* Minimal Grey Icon Default Styles */
     .icon-grey {
       display: inline-block;
@@ -170,158 +222,119 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 </head>
 <body class="min-h-screen bg-white text-neutral-950 antialiased selection:bg-black selection:text-white">
 
-  <!-- Desktop Minimalist Left Sidebar + Main Content Layout -->
-  <div class="min-h-screen flex flex-col lg:flex-row">
-    
-    <!-- Left Navigation Bar (Supermemory / Notion / Editorial Style) -->
-    <aside class="w-full lg:w-64 lg:min-h-screen lg:fixed lg:top-0 lg:left-0 border-b lg:border-b-0 lg:border-r border-neutral-200 bg-white/95 backdrop-blur-md z-40 flex flex-col justify-between p-6">
-      <div class="space-y-6">
-        <!-- Brand Logo with Grey Vector Spark Icon -->
-        <a href="/" class="flex items-center gap-2.5 group">
-          <div class="w-7 h-7 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:bg-black group-hover:text-white group-hover:border-black transition">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-            </svg>
-          </div>
-          <span class="font-extrabold text-base tracking-tight text-neutral-950 flex items-center gap-1">
-            ultrademon
-            <span class="font-serif text-xs font-bold italic text-neutral-500">engine</span>
-          </span>
-        </a>
+  <!-- Custom Inverted Cursor element (Cursor Hijack) -->
+  <div id="customCursor" class="custom-cursor"></div>
 
-        <!-- Status Tag with Minimal Pulse Indicator -->
-        <div class="flex items-center gap-2 text-[11px] text-neutral-500 font-num">
-          <span class="w-2 h-2 rounded-full bg-neutral-900 animate-pulse"></span>
-          <span>D1 Edge Operational</span>
+  <!-- Top Minimalist Centered Header -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-neutral-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <!-- Brand Logo with Grey Vector Spark Icon -->
+      <a href="/" class="flex items-center gap-2.5 group">
+        <div class="w-7 h-7 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:bg-black group-hover:text-white group-hover:border-black transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
         </div>
+        <span class="font-extrabold text-base tracking-tight text-neutral-950 flex items-center gap-1">
+          ultrademon
+          <span class="font-serif text-xs font-bold italic text-neutral-500">engine</span>
+        </span>
+        <span class="hidden sm:inline-flex items-center gap-1.5 ml-2 px-2 py-0.5 rounded-full bg-neutral-100 border border-neutral-200 text-[10px] font-num text-neutral-600">
+          <span class="w-1.5 h-1.5 rounded-full bg-neutral-900 animate-pulse"></span>
+          <span>D1 Edge Operational</span>
+        </span>
+      </a>
 
-        <!-- Sidebar Navigation Links with Minimalist Grey SVGs -->
-        <nav class="flex flex-col space-y-1 text-xs font-medium text-neutral-600">
-          <a href="#overview" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
-            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            <span>Overview</span>
-          </a>
-          <a href="#memory" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
-            <div class="flex items-center gap-2.5">
-              <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/><path d="M12 2v20"/><path d="M8 8h8"/><path d="M7 13h10"/><path d="M9 18h6"/></svg>
-              <span>UltraMemory</span>
-            </div>
-            <span class="font-num text-[10px] bg-neutral-100 text-neutral-900 border border-neutral-200 px-1.5 py-0.2 rounded font-bold">&lt;15ms</span>
-          </a>
-          <a href="#search" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
-            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <span>UltraSearch</span>
-          </a>
-          <a href="#benchmarks" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
-            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-            <span>Benchmarks</span>
-          </a>
-          <a href="#usecases" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
-            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
-            <span>Use Cases</span>
-          </a>
-          <a href="#build" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
-            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
-            <span>What to Build</span>
-          </a>
-          <a href="#console" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
-            <div class="flex items-center gap-2.5">
-              <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
-              <span>API Keys</span>
-            </div>
-            <span class="font-num text-[10px] text-neutral-400">D1</span>
-          </a>
-          <a href="#crawler" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
-            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-            <span>Crawler</span>
-          </a>
-          <a href="#integrations" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
-            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
-            <span>Integrations</span>
-          </a>
-          <a href="#pricing" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
-            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            <span>Pricing</span>
-          </a>
-        </nav>
-      </div>
+      <!-- Desktop Nav Links -->
+      <nav class="hidden md:flex items-center gap-6 text-xs font-medium text-neutral-600">
+        <a href="#overview" class="hover:text-black transition">Overview</a>
+        <a href="#sidescroll" class="hover:text-black transition">Architecture</a>
+        <a href="#memory" class="hover:text-black transition flex items-center gap-1">
+          <span>Memory</span>
+          <span class="font-num text-[9px] bg-neutral-100 text-neutral-900 border border-neutral-200 px-1 py-0.2 rounded font-bold">&lt;15ms</span>
+        </a>
+        <a href="#search" class="hover:text-black transition">Search</a>
+        <a href="#benchmarks" class="hover:text-black transition">Benchmarks</a>
+        <a href="#usecases" class="hover:text-black transition">Use Cases</a>
+        <a href="#integrations" class="hover:text-black transition">Integrations</a>
+        <a href="#pricing" class="hover:text-black transition">Pricing</a>
+      </nav>
 
-      <!-- Auth & Account Status in Left Sidebar -->
-      <div class="pt-6 border-t border-neutral-200 space-y-3">
-        <div id="sideAuthLoggedOut" class="space-y-2">
-          <a href="/login" class="block w-full py-2 text-center text-xs font-semibold rounded-lg text-neutral-800 border border-neutral-200 hover:bg-neutral-100 transition cursor-pointer">
+      <!-- Nav Auth Buttons -->
+      <div class="flex items-center gap-2.5">
+        <div id="navAuthLoggedOut" class="flex items-center gap-2">
+          <a href="/login" class="px-3 py-1.5 text-xs font-medium text-neutral-700 hover:text-black transition cursor-pointer">
             Sign In
           </a>
-          <a href="/signup" class="block w-full py-2 text-center text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition cursor-pointer shadow-xs">
+          <a href="/signup" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition shadow-xs cursor-pointer">
             Create Account
           </a>
         </div>
-
-        <div id="sideAuthLoggedIn" class="hidden space-y-2">
-          <div class="p-2.5 rounded-xl bg-neutral-100 border border-neutral-200 text-xs">
-            <div class="flex items-center gap-1.5 text-[10px] text-neutral-500 uppercase tracking-wider font-bold">
-              <svg class="w-3 h-3 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              <span>Signed In</span>
-            </div>
-            <div id="sideUserEmail" class="font-num font-semibold text-neutral-950 truncate mt-0.5"></div>
+        <div id="navAuthLoggedIn" class="hidden flex items-center gap-2">
+          <div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-neutral-100 border border-neutral-200 text-xs font-num text-neutral-700">
+            <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span id="navUserEmail" class="font-medium truncate max-w-[130px]"></span>
           </div>
-          <a href="/app" class="block w-full py-2 text-center text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition cursor-pointer shadow-xs">
-            Launch Workspace
+          <a href="/app" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition shadow-xs flex items-center gap-1.5 cursor-pointer">
+            <span>Workspace</span>
+            <svg class="w-3 h-3 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
-          <button onclick="handleSignOut()" class="w-full py-1.5 text-xs text-neutral-600 hover:text-black border border-neutral-200 rounded-lg hover:bg-neutral-50 transition cursor-pointer">
+          <button onclick="handleSignOut()" class="px-2.5 py-1.5 text-xs text-neutral-500 hover:text-black transition cursor-pointer">
             Sign Out
           </button>
         </div>
-
-        <div class="text-[10px] text-neutral-400 font-num">
-          Cloudflare Edge · 330+ Cities
-        </div>
       </div>
-    </aside>
+    </div>
+  </header>
 
-    <!-- Main Editorial / Interactive Container -->
-    <main class="flex-1 lg:ml-64 p-6 sm:p-12 lg:p-16 max-w-4xl">
-      
+  <!-- Centered Website Main Container -->
+  <main class="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-20">
+    
+    <!-- Hero Section (Centered Conventional Layout) -->
+    <section id="overview" class="text-center mb-16 reveal-on-scroll">
       <!-- Top Release Pill with Clean Monospaced Minimalist Badge -->
-      <section id="overview" class="mb-12">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-neutral-200 bg-neutral-50 text-xs text-neutral-800 mb-6 font-num">
-          <span class="w-1.5 h-1.5 rounded-full bg-neutral-900"></span>
-          <span>ANNOUNCING ULTRADEMON 2.0</span>
-          <span class="text-neutral-300">/</span>
-          <span class="text-neutral-500 font-sans">SOVEREIGN EDGE PLATFORM</span>
-        </div>
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-neutral-200 bg-neutral-50 text-xs text-neutral-800 mb-6 font-num">
+        <span class="w-1.5 h-1.5 rounded-full bg-neutral-900"></span>
+        <span>ANNOUNCING ULTRADEMON 2.0</span>
+        <span class="text-neutral-300">/</span>
+        <span class="text-neutral-500 font-sans">SOVEREIGN EDGE PLATFORM</span>
+      </div>
 
-        <!-- Supermemory-inspired lowercase editorial hero headline -->
-        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-neutral-950 mb-6 leading-[1.12]">
-          ultrademon is building the <span class="font-serif font-bold italic text-neutral-950 underline decoration-neutral-300 decoration-2 underline-offset-8">sovereign engine</span> for web search, agent memory, and continual context.
-        </h1>
+      <!-- Supermemory-inspired lowercase editorial hero headline -->
+      <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-neutral-950 mb-6 leading-[1.12] max-w-3xl mx-auto">
+        ultrademon is building the <span class="font-serif font-bold italic text-neutral-950 underline decoration-neutral-300 decoration-2 underline-offset-8">sovereign engine</span> for web search, agent memory, and continual context.
+      </h1>
 
-        <!-- Author / Timestamp meta line -->
-        <div class="flex items-center gap-3 text-xs text-neutral-500 font-num mb-8 pb-4 border-b border-neutral-100">
-          <span class="font-semibold text-neutral-900">Ansh</span>
-          <span>·</span>
-          <span>November 2026</span>
-          <span>·</span>
-          <span>Cloudflare Workers + D1 SQLite FTS5</span>
-        </div>
+      <p class="text-sm sm:text-base text-neutral-600 max-w-2xl mx-auto mb-8 font-sans leading-relaxed">
+        Engineered on Cloudflare Workers edge nodes with D1 SQLite FTS5. Zero third-party LLM latency, zero cloud markups, and sub-15ms BM25 memory recall for autonomous AI agent fleets.
+      </p>
 
-        <!-- Action Row -->
-        <div class="flex flex-wrap items-center gap-3 mb-10">
-          <button onclick="handleProvisionKeyClick()" class="px-5 py-2.5 rounded-xl bg-black text-white hover:bg-neutral-800 text-xs font-semibold transition cursor-pointer shadow-xs flex items-center gap-2">
-            <span>Get Started Free</span>
-            <svg class="w-3.5 h-3.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
-          <a href="/app" class="px-4 py-2.5 rounded-xl border border-neutral-300 hover:bg-neutral-100 text-neutral-900 text-xs font-semibold transition flex items-center gap-2">
-            <svg class="w-3.5 h-3.5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M14 9l3 3-3 3"/></svg>
-            <span>Launch App</span>
-          </a>
-          <a href="/openapi.json" target="_blank" class="px-4 py-2.5 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-neutral-900 text-xs font-semibold transition flex items-center gap-1.5">
-            <span class="font-num">/openapi.json</span>
-          </a>
-          <a href="#benchmarks" class="px-4 py-2.5 text-xs text-neutral-600 hover:text-black transition">
-            View Latency Benchmark
-          </a>
-        </div>
+      <!-- Author / Timestamp meta line -->
+      <div class="flex items-center justify-center gap-3 text-xs text-neutral-500 font-num mb-8 pb-4 border-b border-neutral-100 max-w-xl mx-auto">
+        <span class="font-semibold text-neutral-900">Ansh</span>
+        <span>·</span>
+        <span>November 2026</span>
+        <span>·</span>
+        <span>Cloudflare Workers + D1 SQLite FTS5</span>
+      </div>
+
+      <!-- Action Row -->
+      <div class="flex flex-wrap items-center justify-center gap-3 mb-12">
+        <button onclick="handleProvisionKeyClick()" class="px-5 py-2.5 rounded-xl bg-black text-white hover:bg-neutral-800 text-xs font-semibold transition cursor-pointer shadow-xs flex items-center gap-2">
+          <span>Get Started Free</span>
+          <svg class="w-3.5 h-3.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <a href="/app" class="px-4 py-2.5 rounded-xl border border-neutral-300 hover:bg-neutral-100 text-neutral-900 text-xs font-semibold transition flex items-center gap-2 cursor-pointer">
+          <svg class="w-3.5 h-3.5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M14 9l3 3-3 3"/></svg>
+          <span>Launch Workspace</span>
+        </a>
+        <a href="/openapi.json" target="_blank" class="px-4 py-2.5 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-neutral-900 text-xs font-semibold transition flex items-center gap-1.5">
+          <span class="font-num">/openapi.json</span>
+        </a>
+        <a href="#benchmarks" class="px-4 py-2.5 text-xs text-neutral-600 hover:text-black transition">
+          View Latency Benchmark
+        </a>
+      </div>
 
         <!-- Minimalist System Architecture Flow Diagram with Grey SVGs -->
         <div class="card-clean p-6 rounded-2xl mb-12 bg-neutral-50/50">
@@ -376,7 +389,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </section>
 
       <!-- Three Pillars Section with Grey Minimalist SVGs -->
-      <section class="mb-14">
+      <section class="mb-14 reveal-on-scroll">
         <h2 class="text-xs font-semibold uppercase tracking-wider text-neutral-500 font-num mb-6">Core Capabilities</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="card-clean p-5 rounded-xl">
@@ -409,8 +422,143 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
       </section>
 
+      <!-- Interactive Horizontal Side-Scroll Architecture Showcase -->
+      <section id="sidescroll" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
+          <div>
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">The Architecture of UltraSpeed</div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
+              Edge Capabilities &amp; <span class="font-serif font-bold italic text-black">Execution Flow</span>
+            </h2>
+            <p class="text-xs text-neutral-600 mt-1">
+              Interactive horizontal architecture rail. Slide through our edge-native stack.
+            </p>
+          </div>
+          <!-- Side-scroll next/prev controls -->
+          <div class="flex items-center gap-2">
+            <button onclick="scrollFeatureTrack(-1)" class="p-2 rounded-lg border border-neutral-300 hover:border-black hover:bg-neutral-100 transition cursor-pointer text-neutral-700 hover:text-black" title="Scroll Left">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button onclick="scrollFeatureTrack(1)" class="p-2 rounded-lg border border-neutral-300 hover:border-black hover:bg-neutral-100 transition cursor-pointer text-neutral-700 hover:text-black" title="Scroll Right">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Horizontal Scroll Track -->
+        <div id="featureScrollTrack" class="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth pb-3 snap-x snap-mandatory">
+          <!-- Card 1 -->
+          <div class="min-w-[280px] sm:min-w-[320px] max-w-[320px] snap-start card-clean p-6 rounded-2xl flex flex-col justify-between bg-white border border-neutral-200">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/><path d="M12 2v20"/><path d="M8 8h8"/><path d="M7 13h10"/><path d="M9 18h6"/></svg>
+              </div>
+              <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">01 / RETRIEVAL</div>
+              <h3 class="text-base font-bold text-neutral-950 mb-2">Sub-15ms BM25 Recall</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed">
+                Direct SQLite FTS5 indices compiled on 330+ edge PoPs. Zero vector embedder overhead or remote database roundtrips.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-400">Latency</span>
+              <span class="font-bold text-neutral-900">&lt; 15ms</span>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="min-w-[280px] sm:min-w-[320px] max-w-[320px] snap-start card-clean p-6 rounded-2xl flex flex-col justify-between bg-white border border-neutral-200">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+              </div>
+              <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">02 / INGESTION</div>
+              <h3 class="text-base font-bold text-neutral-950 mb-2">Autonomous Web Crawler</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed">
+                Recursive depth crawl directly inside Cloudflare Workers. Cleans HTML, extracts markdown, and indexes pages into FTS5 in real time.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-400">Throughput</span>
+              <span class="font-bold text-neutral-900">50 pgs / sec</span>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="min-w-[280px] sm:min-w-[320px] max-w-[320px] snap-start card-clean p-6 rounded-2xl flex flex-col justify-between bg-white border border-neutral-200">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+              </div>
+              <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">03 / NAMESPACES</div>
+              <h3 class="text-base font-bold text-neutral-950 mb-2">Agent Container Namespaces</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed">
+                Isolate memory namespaces dynamically using container_tag parameters. Partition memories by session, workspace, or agent role.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-400">Isolation</span>
+              <span class="font-bold text-neutral-900">Zero Leakage</span>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="min-w-[280px] sm:min-w-[320px] max-w-[320px] snap-start card-clean p-6 rounded-2xl flex flex-col justify-between bg-white border border-neutral-200">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+              </div>
+              <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">04 / PROTOCOL</div>
+              <h3 class="text-base font-bold text-neutral-950 mb-2">Native MCP Tool Server</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed">
+                Plug directly into Claude Desktop, Cursor, and Windsurf via Server-Sent Events (SSE). Grant your coding agents instant persistent recall.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-400">Integration</span>
+              <span class="font-bold text-neutral-900">One-Click SSE</span>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="min-w-[280px] sm:min-w-[320px] max-w-[320px] snap-start card-clean p-6 rounded-2xl flex flex-col justify-between bg-white border border-neutral-200">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+              </div>
+              <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">05 / SECURITY</div>
+              <h3 class="text-base font-bold text-neutral-950 mb-2">Scoped Keys (um_ / us_)</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed">
+                Issue scoped tokens restricted to Memory-only or Search-only operations. Protect customer privacy and limit agent blast radius.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-400">Scopes</span>
+              <span class="font-bold text-neutral-900">D1 + KV Enforced</span>
+            </div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="min-w-[280px] sm:min-w-[320px] max-w-[320px] snap-start card-clean p-6 rounded-2xl flex flex-col justify-between bg-white border border-neutral-200">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">06 / ECONOMICS</div>
+              <h3 class="text-base font-bold text-neutral-950 mb-2">90% Cost Reduction</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed">
+                Cut out embedding API costs and heavy vector database clusters. D1 SQLite edge tables scale automatically with predictable pricing.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-400">Savings</span>
+              <span class="font-bold text-neutral-900">Up to 10x</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Supermemory Latency Benchmark with Minimalist Bars & Tabular Metrics -->
-      <section id="benchmarks" class="mb-16 pt-8 border-t border-neutral-200">
+      <section id="benchmarks" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
         <div class="mb-6">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Speed &amp; Latency Benchmark</span>
           <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
@@ -481,7 +629,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </section>
 
       <!-- Live UltraMemory Interactive Playground (Grey SVGs) -->
-      <section id="memory" class="mb-16 pt-8 border-t border-neutral-200">
+      <section id="memory" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
         <div class="mb-6">
           <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-neutral-100 text-[10px] font-bold text-neutral-800 font-num mb-2">
             API #1 · ULTRAMEMORY
@@ -668,7 +816,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </section>
 
       <!-- Live UltraSearch Interactive Playground (Grey SVGs) -->
-      <section id="search" class="mb-16 pt-8 border-t border-neutral-200">
+      <section id="search" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
         <div class="mb-6">
           <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-neutral-100 text-[10px] font-bold text-neutral-800 font-num mb-2">
             API #2 · ULTRASEARCH
@@ -754,7 +902,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </section>
 
       <!-- Architectural Use Cases Section -->
-      <section id="usecases" class="mb-16 pt-8 border-t border-neutral-200">
+      <section id="usecases" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
         <div class="mb-6">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Architectural Pillars</span>
           <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
@@ -845,7 +993,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </section>
 
       <!-- What People Can Build Section -->
-      <section id="build" class="mb-16 pt-8 border-t border-neutral-200">
+      <section id="build" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
         <div class="mb-6">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Production Blueprints</span>
           <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
@@ -1032,7 +1180,7 @@ for r in res["results"]:
       </section>
 
       <!-- Developer Console & API Key Manager -->
-      <section id="console" class="mb-16 pt-8 border-t border-neutral-200">
+      <section id="console" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
         <div class="mb-6">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Unified Developer Platform</span>
           <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
@@ -1190,7 +1338,7 @@ for r in res["results"]:
       </section>
 
       <!-- Crawler Section with Grey SVGs -->
-      <section id="crawler" class="mb-16 pt-8 border-t border-neutral-200">
+      <section id="crawler" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
         <div class="mb-6">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Autonomous Ingestion</span>
           <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
@@ -1246,7 +1394,7 @@ for r in res["results"]:
       </section>
 
       <!-- Integrations & Multi-Framework SDKs -->
-      <section id="integrations" class="mb-16 pt-8 border-t border-neutral-200">
+      <section id="integrations" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
         <div class="mb-6">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Ecosystem</span>
           <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
@@ -1475,7 +1623,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
       </section>
 
       <!-- Pricing Plans with Minimalist Checkmarks -->
-      <section id="pricing" class="mb-16 pt-8 border-t border-neutral-200">
+      <section id="pricing" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
         <div class="mb-6">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Predictable Pricing</span>
           <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
@@ -1549,7 +1697,6 @@ curl "${origin}/v1/memory/context?q=preference" \\
         </div>
       </footer>
     </main>
-  </div>
 
   <!-- Auth Modal with Grey SVGs -->
   <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs hidden">
@@ -1782,37 +1929,48 @@ curl "${origin}/v1/memory/context?q=preference" \\
       }
     }
 
+    function scrollFeatureTrack(direction) {
+      const track = document.getElementById('featureScrollTrack');
+      if (track) {
+        track.scrollBy({ left: direction * 340, behavior: 'smooth' });
+      }
+    }
+
     function updateAuthUI(user) {
       currentUser = user;
-      const sideLoggedOut = document.getElementById('sideAuthLoggedOut');
-      const sideLoggedIn = document.getElementById('sideAuthLoggedIn');
-      const sideEmail = document.getElementById('sideUserEmail');
+      const navLoggedOut = document.getElementById('navAuthLoggedOut');
+      const navLoggedIn = document.getElementById('navAuthLoggedIn');
+      const navEmail = document.getElementById('navUserEmail');
       const banner = document.getElementById('authPromptBanner');
       const createKeyLocked = document.getElementById('createKeyLocked');
       const createKeyForm = document.getElementById('createKeyForm');
       const userAccountDisplay = document.getElementById('keyUserAccountDisplay');
 
       if (user) {
-        sideLoggedOut.classList.add('hidden');
-        sideLoggedIn.classList.remove('hidden');
-        sideEmail.innerText = user.email || user.id;
+        if (navLoggedOut) navLoggedOut.classList.add('hidden');
+        if (navLoggedIn) navLoggedIn.classList.remove('hidden');
+        if (navEmail) navEmail.innerText = user.email || user.id;
 
-        createKeyLocked.classList.add('hidden');
-        createKeyForm.classList.remove('hidden');
+        if (createKeyLocked) createKeyLocked.classList.add('hidden');
+        if (createKeyForm) createKeyForm.classList.remove('hidden');
         if (userAccountDisplay) userAccountDisplay.innerText = user.email || user.id;
 
-        banner.innerHTML = '<div class=\"flex items-center gap-2\"><svg class=\"w-4 h-4 text-neutral-700\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2.5\"><polyline points=\"20 6 9 17 4 12\"/></svg><div class=\"text-xs\"><span class=\"font-bold text-neutral-950\">Signed in:</span> <span class=\"text-neutral-600\">' + (user.email || user.id) + '</span></div></div><div class=\"flex items-center gap-2\"><a href=\"/app\" class=\"px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition cursor-pointer flex items-center gap-1.5 shadow-xs\"><span>Open Developer Workspace</span><svg class=\"w-3 h-3 text-neutral-300\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><path d=\"M5 12h14M12 5l7 7-7 7\"/></svg></a><button onclick=\"handleSignOut()\" class=\"px-3 py-1.5 text-xs border border-neutral-300 rounded-lg hover:bg-neutral-100 cursor-pointer\">Sign Out</button></div>';
+        if (banner) {
+          banner.innerHTML = '<div class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><div class="text-xs"><span class="font-bold text-neutral-950">Signed in:</span> <span class="text-neutral-600">' + (user.email || user.id) + '</span></div></div><div class="flex items-center gap-2"><a href="/app" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition cursor-pointer flex items-center gap-1.5 shadow-xs"><span>Open Developer Workspace</span><svg class="w-3 h-3 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a><button onclick="handleSignOut()" class="px-3 py-1.5 text-xs border border-neutral-300 rounded-lg hover:bg-neutral-100 cursor-pointer">Sign Out</button></div>';
+        }
 
         loadRemoteKeys(user.id);
         refreshStoredMemories();
       } else {
-        sideLoggedOut.classList.remove('hidden');
-        sideLoggedIn.classList.add('hidden');
+        if (navLoggedOut) navLoggedOut.classList.remove('hidden');
+        if (navLoggedIn) navLoggedIn.classList.add('hidden');
 
-        createKeyLocked.classList.remove('hidden');
-        createKeyForm.classList.add('hidden');
+        if (createKeyLocked) createKeyLocked.classList.remove('hidden');
+        if (createKeyForm) createKeyForm.classList.add('hidden');
 
-        banner.innerHTML = '<div class=\"flex items-center gap-2\"><svg class=\"w-4 h-4 text-neutral-500\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\" ry=\"2\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg><div class=\"text-xs\"><span class=\"font-bold text-neutral-950\">Authentication Required:</span> <span class=\"text-neutral-600\">Sign in or create an account to generate and manage keys.</span></div></div><div class=\"flex items-center gap-2\"><a href=\"/login\" class=\"px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 cursor-pointer\">Sign In</a><a href=\"/signup\" class=\"px-3.5 py-1.5 text-xs font-semibold rounded-lg border border-neutral-300 hover:bg-neutral-100 cursor-pointer\">Create Account</a></div>';
+        if (banner) {
+          banner.innerHTML = '<div class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><div class="text-xs"><span class="font-bold text-neutral-950">Authentication Required:</span> <span class="text-neutral-600">Sign in or create an account to generate and manage keys.</span></div></div><div class="flex items-center gap-2"><a href="/login" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 cursor-pointer">Sign In</a><a href="/signup" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg border border-neutral-300 hover:bg-neutral-100 cursor-pointer">Create Account</a></div>';
+        }
 
         renderKeysTable();
         refreshUsage();
@@ -2321,6 +2479,73 @@ curl "${origin}/v1/memory/context?q=preference" \\
         spinner.classList.add('hidden');
       }
     }
+
+    // Custom Inverted Color Cursor Hijack (Difference Blend)
+    (function initCustomCursor() {
+      const cursor = document.getElementById('customCursor');
+      if (!cursor) return;
+
+      let mouseX = -100, mouseY = -100;
+      let curX = -100, curY = -100;
+      let isVisible = false;
+
+      window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        if (!isVisible) {
+          cursor.classList.add('active');
+          curX = mouseX;
+          curY = mouseY;
+          isVisible = true;
+        }
+      });
+
+      document.addEventListener('mouseleave', () => {
+        cursor.classList.remove('active');
+        isVisible = false;
+      });
+
+      function renderCursor() {
+        if (isVisible) {
+          curX += (mouseX - curX) * 0.35;
+          curY += (mouseY - curY) * 0.35;
+          cursor.style.transform = 'translate3d(' + curX + 'px, ' + curY + 'px, 0) translate(-50%, -50%)';
+        }
+        requestAnimationFrame(renderCursor);
+      }
+      requestAnimationFrame(renderCursor);
+
+      // Interactive hover morph
+      const interactiveSelector = 'a, button, input, select, textarea, pre, .card-clean, [role="button"], code';
+      document.addEventListener('mouseover', (e) => {
+        if (e.target && e.target.closest && e.target.closest(interactiveSelector)) {
+          cursor.classList.add('hovered');
+        }
+      });
+      document.addEventListener('mouseout', (e) => {
+        if (e.target && e.target.closest && e.target.closest(interactiveSelector)) {
+          cursor.classList.remove('hovered');
+        }
+      });
+      document.addEventListener('mousedown', () => cursor.classList.add('clicked'));
+      document.addEventListener('mouseup', () => cursor.classList.remove('clicked'));
+    })();
+
+    // Scroll-reveal animations observer
+    (function initScrollReveal() {
+      if (!('IntersectionObserver' in window)) return;
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+          }
+        });
+      }, { threshold: 0.08 });
+
+      window.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+      });
+    })();
 
     window.addEventListener('DOMContentLoaded', async () => {
       // 1. Check local edge session
