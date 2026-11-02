@@ -313,6 +313,18 @@ async function handleMCPRequest(
   return err(-32601, `Method not found: ${method}`);
 }
 
+// ── HTTP GET endpoint (server inspection) ─────────────────────────────────────
+mcpRouter.get('/', (c) => c.json({
+  status: 'ok',
+  protocol: 'mcp',
+  version: SERVER_INFO.version,
+  name: SERVER_INFO.name,
+  description: SERVER_INFO.description,
+  tools_count: TOOLS.length,
+  tools: TOOLS.map(t => ({ name: t.name, description: t.description })),
+  sse_endpoint: '/mcp/sse',
+}));
+
 // ── HTTP POST endpoint (stateless) ────────────────────────────────────────────
 mcpRouter.post('/', async (c) => {
   const body = await c.req.json<Record<string, unknown>>();
