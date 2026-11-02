@@ -1455,23 +1455,6 @@ curl -X POST "${origin}/v1/memory/query" \\
           </div>
         </div>
       </section>
-            <div class="relative">
-              <pre class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-100 overflow-x-auto code-scroll"># Store memory
-curl -X POST "${origin}/v1/memory" \\
-  -H "Content-Type: application/json" \\
-  -H "X-API-Key: us_your_key_here" \\
-  -d '{"content": "Agent context", "container_tag": "agent_1"}'
-
-# Recall memory (&lt;15ms)
-curl -X POST "${origin}/v1/memory/query" \\
-  -H "Content-Type: application/json" \\
-  -H "X-API-Key: us_your_key_here" \\
-  -d '{"query": "context", "container_tag": "agent_1"}'</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <!-- Pricing Plans with Minimalist Checkmarks -->
       <section id="pricing" class="mb-16 pt-8 border-t border-neutral-200">
