@@ -239,7 +239,7 @@ curl -X POST "${origin}/v1/memory/query" \\
       <!-- Create Key Form Card -->
       <div class="card-clean p-6 rounded-2xl space-y-4">
         <h2 class="text-sm font-bold text-neutral-950">Generate New API Key</h2>
-        <form onsubmit="handleAppCreateKey(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <form onsubmit="handleAppCreateKey(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
           <div>
             <label class="block text-[11px] font-medium text-neutral-600 mb-1">Plan Tier</label>
             <select id="appKeyPlan" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 focus:outline-none focus:bg-white focus:border-black font-num">
@@ -250,8 +250,16 @@ curl -X POST "${origin}/v1/memory/query" \\
             </select>
           </div>
           <div>
+            <label class="block text-[11px] font-medium text-neutral-600 mb-1">API Function / Scope</label>
+            <select id="appKeyType" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 focus:outline-none focus:bg-white focus:border-black font-num">
+              <option value="memory" selected>UltraMemory API (um_*)</option>
+              <option value="unified">Unified API (Search + Memory)</option>
+              <option value="search">UltraSearch API (Search Only)</option>
+            </select>
+          </div>
+          <div>
             <label class="block text-[11px] font-medium text-neutral-600 mb-1">Key Label</label>
-            <input type="text" id="appKeyLabel" placeholder="e.g. Production Agent Fleet" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 focus:outline-none focus:bg-white focus:border-black" />
+            <input type="text" id="appKeyLabel" placeholder="e.g. Agent Memory Key" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 focus:outline-none focus:bg-white focus:border-black" />
           </div>
           <div class="flex items-end">
             <button type="submit" id="btnCreateKeyApp" class="w-full py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer">
@@ -284,6 +292,7 @@ curl -X POST "${origin}/v1/memory/query" \\
             <thead>
               <tr class="border-b border-neutral-200 text-neutral-500 font-num">
                 <th class="pb-2 font-medium">API Key / ID</th>
+                <th class="pb-2 font-medium">Scope</th>
                 <th class="pb-2 font-medium">Plan</th>
                 <th class="pb-2 font-medium">Label</th>
                 <th class="pb-2 font-medium">Created</th>
@@ -291,15 +300,71 @@ curl -X POST "${origin}/v1/memory/query" \\
               </tr>
             </thead>
             <tbody id="appKeysTableBody" class="divide-y divide-neutral-100 font-num">
-              <tr><td colspan="5" class="py-4 text-center text-neutral-400">Loading keys...</td></tr>
+              <tr><td colspan="6" class="py-4 text-center text-neutral-400">Loading keys...</td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- SECTION 3: ULTRAMEMORY LAB -->
+    <!-- SECTION 3: ULTRAMEMORY LAB & AGENT API STUDIO -->
     <section id="view-memory" class="space-y-6 hidden">
+      <!-- Memory API Endpoints Quick Reference Card -->
+      <div class="card-clean p-6 rounded-2xl space-y-4 bg-neutral-50/50">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-neutral-200 pb-3">
+          <div>
+            <span class="text-[10px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Autonomous Agent Long-Term Memory</span>
+            <h2 class="text-sm font-extrabold text-neutral-950 mt-0.5">UltraMemory API Reference</h2>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-num bg-neutral-200 text-neutral-800 px-2 py-0.5 rounded font-bold">&lt;15ms BM25 Edge</span>
+            <span class="text-[10px] font-num bg-neutral-900 text-white px-2 py-0.5 rounded font-bold">330+ Cities</span>
+          </div>
+        </div>
+
+        <!-- Endpoints Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+          <div class="p-3 bg-white rounded-xl border border-neutral-200 space-y-1">
+            <div class="flex items-center gap-1.5 font-bold font-mono text-[11px] text-neutral-900">
+              <span class="px-1.5 py-0.2 rounded bg-neutral-900 text-white text-[9px]">POST</span>
+              <span>/v1/memory</span>
+            </div>
+            <p class="text-[11px] text-neutral-600">Store memory, message turns, or batch array into D1 FTS5.</p>
+          </div>
+          <div class="p-3 bg-white rounded-xl border border-neutral-200 space-y-1">
+            <div class="flex items-center gap-1.5 font-bold font-mono text-[11px] text-neutral-900">
+              <span class="px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-900 text-[9px]">GET</span>
+              <span>/v1/memory/recall?q=...</span>
+            </div>
+            <p class="text-[11px] text-neutral-600">Instant BM25 recall with ranked items and LLM prompt context.</p>
+          </div>
+          <div class="p-3 bg-white rounded-xl border border-neutral-200 space-y-1">
+            <div class="flex items-center gap-1.5 font-bold font-mono text-[11px] text-neutral-900">
+              <span class="px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-900 text-[9px]">GET</span>
+              <span>/v1/memory/context?q=...</span>
+            </div>
+            <p class="text-[11px] text-neutral-600">Direct agent prompt context block for zero-overhead LLM injection.</p>
+          </div>
+        </div>
+
+        <!-- Code Snippet Box -->
+        <div class="relative">
+          <div class="flex items-center justify-between text-[11px] text-neutral-400 font-num mb-1 px-1">
+            <span>Agent Store &amp; Recall One-Liners (cURL / Python / Node)</span>
+            <button onclick="copyToClipboard(document.getElementById('memQuickSnippet').innerText)" class="hover:text-black cursor-pointer underline text-[10px]">Copy</button>
+          </div>
+          <pre id="memQuickSnippet" class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-[11px] text-neutral-100 overflow-x-auto code-scroll"># 1. Store memory from agent
+curl -X POST "${origin}/v1/memory" \\
+  -H "X-API-Key: um_your_key_here" \\
+  -H "Content-Type: application/json" \\
+  -d '{"content": "User prefers Michelangelus font and monochrome UI", "container_tag": "agent_prod"}'
+
+# 2. Recall memory in &lt;15ms
+curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
+  -H "X-API-Key: um_your_key_here"</pre>
+        </div>
+      </div>
+
       <!-- Store Memory Form -->
       <div class="card-clean p-6 rounded-2xl space-y-4">
         <div class="flex items-center justify-between">
@@ -567,6 +632,7 @@ curl -X POST "${origin}/v1/memory/query" \\
     async function handleAppCreateKey(e) {
       e.preventDefault();
       const plan = document.getElementById('appKeyPlan').value;
+      const keyType = document.getElementById('appKeyType') ? document.getElementById('appKeyType').value : 'memory';
       const label = document.getElementById('appKeyLabel').value.trim();
       const spinner = document.getElementById('spinnerCreateKeyApp');
       const token = getAuthToken();
@@ -580,7 +646,7 @@ curl -X POST "${origin}/v1/memory/query" \\
         const res = await fetch('/v1/keys', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-          body: JSON.stringify({ plan, label })
+          body: JSON.stringify({ plan, key_type: keyType, label })
         });
         const data = await res.json();
         if (data.plain_key) {
@@ -620,7 +686,7 @@ curl -X POST "${origin}/v1/memory/query" \\
       document.getElementById('metricKeys').innerText = localKeys.length;
 
       if (localKeys.length === 0) {
-        tbody.innerHTML = '<tr><td colspan=\"5\" class=\"py-4 text-center text-neutral-400\">No API keys found. Generate one above!</td></tr>';
+        tbody.innerHTML = '<tr><td colspan=\"6\" class=\"py-4 text-center text-neutral-400\">No API keys found. Generate one above!</td></tr>';
         document.getElementById('topActiveKeyLabel').innerText = 'None';
         document.getElementById('topCopyBtn').classList.add('hidden');
         return;
@@ -630,18 +696,25 @@ curl -X POST "${origin}/v1/memory/query" \\
       document.getElementById('topActiveKeyLabel').innerText = active.plain_key ? (active.plain_key.slice(0, 8) + '...') : active.key_id;
       document.getElementById('topCopyBtn').classList.remove('hidden');
 
-      tbody.innerHTML = localKeys.map((k, idx) => 
-        '<tr class=\"hover:bg-neutral-50\">' +
+      tbody.innerHTML = localKeys.map((k, idx) => {
+        const scopeBadge = k.key_type === 'memory'
+          ? '<span class=\"px-2 py-0.5 rounded bg-black text-white text-[10px] font-bold uppercase font-num\">Memory API</span>'
+          : (k.key_type === 'search'
+            ? '<span class=\"px-2 py-0.5 rounded bg-neutral-200 text-neutral-800 text-[10px] font-bold uppercase font-num\">Search API</span>'
+            : '<span class=\"px-2 py-0.5 rounded bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase font-num\">Unified API</span>');
+
+        return '<tr class=\"hover:bg-neutral-50\">' +
           '<td class=\"py-3 font-mono text-neutral-900\">' +
             '<span class=\"truncate max-w-[150px] inline-block\">' + (k.plain_key || 'Key: ' + k.key_id) + '</span>' +
             (k.plain_key ? ' <button onclick=\"copyToClipboard(\\'' + k.plain_key + '\\')\" class=\"text-neutral-400 hover:text-black cursor-pointer inline-flex items-center ml-1\"><svg class=\"w-3 h-3\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\" ry=\"2\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"/></svg></button>' : '') +
           '</td>' +
+          '<td class=\"py-3\">' + scopeBadge + '</td>' +
           '<td class=\"py-3\"><span class=\"px-2 py-0.5 rounded bg-neutral-100 text-neutral-900 text-[10px] font-bold uppercase font-num\">' + k.plan + '</span></td>' +
           '<td class=\"py-3 text-neutral-600 font-sans\">' + (k.label || 'Default') + '</td>' +
           '<td class=\"py-3 text-neutral-400\">' + new Date(k.created_at || Date.now()).toLocaleDateString() + '</td>' +
           '<td class=\"py-3 text-right\"><button onclick=\"revokeAppKey(\\'' + (k.plain_key || k.key_id) + '\\')\" class=\"text-neutral-400 hover:text-red-600 font-semibold cursor-pointer\">Revoke</button></td>' +
-        '</tr>'
-      ).join('');
+        '</tr>';
+      }).join('');
     }
 
     async function revokeAppKey(key) {
@@ -673,9 +746,11 @@ curl -X POST "${origin}/v1/memory/query" \\
           body: JSON.stringify({ content, memory_type: memoryType, container_tag: containerTag })
         });
         const data = await res.json();
-        if (data.memory) {
+        if (data.memory || data.status === 'success') {
+          const mem = data.memory || {};
+          const timeMs = data.storage_time_ms ? (' · stored in ' + data.storage_time_ms + 'ms') : '';
           alertBox.className = 'p-3 rounded-xl bg-neutral-100 border border-neutral-300 text-neutral-950 font-num text-xs';
-          alertBox.innerText = 'Stored memory ID: ' + data.memory.memory_id;
+          alertBox.innerText = 'Stored memory ID: ' + (mem.memory_id || 'saved') + timeMs;
           alertBox.classList.remove('hidden');
           document.getElementById('appMemContent').value = '';
           loadStoredMemories();
@@ -699,28 +774,34 @@ curl -X POST "${origin}/v1/memory/query" \\
       const timer = document.getElementById('appRecallTimer');
 
       const t0 = performance.now();
-      const res = await fetch('/v1/memory/query', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
-        body: JSON.stringify({ query, limit: 5 })
+      const res = await fetch('/v1/memory/recall?q=' + encodeURIComponent(query), {
+        headers: { 'X-API-Key': apiKey }
       });
       const data = await res.json();
       const duration = Math.round(performance.now() - t0);
-      timer.innerText = (data.query_time_ms || duration) + 'ms';
+      timer.innerText = (data.retrieval_time_ms || duration) + 'ms';
       timer.classList.remove('hidden');
 
       if (data.memories && data.memories.length > 0) {
-        resultsDiv.innerHTML = data.memories.map(m =>
+        let html = '';
+        if (data.context) {
+          html += '<div class=\"p-3 rounded-xl bg-neutral-900 text-neutral-100 font-mono text-[11px] mb-3\">' +
+            '<div class=\"text-neutral-400 text-[10px] uppercase font-bold mb-1\">LLM Prompt Context Injected:</div>' +
+            '<pre class=\"whitespace-pre-wrap font-mono\">' + data.context + '</pre>' +
+          '</div>';
+        }
+        html += data.memories.map(m =>
           '<div class=\"p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-xs\">' +
             '<div class=\"flex items-center justify-between text-[10px] text-neutral-500 font-num mb-1\">' +
               '<span class=\"uppercase font-bold text-neutral-900\">' + m.memory_type + '</span>' +
-              '<span>' + m.container_tag + '</span>' +
+              '<span>tag: ' + m.container_tag + ' · score: ' + (m.score || 1.0).toFixed(2) + '</span>' +
             '</div>' +
             '<p class=\"text-neutral-900 font-medium\">' + m.content + '</p>' +
           '</div>'
         ).join('');
+        resultsDiv.innerHTML = html;
       } else {
-        resultsDiv.innerHTML = '<div class=\"text-center py-3 text-neutral-400 text-xs\">No memories matching query.</div>';
+        resultsDiv.innerHTML = '<div class=\"text-center py-4 text-neutral-400 text-xs\">No memories matching query.</div>';
       }
     }
 

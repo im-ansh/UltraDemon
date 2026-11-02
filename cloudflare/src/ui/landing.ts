@@ -1096,6 +1096,14 @@ for r in res["results"]:
                 </select>
               </div>
               <div>
+                <label class="block text-[11px] font-medium text-neutral-600 mb-1">API Function / Scope</label>
+                <select id="newKeyType" class="w-full px-2.5 py-1.5 bg-neutral-50 border border-neutral-200 rounded-lg text-neutral-950 text-xs font-num focus:outline-none focus:bg-white focus:border-black transition">
+                  <option value="memory" selected>UltraMemory API (um_*)</option>
+                  <option value="unified">Unified API (Search + Memory)</option>
+                  <option value="search">UltraSearch API (Search Only)</option>
+                </select>
+              </div>
+              <div>
                 <label class="block text-[11px] font-medium text-neutral-600 mb-1">Label (Optional)</label>
                 <input 
                   type="text" 
@@ -1163,6 +1171,7 @@ for r in res["results"]:
                   <thead class="text-neutral-400 uppercase tracking-wider text-[10px] font-num">
                     <tr>
                       <th class="pb-1.5">Key</th>
+                      <th class="pb-1.5">Scope</th>
                       <th class="pb-1.5">Plan</th>
                       <th class="pb-1.5">Label</th>
                       <th class="pb-1.5 text-right">Action</th>
@@ -1170,7 +1179,7 @@ for r in res["results"]:
                   </thead>
                   <tbody id="keysTableBody" class="divide-y divide-neutral-100 font-num">
                     <tr>
-                      <td colspan="4" class="py-3 text-center text-neutral-400">Sign in to view your keys.</td>
+                      <td colspan="5" class="py-3 text-center text-neutral-400">Sign in to view your keys.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -1446,17 +1455,19 @@ console.log(results);</pre>
           <!-- cURL -->
           <div id="tabCurl" class="space-y-2 hidden">
             <div class="relative">
-              <pre class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-100 overflow-x-auto code-scroll"># Store memory
+              <pre class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-100 overflow-x-auto code-scroll"># 1. Store memory from agent (instant D1 FTS5 ingest)
 curl -X POST "${origin}/v1/memory" \\
   -H "Content-Type: application/json" \\
-  -H "X-API-Key: us_your_key_here" \\
-  -d '{"content": "Agent context", "container_tag": "agent_1"}'
+  -H "X-API-Key: um_your_key_here" \\
+  -d '{"content": "Agent context & user preference", "container_tag": "agent_1"}'
 
-# Recall memory (&lt;15ms)
-curl -X POST "${origin}/v1/memory/query" \\
-  -H "Content-Type: application/json" \\
-  -H "X-API-Key: us_your_key_here" \\
-  -d '{"query": "context", "container_tag": "agent_1"}'</pre>
+# 2. Ultrafast recall (&lt;15ms BM25 via GET)
+curl "${origin}/v1/memory/recall?q=preference&container_tag=agent_1" \\
+  -H "X-API-Key: um_your_key_here"
+
+# 3. Direct LLM prompt context injection
+curl "${origin}/v1/memory/context?q=preference" \\
+  -H "X-API-Key: um_your_key_here"</pre>
               <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
@@ -2135,6 +2146,7 @@ curl -X POST "${origin}/v1/memory/query" \\
         return;
       }
       const plan = document.getElementById('newKeyPlan').value;
+      const keyType = document.getElementById('newKeyType') ? document.getElementById('newKeyType').value : 'memory';
       const label = document.getElementById('newKeyLabel').value.trim();
       const spinner = document.getElementById('createKeySpinner');
       const submitBtn = document.getElementById('createKeyBtn');
@@ -2160,7 +2172,7 @@ curl -X POST "${origin}/v1/memory/query" \\
         const resp = await fetch('/v1/keys', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': authHeader },
-          body: JSON.stringify({ plan, label })
+          body: JSON.stringify({ plan, key_type: keyType, label })
         });
         const data = await resp.json();
 
@@ -2173,6 +2185,7 @@ curl -X POST "${origin}/v1/memory/query" \\
             plain_key: data.plain_key,
             key_id: data.key_id,
             plan: data.plan,
+            key_type: data.key_type || keyType,
             label: data.label || 'Default',
             created_at: new Date().toLocaleDateString()
           });
@@ -2194,26 +2207,33 @@ curl -X POST "${origin}/v1/memory/query" \\
     function renderKeysTable() {
       const tbody = document.getElementById('keysTableBody');
       if (!currentUser) {
-        tbody.innerHTML = '<tr><td colspan=\"4\" class=\"py-3 text-center text-neutral-400\">Sign in to view your keys.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan=\"5\" class=\"py-3 text-center text-neutral-400\">Sign in to view your keys.</td></tr>';
         return;
       }
       const keys = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
       if (keys.length === 0) {
-        tbody.innerHTML = '<tr><td colspan=\"4\" class=\"py-3 text-center text-neutral-400\">No keys generated yet.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan=\"5\" class=\"py-3 text-center text-neutral-400\">No keys generated yet.</td></tr>';
         return;
       }
 
-      tbody.innerHTML = keys.map((k, idx) => 
-        '<tr class=\"hover:bg-neutral-50\">' +
+      tbody.innerHTML = keys.map((k, idx) => {
+        const scopeBadge = k.key_type === 'memory'
+          ? '<span class=\"px-1.5 py-0.2 rounded bg-black text-white text-[9px] uppercase font-bold font-num\">Memory</span>'
+          : (k.key_type === 'search'
+            ? '<span class=\"px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-800 text-[9px] uppercase font-semibold font-num\">Search</span>'
+            : '<span class=\"px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-700 text-[9px] uppercase font-semibold font-num\">Unified</span>');
+
+        return '<tr class=\"hover:bg-neutral-50\">' +
           '<td class=\"py-2 font-mono text-neutral-900\">' +
             '<span class=\"truncate max-w-[140px] inline-block\">' + (k.plain_key || 'Key: ' + k.key_id) + '</span>' +
             (k.plain_key ? ' <button onclick=\"copyToClipboard(\\'' + k.plain_key + '\\')\" class=\"text-neutral-400 hover:text-black cursor-pointer inline-flex items-center ml-1\"><svg class=\"w-3 h-3\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\" ry=\"2\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"/></svg></button>' : '') +
           '</td>' +
+          '<td class=\"py-2\">' + scopeBadge + '</td>' +
           '<td class=\"py-2\"><span class=\"px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-800 text-[10px] uppercase font-semibold\">' + k.plan + '</span></td>' +
           '<td class=\"py-2 text-neutral-600\">' + (k.label || 'Key') + '</td>' +
           '<td class=\"py-2 text-right\"><button onclick=\"revokeKey(\\'' + (k.plain_key || k.key_id) + '\\', ' + idx + ')\" class=\"text-neutral-500 hover:text-black font-semibold cursor-pointer\">Revoke</button></td>' +
-        '</tr>'
-      ).join('');
+        '</tr>';
+      }).join('');
     }
 
     async function revokeKey(key, index) {

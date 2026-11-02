@@ -39,6 +39,24 @@ export async function authMiddleware(c: Context<{ Bindings: Env }>, next: Next) 
     return c.json({ error: (e as Error).message }, 403);
   }
 
+  // Check scope restrictions based on key_type
+  const path = c.req.path;
+  if (record.key_type === 'memory' && (path.startsWith('/v1/search') || path.startsWith('/v1/crawl'))) {
+    return c.json({
+      error: 'This API key is scoped to UltraMemory API only. Please use a Unified or UltraSearch key for web search.',
+      scope_restricted: true,
+      key_type: 'memory',
+    }, 403);
+  }
+
+  if (record.key_type === 'search' && path.startsWith('/v1/memory')) {
+    return c.json({
+      error: 'This API key is scoped to UltraSearch API only. Please use a Unified or UltraMemory key for agent memory.',
+      scope_restricted: true,
+      key_type: 'search',
+    }, 403);
+  }
+
   // Rate limit check via Durable Object
   const rateLimitResult = await checkRateLimit(c.env, record);
   if (!rateLimitResult.allowed) {

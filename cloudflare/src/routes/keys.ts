@@ -7,6 +7,12 @@ import { authMiddleware, getSupabaseUser } from '../lib/auth';
 
 export const keysRouter = new Hono<{ Bindings: Env }>();
 
+interface CreateKeyBody {
+  plan?: string;
+  label?: string;
+  key_type?: 'unified' | 'memory' | 'search';
+}
+
 // ── POST /v1/keys — create a new key ────────────────────────────────────────
 keysRouter.post('/', async (c) => {
   const sbUser = await getSupabaseUser(c.env, c.req.header('authorization'));
@@ -17,14 +23,22 @@ keysRouter.post('/', async (c) => {
     }, 401);
   }
 
-  const body = await c.req.json<{ plan?: string; label?: string }>().catch(() => ({ plan: undefined, label: undefined }));
+  const body: CreateKeyBody = await c.req.json<CreateKeyBody>().catch(() => ({}));
+  const keyType = (['unified', 'memory', 'search'].includes(body.key_type || '') ? body.key_type : 'unified') as 'unified' | 'memory' | 'search';
 
   try {
+    const defaultLabel = keyType === 'memory' 
+      ? 'UltraMemory API Key' 
+      : keyType === 'search' 
+        ? 'UltraSearch API Key' 
+        : (sbUser.email ? `Unified Key for ${sbUser.email}` : 'Unified Key');
+
     const { plainKey, record } = await createApiKey(
       c.env,
       sbUser.id,
       body.plan ?? 'free',
-      body.label?.trim() || (sbUser.email ? `Key for ${sbUser.email}` : 'Default Key'),
+      body.label?.trim() || defaultLabel,
+      keyType,
     );
     return c.json({
       message: 'API key created. Save the plain_key — it will NOT be shown again.',
@@ -32,6 +46,7 @@ keysRouter.post('/', async (c) => {
       key_id:    record.key_id,
       user_id:   record.user_id,
       plan:      record.plan,
+      key_type:  record.key_type || 'unified',
       label:     record.label,
       created_at: new Date(record.created_at).toISOString(),
     }, 201);

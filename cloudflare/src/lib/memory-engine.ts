@@ -208,6 +208,9 @@ export async function queryMemories(env: Env, params: QueryMemoryParams): Promis
   }
 
   const duration = Math.round(performance.now() - t0);
+  const context = results.length > 0 
+    ? results.map((m, idx) => `${idx + 1}. [${m.memory_type.toUpperCase()}] ${m.content}`).join('\n')
+    : '';
 
   return {
     query:             params.query,
@@ -215,6 +218,7 @@ export async function queryMemories(env: Env, params: QueryMemoryParams): Promis
     total:             results.length,
     retrieval_time_ms: duration,
     container_tag:     params.containerTag,
+    context,
   };
 }
 
@@ -386,6 +390,34 @@ export async function ingestFileMemory(
     chunks_stored: chunks.length,
     memory_ids:    memoryIds,
     file_name:     params.fileName,
+  };
+}
+
+// ── User Memory Statistics ───────────────────────────────────────────────────
+
+export async function getMemoryStats(env: Env, userId: string): Promise<{
+  total_memories: number;
+  last_stored_at: string | null;
+  containers: { container_tag: string; count: number }[];
+  memory_types: { memory_type: string; count: number }[];
+}> {
+  const [totalRow, containerRows, typeRows] = await Promise.all([
+    env.DB.prepare('SELECT COUNT(*) as total_memories, MAX(created_at) as last_stored_at FROM memories WHERE user_id = ?')
+      .bind(userId)
+      .first<{ total_memories: number; last_stored_at: number | null }>(),
+    env.DB.prepare('SELECT container_tag, COUNT(*) as count FROM memories WHERE user_id = ? GROUP BY container_tag ORDER BY count DESC LIMIT 10')
+      .bind(userId)
+      .all<{ container_tag: string; count: number }>(),
+    env.DB.prepare('SELECT memory_type, COUNT(*) as count FROM memories WHERE user_id = ? GROUP BY memory_type')
+      .bind(userId)
+      .all<{ memory_type: string; count: number }>(),
+  ]);
+
+  return {
+    total_memories: totalRow?.total_memories || 0,
+    last_stored_at: totalRow?.last_stored_at ? new Date(totalRow.last_stored_at).toISOString() : null,
+    containers: (containerRows.results || []) as { container_tag: string; count: number }[],
+    memory_types: (typeRows.results || []) as { memory_type: string; count: number }[],
   };
 }
 

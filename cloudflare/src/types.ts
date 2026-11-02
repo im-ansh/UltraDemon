@@ -66,6 +66,7 @@ export interface ApiKeyRecord {
   key_id:     string;
   user_id:    string;
   plan:       string;
+  key_type?:  'unified' | 'memory' | 'search';
   label:      string;
   created_at: number;
   revoked:    boolean;
@@ -111,4 +112,5 @@ export interface MemoryQueryResponse {
   total:             number;
   retrieval_time_ms: number;
   container_tag?:    string;
+  context?:          string;
 }

@@ -33,6 +33,7 @@ export async function createApiKey(
   userId: string,
   plan: string = 'free',
   label: string = '',
+  keyType: 'unified' | 'memory' | 'search' = 'unified',
 ): Promise<{ plainKey: string; record: ApiKeyRecord }> {
   // Validate plan exists in D1
   const planRow = await env.DB
@@ -41,7 +42,8 @@ export async function createApiKey(
     .first();
   if (!planRow) throw new Error(`Unknown plan: ${plan}`);
 
-  const plainKey = `${KEY_PREFIX}${randomB62(KEY_BODY_LEN)}`;
+  const prefix = keyType === 'memory' ? 'um_' : KEY_PREFIX;
+  const plainKey = `${prefix}${randomB62(KEY_BODY_LEN)}`;
   const hashedKey = await hashKey(plainKey, env.ULTRASEARCH_SECRET);
   const keyId = randomHex(16);
   const now = Date.now();
@@ -51,7 +53,8 @@ export async function createApiKey(
     key_id:     keyId,
     user_id:    userId,
     plan,
-    label:      label || `${plan.charAt(0).toUpperCase() + plan.slice(1)} key`,
+    key_type:   keyType,
+    label:      label || `${keyType === 'memory' ? 'UltraMemory' : keyType === 'search' ? 'UltraSearch' : 'Unified'} key`,
     created_at: now,
     revoked:    false,
   };
@@ -59,10 +62,10 @@ export async function createApiKey(
   // Store in D1 (persistent)
   await env.DB
     .prepare(`
-      INSERT INTO api_keys (hashed_key, key_id, user_id, plan, label, created_at, revoked)
-      VALUES (?, ?, ?, ?, ?, ?, 0)
+      INSERT INTO api_keys (hashed_key, key_id, user_id, plan, key_type, label, created_at, revoked)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 0)
     `)
-    .bind(hashedKey, keyId, userId, plan, record.label, now)
+    .bind(hashedKey, keyId, userId, plan, keyType, record.label, now)
     .run();
 
   return { plainKey, record };
@@ -74,8 +77,8 @@ export async function validateApiKey(
   env: Env,
   plainKey: string,
 ): Promise<ApiKeyRecord> {
-  if (!plainKey.startsWith(KEY_PREFIX)) {
-    throw new Error("Invalid API key format — must start with 'us_'");
+  if (!plainKey.startsWith('us_') && !plainKey.startsWith('um_')) {
+    throw new Error("Invalid API key format — must start with 'us_' or 'um_'");
   }
 
   const hashedKey = await hashKey(plainKey, env.ULTRASEARCH_SECRET);
@@ -121,7 +124,7 @@ export async function revokeApiKey(env: Env, plainKey: string): Promise<void> {
 
 export async function listUserKeys(env: Env, userId: string): Promise<ApiKeyRecord[]> {
   const { results } = await env.DB
-    .prepare('SELECT key_id, user_id, plan, label, created_at, revoked FROM api_keys WHERE user_id = ?')
+    .prepare('SELECT key_id, user_id, plan, key_type, label, created_at, revoked FROM api_keys WHERE user_id = ?')
     .bind(userId)
     .all<Omit<ApiKeyRecord, 'hashed_key'>>();
   return results as unknown as ApiKeyRecord[];

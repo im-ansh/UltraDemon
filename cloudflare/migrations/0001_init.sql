@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS api_keys (
   key_id      TEXT    NOT NULL UNIQUE,
   user_id     TEXT    NOT NULL,
   plan        TEXT    NOT NULL DEFAULT 'free',
+  key_type    TEXT    NOT NULL DEFAULT 'unified', -- unified, memory, search
   label       TEXT    NOT NULL DEFAULT '',
   created_at  INTEGER NOT NULL,
   revoked     INTEGER NOT NULL DEFAULT 0
