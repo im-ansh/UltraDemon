@@ -19,6 +19,7 @@ async function hashPassword(password: string, salt: string): Promise<string> {
 interface AuthBody {
   email?: string;
   password?: string;
+  plan?: string;
 }
 
 // ── POST /v1/auth/signup — Instant Edge Account Creation ──────────────────────
@@ -26,6 +27,9 @@ authRouter.post('/signup', async (c) => {
   const body: AuthBody = await c.req.json<AuthBody>().catch(() => ({}));
   const email = (body.email || '').trim().toLowerCase();
   const password = body.password || '';
+  const requestedPlan = ['free', 'pro', 'ultra', 'enterprise'].includes((body.plan || '').toLowerCase())
+    ? (body.plan || '').toLowerCase()
+    : 'free';
 
   if (!email || !email.includes('@')) {
     return c.json({ error: 'Valid email address is required' }, 400);
@@ -49,15 +53,15 @@ authRouter.post('/signup', async (c) => {
 
   try {
     await c.env.DB.prepare(
-      'INSERT INTO users (user_id, email, password_hash, created_at) VALUES (?, ?, ?, ?)'
-    ).bind(userId, email, passwordHash, now).run();
+      'INSERT INTO users (user_id, email, password_hash, created_at, plan) VALUES (?, ?, ?, ?, ?)'
+    ).bind(userId, email, passwordHash, now, requestedPlan).run();
   } catch (err: unknown) {
     return c.json({ error: 'Failed to create user account: ' + (err as Error).message }, 500);
   }
 
   // Create edge session token valid for 30 days
   const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
-  const sessionPayload = { id: userId, email };
+  const sessionPayload = { id: userId, email, plan: requestedPlan };
 
   await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), {
     expirationTtl: 86400 * 30, // 30 days
@@ -99,15 +103,16 @@ authRouter.post('/signin', async (c) => {
   }
 
   // 1. Check D1 first
-  const user = await c.env.DB.prepare('SELECT user_id, email, password_hash FROM users WHERE email = ?')
+  const user = await c.env.DB.prepare('SELECT user_id, email, password_hash, plan FROM users WHERE email = ?')
     .bind(email)
-    .first<{ user_id: string; email: string; password_hash: string }>();
+    .first<{ user_id: string; email: string; password_hash: string; plan?: string }>();
 
   if (user) {
     const expectedHash = await hashPassword(password, email);
     if (user.password_hash === expectedHash) {
       const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
-      const sessionPayload = { id: user.user_id, email: user.email };
+      const plan = user.plan || 'free';
+      const sessionPayload = { id: user.user_id, email: user.email, plan };
 
       await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), {
         expirationTtl: 86400 * 30,
@@ -141,17 +146,16 @@ authRouter.post('/signin', async (c) => {
 
       if (sbRes.ok) {
         const sbData = await sbRes.json<{ access_token: string; user: { id: string; email?: string } }>();
-        // Auto-provision user into D1 for future fast signins
         const passwordHash = await hashPassword(password, email);
         c.executionCtx.waitUntil(
           c.env.DB.prepare(
-            'INSERT OR IGNORE INTO users (user_id, email, password_hash, created_at) VALUES (?, ?, ?, ?)'
-          ).bind(sbData.user.id, email, passwordHash, Date.now()).run()
+            'INSERT OR IGNORE INTO users (user_id, email, password_hash, created_at, plan) VALUES (?, ?, ?, ?, ?)'
+          ).bind(sbData.user.id, email, passwordHash, Date.now(), 'free').run()
         );
 
         return c.json({
           message: 'Signed in successfully via Supabase',
-          user: { id: sbData.user.id, email: sbData.user.email || email },
+          user: { id: sbData.user.id, email: sbData.user.email || email, plan: 'free' },
           session: {
             access_token: sbData.access_token,
             token_type: 'bearer',
@@ -177,9 +181,11 @@ authRouter.get('/me', async (c) => {
 
   // Edge session check
   if (token.startsWith('edge_sess_')) {
-    const cached = await c.env.KEY_CACHE.get<{ id: string; email: string }>(`sess:${token}`, 'json');
+    const cached = await c.env.KEY_CACHE.get<{ id: string; email: string; plan?: string }>(`sess:${token}`, 'json');
     if (cached) {
-      return c.json({ user: cached });
+      const row = await c.env.DB.prepare('SELECT plan FROM users WHERE user_id = ?').bind(cached.id).first<{ plan: string }>();
+      const plan = row?.plan || cached.plan || 'free';
+      return c.json({ user: { id: cached.id, email: cached.email, plan } });
     }
     return c.json({ error: 'Session expired or invalid' }, 401);
   }
@@ -195,12 +201,74 @@ authRouter.get('/me', async (c) => {
       });
       if (res.ok) {
         const user = await res.json<{ id: string; email?: string }>();
-        return c.json({ user: { id: user.id, email: user.email } });
+        const row = await c.env.DB.prepare('SELECT plan FROM users WHERE user_id = ?').bind(user.id).first<{ plan: string }>();
+        return c.json({ user: { id: user.id, email: user.email, plan: row?.plan || 'free' } });
       }
     } catch { /* proceed */ }
   }
 
   return c.json({ error: 'Session expired or invalid' }, 401);
+});
+
+// ── POST /v1/auth/membership — Manage & Upgrade Membership Tier ──────────────
+authRouter.post('/membership', async (c) => {
+  const authHeader = c.req.header('authorization') || '';
+  if (!authHeader.toLowerCase().startsWith('bearer ')) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+
+  const token = authHeader.slice(7).trim();
+  let userId = '';
+
+  if (token.startsWith('edge_sess_')) {
+    const cached = await c.env.KEY_CACHE.get<{ id: string; email: string }>(`sess:${token}`, 'json');
+    if (cached) userId = cached.id;
+  } else if (c.env.SUPABASE_URL && c.env.SUPABASE_ANON_KEY) {
+    try {
+      const res = await fetch(`${c.env.SUPABASE_URL}/auth/v1/user`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'apikey': c.env.SUPABASE_ANON_KEY,
+        },
+      });
+      if (res.ok) {
+        const u = await res.json<{ id: string }>();
+        if (u) userId = u.id;
+      }
+    } catch {}
+  }
+
+  if (!userId) return c.json({ error: 'Invalid session' }, 401);
+
+  const body = await c.req.json<{ plan?: string }>().catch(() => ({ plan: undefined }));
+  const plan = (body.plan || 'free').toLowerCase();
+  if (!['free', 'pro', 'ultra', 'enterprise'].includes(plan)) {
+    return c.json({ error: 'Invalid plan. Allowed: free, pro, ultra, enterprise' }, 400);
+  }
+
+  // Update users table in D1
+  await c.env.DB.prepare('UPDATE users SET plan = ? WHERE user_id = ?')
+    .bind(plan, userId)
+    .run();
+
+  // Update active API keys for this user in D1
+  await c.env.DB.prepare('UPDATE api_keys SET plan = ? WHERE user_id = ? AND revoked = 0')
+    .bind(plan, userId)
+    .run();
+
+  // Update session in KV
+  if (token.startsWith('edge_sess_')) {
+    const cached = await c.env.KEY_CACHE.get<{ id: string; email: string; plan?: string }>(`sess:${token}`, 'json');
+    if (cached) {
+      cached.plan = plan;
+      await c.env.KEY_CACHE.put(`sess:${token}`, JSON.stringify(cached), { expirationTtl: 86400 * 30 });
+    }
+  }
+
+  return c.json({
+    message: `Plan upgraded successfully to ${plan.toUpperCase()}`,
+    plan,
+  });
 });
 
 // ── POST /v1/auth/signout — End Session ───────────────────────────────────────

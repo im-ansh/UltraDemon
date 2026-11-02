@@ -15,6 +15,8 @@ import { crawlerRouter } from './routes/crawler';
 import { openapiRouter } from './routes/openapi';
 import { authRouter }    from './routes/auth';
 import { renderLandingPage } from './ui/landing';
+import { renderAuthPage } from './ui/auth-pages';
+import { renderAppDashboard } from './ui/app';
 import { MICHELANGELUS_BOLD_ITALIC_B64 } from './ui/font';
 import { processCrawlQueue } from './lib/crawler';
 
@@ -72,10 +74,31 @@ app.get('/', (c) => {
   });
 });
 
-// Alias for direct console access
+// Dedicated Auth Pages
+app.get('/login', (c) => {
+  const origin = new URL(c.req.url).origin;
+  return c.html(renderAuthPage('login', origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
+});
+
+app.get('/signup', (c) => {
+  const origin = new URL(c.req.url).origin;
+  return c.html(renderAuthPage('signup', origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
+});
+
+// Dedicated Developer App / Dashboard Workspace
+app.get('/app', (c) => {
+  const origin = new URL(c.req.url).origin;
+  return c.html(renderAppDashboard(origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
+});
+
+app.get('/dashboard', (c) => {
+  const origin = new URL(c.req.url).origin;
+  return c.html(renderAppDashboard(origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
+});
+
 app.get('/console', (c) => {
   const origin = new URL(c.req.url).origin;
-  return c.html(renderLandingPage(origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
+  return c.html(renderAppDashboard(origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
 });
 
 app.get('/docs', (c) => {

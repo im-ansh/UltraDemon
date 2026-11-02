@@ -249,12 +249,12 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       <!-- Auth & Account Status in Left Sidebar -->
       <div class="pt-6 border-t border-neutral-200 space-y-3">
         <div id="sideAuthLoggedOut" class="space-y-2">
-          <button onclick="openAuthModal('signin')" class="w-full py-2 text-xs font-semibold rounded-lg text-neutral-800 border border-neutral-200 hover:bg-neutral-100 transition cursor-pointer">
+          <a href="/login" class="block w-full py-2 text-center text-xs font-semibold rounded-lg text-neutral-800 border border-neutral-200 hover:bg-neutral-100 transition cursor-pointer">
             Sign In
-          </button>
-          <button onclick="openAuthModal('signup')" class="w-full py-2 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition cursor-pointer shadow-xs">
+          </a>
+          <a href="/signup" class="block w-full py-2 text-center text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition cursor-pointer shadow-xs">
             Create Account
-          </button>
+          </a>
         </div>
 
         <div id="sideAuthLoggedIn" class="hidden space-y-2">
@@ -265,6 +265,9 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             </div>
             <div id="sideUserEmail" class="font-num font-semibold text-neutral-950 truncate mt-0.5"></div>
           </div>
+          <a href="/app" class="block w-full py-2 text-center text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition cursor-pointer shadow-xs">
+            Launch Workspace
+          </a>
           <button onclick="handleSignOut()" class="w-full py-1.5 text-xs text-neutral-600 hover:text-black border border-neutral-200 rounded-lg hover:bg-neutral-50 transition cursor-pointer">
             Sign Out
           </button>
@@ -308,6 +311,10 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             <span>Get Started Free</span>
             <svg class="w-3.5 h-3.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
+          <a href="/app" class="px-4 py-2.5 rounded-xl border border-neutral-300 hover:bg-neutral-100 text-neutral-900 text-xs font-semibold transition flex items-center gap-2">
+            <svg class="w-3.5 h-3.5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M14 9l3 3-3 3"/></svg>
+            <span>Launch App</span>
+          </a>
           <a href="/openapi.json" target="_blank" class="px-4 py-2.5 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-neutral-900 text-xs font-semibold transition flex items-center gap-1.5">
             <span class="font-num">/openapi.json</span>
           </a>
@@ -1755,13 +1762,12 @@ curl -X POST "${origin}/v1/memory/query" \\
     }
 
     function handleProvisionKeyClick(plan) {
-      if (currentUser) {
-        if (plan && document.getElementById('newKeyPlan')) {
-          document.getElementById('newKeyPlan').value = plan;
-        }
-        document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
+      const userStr = localStorage.getItem('ultrademon_user');
+      const token = getAuthToken();
+      if (currentUser || userStr || token) {
+        window.location.href = '/app' + (plan ? '?plan=' + encodeURIComponent(plan) : '');
       } else {
-        openAuthModal('signup');
+        window.location.href = '/signup' + (plan ? '?plan=' + encodeURIComponent(plan) : '');
       }
     }
 
@@ -1784,7 +1790,7 @@ curl -X POST "${origin}/v1/memory/query" \\
         createKeyForm.classList.remove('hidden');
         if (userAccountDisplay) userAccountDisplay.innerText = user.email || user.id;
 
-        banner.innerHTML = '<div class=\"flex items-center gap-2\"><svg class=\"w-4 h-4 text-neutral-700\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2.5\"><polyline points=\"20 6 9 17 4 12\"/></svg><div class=\"text-xs\"><span class=\"font-bold text-neutral-950\">Signed in:</span> <span class=\"text-neutral-600\">' + (user.email || user.id) + '</span></div></div><button onclick=\"handleSignOut()\" class=\"px-3 py-1 text-xs border border-neutral-300 rounded-lg hover:bg-neutral-100 cursor-pointer\">Sign Out</button>';
+        banner.innerHTML = '<div class=\"flex items-center gap-2\"><svg class=\"w-4 h-4 text-neutral-700\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2.5\"><polyline points=\"20 6 9 17 4 12\"/></svg><div class=\"text-xs\"><span class=\"font-bold text-neutral-950\">Signed in:</span> <span class=\"text-neutral-600\">' + (user.email || user.id) + '</span></div></div><div class=\"flex items-center gap-2\"><a href=\"/app\" class=\"px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition cursor-pointer flex items-center gap-1.5 shadow-xs\"><span>Open Developer Workspace</span><svg class=\"w-3 h-3 text-neutral-300\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><path d=\"M5 12h14M12 5l7 7-7 7\"/></svg></a><button onclick=\"handleSignOut()\" class=\"px-3 py-1.5 text-xs border border-neutral-300 rounded-lg hover:bg-neutral-100 cursor-pointer\">Sign Out</button></div>';
 
         loadRemoteKeys(user.id);
         refreshStoredMemories();
@@ -1795,7 +1801,7 @@ curl -X POST "${origin}/v1/memory/query" \\
         createKeyLocked.classList.remove('hidden');
         createKeyForm.classList.add('hidden');
 
-        banner.innerHTML = '<div class=\"flex items-center gap-2\"><svg class=\"w-4 h-4 text-neutral-500\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\" ry=\"2\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg><div class=\"text-xs\"><span class=\"font-bold text-neutral-950\">Authentication Required:</span> <span class=\"text-neutral-600\">Sign in or create an account to generate and manage keys.</span></div></div><div class=\"flex items-center gap-2\"><button onclick=\"openAuthModal(\\'signin\\')\" class=\"px-3 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 cursor-pointer\">Sign In</button><button onclick=\"openAuthModal(\\'signup\\')\" class=\"px-3 py-1.5 text-xs font-semibold rounded-lg border border-neutral-300 hover:bg-neutral-100 cursor-pointer\">Create Account</button></div>';
+        banner.innerHTML = '<div class=\"flex items-center gap-2\"><svg class=\"w-4 h-4 text-neutral-500\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\" ry=\"2\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg><div class=\"text-xs\"><span class=\"font-bold text-neutral-950\">Authentication Required:</span> <span class=\"text-neutral-600\">Sign in or create an account to generate and manage keys.</span></div></div><div class=\"flex items-center gap-2\"><a href=\"/login\" class=\"px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 cursor-pointer\">Sign In</a><a href=\"/signup\" class=\"px-3.5 py-1.5 text-xs font-semibold rounded-lg border border-neutral-300 hover:bg-neutral-100 cursor-pointer\">Create Account</a></div>';
 
         renderKeysTable();
         refreshUsage();
