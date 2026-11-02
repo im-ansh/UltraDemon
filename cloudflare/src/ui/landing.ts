@@ -216,6 +216,14 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
             <span>Benchmarks</span>
           </a>
+          <a href="#usecases" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
+            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+            <span>Use Cases</span>
+          </a>
+          <a href="#build" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
+            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+            <span>What to Build</span>
+          </a>
           <a href="#console" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
             <div class="flex items-center gap-2.5">
               <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
@@ -227,9 +235,9 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
             <span>Crawler</span>
           </a>
-          <a href="#mcp" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
+          <a href="#integrations" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
             <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
-            <span>MCP Protocol</span>
+            <span>Integrations</span>
           </a>
           <a href="#pricing" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
             <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
@@ -738,6 +746,284 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
       </section>
 
+      <!-- Architectural Use Cases Section -->
+      <section id="usecases" class="mb-16 pt-8 border-t border-neutral-200">
+        <div class="mb-6">
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Architectural Pillars</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
+            Engineered for <span class="font-serif font-bold italic text-black">Autonomous AI</span>
+          </h2>
+          <p class="text-xs text-neutral-600 mt-1">
+            Designed from day one to replace slow external vector databases and 3rd-party search APIs with zero-latency edge primitives.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Card 1 -->
+          <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-700">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+                </div>
+                <span class="font-num text-[10px] text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200 font-semibold">&lt;15ms Recall</span>
+              </div>
+              <h3 class="text-sm font-bold text-neutral-950 mb-1">Continual Learning &amp; Agent Memory</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-3">
+                Prevent context window overflow and quadratic attention costs. Store user preferences, past tool results, and episodic dialogue state directly in edge SQLite FTS5 for sub-15ms recall.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-neutral-100 text-[11px] text-neutral-500 font-num">
+              Replaces: Pinecone, Weaviate, Supermemory
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-700">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.3-4.3"/></svg>
+                </div>
+                <span class="font-num text-[10px] text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200 font-semibold">Zero 3rd-Party Leaks</span>
+              </div>
+              <h3 class="text-sm font-bold text-neutral-950 mb-1">Sovereign Web Grounding &amp; RAG</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-3">
+                Ground LLM generations in verifiable, live-crawled web data. Never send proprietary user queries to external search brokers. Full PageRank and BM25 pass scoring on your terms.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-neutral-100 text-[11px] text-neutral-500 font-num">
+              Replaces: Tavily, Exa, Google Search API
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-700">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 9.4 7.55 4.24a1.78 1.78 0 0 0-2.5 1.55v12.42a1.78 1.78 0 0 0 2.5 1.55L16.5 14.6a1.78 1.78 0 0 0 0-3.2z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12H17"/></svg>
+                </div>
+                <span class="font-num text-[10px] text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200 font-semibold">Real-Time Fluidity</span>
+              </div>
+              <h3 class="text-sm font-bold text-neutral-950 mb-1">Low-Latency Voice &amp; Chat Assistants</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-3">
+                Voice agents (ElevenLabs, LiveKit, Gemini Live) demand sub-100ms total conversational loops. UltraMemory’s 12ms edge recall guarantees zero dead air or voice hesitation.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-neutral-100 text-[11px] text-neutral-500 font-num">
+              Optimal for: ElevenLabs Conversational, LiveKit Agents
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-700">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                </div>
+                <span class="font-num text-[10px] text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200 font-semibold">Namespaces</span>
+              </div>
+              <h3 class="text-sm font-bold text-neutral-950 mb-1">Multi-Tenant Knowledge Containers</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-3">
+                Partition memories securely by user ID, workspace ID, or agent role using <code class="bg-neutral-100 px-1 py-0.5 rounded font-num text-[11px]">container_tag</code>. Full multi-tenant isolation without provisioning separate databases.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-neutral-100 text-[11px] text-neutral-500 font-num">
+              Architecture: D1 Edge Multi-Tenant Partitioning
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- What People Can Build Section -->
+      <section id="build" class="mb-16 pt-8 border-t border-neutral-200">
+        <div class="mb-6">
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Production Blueprints</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
+            What You Can <span class="font-serif font-bold italic text-black">Build Today</span>
+          </h2>
+          <p class="text-xs text-neutral-600 mt-1">
+            End-to-end architectures, workflows, and code snippets ready to deploy into production.
+          </p>
+        </div>
+
+        <div class="card-clean p-5 sm:p-6 rounded-2xl space-y-6">
+          <!-- Build Showcase Selector Tabs -->
+          <div class="flex flex-wrap gap-2 border-b border-neutral-200 pb-3">
+            <button onclick="switchBuildTab('buildFinance')" id="btnBuildFinance" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-black text-white cursor-pointer transition">Financial Analyst</button>
+            <button onclick="switchBuildTab('buildCode')" id="btnBuildCode" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Eternal Coding Copilot</button>
+            <button onclick="switchBuildTab('buildSupport')" id="btnBuildSupport" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Omnichannel CRM</button>
+            <button onclick="switchBuildTab('buildResearch')" id="btnBuildResearch" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Deep Research Bot</button>
+          </div>
+
+          <!-- Showcase 1: Financial Filing Analyst -->
+          <div id="buildFinance" class="space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h3 class="text-sm font-bold text-neutral-950">Autonomous SEC &amp; Earnings Intelligence Agent</h3>
+                <p class="text-xs text-neutral-600">Continuously indexes SEC 10-K filings and earnings call transcripts into D1; answers complex margin trend queries in &lt;30ms.</p>
+              </div>
+              <span class="self-start sm:self-auto font-num text-[10px] bg-neutral-100 text-neutral-800 border border-neutral-200 px-2 py-0.5 rounded font-semibold">Crawl + Memory + Search</span>
+            </div>
+
+            <!-- Architecture Flow Pill -->
+            <div class="p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-num flex flex-wrap items-center gap-2 text-neutral-700">
+              <span class="font-bold text-black">Workflow:</span>
+              <span>1. Crawler ingests SEC 10-K HTML</span>
+              <span>→</span>
+              <span>2. UltraSearch parses &amp; indexes text</span>
+              <span>→</span>
+              <span>3. Agent stores key valuation metrics in UltraMemory</span>
+              <span>→</span>
+              <span>4. Sub-15ms retrieval on user prompts</span>
+            </div>
+
+            <div class="relative">
+              <pre class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-100 overflow-x-auto code-scroll">import requests
+
+BASE = "${origin}"
+HEADERS = {"X-API-Key": "us_your_key_here", "Content-Type": "application/json"}
+
+# 1. Dispatch edge crawler to ingest latest financial filing
+requests.post(f"{BASE}/v1/crawl", headers=HEADERS, json={
+    "url": "https://www.sec.gov/edgar/searchedgar/companysearch",
+    "depth": 1
+})
+
+# 2. Store extracted quarterly guidance into structured agent memory
+requests.post(f"{BASE}/v1/memory", headers=HEADERS, json={
+    "container_tag": "ticker_nvda",
+    "memory_type": "fact",
+    "title": "Q3 FY2026 Data Center Revenue Guidance",
+    "content": "Data center revenue exceeded \\$30.8B, up 112% YoY. Gross margins guided at 75.0% for Q4.",
+    "metadata": {"ticker": "NVDA", "quarter": "Q3-26", "analyst_consensus": "beat"}
+})
+
+# 3. Fast recall in your agent prompt (&lt;15ms)
+memory = requests.post(f"{BASE}/v1/memory/query", headers=HEADERS, json={
+    "query": "gross margin guidance data center",
+    "container_tag": "ticker_nvda"
+}).json()
+
+print("Recalled Evidence:", memory["results"][0]["snippet"])</pre>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+            </div>
+          </div>
+
+          <!-- Showcase 2: Eternal Coding Copilot -->
+          <div id="buildCode" class="space-y-4 hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h3 class="text-sm font-bold text-neutral-950">Sovereign Code Copilot with Eternal Repo Memory</h3>
+                <p class="text-xs text-neutral-600">Indexes architectural decisions, PR review discussions, and team conventions so coding agents never repeat past mistakes.</p>
+              </div>
+              <span class="self-start sm:self-auto font-num text-[10px] bg-neutral-100 text-neutral-800 border border-neutral-200 px-2 py-0.5 rounded font-semibold">GitHub Hook + D1 FTS5</span>
+            </div>
+
+            <div class="p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-num flex flex-wrap items-center gap-2 text-neutral-700">
+              <span class="font-bold text-black">Workflow:</span>
+              <span>1. GitHub Action sends merged PR diff</span>
+              <span>→</span>
+              <span>2. UltraMemory stores architectural rule</span>
+              <span>→</span>
+              <span>3. Cursor/Windsurf queries memory on save</span>
+              <span>→</span>
+              <span>4. Copilot suggests rule-compliant diff</span>
+            </div>
+
+            <div class="relative">
+              <pre class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-100 overflow-x-auto code-scroll">// TypeScript / LangGraph Coding Agent Hook
+import { tool } from "ai";
+import { z } from "zod";
+
+const recallRepoRule = tool({
+  description: "Recall team conventions and architectural decisions for this repo",
+  parameters: z.object({ query: z.string() }),
+  execute: async ({ query }) => {
+    const res = await fetch("${origin}/v1/memory/query", {
+      method: "POST",
+      headers: {
+        "X-API-Key": process.env.ULTRASEARCH_API_KEY!,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ query, container_tag: "monorepo-core", limit: 3 })
+    });
+    return await res.json();
+  }
+});</pre>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+            </div>
+          </div>
+
+          <!-- Showcase 3: Omnichannel Customer CRM -->
+          <div id="buildSupport" class="space-y-4 hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h3 class="text-sm font-bold text-neutral-950">Omnichannel Customer Support &amp; Context Memory</h3>
+                <p class="text-xs text-neutral-600">Preserves customer interaction context across Zendesk, Discord, and Live Chat. Agents recall preferences in &lt;15ms.</p>
+              </div>
+              <span class="self-start sm:self-auto font-num text-[10px] bg-neutral-100 text-neutral-800 border border-neutral-200 px-2 py-0.5 rounded font-semibold">Vercel AI SDK + UltraMemory</span>
+            </div>
+
+            <div class="relative">
+              <pre class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-100 overflow-x-auto code-scroll">import { generateText } from "ai";
+import { openai } from "@ai-sdk/openai";
+
+// 1. Recall customer profile &amp; past order issues
+const customerMemories = await fetch("${origin}/v1/memory/query", {
+  method: "POST",
+  headers: { "X-API-Key": process.env.ULTRASEARCH_API_KEY!, "Content-Type": "application/json" },
+  body: JSON.stringify({
+    query: "refund preference shipping address",
+    container_tag: "customer_usr_98124"
+  })
+}).then(r => r.json());
+
+// 2. Generate grounded response with customer context
+const { text } = await generateText({
+  model: openai("gpt-4o"),
+  system: "You are an empathetic support agent with access to user memory.",
+  prompt: "User context: " + JSON.stringify(customerMemories.results) + "\\n\\nUser Question: Can I expedite my delivery?"
+});</pre>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+            </div>
+          </div>
+
+          <!-- Showcase 4: Deep Research Bot -->
+          <div id="buildResearch" class="space-y-4 hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h3 class="text-sm font-bold text-neutral-950">Autonomous Multi-Angle Deep Research Bot</h3>
+                <p class="text-xs text-neutral-600">Takes a research query, queries the sovereign index in Mode 3 (Deep Research), extracts citations, and synthesizes an authoritative report.</p>
+              </div>
+              <span class="self-start sm:self-auto font-num text-[10px] bg-neutral-100 text-neutral-800 border border-neutral-200 px-2 py-0.5 rounded font-semibold">UltraSearch Mode 3 + Citations</span>
+            </div>
+
+            <div class="relative">
+              <pre class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-100 overflow-x-auto code-scroll"># Multi-Hop Autonomous Research in Python
+import requests
+
+query = "State-of-the-art speculative decoding in Edge LLM inference"
+
+# Mode 3 executes multi-hop sub-query generation and passage ranking
+res = requests.post(
+    "${origin}/v1/search",
+    headers={"X-API-Key": "us_your_key_here", "Content-Type": "application/json"},
+    json={"query": query, "mode": 3, "num_results": 10}
+).json()
+
+print(f"Synthesized research sources ({len(res['results'])} citations):")
+for r in res["results"]:
+    print(f"- [{r['title']}]({r['url']}) (Score: {r['pagerank']})")
+    print(f"  Snippet: {r['snippet']}\\n")</pre>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Developer Console & API Key Manager -->
       <section id="console" class="mb-16 pt-8 border-t border-neutral-200">
         <div class="mb-6">
@@ -943,27 +1229,31 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
       </section>
 
-      <!-- MCP Hub & Code Snippets -->
-      <section id="mcp" class="mb-16 pt-8 border-t border-neutral-200">
+      <!-- Integrations & Multi-Framework SDKs -->
+      <section id="integrations" class="mb-16 pt-8 border-t border-neutral-200">
         <div class="mb-6">
-          <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Integrations</span>
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Ecosystem</span>
           <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
-            Model Context Protocol &amp; <span class="font-serif font-bold italic text-black">SDKs</span>
+            Universal Integrations &amp; <span class="font-serif font-bold italic text-black">SDKs</span>
           </h2>
           <p class="text-xs text-neutral-600 mt-1">
-            Native MCP server for Claude Desktop, Cursor, Python, and TypeScript.
+            Drop-in tools for Vercel AI SDK, Claude Desktop, Cursor, LangChain, LlamaIndex, Python, and TypeScript.
           </p>
         </div>
 
         <div class="card-clean p-5 rounded-2xl">
           <div class="flex flex-wrap gap-1.5 border-b border-neutral-200 pb-3 mb-4">
             <button onclick="switchTab('tabClaude')" id="btnTabClaude" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-black text-white cursor-pointer transition">Claude Desktop</button>
-            <button onclick="switchTab('tabCursor')" id="btnTabCursor" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Cursor</button>
+            <button onclick="switchTab('tabCursor')" id="btnTabCursor" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Cursor / Windsurf</button>
+            <button onclick="switchTab('tabVercel')" id="btnTabVercel" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Vercel AI SDK</button>
+            <button onclick="switchTab('tabLangchain')" id="btnTabLangchain" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">LangChain</button>
+            <button onclick="switchTab('tabLlama')" id="btnTabLlama" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">LlamaIndex</button>
             <button onclick="switchTab('tabPython')" id="btnTabPython" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Python</button>
             <button onclick="switchTab('tabNode')" id="btnTabNode" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">TypeScript</button>
             <button onclick="switchTab('tabCurl')" id="btnTabCurl" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">cURL</button>
           </div>
 
+          <!-- Claude Desktop MCP -->
           <div id="tabClaude" class="space-y-2">
             <p class="text-xs text-neutral-600">Add to <code class="text-neutral-900 font-num bg-neutral-100 px-1 py-0.5 rounded">claude_desktop_config.json</code>:</p>
             <div class="relative">
@@ -982,8 +1272,9 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             </div>
           </div>
 
+          <!-- Cursor & Windsurf -->
           <div id="tabCursor" class="space-y-2 hidden">
-            <p class="text-xs text-neutral-600">Add to <code class="text-neutral-900 font-num bg-neutral-100 px-1 py-0.5 rounded">.cursor/mcp.json</code>:</p>
+            <p class="text-xs text-neutral-600">Add to <code class="text-neutral-900 font-num bg-neutral-100 px-1 py-0.5 rounded">.cursor/mcp.json</code> or Windsurf MCP Settings:</p>
             <div class="relative">
               <pre class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-100 overflow-x-auto code-scroll">{
   "mcpServers": {
@@ -999,6 +1290,99 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             </div>
           </div>
 
+          <!-- Vercel AI SDK -->
+          <div id="tabVercel" class="space-y-2 hidden">
+            <p class="text-xs text-neutral-600">Native tools for <code class="text-neutral-900 font-num bg-neutral-100 px-1 py-0.5 rounded">ai</code> npm package:</p>
+            <div class="relative">
+              <pre class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-100 overflow-x-auto code-scroll">import { tool } from "ai";
+import { z } from "zod";
+
+const HEADERS = {
+  "X-API-Key": process.env.ULTRASEARCH_API_KEY!,
+  "Content-Type": "application/json"
+};
+
+// 1. Search Tool
+export const searchWeb = tool({
+  description: "Search the sovereign edge index with BM25 scoring",
+  parameters: z.object({ query: z.string(), num_results: z.number().default(5) }),
+  execute: async ({ query, num_results }) => {
+    return await fetch("${origin}/v1/search", {
+      method: "POST",
+      headers: HEADERS,
+      body: JSON.stringify({ query, num_results })
+    }).then(r => r.json());
+  }
+});
+
+// 2. Memory Recall Tool (&lt;15ms)
+export const recallMemory = tool({
+  description: "Recall structured agent memories in &lt;15ms",
+  parameters: z.object({ query: z.string(), container_tag: z.string().default("default") }),
+  execute: async ({ query, container_tag }) => {
+    return await fetch("${origin}/v1/memory/query", {
+      method: "POST",
+      headers: HEADERS,
+      body: JSON.stringify({ query, container_tag })
+    }).then(r => r.json());
+  }
+});</pre>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+            </div>
+          </div>
+
+          <!-- LangChain -->
+          <div id="tabLangchain" class="space-y-2 hidden">
+            <p class="text-xs text-neutral-600">Python LangChain / LangGraph Tools:</p>
+            <div class="relative">
+              <pre class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-100 overflow-x-auto code-scroll">from langchain.tools import tool
+import requests
+
+HEADERS = {"X-API-Key": "us_your_key_here", "Content-Type": "application/json"}
+
+@tool
+def recall_memory(query: str, container_tag: str = "default") -> str:
+    """Recall structured long-term agent memories in sub-15ms."""
+    res = requests.post("${origin}/v1/memory/query", headers=HEADERS, json={
+        "query": query, "container_tag": container_tag, "limit": 5
+    }).json()
+    return "\n".join([f"- {r['snippet']}" for r in res.get("results", [])])
+
+@tool
+def sovereign_search(query: str) -> str:
+    """Search the autonomous edge web index."""
+    res = requests.post("${origin}/v1/search", headers=HEADERS, json={
+        "query": query, "num_results": 5, "mode": 1
+    }).json()
+    return "\n".join([f"[{r['title']}]({r['url']}): {r['snippet']}" for r in res.get("results", [])])</pre>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+            </div>
+          </div>
+
+          <!-- LlamaIndex -->
+          <div id="tabLlama" class="space-y-2 hidden">
+            <p class="text-xs text-neutral-600">Custom LlamaIndex Retriever:</p>
+            <div class="relative">
+              <pre class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-100 overflow-x-auto code-scroll">from llama_index.core.schema import NodeWithScore, TextNode
+import requests
+
+class UltraDemonRetriever:
+    def __init__(self, api_key: str):
+        self.headers = {"X-API-Key": api_key, "Content-Type": "application/json"}
+
+    def retrieve(self, query: str, container_tag: str = "default"):
+        res = requests.post("${origin}/v1/memory/query", headers=self.headers, json={
+            "query": query, "container_tag": container_tag, "limit": 5
+        }).json()
+        return [
+            NodeWithScore(node=TextNode(text=r["content"]), score=r.get("bm25_score", 1.0))
+            for r in res.get("results", [])
+        ]</pre>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+            </div>
+          </div>
+
+          <!-- Python -->
           <div id="tabPython" class="space-y-2 hidden">
             <div class="relative">
               <pre class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-100 overflow-x-auto code-scroll">import requests
@@ -1028,6 +1412,7 @@ print("Search:", search["results"])</pre>
             </div>
           </div>
 
+          <!-- TypeScript -->
           <div id="tabNode" class="space-y-2 hidden">
             <div class="relative">
               <pre class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-100 overflow-x-auto code-scroll">const API_KEY = "us_your_key_here";
@@ -1051,7 +1436,25 @@ console.log(results);</pre>
             </div>
           </div>
 
+          <!-- cURL -->
           <div id="tabCurl" class="space-y-2 hidden">
+            <div class="relative">
+              <pre class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-100 overflow-x-auto code-scroll"># Store memory
+curl -X POST "${origin}/v1/memory" \\
+  -H "Content-Type: application/json" \\
+  -H "X-API-Key: us_your_key_here" \\
+  -d '{"content": "Agent context", "container_tag": "agent_1"}'
+
+# Recall memory (&lt;15ms)
+curl -X POST "${origin}/v1/memory/query" \\
+  -H "Content-Type: application/json" \\
+  -H "X-API-Key: us_your_key_here" \\
+  -d '{"query": "context", "container_tag": "agent_1"}'</pre>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+            </div>
+          </div>
+        </div>
+      </section>
             <div class="relative">
               <pre class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-100 overflow-x-auto code-scroll"># Store memory
 curl -X POST "${origin}/v1/memory" \\
@@ -1259,6 +1662,17 @@ curl -X POST "${origin}/v1/memory/query" \\
       }
     }
 
+    function getAuthToken() {
+      const edge = localStorage.getItem('ultrademon_auth_session');
+      if (edge) {
+        try {
+          const parsed = JSON.parse(edge);
+          if (parsed && parsed.access_token) return parsed.access_token;
+        } catch {}
+      }
+      return null;
+    }
+
     async function handleAuthSubmit(e) {
       e.preventDefault();
       const email = document.getElementById('authEmail').value.trim();
@@ -1267,32 +1681,59 @@ curl -X POST "${origin}/v1/memory/query" \\
       const spinner = document.getElementById('authSpinner');
       const submitBtn = document.getElementById('authSubmitBtn');
 
-      if (!supabase) return;
-
       spinner.classList.remove('hidden');
       submitBtn.disabled = true;
       alertBox.classList.add('hidden');
 
       try {
         if (currentAuthMode === 'signup') {
-          const { data, error } = await supabase.auth.signUp({ email, password });
-          if (error) throw error;
+          // Instant Edge Account Creation (Bypasses email confirmation delays)
+          const res = await fetch('/v1/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            throw new Error(data.error || 'Failed to create account');
+          }
+
+          localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session));
+          localStorage.setItem('ultrademon_user', JSON.stringify(data.user));
 
           alertBox.className = 'p-2.5 rounded-lg text-[11px] font-medium bg-neutral-100 border border-neutral-300 text-neutral-900';
-          alertBox.innerText = data.session 
-            ? 'Account created and signed in!'
-            : 'Account created! Please check your email for the confirmation link.';
+          alertBox.innerText = 'Account created successfully! You are now logged in.';
           alertBox.classList.remove('hidden');
 
-          if (data.session) {
-            setTimeout(() => {
-              closeAuthModal();
-              document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
-            }, 800);
-          }
+          updateAuthUI(data.user);
+
+          setTimeout(() => {
+            closeAuthModal();
+            document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
+          }, 600);
         } else {
-          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-          if (error) throw error;
+          // Sign In
+          const res = await fetch('/v1/auth/signin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            // Fallback to Supabase if available
+            if (supabase) {
+              const sb = await supabase.auth.signInWithPassword({ email, password });
+              if (sb.error) throw new Error(data.error || sb.error.message);
+              updateAuthUI(sb.data.user);
+              data = { user: sb.data.user, session: sb.data.session };
+            } else {
+              throw new Error(data.error || 'Invalid credentials');
+            }
+          } else {
+            localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session));
+            localStorage.setItem('ultrademon_user', JSON.stringify(data.user));
+            updateAuthUI(data.user);
+          }
 
           alertBox.className = 'p-2.5 rounded-lg text-[11px] font-medium bg-neutral-100 border border-neutral-300 text-neutral-900';
           alertBox.innerText = 'Signed in successfully!';
@@ -1301,7 +1742,7 @@ curl -X POST "${origin}/v1/memory/query" \\
           setTimeout(() => {
             closeAuthModal();
             document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
-          }, 600);
+          }, 500);
         }
       } catch (err) {
         alertBox.className = 'p-2.5 rounded-lg text-[11px] font-medium bg-neutral-100 border border-neutral-300 text-red-600';
@@ -1314,7 +1755,18 @@ curl -X POST "${origin}/v1/memory/query" \\
     }
 
     async function handleSignOut() {
-      if (supabase) await supabase.auth.signOut();
+      const token = getAuthToken();
+      if (token) {
+        fetch('/v1/auth/signout', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + token }
+        }).catch(() => {});
+      }
+      if (supabase) {
+        try { await supabase.auth.signOut(); } catch {}
+      }
+      localStorage.removeItem('ultrademon_auth_session');
+      localStorage.removeItem('ultrademon_user');
       localStorage.removeItem(STORAGE_KEY);
       updateAuthUI(null);
     }
@@ -1370,10 +1822,18 @@ curl -X POST "${origin}/v1/memory/query" \\
 
     async function loadRemoteKeys(userId) {
       try {
-        const session = (await supabase.auth.getSession())?.data?.session;
-        if (!session) return;
+        let authHeader = '';
+        const token = getAuthToken();
+        if (token) {
+          authHeader = 'Bearer ' + token;
+        } else if (supabase) {
+          const session = (await supabase.auth.getSession())?.data?.session;
+          if (session) authHeader = 'Bearer ' + session.access_token;
+        }
+        if (!authHeader) return;
+
         const resp = await fetch('/v1/keys', {
-          headers: { 'Authorization': 'Bearer ' + session.access_token }
+          headers: { 'Authorization': authHeader }
         });
         const data = await resp.json();
         if (data.keys) {
@@ -1399,14 +1859,31 @@ curl -X POST "${origin}/v1/memory/query" \\
     }
 
     function switchTab(tabId) {
-      ['tabClaude', 'tabCursor', 'tabPython', 'tabNode', 'tabCurl'].forEach(id => {
-        document.getElementById(id).classList.toggle('hidden', id !== tabId);
+      ['tabClaude', 'tabCursor', 'tabVercel', 'tabLangchain', 'tabLlama', 'tabPython', 'tabNode', 'tabCurl'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('hidden', id !== tabId);
       });
-      ['btnTabClaude', 'btnTabCursor', 'btnTabPython', 'btnTabNode', 'btnTabCurl'].forEach(id => {
+      ['btnTabClaude', 'btnTabCursor', 'btnTabVercel', 'btnTabLangchain', 'btnTabLlama', 'btnTabPython', 'btnTabNode', 'btnTabCurl'].forEach(id => {
         const isActive = id === 'btn' + tabId.charAt(0).toUpperCase() + tabId.slice(1);
         const btn = document.getElementById(id);
         if (btn) {
           btn.className = isActive 
+            ? 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-black text-white cursor-pointer transition'
+            : 'px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition';
+        }
+      });
+    }
+
+    function switchBuildTab(tabId) {
+      ['buildFinance', 'buildCode', 'buildSupport', 'buildResearch'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('hidden', id !== tabId);
+      });
+      ['btnBuildFinance', 'btnBuildCode', 'btnBuildSupport', 'btnBuildResearch'].forEach(id => {
+        const isActive = id === 'btn' + tabId.charAt(0).toUpperCase() + tabId.slice(1);
+        const btn = document.getElementById(id);
+        if (btn) {
+          btn.className = isActive
             ? 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-black text-white cursor-pointer transition'
             : 'px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition';
         }
@@ -1673,8 +2150,19 @@ curl -X POST "${origin}/v1/memory/query" \\
       const spinner = document.getElementById('createKeySpinner');
       const submitBtn = document.getElementById('createKeyBtn');
 
-      const session = (await supabase.auth.getSession())?.data?.session;
-      if (!session) return;
+      let authHeader = '';
+      const token = getAuthToken();
+      if (token) {
+        authHeader = 'Bearer ' + token;
+      } else if (supabase) {
+        const session = (await supabase.auth.getSession())?.data?.session;
+        if (session) authHeader = 'Bearer ' + session.access_token;
+      }
+
+      if (!authHeader) {
+        openAuthModal('signin');
+        return;
+      }
 
       spinner.classList.remove('hidden');
       submitBtn.disabled = true;
@@ -1682,7 +2170,7 @@ curl -X POST "${origin}/v1/memory/query" \\
       try {
         const resp = await fetch('/v1/keys', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+          headers: { 'Content-Type': 'application/json', 'Authorization': authHeader },
           body: JSON.stringify({ plan, label })
         });
         const data = await resp.json();
@@ -1742,9 +2230,16 @@ curl -X POST "${origin}/v1/memory/query" \\
     async function revokeKey(key, index) {
       if (!confirm('Are you sure you want to revoke this API key?')) return;
       try {
-        const session = (await supabase.auth.getSession())?.data?.session;
+        let authHeader = '';
+        const token = getAuthToken();
+        if (token) {
+          authHeader = 'Bearer ' + token;
+        } else if (supabase) {
+          const session = (await supabase.auth.getSession())?.data?.session;
+          if (session) authHeader = 'Bearer ' + session.access_token;
+        }
         const headers = {};
-        if (session) headers['Authorization'] = 'Bearer ' + session.access_token;
+        if (authHeader) headers['Authorization'] = authHeader;
         await fetch('/v1/keys/' + key, { method: 'DELETE', headers });
         const keys = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
         keys.splice(index, 1);
@@ -1819,16 +2314,39 @@ curl -X POST "${origin}/v1/memory/query" \\
     }
 
     window.addEventListener('DOMContentLoaded', async () => {
-      if (supabase) {
-        const { data: { session } } = await supabase.auth.getSession();
-        updateAuthUI(session?.user || null);
-
-        supabase.auth.onAuthStateChange((_event, session) => {
-          updateAuthUI(session?.user || null);
-        });
-      } else {
-        updateAuthUI(null);
+      // 1. Check local edge session
+      const token = getAuthToken();
+      if (token) {
+        try {
+          const res = await fetch('/v1/auth/me', {
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.user) {
+              updateAuthUI(data.user);
+              return;
+            }
+          }
+        } catch {}
       }
+
+      // 2. Check Supabase session fallback
+      if (supabase) {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user) {
+            updateAuthUI(session.user);
+            return;
+          }
+
+          supabase.auth.onAuthStateChange((_event, session) => {
+            if (session?.user) updateAuthUI(session.user);
+          });
+        } catch {}
+      }
+
+      updateAuthUI(null);
     });
   </script>
 </body>

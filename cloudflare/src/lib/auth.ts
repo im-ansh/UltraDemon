@@ -138,6 +138,14 @@ export async function getSupabaseUser(
   const token = authHeader.slice(7).trim();
   if (!token || token.startsWith('us_')) return null; // 'us_' is an UltraSearch API key
 
+  // 1. Direct Edge Session check (<1ms KV recall)
+  if (token.startsWith('edge_sess_')) {
+    const session = await env.KEY_CACHE.get<{ id: string; email?: string }>(`sess:${token}`, 'json');
+    if (session && session.id) return session;
+    return null;
+  }
+
+  // 2. Supabase JWT verification
   const cacheKey = `sb_user:${token.slice(-32)}`;
   const cached = await env.KEY_CACHE.get<{ id: string; email?: string }>(cacheKey, 'json');
   if (cached) return cached;
@@ -163,4 +171,6 @@ export async function getSupabaseUser(
   }
   return null;
 }
+
+export const getAuthUser = getSupabaseUser;
 

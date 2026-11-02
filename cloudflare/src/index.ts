@@ -13,6 +13,7 @@ import { memoryRouter }  from './routes/memory';
 import { mcpRouter }     from './routes/mcp';
 import { crawlerRouter } from './routes/crawler';
 import { openapiRouter } from './routes/openapi';
+import { authRouter }    from './routes/auth';
 import { renderLandingPage } from './ui/landing';
 import { MICHELANGELUS_BOLD_ITALIC_B64 } from './ui/font';
 import { processCrawlQueue } from './lib/crawler';
@@ -110,6 +111,7 @@ app.get('/v1/plans', async (c) => {
 });
 
 // Mounted sub-routers
+app.route('/v1/auth',   authRouter);
 app.route('/v1/search', searchRouter);
 app.route('/v1/memory', memoryRouter);
 app.route('/v1/keys',   keysRouter);
