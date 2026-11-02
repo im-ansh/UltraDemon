@@ -25,7 +25,7 @@ crawlerRouter.post('/crawl', async (c) => {
   if (body.url) {
     const result = await crawlAndIndexUrl(c.env, body.url, depth);
     return c.json({
-      message: result.status === 'indexed' ? '✅ Successfully crawled and indexed' : `⚠️ Crawl status: ${result.status}`,
+      message: result.status === 'indexed' ? '[OK] Successfully crawled and indexed' : `[STATUS] Crawl status: ${result.status}`,
       document: result,
     });
   }

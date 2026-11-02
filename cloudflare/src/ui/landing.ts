@@ -2,6 +2,7 @@
 // Inspired by Supermemory and elite minimalist AI labs (Linear / Notion / Vercel editorial aesthetic).
 // Theme: Pure White (#ffffff) & Monochrome. Zero gradients, zero purple/pink.
 // Typography: Michelangelus Bold Italic (Uploaded Font Embedded via WOFF2 Data URI), Geist (Sans), Geist Mono (Numbers).
+// Strict Design Rule: NO EMOJIS ANYWHERE. All icons are refined, minimalist grey SVGs.
 // Strict Authentication Flow: Login/Signup required before creating and using API keys.
 
 import { MICHELANGELUS_BOLD_ITALIC_WOFF2_B64, MICHELANGELUS_REGULAR_WOFF2_B64 } from './font-data';
@@ -14,7 +15,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UltraDemon — Sovereign Web Search &amp; Agent Memory Engine</title>
   <meta name="description" content="UltraDemon is building the sovereign edge engine for autonomous web search and structured agent memory. Sub-15ms recall, zero 3rd-party dependencies.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2309090b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M13 2L3 14h9l-1 8 10-12h-9l1-8z'/></svg>">
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -132,14 +133,14 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       text-wrap: pretty;
     }
 
-    /* Minimalist Border & Box Styling (Zero Gradients) */
+    /* Minimalist Border & Box Styling (Strictly Zero Gradients) */
     .border-subtle {
       border: 1px solid #e4e4e7;
     }
     .card-clean {
       background: #ffffff;
       border: 1px solid #e4e4e7;
-      transition: border-color 0.15s ease;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
     .card-clean:hover {
       border-color: #a1a1aa;
@@ -154,6 +155,17 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       background: #d4d4d8;
       border-radius: 4px;
     }
+
+    /* Minimal Grey Icon Default Styles */
+    .icon-grey {
+      display: inline-block;
+      vertical-align: middle;
+      color: #71717a;
+      flex-shrink: 0;
+    }
+    .icon-grey:hover {
+      color: #18181b;
+    }
   </style>
 </head>
 <body class="min-h-screen bg-white text-neutral-950 antialiased selection:bg-black selection:text-white">
@@ -164,37 +176,65 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     <!-- Left Navigation Bar (Supermemory / Notion / Editorial Style) -->
     <aside class="w-full lg:w-64 lg:min-h-screen lg:fixed lg:top-0 lg:left-0 border-b lg:border-b-0 lg:border-r border-neutral-200 bg-white/95 backdrop-blur-md z-40 flex flex-col justify-between p-6">
       <div class="space-y-6">
-        <!-- Brand Logo -->
+        <!-- Brand Logo with Grey Vector Spark Icon -->
         <a href="/" class="flex items-center gap-2.5 group">
-          <span class="text-xl">⚡</span>
+          <div class="w-7 h-7 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:bg-black group-hover:text-white group-hover:border-black transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+          </div>
           <span class="font-extrabold text-base tracking-tight text-neutral-950 flex items-center gap-1">
             ultrademon
             <span class="font-serif text-xs font-bold italic text-neutral-500">engine</span>
           </span>
         </a>
 
-        <!-- Status Tag -->
+        <!-- Status Tag with Minimal Pulse Indicator -->
         <div class="flex items-center gap-2 text-[11px] text-neutral-500 font-num">
-          <span class="w-2 h-2 rounded-full bg-black animate-pulse"></span>
+          <span class="w-2 h-2 rounded-full bg-neutral-900 animate-pulse"></span>
           <span>D1 Edge Operational</span>
         </div>
 
-        <!-- Sidebar Navigation Links -->
+        <!-- Sidebar Navigation Links with Minimalist Grey SVGs -->
         <nav class="flex flex-col space-y-1 text-xs font-medium text-neutral-600">
-          <a href="#overview" class="px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">Overview</a>
-          <a href="#memory" class="px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition flex items-center justify-between">
-            <span>UltraMemory</span>
+          <a href="#overview" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
+            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span>Overview</span>
+          </a>
+          <a href="#memory" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/><path d="M12 2v20"/><path d="M8 8h8"/><path d="M7 13h10"/><path d="M9 18h6"/></svg>
+              <span>UltraMemory</span>
+            </div>
             <span class="font-num text-[10px] bg-neutral-100 text-neutral-900 border border-neutral-200 px-1.5 py-0.2 rounded font-bold">&lt;15ms</span>
           </a>
-          <a href="#search" class="px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">UltraSearch</a>
-          <a href="#benchmarks" class="px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">Benchmarks</a>
-          <a href="#console" class="px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition flex items-center justify-between">
-            <span>API Keys</span>
+          <a href="#search" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
+            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <span>UltraSearch</span>
+          </a>
+          <a href="#benchmarks" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
+            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+            <span>Benchmarks</span>
+          </a>
+          <a href="#console" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+              <span>API Keys</span>
+            </div>
             <span class="font-num text-[10px] text-neutral-400">D1</span>
           </a>
-          <a href="#crawler" class="px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">Crawler Ingestion</a>
-          <a href="#mcp" class="px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">MCP Protocol</a>
-          <a href="#pricing" class="px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">Pricing</a>
+          <a href="#crawler" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
+            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            <span>Crawler</span>
+          </a>
+          <a href="#mcp" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
+            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+            <span>MCP Protocol</span>
+          </a>
+          <a href="#pricing" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black transition">
+            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <span>Pricing</span>
+          </a>
         </nav>
       </div>
 
@@ -211,7 +251,10 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
         <div id="sideAuthLoggedIn" class="hidden space-y-2">
           <div class="p-2.5 rounded-xl bg-neutral-100 border border-neutral-200 text-xs">
-            <div class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold">Signed In</div>
+            <div class="flex items-center gap-1.5 text-[10px] text-neutral-500 uppercase tracking-wider font-bold">
+              <svg class="w-3 h-3 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span>Signed In</span>
+            </div>
             <div id="sideUserEmail" class="font-num font-semibold text-neutral-950 truncate mt-0.5"></div>
           </div>
           <button onclick="handleSignOut()" class="w-full py-1.5 text-xs text-neutral-600 hover:text-black border border-neutral-200 rounded-lg hover:bg-neutral-50 transition cursor-pointer">
@@ -228,18 +271,18 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     <!-- Main Editorial / Interactive Container -->
     <main class="flex-1 lg:ml-64 p-6 sm:p-12 lg:p-16 max-w-4xl">
       
-      <!-- Top Release Pill -->
+      <!-- Top Release Pill with Clean Monospaced Minimalist Badge -->
       <section id="overview" class="mb-12">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-neutral-200 bg-neutral-50 text-xs text-neutral-800 mb-6 font-num">
-          <span class="w-1.5 h-1.5 rounded-full bg-black"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-neutral-900"></span>
           <span>ANNOUNCING ULTRADEMON 2.0</span>
-          <span class="text-neutral-400">/</span>
+          <span class="text-neutral-300">/</span>
           <span class="text-neutral-500 font-sans">SOVEREIGN EDGE PLATFORM</span>
         </div>
 
         <!-- Supermemory-inspired lowercase editorial hero headline -->
         <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-neutral-950 mb-6 leading-[1.12]">
-          ultrademon is building the <span class="font-serif font-bold italic text-black underline decoration-neutral-300 decoration-2 underline-offset-8">sovereign engine</span> for web search, agent memory, and continual context.
+          ultrademon is building the <span class="font-serif font-bold italic text-neutral-950 underline decoration-neutral-300 decoration-2 underline-offset-8">sovereign engine</span> for web search, agent memory, and continual context.
         </h1>
 
         <!-- Author / Timestamp meta line -->
@@ -255,7 +298,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <div class="flex flex-wrap items-center gap-3 mb-10">
           <button onclick="handleProvisionKeyClick()" class="px-5 py-2.5 rounded-xl bg-black text-white hover:bg-neutral-800 text-xs font-semibold transition cursor-pointer shadow-xs flex items-center gap-2">
             <span>Get Started Free</span>
-            <span>→</span>
+            <svg class="w-3.5 h-3.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
           <a href="/openapi.json" target="_blank" class="px-4 py-2.5 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-neutral-900 text-xs font-semibold transition flex items-center gap-1.5">
             <span class="font-num">/openapi.json</span>
@@ -265,27 +308,35 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           </a>
         </div>
 
-        <!-- Minimalist System Architecture Flow Diagram (Matching the Image) -->
+        <!-- Minimalist System Architecture Flow Diagram with Grey SVGs -->
         <div class="card-clean p-6 rounded-2xl mb-12 bg-neutral-50/50">
           <div class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 mb-4 font-num">System Architecture &amp; Execution Topology</div>
           <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-center text-xs">
             <div class="p-4 bg-white border border-neutral-200 rounded-xl">
-              <div class="text-lg mb-1">🤖</div>
+              <div class="w-8 h-8 mx-auto rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-600 mb-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2M15 20v2M2 15h2M2 9h2M20 15h2M20 9h2M9 2v2M9 20v2"/></svg>
+              </div>
               <div class="font-bold text-neutral-950">AI Agent Fleet</div>
               <div class="text-[10px] text-neutral-500 mt-1">Claude, Cursor, LangChain</div>
             </div>
             <div class="p-4 bg-white border border-neutral-200 rounded-xl">
-              <div class="text-lg mb-1">⚡</div>
+              <div class="w-8 h-8 mx-auto rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-600 mb-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              </div>
               <div class="font-bold text-neutral-950">Sovereign Gateway</div>
               <div class="text-[10px] text-neutral-500 mt-1 font-num">REST / MCP / SSE</div>
             </div>
             <div class="p-4 bg-white border border-black rounded-xl">
-              <div class="text-lg mb-1">🧠</div>
+              <div class="w-8 h-8 mx-auto rounded-lg bg-neutral-900 text-white flex items-center justify-center mb-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/><path d="M12 2v20"/><path d="M8 8h8"/><path d="M7 13h10"/><path d="M9 18h6"/></svg>
+              </div>
               <div class="font-bold text-neutral-950">D1 SQLite FTS5</div>
               <div class="text-[10px] font-num text-neutral-900 font-bold">&lt; 15ms BM25 Edge Recall</div>
             </div>
             <div class="p-4 bg-white border border-neutral-200 rounded-xl">
-              <div class="text-lg mb-1">🕷️</div>
+              <div class="w-8 h-8 mx-auto rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-600 mb-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+              </div>
               <div class="font-bold text-neutral-950">Autonomous Index</div>
               <div class="text-[10px] text-neutral-500 mt-1 font-num">&lt; 40ms Web Search</div>
             </div>
@@ -309,26 +360,32 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
       </section>
 
-      <!-- Three Pillars Section (Matching the Image) -->
+      <!-- Three Pillars Section with Grey Minimalist SVGs -->
       <section class="mb-14">
         <h2 class="text-xs font-semibold uppercase tracking-wider text-neutral-500 font-num mb-6">Core Capabilities</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="card-clean p-5 rounded-xl">
-            <div class="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center text-sm mb-3">⚡</div>
+            <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 mb-3">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </div>
             <h3 class="text-sm font-bold text-neutral-950 mb-1.5">Autonomous Web Search</h3>
             <p class="text-xs text-neutral-600 leading-relaxed">
               Native edge crawler, HTMLRewriter extraction, and BM25 ranking on D1. Sub-40ms P50 latency with zero external search API dependencies.
             </p>
           </div>
           <div class="card-clean p-5 rounded-xl border-black">
-            <div class="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center text-sm mb-3">🧠</div>
+            <div class="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center mb-3">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/><path d="M12 2v20"/><path d="M8 8h8"/><path d="M7 13h10"/><path d="M9 18h6"/></svg>
+            </div>
             <h3 class="text-sm font-bold text-neutral-950 mb-1.5">UltraMemory API</h3>
             <p class="text-xs text-neutral-600 leading-relaxed">
               Store agent facts, preferences, profiles, and conversations. Retrieve needles with BM25 in under 15ms at the Cloudflare edge.
             </p>
           </div>
           <div class="card-clean p-5 rounded-xl">
-            <div class="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center text-sm mb-3">🗄️</div>
+            <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 mb-3">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5M3 12A9 3 0 0 0 21 12"/></svg>
+            </div>
             <h3 class="text-sm font-bold text-neutral-950 mb-1.5">File &amp; Context Ingestion</h3>
             <p class="text-xs text-neutral-600 leading-relaxed">
               Ingest full text documents, Markdown, and source files with smart chunking and instant full-text indexing for agent lookup.
@@ -337,7 +394,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
       </section>
 
-      <!-- Supermemory Latency Benchmark (Prominent Editorial Section matching the Image) -->
+      <!-- Supermemory Latency Benchmark with Minimalist Bars & Tabular Metrics -->
       <section id="benchmarks" class="mb-16 pt-8 border-t border-neutral-200">
         <div class="mb-6">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Speed &amp; Latency Benchmark</span>
@@ -377,7 +434,10 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <div class="card-clean p-6 rounded-2xl space-y-3 font-num text-xs bg-neutral-50/50">
           <div>
             <div class="flex justify-between font-bold text-neutral-950 mb-1">
-              <span>⚡ UltraMemory (D1 Edge FTS5)</span>
+              <span class="flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                <span>UltraMemory (D1 Edge FTS5)</span>
+              </span>
               <span>14ms</span>
             </div>
             <div class="w-full h-3 bg-neutral-200 rounded-full overflow-hidden">
@@ -405,7 +465,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
       </section>
 
-      <!-- Live UltraMemory Interactive Playground -->
+      <!-- Live UltraMemory Interactive Playground (Grey SVGs) -->
       <section id="memory" class="mb-16 pt-8 border-t border-neutral-200">
         <div class="mb-6">
           <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-neutral-100 text-[10px] font-bold text-neutral-800 font-num mb-2">
@@ -418,17 +478,20 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             Store facts, preferences, profiles, or recall needles with sub-15ms BM25 ranking.
           </p>
 
-          <!-- Quick Samples -->
+          <!-- Quick Samples with Grey SVGs -->
           <div class="flex flex-wrap items-center gap-2 mt-3">
             <span class="text-xs text-neutral-400">Samples:</span>
-            <button onclick="fillMemorySample('preference', 'User prefers clean minimalist monochrome design, strictly zero gradients, and Michelangelus font.', 'agent_ui')" class="px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
-              🎨 Design Rule
+            <button onclick="fillMemorySample('preference', 'User prefers clean minimalist monochrome design, strictly zero gradients, and Michelangelus font.', 'agent_ui')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
+              <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/></svg>
+              <span>Design Rule</span>
             </button>
-            <button onclick="fillMemorySample('fact', 'Database infrastructure is deployed on Cloudflare D1 with SQLite FTS5 BM25 index.', 'backend_infra')" class="px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
-              ⚡ Database Architecture
+            <button onclick="fillMemorySample('fact', 'Database infrastructure is deployed on Cloudflare D1 with SQLite FTS5 BM25 index.', 'backend_infra')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
+              <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/></svg>
+              <span>Database Architecture</span>
             </button>
-            <button onclick="fillMemorySample('entity', 'UltraDemon: Sovereign web search and agent memory platform beating Supermemory.', 'product_core')" class="px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
-              🤖 Product Profile
+            <button onclick="fillMemorySample('entity', 'UltraDemon: Sovereign web search and agent memory platform beating Supermemory.', 'product_core')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
+              <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="16" height="16" x="4" y="4" rx="2"/></svg>
+              <span>Product Profile</span>
             </button>
           </div>
         </div>
@@ -437,7 +500,10 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           <!-- Store Memory Box -->
           <div class="card-clean p-5 rounded-2xl">
             <div class="flex items-center justify-between mb-3 pb-2 border-b border-neutral-100">
-              <span class="text-xs font-bold text-neutral-950">📥 Store Agent Memory</span>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                <span class="text-xs font-bold text-neutral-950">Store Agent Memory</span>
+              </div>
               <span class="text-[10px] font-num text-neutral-500">POST /v1/memory</span>
             </div>
 
@@ -484,7 +550,9 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                   class="px-4 py-1.5 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-lg transition shadow-xs flex items-center gap-1.5 cursor-pointer"
                 >
                   <span>Store Memory</span>
-                  <span id="storeMemSpinner" class="hidden animate-spin font-num">⟳</span>
+                  <span id="storeMemSpinner" class="hidden">
+                    <svg class="w-3 h-3 text-white animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/></svg>
+                  </span>
                 </button>
               </div>
             </form>
@@ -495,7 +563,10 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           <!-- Recall / Query Box -->
           <div class="card-clean p-5 rounded-2xl">
             <div class="flex items-center justify-between mb-3 pb-2 border-b border-neutral-100">
-              <span class="text-xs font-bold text-neutral-950">🔍 Recall / Query Memory</span>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <span class="text-xs font-bold text-neutral-950">Recall / Query Memory</span>
+              </div>
               <span class="text-[10px] font-num text-neutral-500">POST /v1/memory/query</span>
             </div>
 
@@ -509,14 +580,18 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                   class="w-full pl-8 pr-20 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-950 text-xs placeholder-neutral-400 focus:outline-none focus:bg-white focus:border-black transition font-medium"
                   required
                 />
-                <span class="absolute left-2.5 top-2 text-neutral-400 text-xs">🧠</span>
+                <span class="absolute left-2.5 top-2.5 text-neutral-400">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+                </span>
                 <button 
                   type="submit" 
                   id="queryMemBtn"
                   class="absolute right-1 top-1 px-3 py-1 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-lg transition shadow-xs flex items-center gap-1 cursor-pointer"
                 >
                   <span>Recall</span>
-                  <span id="queryMemSpinner" class="hidden animate-spin font-num">⟳</span>
+                  <span id="queryMemSpinner" class="hidden">
+                    <svg class="w-3 h-3 text-white animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/></svg>
+                  </span>
                 </button>
               </div>
 
@@ -547,8 +622,14 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <!-- Stored Memories Table -->
         <div class="card-clean p-5 rounded-2xl mt-6">
           <div class="flex items-center justify-between mb-3 pb-2 border-b border-neutral-100">
-            <span class="text-xs font-bold text-neutral-950">🗄️ Active Memories in Edge Storage</span>
-            <button onclick="refreshStoredMemories()" class="text-xs text-neutral-500 hover:text-black transition cursor-pointer">⟳ Refresh</button>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/></svg>
+              <span class="text-xs font-bold text-neutral-950">Active Memories in Edge Storage</span>
+            </div>
+            <button onclick="refreshStoredMemories()" class="flex items-center gap-1 text-xs text-neutral-500 hover:text-black transition cursor-pointer">
+              <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>
+              <span>Refresh</span>
+            </button>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
@@ -571,7 +652,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
       </section>
 
-      <!-- Live UltraSearch Interactive Playground -->
+      <!-- Live UltraSearch Interactive Playground (Grey SVGs) -->
       <section id="search" class="mb-16 pt-8 border-t border-neutral-200">
         <div class="mb-6">
           <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-neutral-100 text-[10px] font-bold text-neutral-800 font-num mb-2">
@@ -586,14 +667,17 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
           <div class="flex flex-wrap items-center gap-2 mt-3">
             <span class="text-xs text-neutral-400">Try queries:</span>
-            <button onclick="setQuery('What is Python?')" class="px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
-              ⚡ What is Python?
+            <button onclick="setQuery('What is Python?')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
+              <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              <span>What is Python?</span>
             </button>
-            <button onclick="setQuery('Cloudflare Workers AI')" class="px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
-              🌐 Cloudflare Workers AI
+            <button onclick="setQuery('Cloudflare Workers AI')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
+              <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>
+              <span>Cloudflare Workers AI</span>
             </button>
-            <button onclick="setQuery('BM25 Ranking Algorithm')" class="px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
-              📐 BM25 Ranking
+            <button onclick="setQuery('BM25 Ranking Algorithm')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
+              <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+              <span>BM25 Ranking</span>
             </button>
           </div>
         </div>
@@ -609,14 +693,18 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                 class="w-full pl-9 pr-24 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-950 text-xs placeholder-neutral-400 focus:outline-none focus:bg-white focus:border-black transition font-medium"
                 required
               />
-              <span class="absolute left-3 top-2.5 text-neutral-400 text-xs">🔍</span>
+              <span class="absolute left-3 top-2.5 text-neutral-400">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.3-4.3"/></svg>
+              </span>
               <button 
                 type="submit" 
                 id="searchBtn"
                 class="absolute right-1 top-1 px-4 py-1.5 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-lg transition shadow-xs flex items-center gap-1 cursor-pointer"
               >
                 <span>Search</span>
-                <span id="searchSpinner" class="hidden animate-spin font-num">⟳</span>
+                <span id="searchSpinner" class="hidden">
+                  <svg class="w-3 h-3 text-white animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/></svg>
+                </span>
               </button>
             </div>
 
@@ -665,7 +753,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <!-- Auth Banner -->
         <div id="authPromptBanner" class="card-clean p-4 rounded-xl mb-6 flex flex-col sm:flex-row items-center justify-between gap-3 bg-neutral-50">
           <div class="flex items-center gap-2.5">
-            <span class="text-base">🔒</span>
+            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             <div class="text-xs">
               <span class="font-bold text-neutral-950">Authentication Required:</span>
               <span class="text-neutral-600"> Sign in or create an account to generate and manage keys.</span>
@@ -685,12 +773,15 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           <!-- Generate Key Form -->
           <div class="card-clean p-5 rounded-2xl">
             <h3 class="text-xs font-bold text-neutral-950 mb-3 flex items-center gap-1.5">
-              <span>🔑</span> Generate Unified Key
+              <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+              <span>Generate Unified Key</span>
             </h3>
 
             <!-- Locked View -->
             <div id="createKeyLocked" class="p-6 rounded-xl bg-neutral-50 border border-neutral-200 text-center space-y-2">
-              <div class="text-base">🔒</div>
+              <div class="w-8 h-8 mx-auto rounded-full bg-neutral-200 flex items-center justify-center text-neutral-600">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
               <div class="text-xs font-bold text-neutral-950">Login Required</div>
               <p class="text-[11px] text-neutral-500">Sign in to generate keys.</p>
               <button onclick="openAuthModal('signin')" class="mt-2 px-3 py-1.5 text-xs font-semibold rounded-lg bg-black text-white cursor-pointer">Sign In</button>
@@ -726,12 +817,17 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                 class="w-full py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-lg transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <span>Generate Key</span>
-                <span id="createKeySpinner" class="hidden animate-spin font-num">⟳</span>
+                <span id="createKeySpinner" class="hidden">
+                  <svg class="w-3 h-3 text-white animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/></svg>
+                </span>
               </button>
             </form>
 
             <div id="newKeyAlert" class="mt-3 p-3 bg-neutral-100 border border-neutral-300 rounded-xl hidden">
-              <div class="text-[10px] font-bold text-neutral-950 mb-1">Key Generated (Shown Once):</div>
+              <div class="text-[10px] font-bold text-neutral-950 mb-1 flex items-center gap-1">
+                <svg class="w-3 h-3 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Key Generated (Shown Once):</span>
+              </div>
               <div class="flex items-center justify-between gap-1 bg-white border border-neutral-200 p-1.5 rounded font-mono text-xs">
                 <span id="newKeyDisplay" class="truncate font-num"></span>
                 <button onclick="copyToClipboard(document.getElementById('newKeyDisplay').innerText)" class="text-xs text-neutral-900 font-bold underline cursor-pointer">Copy</button>
@@ -745,7 +841,10 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             <div class="card-clean p-4 rounded-xl">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-xs font-bold text-neutral-950">Daily Quota Usage</span>
-                <button onclick="refreshUsage()" class="text-xs text-neutral-500 hover:text-black cursor-pointer">⟳ Refresh</button>
+                <button onclick="refreshUsage()" class="flex items-center gap-1 text-xs text-neutral-500 hover:text-black cursor-pointer">
+                  <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>
+                  <span>Refresh</span>
+                </button>
               </div>
               <div class="grid grid-cols-3 gap-2 font-num text-center">
                 <div class="bg-neutral-50 p-2.5 rounded-lg border border-neutral-200">
@@ -788,7 +887,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
       </section>
 
-      <!-- Crawler Section -->
+      <!-- Crawler Section with Grey SVGs -->
       <section id="crawler" class="mb-16 pt-8 border-t border-neutral-200">
         <div class="mb-6">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Autonomous Ingestion</span>
@@ -830,7 +929,9 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                 class="px-4 py-1.5 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-lg transition shadow-xs flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Crawl &amp; Index</span>
-                <span id="crawlSpinner" class="hidden animate-spin font-num">⟳</span>
+                <span id="crawlSpinner" class="hidden">
+                  <svg class="w-3 h-3 text-white animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/></svg>
+                </span>
               </button>
             </div>
           </form>
@@ -969,7 +1070,7 @@ curl -X POST "${origin}/v1/memory/query" \\
         </div>
       </section>
 
-      <!-- Pricing Plans -->
+      <!-- Pricing Plans with Minimalist Checkmarks -->
       <section id="pricing" class="mb-16 pt-8 border-t border-neutral-200">
         <div class="mb-6">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Predictable Pricing</span>
@@ -986,11 +1087,11 @@ curl -X POST "${origin}/v1/memory/query" \\
             <div>
               <div class="text-xs font-semibold text-neutral-500 mb-1">Free</div>
               <div class="text-2xl font-extrabold font-num text-neutral-950 mb-3">$0<span class="text-xs text-neutral-400 font-sans font-normal">/mo</span></div>
-              <ul class="text-xs text-neutral-600 space-y-1.5 mb-4">
-                <li>✓ <span class="font-num font-semibold text-neutral-900">100</span> requests / day</li>
-                <li>✓ UltraMemory Recall (&lt;15ms)</li>
-                <li>✓ UltraSearch Mode 1</li>
-                <li>✓ KV Hot Cache</li>
+              <ul class="text-xs text-neutral-600 space-y-2 mb-4">
+                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span><strong class="font-num font-semibold text-neutral-900">100</strong> requests / day</span></li>
+                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>UltraMemory Recall (&lt;15ms)</span></li>
+                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>UltraSearch Mode 1</span></li>
+                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>KV Hot Cache</span></li>
               </ul>
             </div>
             <button onclick="handleProvisionKeyClick('free')" class="w-full py-1.5 text-center text-xs font-semibold rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 cursor-pointer">Get Free Key</button>
@@ -1001,12 +1102,12 @@ curl -X POST "${origin}/v1/memory/query" \\
             <div>
               <div class="text-xs font-semibold text-neutral-900 mb-1">Pro</div>
               <div class="text-2xl font-extrabold font-num text-neutral-950 mb-3">$29<span class="text-xs text-neutral-400 font-sans font-normal">/mo</span></div>
-              <ul class="text-xs text-neutral-600 space-y-1.5 mb-4">
-                <li>✓ <span class="font-num font-semibold text-neutral-900">10,000</span> requests / day</li>
-                <li>✓ UltraMemory File &amp; Doc Storage</li>
-                <li>✓ UltraSearch Mode 2 Standard</li>
-                <li>✓ Full Edge Crawler Access</li>
-                <li>✓ Unified MCP Server</li>
+              <ul class="text-xs text-neutral-600 space-y-2 mb-4">
+                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span><strong class="font-num font-semibold text-neutral-900">10,000</strong> requests / day</span></li>
+                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>UltraMemory File Storage</span></li>
+                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>UltraSearch Mode 2 Standard</span></li>
+                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Full Edge Crawler Access</span></li>
+                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Unified MCP Server</span></li>
               </ul>
             </div>
             <button onclick="handleProvisionKeyClick('pro')" class="w-full py-1.5 text-center text-xs font-semibold rounded-lg bg-black hover:bg-neutral-800 text-white cursor-pointer shadow-xs">Choose Pro</button>
@@ -1016,11 +1117,11 @@ curl -X POST "${origin}/v1/memory/query" \\
             <div>
               <div class="text-xs font-semibold text-neutral-500 mb-1">Ultra</div>
               <div class="text-2xl font-extrabold font-num text-neutral-950 mb-3">$99<span class="text-xs text-neutral-400 font-sans font-normal">/mo</span></div>
-              <ul class="text-xs text-neutral-600 space-y-1.5 mb-4">
-                <li>✓ <span class="font-num font-semibold text-neutral-900">100,000</span> requests / day</li>
-                <li>✓ Multi-Agent Container Tagging</li>
-                <li>✓ UltraSearch Mode 3 Deep</li>
-                <li>✓ Priority Edge Execution</li>
+              <ul class="text-xs text-neutral-600 space-y-2 mb-4">
+                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span><strong class="font-num font-semibold text-neutral-900">100,000</strong> requests / day</span></li>
+                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Multi-Agent Container Namespaces</span></li>
+                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>UltraSearch Mode 3 Deep</span></li>
+                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Priority Edge Execution</span></li>
               </ul>
             </div>
             <button onclick="handleProvisionKeyClick('ultra')" class="w-full py-1.5 text-center text-xs font-semibold rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 cursor-pointer">Choose Ultra</button>
@@ -1028,10 +1129,11 @@ curl -X POST "${origin}/v1/memory/query" \\
         </div>
       </section>
 
-      <!-- Minimalist Footer -->
+      <!-- Minimalist Footer with Grey Icon -->
       <footer class="pt-8 pb-12 border-t border-neutral-200 text-xs text-neutral-500 flex flex-col sm:flex-row items-center justify-between gap-3 font-num">
         <div class="flex items-center gap-2">
-          <span class="font-bold text-neutral-900">⚡ UltraDemon</span>
+          <svg class="w-3.5 h-3.5 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <span class="font-bold text-neutral-900">UltraDemon</span>
           <span class="font-serif font-bold italic text-neutral-500">engine</span>
           <span>·</span>
           <span>MIT License</span>
@@ -1045,13 +1147,17 @@ curl -X POST "${origin}/v1/memory/query" \\
     </main>
   </div>
 
-  <!-- Auth Modal -->
+  <!-- Auth Modal with Grey SVGs -->
   <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs hidden">
     <div class="bg-white p-6 rounded-2xl w-full max-w-sm shadow-2xl relative border border-neutral-300">
-      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-black text-sm transition cursor-pointer">✕</button>
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-black transition cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
       
       <div class="flex items-center gap-2 mb-4">
-        <span class="text-xl">⚡</span>
+        <div class="w-6 h-6 rounded bg-neutral-100 flex items-center justify-center text-neutral-700">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
         <div>
           <h3 id="authModalTitle" class="text-base font-bold text-neutral-950">
             Sign In to <span class="font-serif font-bold italic text-black">UltraDemon</span>
@@ -1096,7 +1202,9 @@ curl -X POST "${origin}/v1/memory/query" \\
           class="w-full py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-lg transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
         >
           <span id="authSubmitText">Sign In</span>
-          <span id="authSpinner" class="hidden animate-spin font-num">⟳</span>
+          <span id="authSpinner" class="hidden">
+            <svg class="w-3 h-3 text-white animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/></svg>
+          </span>
         </button>
       </form>
 
@@ -1106,7 +1214,7 @@ curl -X POST "${origin}/v1/memory/query" \\
     </div>
   </div>
 
-  <!-- Client-side JavaScript with clean string construction -->
+  <!-- Client-side JavaScript with clean string construction and zero emojis -->
   <script>
     const SUPABASE_URL = "${supabaseUrl}";
     const SUPABASE_ANON_KEY = "${supabaseAnonKey}";
@@ -1241,7 +1349,7 @@ curl -X POST "${origin}/v1/memory/query" \\
         createKeyForm.classList.remove('hidden');
         if (userAccountDisplay) userAccountDisplay.innerText = user.email || user.id;
 
-        banner.innerHTML = '<div class=\"flex items-center gap-2\"><span class=\"text-base\">✅</span><div class=\"text-xs\"><span class=\"font-bold text-neutral-950\">Signed in:</span> <span class=\"text-neutral-600\">' + (user.email || user.id) + '</span></div></div><button onclick=\"handleSignOut()\" class=\"px-3 py-1 text-xs border border-neutral-300 rounded-lg hover:bg-neutral-100 cursor-pointer\">Sign Out</button>';
+        banner.innerHTML = '<div class=\"flex items-center gap-2\"><svg class=\"w-4 h-4 text-neutral-700\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2.5\"><polyline points=\"20 6 9 17 4 12\"/></svg><div class=\"text-xs\"><span class=\"font-bold text-neutral-950\">Signed in:</span> <span class=\"text-neutral-600\">' + (user.email || user.id) + '</span></div></div><button onclick=\"handleSignOut()\" class=\"px-3 py-1 text-xs border border-neutral-300 rounded-lg hover:bg-neutral-100 cursor-pointer\">Sign Out</button>';
 
         loadRemoteKeys(user.id);
         refreshStoredMemories();
@@ -1252,7 +1360,7 @@ curl -X POST "${origin}/v1/memory/query" \\
         createKeyLocked.classList.remove('hidden');
         createKeyForm.classList.add('hidden');
 
-        banner.innerHTML = '<div class=\"flex items-center gap-2\"><span class=\"text-base\">🔒</span><div class=\"text-xs\"><span class=\"font-bold text-neutral-950\">Authentication Required:</span> <span class=\"text-neutral-600\">Sign in or create an account to generate and manage keys.</span></div></div><div class=\"flex items-center gap-2\"><button onclick=\"openAuthModal(\\'signin\\')\" class=\"px-3 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 cursor-pointer\">Sign In</button><button onclick=\"openAuthModal(\\'signup\\')\" class=\"px-3 py-1.5 text-xs font-semibold rounded-lg border border-neutral-300 hover:bg-neutral-100 cursor-pointer\">Create Account</button></div>';
+        banner.innerHTML = '<div class=\"flex items-center gap-2\"><svg class=\"w-4 h-4 text-neutral-500\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\" ry=\"2\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg><div class=\"text-xs\"><span class=\"font-bold text-neutral-950\">Authentication Required:</span> <span class=\"text-neutral-600\">Sign in or create an account to generate and manage keys.</span></div></div><div class=\"flex items-center gap-2\"><button onclick=\"openAuthModal(\\'signin\\')\" class=\"px-3 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 cursor-pointer\">Sign In</button><button onclick=\"openAuthModal(\\'signup\\')\" class=\"px-3 py-1.5 text-xs font-semibold rounded-lg border border-neutral-300 hover:bg-neutral-100 cursor-pointer\">Create Account</button></div>';
 
         renderKeysTable();
         refreshUsage();
@@ -1307,7 +1415,7 @@ curl -X POST "${origin}/v1/memory/query" \\
 
     function copyToClipboard(text) {
       navigator.clipboard.writeText(text);
-      alert('Copied to clipboard!');
+      alert('Copied to clipboard');
     }
 
     function getActiveKey() {
@@ -1358,7 +1466,7 @@ curl -X POST "${origin}/v1/memory/query" \\
 
         if (resp.ok && data.memory_id) {
           alertBox.className = 'mt-3 p-2.5 rounded-lg text-xs font-num bg-neutral-100 border border-neutral-300 text-neutral-950 flex items-center justify-between';
-          alertBox.innerHTML = '<span>✅ Stored: <strong>' + data.memory_id + '</strong> [' + data.container_tag + ']</span><span class=\"text-[10px] text-neutral-500 font-sans\">Edge D1 FTS5</span>';
+          alertBox.innerHTML = '<span class=\"flex items-center gap-1.5\"><svg class=\"w-3.5 h-3.5 text-neutral-700\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2.5\"><polyline points=\"20 6 9 17 4 12\"/></svg><span>Stored: <strong>' + data.memory_id + '</strong> [' + data.container_tag + ']</span></span><span class=\"text-[10px] text-neutral-500 font-sans\">Edge D1 FTS5</span>';
           alertBox.classList.remove('hidden');
           document.getElementById('memContentInput').value = '';
           refreshStoredMemories();
@@ -1500,14 +1608,14 @@ curl -X POST "${origin}/v1/memory/query" \\
       if (!query) return;
 
       if (!currentUser) {
-        resultsDiv.innerHTML = '<div class=\"p-6 rounded-xl bg-neutral-50 border border-neutral-200 text-center space-y-2\"><div class=\"text-base\">🔒</div><div class=\"text-xs font-bold text-neutral-950\">Authentication Required</div><p class=\"text-[11px] text-neutral-500\">Please log in or sign up before querying the index.</p><button onclick=\"openAuthModal(\\'signin\\')\" class=\"mt-2 px-3 py-1.5 text-xs font-semibold rounded bg-black text-white cursor-pointer\">Sign In</button></div>';
+        resultsDiv.innerHTML = '<div class=\"p-6 rounded-xl bg-neutral-50 border border-neutral-200 text-center space-y-2\"><div class=\"w-8 h-8 mx-auto rounded-full bg-neutral-200 flex items-center justify-center text-neutral-600\"><svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\" ry=\"2\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg></div><div class=\"text-xs font-bold text-neutral-950\">Authentication Required</div><p class=\"text-[11px] text-neutral-500\">Please log in or sign up before querying the index.</p><button onclick=\"openAuthModal(\\'signin\\')\" class=\"mt-2 px-3 py-1.5 text-xs font-semibold rounded bg-black text-white cursor-pointer\">Sign In</button></div>';
         openAuthModal('signin');
         return;
       }
 
       const apiKey = getActiveKey();
       if (!apiKey) {
-        resultsDiv.innerHTML = '<div class=\"p-6 rounded-xl bg-neutral-50 border border-neutral-200 text-center space-y-2\"><div class=\"text-base\">🔑</div><div class=\"text-xs font-bold text-neutral-950\">API Key Required</div><p class=\"text-[11px] text-neutral-500\">Generate an API key in the Developer Console first.</p><button onclick=\"document.getElementById(\\'console\\').scrollIntoView({behavior:\\'smooth\\'})\" class=\"mt-2 px-3 py-1.5 text-xs font-semibold rounded bg-black text-white cursor-pointer\">Generate Key ↓</button></div>';
+        resultsDiv.innerHTML = '<div class=\"p-6 rounded-xl bg-neutral-50 border border-neutral-200 text-center space-y-2\"><div class=\"w-8 h-8 mx-auto rounded-full bg-neutral-200 flex items-center justify-center text-neutral-600\"><svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5-1.5 2-2z\"/><circle cx=\"17.5\" cy=\"6.5\" r=\"1.5\"/></svg></div><div class=\"text-xs font-bold text-neutral-950\">API Key Required</div><p class=\"text-[11px] text-neutral-500\">Generate an API key in the Developer Console first.</p><button onclick=\"document.getElementById(\\'console\\').scrollIntoView({behavior:\\'smooth\\'})\" class=\"mt-2 px-3 py-1.5 text-xs font-semibold rounded bg-black text-white cursor-pointer\">Generate Key ↓</button></div>';
         document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
         return;
       }
@@ -1622,7 +1730,7 @@ curl -X POST "${origin}/v1/memory/query" \\
         '<tr class=\"hover:bg-neutral-50\">' +
           '<td class=\"py-2 font-mono text-neutral-900\">' +
             '<span class=\"truncate max-w-[140px] inline-block\">' + (k.plain_key || 'Key: ' + k.key_id) + '</span>' +
-            (k.plain_key ? ' <button onclick=\"copyToClipboard(\\'' + k.plain_key + '\\')\" class=\"text-neutral-400 hover:text-black cursor-pointer\">📋</button>' : '') +
+            (k.plain_key ? ' <button onclick=\"copyToClipboard(\\'' + k.plain_key + '\\')\" class=\"text-neutral-400 hover:text-black cursor-pointer inline-flex items-center ml-1\"><svg class=\"w-3 h-3\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\" ry=\"2\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"/></svg></button>' : '') +
           '</td>' +
           '<td class=\"py-2\"><span class=\"px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-800 text-[10px] uppercase font-semibold\">' + k.plan + '</span></td>' +
           '<td class=\"py-2 text-neutral-600\">' + (k.label || 'Key') + '</td>' +

@@ -26,7 +26,7 @@ const SERVER_INFO = {
 const TOOLS = [
   {
     name: 'ultrasearch_web',
-    description: '⚡ Ultra-fast web search powered by your own Cloudflare D1 FTS5 index. Returns BM25-ranked passages, matched snippets, and PageRank scores. Latency: <50ms globally.',
+    description: 'Ultra-fast web search powered by your own Cloudflare D1 FTS5 index. Returns BM25-ranked passages, matched snippets, and PageRank scores. Latency: <50ms globally.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -39,7 +39,7 @@ const TOOLS = [
   },
   {
     name: 'ultrasearch_research',
-    description: '🔬 Deep multi-hop research search. Expands query into multi-angled sub-queries, cross-references sources across the index, and synthesizes structured evidence with citations.',
+    description: 'Deep multi-hop research search. Expands query into multi-angled sub-queries, cross-references sources across the index, and synthesizes structured evidence with citations.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -51,7 +51,7 @@ const TOOLS = [
   },
   {
     name: 'ultramemory_store',
-    description: '🧠 Store structured long-term memory for an AI agent (fact, preference, profile, conversation, or document). Indexed instantly into edge D1 FTS5 for sub-15ms recall.',
+    description: 'Store structured long-term memory for an AI agent (fact, preference, profile, conversation, or document). Indexed instantly into edge D1 FTS5 for sub-15ms recall.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -67,7 +67,7 @@ const TOOLS = [
   },
   {
     name: 'ultramemory_query',
-    description: '🔍 Retrieve and recall relevant memories for an AI agent using BM25 ranking over edge SQLite FTS5. Beats Supermemory in speed (<15ms latency).',
+    description: 'Retrieve and recall relevant memories for an AI agent using BM25 ranking over edge SQLite FTS5. Sub-15ms latency globally.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -82,7 +82,7 @@ const TOOLS = [
   },
   {
     name: 'ultramemory_list',
-    description: '🗄️ List stored memories for the agent with pagination and container filtering.',
+    description: 'List stored memories for the agent with pagination and container filtering.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -94,7 +94,7 @@ const TOOLS = [
   },
   {
     name: 'ultramemory_delete',
-    description: '🗑️ Delete a specific memory item by its memory_id.',
+    description: 'Delete a specific memory item by its memory_id.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -105,7 +105,7 @@ const TOOLS = [
   },
   {
     name: 'ultrasearch_crawl',
-    description: '🕷️ Web Crawler: Fetch, parse, extract main content, and index any live URL or website directly into the UltraSearch index.',
+    description: 'Web Crawler: Fetch, parse, extract main content, and index any live URL or website directly into the UltraSearch index.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -117,17 +117,17 @@ const TOOLS = [
   },
   {
     name: 'ultrasearch_index_stats',
-    description: '📊 Check UltraSearch index statistics: total documents indexed, total words, domains covered, and crawler queue health.',
+    description: 'Check UltraSearch index statistics: total documents indexed, total words, domains covered, and crawler queue health.',
     inputSchema: { type: 'object', properties: {}, required: [] },
   },
   {
     name: 'ultrasearch_usage',
-    description: '📊 Check your UltraSearch API key quota and usage. Returns plan, daily limit, requests used today, remaining quota, and reset time.',
+    description: 'Check your UltraSearch API key quota and usage. Returns plan, daily limit, requests used today, remaining quota, and reset time.',
     inputSchema: { type: 'object', properties: {}, required: [] },
   },
   {
     name: 'ultrasearch_provision_key',
-    description: '🔑 Create a new UltraSearch API key. Returns the plain key ONCE — save it immediately.',
+    description: 'Create a new UltraSearch API key. Returns the plain key ONCE — save it immediately.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -160,7 +160,7 @@ async function handleTool(
     const depth = Number(args.depth ?? 0);
     const res = await crawlAndIndexUrl(env, url, depth);
     return {
-      message: res.status === 'indexed' ? `✅ Successfully crawled and indexed ${url}` : `⚠️ Status: ${res.status} (${res.error || ''})`,
+      message: res.status === 'indexed' ? `Successfully crawled and indexed ${url}` : `Status: ${res.status} (${res.error || ''})`,
       document: {
         title: res.title,
         url: res.url,
@@ -195,7 +195,7 @@ async function handleTool(
       String(args.plan ?? 'free'),
       String(args.label ?? ''),
     );
-    return { message: '✅ Key created! Save plain_key — shown ONCE.', plain_key: plainKey, ...record };
+    return { message: 'Key created. Save plain_key — shown ONCE.', plain_key: plainKey, ...record };
   }
   if (name === 'ultramemory_store') {
     let userId = 'default';
@@ -217,7 +217,7 @@ async function handleTool(
       metadata: (args.metadata as Record<string, unknown>) || undefined,
     });
     return {
-      message: '✅ Memory stored successfully in edge index',
+      message: 'Memory stored successfully in edge index',
       memory_id: mem.memory_id,
       container_tag: mem.container_tag,
       title: mem.title,

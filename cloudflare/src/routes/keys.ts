@@ -27,7 +27,7 @@ keysRouter.post('/', async (c) => {
       body.label?.trim() || (sbUser.email ? `Key for ${sbUser.email}` : 'Default Key'),
     );
     return c.json({
-      message: '✅ API key created. Save the plain_key — it will NOT be shown again.',
+      message: 'API key created. Save the plain_key — it will NOT be shown again.',
       plain_key: plainKey,
       key_id:    record.key_id,
       user_id:   record.user_id,
