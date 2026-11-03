@@ -267,7 +267,17 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <div id="customCursor" class="custom-cursor"></div>
 
   <!-- Interactive Light Blue Jacket Unzip Experience -->
-  <div id="jacketCurtain" class="fixed inset-0 z-[99998] flex overflow-hidden select-none transition-opacity duration-700">
+  <div id="jacketCurtain" class="fixed inset-0 z-[99998] flex overflow-hidden select-none transition-opacity duration-700 cursor-pointer">
+    <!-- Top-Right Skip Intro Button (Always Visible & Instant Bypass) -->
+    <button 
+      id="skipJacketBtn" 
+      onclick="skipJacket(event)" 
+      class="fixed top-5 right-5 z-[99999] px-4 py-2 rounded-full bg-black/90 hover:bg-black text-white text-xs font-num font-semibold shadow-2xl border border-white/40 flex items-center gap-1.5 transition cursor-pointer backdrop-blur-md hover:scale-105 active:scale-95"
+      title="Skip intro animation and access website directly"
+    >
+      <span>Skip Intro</span>
+      <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+    </button>
     <!-- Left Flap of the Jacket -->
     <div id="jacketLeft" class="relative w-1/2 h-full jacket-flap shadow-2xl will-change-transform flex flex-col justify-between p-6 sm:p-10 border-r border-[#0284c7]/50">
       <div class="absolute inset-0 pointer-events-none opacity-25 jacket-baffles"></div>
@@ -338,10 +348,13 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </div>
 
       <!-- Floating Unzip Tag with Animated Arrow -->
-      <div id="zipperTag" class="mt-4 px-3.5 py-1.5 rounded-full bg-black/90 backdrop-blur-md text-white text-[11px] font-semibold tracking-wide font-num shadow-2xl flex items-center gap-2 border border-white/30 whitespace-nowrap animate-bounce">
+      <div id="zipperTag" class="mt-4 px-3.5 py-1.5 rounded-full bg-black/90 hover:bg-black backdrop-blur-md text-white text-[11px] font-semibold tracking-wide font-num shadow-2xl flex items-center gap-2 border border-white/30 whitespace-nowrap animate-bounce cursor-pointer">
         <svg class="w-3.5 h-3.5 text-sky-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
-        <span>HOLD &amp; PULL DOWN TO UNZIP</span>
+        <span>HOLD &amp; PULL DOWN OR CLICK TO OPEN</span>
       </div>
+      <button onclick="skipJacket(event)" class="mt-2.5 px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-[11px] text-white border border-white/40 transition cursor-pointer font-num font-medium backdrop-blur-xs">
+        Enter website directly &rarr;
+      </button>
     </div>
   </div>
 
@@ -2741,6 +2754,28 @@ curl "${origin}/v1/memory/context?q=preference" \\
     }
 
 
+function skipJacket(e) {
+      if (e) {
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.preventDefault) e.preventDefault();
+      }
+      try {
+        sessionStorage.setItem('ultrademon_jacket_unzipped', 'true');
+      } catch (err) {}
+      const curtain = document.getElementById('jacketCurtain');
+      const skipBtn = document.getElementById('skipJacketBtn');
+      if (skipBtn) skipBtn.style.display = 'none';
+      if (curtain) {
+        curtain.style.transition = 'opacity 0.25s ease';
+        curtain.style.opacity = '0';
+        curtain.style.pointerEvents = 'none';
+        setTimeout(() => {
+          curtain.style.display = 'none';
+        }, 260);
+      }
+    }
+    window.skipJacket = skipJacket;
+
     // 1. Interactive Light Blue Jacket Unzip Physics (Unified PointerEvents + Touch + Gesture)
     (function initJacketUnzip() {
       const curtain = document.getElementById('jacketCurtain');
@@ -2897,17 +2932,21 @@ curl "${origin}/v1/memory/context?q=preference" \\
       window.addEventListener('touchend', onPointerUp);
       window.addEventListener('touchcancel', onPointerUp);
 
-      // Mouse events fallback for older desktop browsers
+      // Mouse events fallback for desktop
       handle.addEventListener('mousedown', onPointerDown);
       window.addEventListener('mousemove', onPointerMove);
       window.addEventListener('mouseup', onPointerUp);
 
-      // Direct click handler on handle & tag: immediate fluid unzip
-      handle.addEventListener('click', (e) => {
-        if (!hasDraggedDown && !isCompleted) {
+      // Entire curtain click: if user clicks anywhere on the curtain, open immediately!
+      curtain.addEventListener('click', (e) => {
+        if (e.target.closest('#skipJacketBtn')) return;
+        if (!hasDraggedDown) {
           finishUnzip();
         }
       });
+
+      // Expose finishUnzip on window
+      window.finishUnzip = finishUnzip;
     })();
 
     function rezipJacket() {
