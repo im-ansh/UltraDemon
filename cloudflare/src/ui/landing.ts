@@ -444,7 +444,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         </div>
         <div>
-          <div class="font-extrabold text-sm sm:text-base tracking-tight text-white flex items-center gap-1">
+          <div class="font-bold text-sm sm:text-base tracking-tight text-white flex items-center gap-1">
             ultrademon
             <span class="font-serif text-xs font-bold italic text-sky-100">engine</span>
           </div>
@@ -524,7 +524,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
           </svg>
         </div>
-        <span id="brandName" class="font-extrabold text-base tracking-tight text-white flex items-center gap-1 transition-colors">
+        <span id="brandName" class="font-bold text-base tracking-tight text-white flex items-center gap-1 transition-colors">
           ultrademon
           <span id="logoEngine" class="font-serif text-xs font-bold italic text-white/80">engine</span>
         </span>
@@ -631,7 +631,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
             <div class="text-[11px] font-bold uppercase tracking-wider text-neutral-950 font-num flex items-center gap-2">
               <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-xs"></span>
-              <span class="text-neutral-950 font-extrabold tracking-wide">SYSTEM ARCHITECTURE &amp; EXECUTION TOPOLOGY</span>
+              <span class="text-neutral-950 font-semibold tracking-wide">SYSTEM ARCHITECTURE &amp; EXECUTION TOPOLOGY</span>
             </div>
             <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-white text-[10px] font-num text-neutral-950 font-bold shadow-xs">
               CLOUDFLARE ANYCAST EDGE · 330+ CITIES
@@ -1015,95 +1015,130 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           </p>
         </div>
 
-        <!-- Metric Stat Cards Grid (Geist Mono Tabular Figures & High-Contrast Hierarchy) -->
+        <!-- Metric Stat Cards Grid (Refined Precision Hierarchy, Light Typography & Micro-Badges) -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 font-num">
           <!-- Featured Card: UltraMemory Recall -->
-          <div class="group relative p-5 rounded-2xl bg-neutral-950 text-white border border-neutral-800 hover:-translate-y-1 hover:shadow-xl transition-all duration-200 flex flex-col justify-between font-num shadow-md overflow-hidden">
+          <div class="group relative p-5 rounded-2xl bg-neutral-950 text-white border border-neutral-800 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between overflow-hidden">
             <div>
-              <span class="text-[10px] uppercase font-bold text-emerald-400 flex items-center gap-1.5">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>UltraMemory Recall</span>
-              </span>
-              <div class="text-3xl sm:text-4xl font-extrabold text-white my-2 tracking-tight">
-                &lt; 15<span class="text-sm font-sans font-normal text-neutral-400">ms</span>
+              <div class="flex items-center justify-between gap-1 mb-2.5">
+                <span class="inline-flex items-center gap-1.5 text-[10px] font-medium tracking-wider uppercase text-emerald-400 font-num">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>UltraMemory Recall</span>
+                </span>
+                <span class="inline-flex items-center px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[9px] font-num font-medium whitespace-nowrap">25x FASTER</span>
+              </div>
+              <div class="text-3xl sm:text-4xl font-normal text-white my-1.5 tracking-tight flex items-baseline gap-1 font-num">
+                <span class="text-neutral-400 text-xl font-light">&lt;</span>
+                <span class="font-normal text-white">15</span>
+                <span class="text-xs font-normal text-neutral-400 font-sans">ms</span>
               </div>
             </div>
-            <div class="text-[11px] text-neutral-300 font-sans flex items-center justify-between border-t border-neutral-800 pt-2.5 mt-2">
-              <span>Edge D1 FTS5</span>
-              <span class="text-emerald-400 font-bold font-num text-[10px] uppercase px-1.5 py-0.2 rounded bg-emerald-950/60 border border-emerald-800/80">25x Faster</span>
+            <div class="text-[11px] text-neutral-400 font-normal border-t border-neutral-800/80 pt-2.5 mt-2 flex items-center justify-between">
+              <span>Edge D1 SQLite FTS5</span>
+              <span class="text-neutral-500 text-[10px] font-num">P95 Recall</span>
             </div>
           </div>
 
           <!-- Comparison Card: Supermemory Cloud -->
-          <div class="group relative p-5 rounded-2xl bg-white border border-neutral-200 hover:-translate-y-1 hover:shadow-md hover:border-neutral-300 transition-all duration-200 flex flex-col justify-between font-num overflow-hidden">
+          <div class="group relative p-5 rounded-2xl bg-white border border-neutral-200 hover:border-neutral-300 hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between shadow-2xs overflow-hidden">
             <div>
-              <span class="text-[10px] uppercase font-bold text-neutral-400">Supermemory (Cloud)</span>
-              <div class="text-3xl sm:text-4xl font-extrabold text-neutral-400 my-2 tracking-tight">
-                380<span class="text-sm font-sans font-normal text-neutral-400">ms</span>
+              <div class="flex items-center justify-between gap-1 mb-2.5">
+                <span class="text-[10px] font-medium tracking-wider uppercase text-neutral-500 font-num">Supermemory (Cloud)</span>
+                <span class="px-1.5 py-0.5 rounded-full bg-neutral-100 text-neutral-500 text-[9px] font-num font-medium whitespace-nowrap">Baseline</span>
+              </div>
+              <div class="text-3xl sm:text-4xl font-normal text-neutral-500 my-1.5 tracking-tight flex items-baseline gap-1 font-num">
+                <span class="font-normal text-neutral-600">380</span>
+                <span class="text-xs font-normal text-neutral-400 font-sans">ms</span>
               </div>
             </div>
-            <div class="text-[11px] text-neutral-400 font-sans border-t border-neutral-100 pt-2.5 mt-2">
-              Centralized Vector DB
+            <div class="text-[11px] text-neutral-500 font-normal border-t border-neutral-100 pt-2.5 mt-2 flex items-center justify-between">
+              <span>Centralized Vector DB</span>
+              <span class="text-neutral-400 text-[10px] font-num">US-East Roundtrip</span>
             </div>
           </div>
 
           <!-- Network Card: Edge Availability -->
-          <div class="group relative p-5 rounded-2xl bg-white border border-neutral-200 hover:-translate-y-1 hover:shadow-md hover:border-neutral-300 transition-all duration-200 flex flex-col justify-between font-num overflow-hidden">
+          <div class="group relative p-5 rounded-2xl bg-white border border-neutral-200 hover:border-neutral-300 hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between shadow-2xs overflow-hidden">
             <div>
-              <span class="text-[10px] uppercase font-bold text-neutral-500">Edge Coverage</span>
-              <div class="text-3xl sm:text-4xl font-extrabold text-neutral-950 my-2 tracking-tight">
-                330+
+              <div class="flex items-center justify-between gap-1 mb-2.5">
+                <span class="text-[10px] font-medium tracking-wider uppercase text-neutral-500 font-num">Edge Fleet</span>
+                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200/60 text-[9px] font-num font-medium whitespace-nowrap">
+                  <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
+                  <span>Anycast</span>
+                </span>
+              </div>
+              <div class="text-3xl sm:text-4xl font-normal text-neutral-900 my-1.5 tracking-tight flex items-baseline gap-0.5 font-num">
+                <span class="font-normal text-neutral-900">330</span>
+                <span class="text-xl font-light text-neutral-400">+</span>
               </div>
             </div>
-            <div class="text-[11px] text-neutral-500 font-sans border-t border-neutral-100 pt-2.5 mt-2">
-              Global Anycast PoP Cities
+            <div class="text-[11px] text-neutral-500 font-normal border-t border-neutral-100 pt-2.5 mt-2 flex items-center justify-between">
+              <span>Global PoP Cities</span>
+              <span class="text-neutral-400 text-[10px] font-num">&lt;2ms Handshake</span>
             </div>
           </div>
 
           <!-- Cache Card: Hot Cache Retrieval -->
-          <div class="group relative p-5 rounded-2xl bg-white border border-neutral-200 hover:-translate-y-1 hover:shadow-md hover:border-neutral-300 transition-all duration-200 flex flex-col justify-between font-num overflow-hidden">
+          <div class="group relative p-5 rounded-2xl bg-white border border-neutral-200 hover:border-neutral-300 hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between shadow-2xs overflow-hidden">
             <div>
-              <span class="text-[10px] uppercase font-bold text-neutral-500">Hot KV Cache</span>
-              <div class="text-3xl sm:text-4xl font-extrabold text-neutral-950 my-2 tracking-tight">
-                &lt; 5<span class="text-sm font-sans font-normal text-neutral-500">ms</span>
+              <div class="flex items-center justify-between gap-1 mb-2.5">
+                <span class="text-[10px] font-medium tracking-wider uppercase text-neutral-500 font-num">Hot Cache</span>
+                <span class="px-1.5 py-0.5 rounded-full bg-neutral-100 text-neutral-600 text-[9px] font-num font-medium whitespace-nowrap">KV Store</span>
+              </div>
+              <div class="text-3xl sm:text-4xl font-normal text-neutral-900 my-1.5 tracking-tight flex items-baseline gap-1 font-num">
+                <span class="text-neutral-400 text-xl font-light">&lt;</span>
+                <span class="font-normal text-neutral-900">5</span>
+                <span class="text-xs font-normal text-neutral-400 font-sans">ms</span>
               </div>
             </div>
-            <div class="text-[11px] text-neutral-500 font-sans border-t border-neutral-100 pt-2.5 mt-2">
-              Cloudflare Distributed KV
+            <div class="text-[11px] text-neutral-500 font-normal border-t border-neutral-100 pt-2.5 mt-2 flex items-center justify-between">
+              <span>Cloudflare Distributed KV</span>
+              <span class="text-neutral-400 text-[10px] font-num">RAM Speed</span>
             </div>
           </div>
         </div>
 
         <!-- Latency Bar Visualizer -->
-        <div class="card-clean p-6 sm:p-7 rounded-2xl space-y-4 font-num text-xs bg-neutral-50/70 border border-neutral-200 hover:shadow-md transition-shadow">
+        <div class="p-6 sm:p-7 rounded-2xl space-y-4 bg-white border border-neutral-200 shadow-sm hover:shadow-md transition-shadow">
+          <div class="flex items-center justify-between pb-3 border-b border-neutral-100 text-xs">
+            <span class="font-medium text-neutral-900 tracking-wide flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Comparative Global Roundtrip Latency</span>
+            </span>
+            <span class="text-[11px] text-neutral-400 font-num">Lower is better</span>
+          </div>
+
           <div>
-            <div class="flex justify-between font-bold text-neutral-950 mb-1.5">
-              <span class="flex items-center gap-1.5">
+            <div class="flex justify-between items-center text-xs text-neutral-900 mb-1.5">
+              <span class="flex items-center gap-2 font-medium">
                 <svg class="w-3.5 h-3.5 text-neutral-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                 <span>UltraMemory (D1 Edge FTS5)</span>
+                <span class="px-1.5 py-0.2 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-medium font-num">Fastest</span>
               </span>
-              <span class="text-neutral-950 font-bold">14ms</span>
+              <span class="font-normal text-neutral-950 font-num text-sm">14ms</span>
             </div>
-            <div class="w-full h-3 bg-neutral-200 rounded-full overflow-hidden p-0.5">
-              <div class="h-full bg-neutral-950 rounded-full" style="width: 4%"></div>
+            <div class="w-full h-2 bg-neutral-100 rounded-full overflow-hidden">
+              <div class="h-full bg-neutral-950 rounded-full transition-all duration-500" style="width: 3.5%"></div>
             </div>
           </div>
+
           <div>
-            <div class="flex justify-between text-neutral-600 mb-1.5">
+            <div class="flex justify-between items-center text-xs text-neutral-600 mb-1.5 font-normal">
               <span>Supermemory (Centralized Vector DB)</span>
-              <span>380ms</span>
+              <span class="font-normal text-neutral-500 font-num">380ms</span>
             </div>
-            <div class="w-full h-2.5 bg-neutral-200 rounded-full overflow-hidden">
-              <div class="h-full bg-neutral-400 rounded-full" style="width: 79%"></div>
+            <div class="w-full h-2 bg-neutral-100 rounded-full overflow-hidden">
+              <div class="h-full bg-neutral-300 rounded-full" style="width: 76%"></div>
             </div>
           </div>
+
           <div>
-            <div class="flex justify-between text-neutral-600 mb-1.5">
+            <div class="flex justify-between items-center text-xs text-neutral-600 mb-1.5 font-normal">
               <span>Mem0 / Centralized SaaS</span>
-              <span>420ms</span>
+              <span class="font-normal text-neutral-500 font-num">420ms</span>
             </div>
-            <div class="w-full h-2.5 bg-neutral-200 rounded-full overflow-hidden">
-              <div class="h-full bg-neutral-400 rounded-full" style="width: 87%"></div>
+            <div class="w-full h-2 bg-neutral-100 rounded-full overflow-hidden">
+              <div class="h-full bg-neutral-300 rounded-full" style="width: 84%"></div>
             </div>
           </div>
         </div>
@@ -2125,7 +2160,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
             <div>
               <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">DEVELOPER HOBBY</span>
               <h3 class="text-base font-normal text-neutral-950">Free</h3>
-              <div class="text-3xl font-extrabold font-num text-neutral-950 my-3">
+              <div class="text-3xl font-normal font-num text-neutral-950 my-3">
                 $0<span class="text-xs text-neutral-400 font-sans font-normal"> / mo</span>
               </div>
               <ul class="text-xs text-neutral-600 space-y-2.5 mb-6">
@@ -2161,7 +2196,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
             <div>
               <span class="inline-block text-[10px] font-num font-bold text-neutral-900 uppercase tracking-wider mb-2">AUTONOMOUS PRODUCTION</span>
               <h3 class="text-base font-semibold text-neutral-950">Pro</h3>
-              <div class="text-3xl font-extrabold font-num text-neutral-950 my-3">
+              <div class="text-3xl font-normal font-num text-neutral-950 my-3">
                 $29<span class="text-xs text-neutral-400 font-sans font-normal"> / mo</span>
               </div>
               <ul class="text-xs text-neutral-700 space-y-2.5 mb-6">
@@ -2198,7 +2233,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
             <div>
               <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">SCALE &amp; MULTI-TENANT</span>
               <h3 class="text-base font-normal text-neutral-950">Ultra</h3>
-              <div class="text-3xl font-extrabold font-num text-neutral-950 my-3">
+              <div class="text-3xl font-normal font-num text-neutral-950 my-3">
                 $99<span class="text-xs text-neutral-400 font-sans font-normal"> / mo</span>
               </div>
               <ul class="text-xs text-neutral-600 space-y-2.5 mb-6">
