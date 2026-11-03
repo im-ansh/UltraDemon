@@ -595,40 +595,110 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           </a>
         </div>
 
-        <!-- System Architecture Flow Diagram with Translucent Glass Cards -->
-        <div class="p-6 rounded-2xl mb-12 bg-white/15 backdrop-blur-md border border-white/30 text-white shadow-xl">
-          <div class="text-[11px] font-semibold uppercase tracking-wider text-white/90 mb-4 font-num">System Architecture &amp; Execution Topology</div>
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-center text-xs">
-            <div class="p-4 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-white">
-              <div class="w-8 h-8 mx-auto rounded-lg bg-white/30 flex items-center justify-center text-white mb-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2M15 20v2M2 15h2M2 9h2M20 15h2M20 9h2M9 2v2M9 20v2"/></svg>
-              </div>
-              <div class="font-bold text-white">AI Agent Fleet</div>
-              <div class="text-[10px] text-white/80 mt-1">Claude, Cursor, LangChain</div>
+        <!-- System Architecture Flow Diagram with Translucent Glass Cards (Card Design Skill) -->
+        <div class="p-6 sm:p-8 rounded-3xl mb-12 bg-white/15 backdrop-blur-md border border-white/30 text-white shadow-2xl">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-white/90 font-num flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
+              <span>System Architecture &amp; Execution Topology</span>
             </div>
-            <div class="p-4 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-white">
-              <div class="w-8 h-8 mx-auto rounded-lg bg-white/30 flex items-center justify-center text-white mb-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 border border-white/30 text-[10px] font-num text-white font-medium">
+              CLOUDFLARE ANYCAST EDGE · 330+ CITIES
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
+            <!-- Node 1: AI Agent Fleet -->
+            <div class="group relative p-5 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 hover:border-white/60 hover:bg-white/25 hover:-translate-y-1 hover:shadow-2xl transition-all duration-200 flex flex-col justify-between overflow-hidden">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-[10px] font-num font-bold tracking-wider px-2 py-0.5 rounded-md bg-white/20 text-white border border-white/30">STEP 01</span>
+                  <span class="flex items-center gap-1 text-[10px] font-num text-white/80">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
+                    <span>Client Layer</span>
+                  </span>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-white/25 border border-white/40 flex items-center justify-center text-white mb-3 group-hover:scale-105 transition-transform">
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2M15 20v2M2 15h2M2 9h2M20 15h2M20 9h2M9 2v2M9 20v2"/></svg>
+                </div>
+                <h3 class="text-sm font-normal text-white mb-1">AI Agent Fleet</h3>
+                <p class="text-xs text-white/85 leading-relaxed">
+                  Claude Desktop, Cursor, Windsurf, LangChain &amp; autonomous agent loops.
+                </p>
               </div>
-              <div class="font-bold text-white">Sovereign Gateway</div>
-              <div class="text-[10px] text-white/80 mt-1 font-num">REST / MCP / SSE</div>
+              <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-[11px] font-num text-white/90">
+                <span>Integration</span>
+                <span class="font-bold text-white">Zero SDK Bloat</span>
+              </div>
             </div>
-            <div class="p-4 bg-white text-neutral-950 border border-white rounded-xl shadow-lg">
-              <div class="w-8 h-8 mx-auto rounded-lg bg-neutral-900 text-white flex items-center justify-center mb-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/><path d="M12 2v20"/><path d="M8 8h8"/><path d="M7 13h10"/><path d="M9 18h6"/></svg>
+
+            <!-- Node 2: Sovereign Gateway -->
+            <div class="group relative p-5 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 hover:border-white/60 hover:bg-white/25 hover:-translate-y-1 hover:shadow-2xl transition-all duration-200 flex flex-col justify-between overflow-hidden">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-[10px] font-num font-bold tracking-wider px-2 py-0.5 rounded-md bg-white/20 text-white border border-white/30">STEP 02</span>
+                  <span class="text-[10px] font-num text-white/80">Edge Ingress</span>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-white/25 border border-white/40 flex items-center justify-center text-white mb-3 group-hover:scale-105 transition-transform">
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                </div>
+                <h3 class="text-sm font-normal text-white mb-1">Sovereign Gateway</h3>
+                <p class="text-xs text-white/85 leading-relaxed">
+                  Anycast HTTP/3 edge routing with unified REST, MCP SSE streaming, and auth.
+                </p>
               </div>
-              <div class="font-bold text-neutral-950">D1 SQLite FTS5</div>
-              <div class="text-[10px] font-num text-neutral-900 font-bold">&lt; 15ms BM25 Edge Recall</div>
+              <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-[11px] font-num text-white/90">
+                <span>Ingress</span>
+                <span class="font-bold text-white">&lt;2ms Handshake</span>
+              </div>
             </div>
-            <div class="p-4 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-white">
-              <div class="w-8 h-8 mx-auto rounded-lg bg-white/30 flex items-center justify-center text-white mb-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+
+            <!-- Node 3: D1 SQLite FTS5 (Hero Highlight Card) -->
+            <div class="group relative p-5 rounded-2xl bg-white text-neutral-950 shadow-2xl border-2 border-white ring-4 ring-white/30 hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-200 flex flex-col justify-between overflow-hidden">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-[10px] font-num font-bold tracking-wider px-2 py-0.5 rounded-md bg-neutral-950 text-white">STEP 03 · CORE</span>
+                  <span class="flex items-center gap-1 text-[10px] font-num font-bold text-neutral-900">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>&lt; 15ms</span>
+                  </span>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-neutral-950 text-white flex items-center justify-center mb-3 group-hover:scale-105 transition-transform shadow-sm">
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/><path d="M12 2v20"/><path d="M8 8h8"/><path d="M7 13h10"/><path d="M9 18h6"/></svg>
+                </div>
+                <h3 class="text-sm font-semibold text-neutral-950 mb-1">D1 SQLite FTS5</h3>
+                <p class="text-xs text-neutral-600 leading-relaxed">
+                  Compiled C SQLite engine with BM25 ranking across edge PoPs. Zero vector overhead.
+                </p>
               </div>
-              <div class="font-bold text-white">Autonomous Index</div>
-              <div class="text-[10px] text-white/80 mt-1 font-num">&lt; 40ms Web Search</div>
+              <div class="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between text-[11px] font-num text-neutral-950">
+                <span class="text-neutral-500">Retrieval</span>
+                <span class="font-bold text-neutral-950 font-num">&lt; 15ms BM25</span>
+              </div>
+            </div>
+
+            <!-- Node 4: Autonomous Index -->
+            <div class="group relative p-5 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 hover:border-white/60 hover:bg-white/25 hover:-translate-y-1 hover:shadow-2xl transition-all duration-200 flex flex-col justify-between overflow-hidden">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-[10px] font-num font-bold tracking-wider px-2 py-0.5 rounded-md bg-white/20 text-white border border-white/30">STEP 04</span>
+                  <span class="text-[10px] font-num text-white/80">Real-Time</span>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-white/25 border border-white/40 flex items-center justify-center text-white mb-3 group-hover:scale-105 transition-transform">
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+                </div>
+                <h3 class="text-sm font-normal text-white mb-1">Autonomous Index</h3>
+                <p class="text-xs text-white/85 leading-relaxed">
+                  Streaming edge crawler indexes HTML in real-time with full BM25 ranking and scoring.
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-[11px] font-num text-white/90">
+                <span>Search P50</span>
+                <span class="font-bold text-white">&lt; 40ms Edge</span>
+              </div>
             </div>
           </div>
-          <div class="text-[11px] text-white/90 text-center mt-3 font-serif font-bold italic">
+          <div class="text-[11px] text-white/90 text-center mt-5 font-serif font-bold italic">
             Zero third-party APIs. Zero external vector databases. 100% self-contained Cloudflare Anycast edge.
           </div>
         </div>
@@ -652,36 +722,95 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <!-- Centered Website Main Container (Transitions back into pure white background with black text) -->
   <main class="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-20 bg-white text-neutral-950">
 
-      <!-- Three Pillars Section with Grey Minimalist SVGs -->
-      <section class="mb-14 reveal-on-scroll">
-        <h2 class="text-xs font-semibold uppercase tracking-wider text-neutral-500 font-num mb-6">Core Capabilities</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="card-clean p-5 rounded-xl">
-            <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 mb-3">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <!-- Three Pillars Section with High-Fidelity Feature Cards (Card Design Skill) -->
+      <section class="mb-16 reveal-on-scroll">
+        <div class="mb-6">
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Core Capabilities</span>
+          <h2 class="text-2xl sm:text-3xl font-normal tracking-tight text-neutral-950 mt-1">
+            Engineered Primitives for <span class="font-serif font-bold italic text-black">Autonomous Fleets</span>
+          </h2>
+          <p class="text-xs text-neutral-600 mt-1">
+            Three edge pillars purpose-built to replace centralized roundtrips and eliminate third-party AI dependencies.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Pillar 1: Autonomous Web Search -->
+          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-400 transition-all duration-200 overflow-hidden">
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-neutral-100 border border-neutral-200 text-neutral-800 flex items-center justify-center mb-5 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white group-hover:border-neutral-950 transition-all duration-200">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              </div>
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-neutral-100 text-[10px] font-bold text-neutral-700 font-num mb-2.5">
+                01 / SOVEREIGN SEARCH
+              </span>
+              <h3 class="text-base font-normal tracking-tight text-neutral-950 mb-2 group-hover:text-black">
+                Autonomous Web Search
+              </h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-6">
+                Native edge crawler with streaming HTMLRewriter extraction and BM25 ranking on D1 SQLite. Sub-40ms P50 latency with zero external search API dependencies.
+              </p>
             </div>
-            <h3 class="text-sm font-normal text-neutral-950 mb-1.5">Autonomous Web Search</h3>
-            <p class="text-xs text-neutral-600 leading-relaxed">
-              Native edge crawler, HTMLRewriter extraction, and BM25 ranking on D1. Sub-40ms P50 latency with zero external search API dependencies.
-            </p>
+            <div class="mt-auto pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-500 font-medium">Throughput: 50 pgs/s</span>
+              <a href="#search" class="font-bold text-neutral-900 hover:text-black flex items-center gap-1">
+                <span>Explore Search</span>
+                <span class="text-neutral-400">&rarr;</span>
+              </a>
+            </div>
           </div>
-          <div class="card-clean p-5 rounded-xl border-black">
-            <div class="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center mb-3">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/><path d="M12 2v20"/><path d="M8 8h8"/><path d="M7 13h10"/><path d="M9 18h6"/></svg>
+
+          <!-- Pillar 2: UltraMemory API (Featured Pillar) -->
+          <div class="group relative bg-white rounded-2xl border-2 border-neutral-950 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-200 ring-4 ring-neutral-950/5 overflow-hidden">
+            <div class="absolute top-4 right-4 px-2 py-0.5 text-[9px] font-bold bg-neutral-950 text-white rounded-full font-num">
+              FEATURED
             </div>
-            <h3 class="text-sm font-normal text-neutral-950 mb-1.5">UltraMemory API</h3>
-            <p class="text-xs text-neutral-600 leading-relaxed">
-              Store agent facts, preferences, profiles, and conversations. Retrieve needles with BM25 in under 15ms at the Cloudflare edge.
-            </p>
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-neutral-950 text-white flex items-center justify-center mb-5 group-hover:scale-105 transition-transform shadow-sm">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/><path d="M12 2v20"/><path d="M8 8h8"/><path d="M7 13h10"/><path d="M9 18h6"/></svg>
+              </div>
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-neutral-100 text-[10px] font-bold text-neutral-900 font-num mb-2.5">
+                02 / PERSISTENT MEMORY
+              </span>
+              <h3 class="text-base font-semibold tracking-tight text-neutral-950 mb-2">
+                UltraMemory API
+              </h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-6">
+                Store agent facts, preferences, profiles, and conversational turns. Retrieve needles with BM25 in under 15ms at 330+ Cloudflare edge locations worldwide.
+              </p>
+            </div>
+            <div class="mt-auto pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-500 font-medium">Recall: &lt;15ms Global</span>
+              <a href="#memory" class="font-bold text-neutral-900 hover:text-black flex items-center gap-1">
+                <span>Try Playground</span>
+                <span class="text-neutral-400">&rarr;</span>
+              </a>
+            </div>
           </div>
-          <div class="card-clean p-5 rounded-xl">
-            <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 mb-3">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5M3 12A9 3 0 0 0 21 12"/></svg>
+
+          <!-- Pillar 3: File & Context Ingestion -->
+          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-400 transition-all duration-200 overflow-hidden">
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-neutral-100 border border-neutral-200 text-neutral-800 flex items-center justify-center mb-5 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white group-hover:border-neutral-950 transition-all duration-200">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5M3 12A9 3 0 0 0 21 12"/></svg>
+              </div>
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-neutral-100 text-[10px] font-bold text-neutral-700 font-num mb-2.5">
+                03 / CONTEXT INGESTION
+              </span>
+              <h3 class="text-base font-normal tracking-tight text-neutral-950 mb-2 group-hover:text-black">
+                File &amp; Context Ingestion
+              </h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-6">
+                Ingest full text documents, Markdown, and source files with smart recursive chunking and instant full-text indexing for autonomous agent codebases.
+              </p>
             </div>
-            <h3 class="text-sm font-normal text-neutral-950 mb-1.5">File &amp; Context Ingestion</h3>
-            <p class="text-xs text-neutral-600 leading-relaxed">
-              Ingest full text documents, Markdown, and source files with smart chunking and instant full-text indexing for agent lookup.
-            </p>
+            <div class="mt-auto pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-500 font-medium">Chunking: Universal</span>
+              <a href="#build" class="font-bold text-neutral-900 hover:text-black flex items-center gap-1">
+                <span>View Blueprints</span>
+                <span class="text-neutral-400">&rarr;</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -709,113 +838,113 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           </div>
         </div>
 
-        <!-- Horizontal Scroll Track -->
-        <div id="featureScrollTrack" class="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth pb-3 snap-x snap-mandatory">
+        <!-- Horizontal Scroll Track with Elevated Architectural Rail Cards (Card Design Skill) -->
+        <div id="featureScrollTrack" class="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth pb-4 snap-x snap-mandatory">
           <!-- Card 1 -->
-          <div class="min-w-[280px] sm:min-w-[320px] max-w-[320px] snap-start card-clean p-6 rounded-2xl flex flex-col justify-between bg-white border border-neutral-200">
+          <div class="min-w-[300px] sm:min-w-[340px] max-w-[340px] snap-start group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-400 transition-all duration-200 overflow-hidden">
             <div>
-              <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
+              <div class="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/><path d="M12 2v20"/><path d="M8 8h8"/><path d="M7 13h10"/><path d="M9 18h6"/></svg>
               </div>
-              <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">01 / RETRIEVAL</div>
-              <h3 class="text-base font-normal text-neutral-950 mb-2">Sub-15ms BM25 Recall</h3>
-              <p class="text-xs text-neutral-600 leading-relaxed">
+              <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">01 / RETRIEVAL</span>
+              <h3 class="text-base font-normal tracking-tight text-neutral-950 mb-2 group-hover:text-black">Sub-15ms BM25 Recall</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-6">
                 Direct SQLite FTS5 indices compiled on 330+ edge PoPs. Zero vector embedder overhead or remote database roundtrips.
               </p>
             </div>
-            <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
-              <span class="text-neutral-400">Latency</span>
-              <span class="font-bold text-neutral-900">&lt; 15ms</span>
+            <div class="mt-auto pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-500 font-medium">Latency P50</span>
+              <span class="px-2 py-0.5 rounded bg-neutral-100 border border-neutral-200 font-bold text-neutral-950">&lt; 15ms</span>
             </div>
           </div>
 
           <!-- Card 2 -->
-          <div class="min-w-[280px] sm:min-w-[320px] max-w-[320px] snap-start card-clean p-6 rounded-2xl flex flex-col justify-between bg-white border border-neutral-200">
+          <div class="min-w-[300px] sm:min-w-[340px] max-w-[340px] snap-start group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-400 transition-all duration-200 overflow-hidden">
             <div>
-              <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
+              <div class="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
               </div>
-              <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">02 / INGESTION</div>
-              <h3 class="text-base font-normal text-neutral-950 mb-2">Autonomous Web Crawler</h3>
-              <p class="text-xs text-neutral-600 leading-relaxed">
+              <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">02 / INGESTION</span>
+              <h3 class="text-base font-normal tracking-tight text-neutral-950 mb-2 group-hover:text-black">Autonomous Web Crawler</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-6">
                 Recursive depth crawl directly inside Cloudflare Workers. Cleans HTML, extracts markdown, and indexes pages into FTS5 in real time.
               </p>
             </div>
-            <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
-              <span class="text-neutral-400">Throughput</span>
-              <span class="font-bold text-neutral-900">50 pgs / sec</span>
+            <div class="mt-auto pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-500 font-medium">Throughput</span>
+              <span class="px-2 py-0.5 rounded bg-neutral-100 border border-neutral-200 font-bold text-neutral-950">50 pgs / sec</span>
             </div>
           </div>
 
           <!-- Card 3 -->
-          <div class="min-w-[280px] sm:min-w-[320px] max-w-[320px] snap-start card-clean p-6 rounded-2xl flex flex-col justify-between bg-white border border-neutral-200">
+          <div class="min-w-[300px] sm:min-w-[340px] max-w-[340px] snap-start group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-400 transition-all duration-200 overflow-hidden">
             <div>
-              <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
+              <div class="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
               </div>
-              <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">03 / NAMESPACES</div>
-              <h3 class="text-base font-normal text-neutral-950 mb-2">Agent Container Namespaces</h3>
-              <p class="text-xs text-neutral-600 leading-relaxed">
+              <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">03 / NAMESPACES</span>
+              <h3 class="text-base font-normal tracking-tight text-neutral-950 mb-2 group-hover:text-black">Agent Container Namespaces</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-6">
                 Isolate memory namespaces dynamically using container_tag parameters. Partition memories by session, workspace, or agent role.
               </p>
             </div>
-            <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
-              <span class="text-neutral-400">Isolation</span>
-              <span class="font-bold text-neutral-900">Zero Leakage</span>
+            <div class="mt-auto pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-500 font-medium">Isolation</span>
+              <span class="px-2 py-0.5 rounded bg-neutral-100 border border-neutral-200 font-bold text-neutral-950">Zero Leakage</span>
             </div>
           </div>
 
           <!-- Card 4 -->
-          <div class="min-w-[280px] sm:min-w-[320px] max-w-[320px] snap-start card-clean p-6 rounded-2xl flex flex-col justify-between bg-white border border-neutral-200">
+          <div class="min-w-[300px] sm:min-w-[340px] max-w-[340px] snap-start group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-400 transition-all duration-200 overflow-hidden">
             <div>
-              <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
+              <div class="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
               </div>
-              <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">04 / PROTOCOL</div>
-              <h3 class="text-base font-normal text-neutral-950 mb-2">Native MCP Tool Server</h3>
-              <p class="text-xs text-neutral-600 leading-relaxed">
+              <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">04 / PROTOCOL</span>
+              <h3 class="text-base font-normal tracking-tight text-neutral-950 mb-2 group-hover:text-black">Native MCP Tool Server</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-6">
                 Plug directly into Claude Desktop, Cursor, and Windsurf via Server-Sent Events (SSE). Grant your coding agents instant persistent recall.
               </p>
             </div>
-            <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
-              <span class="text-neutral-400">Integration</span>
-              <span class="font-bold text-neutral-900">One-Click SSE</span>
+            <div class="mt-auto pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-500 font-medium">Integration</span>
+              <span class="px-2 py-0.5 rounded bg-neutral-100 border border-neutral-200 font-bold text-neutral-950">One-Click SSE</span>
             </div>
           </div>
 
           <!-- Card 5 -->
-          <div class="min-w-[280px] sm:min-w-[320px] max-w-[320px] snap-start card-clean p-6 rounded-2xl flex flex-col justify-between bg-white border border-neutral-200">
+          <div class="min-w-[300px] sm:min-w-[340px] max-w-[340px] snap-start group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-400 transition-all duration-200 overflow-hidden">
             <div>
-              <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
+              <div class="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
               </div>
-              <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">05 / SECURITY</div>
-              <h3 class="text-base font-normal text-neutral-950 mb-2">Scoped Keys (um_ / us_)</h3>
-              <p class="text-xs text-neutral-600 leading-relaxed">
+              <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">05 / SECURITY</span>
+              <h3 class="text-base font-normal tracking-tight text-neutral-950 mb-2 group-hover:text-black">Scoped Keys (um_ / us_)</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-6">
                 Issue scoped tokens restricted to Memory-only or Search-only operations. Protect customer privacy and limit agent blast radius.
               </p>
             </div>
-            <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
-              <span class="text-neutral-400">Scopes</span>
-              <span class="font-bold text-neutral-900">D1 + KV Enforced</span>
+            <div class="mt-auto pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-500 font-medium">Scopes</span>
+              <span class="px-2 py-0.5 rounded bg-neutral-100 border border-neutral-200 font-bold text-neutral-950">D1 + KV Enforced</span>
             </div>
           </div>
 
           <!-- Card 6 -->
-          <div class="min-w-[280px] sm:min-w-[320px] max-w-[320px] snap-start card-clean p-6 rounded-2xl flex flex-col justify-between bg-white border border-neutral-200">
+          <div class="min-w-[300px] sm:min-w-[340px] max-w-[340px] snap-start group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-400 transition-all duration-200 overflow-hidden">
             <div>
-              <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
+              <div class="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
               </div>
-              <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">06 / ECONOMICS</div>
-              <h3 class="text-base font-normal text-neutral-950 mb-2">90% Cost Reduction</h3>
-              <p class="text-xs text-neutral-600 leading-relaxed">
+              <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">06 / ECONOMICS</span>
+              <h3 class="text-base font-normal tracking-tight text-neutral-950 mb-2 group-hover:text-black">90% Cost Reduction</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-6">
                 Cut out embedding API costs and heavy vector database clusters. D1 SQLite edge tables scale automatically with predictable pricing.
               </p>
             </div>
-            <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
-              <span class="text-neutral-400">Savings</span>
-              <span class="font-bold text-neutral-900">Up to 10x</span>
+            <div class="mt-auto pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-500 font-medium">Savings</span>
+              <span class="px-2 py-0.5 rounded bg-neutral-100 border border-neutral-200 font-bold text-neutral-950">Up to 10x</span>
             </div>
           </div>
         </div>
@@ -833,46 +962,81 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           </p>
         </div>
 
-        <!-- Metric Stat Cards Grid (Geist Mono Tabular Figures) -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 font-num">
-          <div class="card-clean p-4 rounded-xl">
-            <div class="text-[11px] text-neutral-500 mb-1">UltraMemory Recall</div>
-            <div class="text-2xl font-bold text-neutral-950">&lt; 15<span class="text-xs font-sans font-normal text-neutral-500">ms</span></div>
-            <div class="text-[10px] text-neutral-500 mt-1 font-sans">Edge D1 FTS5</div>
+        <!-- Metric Stat Cards Grid (Geist Mono Tabular Figures & High-Contrast Hierarchy) -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 font-num">
+          <!-- Featured Card: UltraMemory Recall -->
+          <div class="group relative p-5 rounded-2xl bg-neutral-950 text-white border border-neutral-800 hover:-translate-y-1 hover:shadow-xl transition-all duration-200 flex flex-col justify-between font-num shadow-md overflow-hidden">
+            <div>
+              <span class="text-[10px] uppercase font-bold text-emerald-400 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>UltraMemory Recall</span>
+              </span>
+              <div class="text-3xl sm:text-4xl font-extrabold text-white my-2 tracking-tight">
+                &lt; 15<span class="text-sm font-sans font-normal text-neutral-400">ms</span>
+              </div>
+            </div>
+            <div class="text-[11px] text-neutral-300 font-sans flex items-center justify-between border-t border-neutral-800 pt-2.5 mt-2">
+              <span>Edge D1 FTS5</span>
+              <span class="text-emerald-400 font-bold font-num text-[10px] uppercase px-1.5 py-0.2 rounded bg-emerald-950/60 border border-emerald-800/80">25x Faster</span>
+            </div>
           </div>
-          <div class="card-clean p-4 rounded-xl">
-            <div class="text-[11px] text-neutral-500 mb-1">Supermemory (Cloud)</div>
-            <div class="text-2xl font-bold text-neutral-400">380<span class="text-xs font-sans font-normal text-neutral-400">ms</span></div>
-            <div class="text-[10px] text-neutral-400 mt-1 font-sans">Centralized Vector</div>
+
+          <!-- Comparison Card: Supermemory Cloud -->
+          <div class="group relative p-5 rounded-2xl bg-white border border-neutral-200 hover:-translate-y-1 hover:shadow-md hover:border-neutral-300 transition-all duration-200 flex flex-col justify-between font-num overflow-hidden">
+            <div>
+              <span class="text-[10px] uppercase font-bold text-neutral-400">Supermemory (Cloud)</span>
+              <div class="text-3xl sm:text-4xl font-extrabold text-neutral-400 my-2 tracking-tight">
+                380<span class="text-sm font-sans font-normal text-neutral-400">ms</span>
+              </div>
+            </div>
+            <div class="text-[11px] text-neutral-400 font-sans border-t border-neutral-100 pt-2.5 mt-2">
+              Centralized Vector DB
+            </div>
           </div>
-          <div class="card-clean p-4 rounded-xl">
-            <div class="text-[11px] text-neutral-500 mb-1">Edge Availability</div>
-            <div class="text-2xl font-bold text-neutral-950">330+</div>
-            <div class="text-[10px] text-neutral-500 mt-1 font-sans">PoP Cities</div>
+
+          <!-- Network Card: Edge Availability -->
+          <div class="group relative p-5 rounded-2xl bg-white border border-neutral-200 hover:-translate-y-1 hover:shadow-md hover:border-neutral-300 transition-all duration-200 flex flex-col justify-between font-num overflow-hidden">
+            <div>
+              <span class="text-[10px] uppercase font-bold text-neutral-500">Edge Coverage</span>
+              <div class="text-3xl sm:text-4xl font-extrabold text-neutral-950 my-2 tracking-tight">
+                330+
+              </div>
+            </div>
+            <div class="text-[11px] text-neutral-500 font-sans border-t border-neutral-100 pt-2.5 mt-2">
+              Global Anycast PoP Cities
+            </div>
           </div>
-          <div class="card-clean p-4 rounded-xl">
-            <div class="text-[11px] text-neutral-500 mb-1">Hot Cache Retrieval</div>
-            <div class="text-2xl font-bold text-neutral-950">&lt; 5<span class="text-xs font-sans font-normal text-neutral-500">ms</span></div>
-            <div class="text-[10px] text-neutral-500 mt-1 font-sans">Cloudflare KV</div>
+
+          <!-- Cache Card: Hot Cache Retrieval -->
+          <div class="group relative p-5 rounded-2xl bg-white border border-neutral-200 hover:-translate-y-1 hover:shadow-md hover:border-neutral-300 transition-all duration-200 flex flex-col justify-between font-num overflow-hidden">
+            <div>
+              <span class="text-[10px] uppercase font-bold text-neutral-500">Hot KV Cache</span>
+              <div class="text-3xl sm:text-4xl font-extrabold text-neutral-950 my-2 tracking-tight">
+                &lt; 5<span class="text-sm font-sans font-normal text-neutral-500">ms</span>
+              </div>
+            </div>
+            <div class="text-[11px] text-neutral-500 font-sans border-t border-neutral-100 pt-2.5 mt-2">
+              Cloudflare Distributed KV
+            </div>
           </div>
         </div>
 
         <!-- Latency Bar Visualizer -->
-        <div class="card-clean p-6 rounded-2xl space-y-3 font-num text-xs bg-neutral-50/50">
+        <div class="card-clean p-6 sm:p-7 rounded-2xl space-y-4 font-num text-xs bg-neutral-50/70 border border-neutral-200 hover:shadow-md transition-shadow">
           <div>
-            <div class="flex justify-between font-bold text-neutral-950 mb-1">
+            <div class="flex justify-between font-bold text-neutral-950 mb-1.5">
               <span class="flex items-center gap-1.5">
-                <svg class="w-3.5 h-3.5 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                <svg class="w-3.5 h-3.5 text-neutral-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                 <span>UltraMemory (D1 Edge FTS5)</span>
               </span>
-              <span>14ms</span>
+              <span class="text-neutral-950 font-bold">14ms</span>
             </div>
-            <div class="w-full h-3 bg-neutral-200 rounded-full overflow-hidden">
-              <div class="h-full bg-black rounded-full" style="width: 4%"></div>
+            <div class="w-full h-3 bg-neutral-200 rounded-full overflow-hidden p-0.5">
+              <div class="h-full bg-neutral-950 rounded-full" style="width: 4%"></div>
             </div>
           </div>
           <div>
-            <div class="flex justify-between text-neutral-600 mb-1">
+            <div class="flex justify-between text-neutral-600 mb-1.5">
               <span>Supermemory (Centralized Vector DB)</span>
               <span>380ms</span>
             </div>
@@ -881,7 +1045,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             </div>
           </div>
           <div>
-            <div class="flex justify-between text-neutral-600 mb-1">
+            <div class="flex justify-between text-neutral-600 mb-1.5">
               <span>Mem0 / Centralized SaaS</span>
               <span>420ms</span>
             </div>
@@ -1177,80 +1341,84 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Card 1 -->
-          <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-400 transition-all duration-200 overflow-hidden">
             <div>
-              <div class="flex items-center justify-between mb-3">
-                <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-700">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
                 </div>
-                <span class="font-num text-[10px] text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200 font-semibold">&lt;15ms Recall</span>
+                <span class="font-num text-[10px] text-neutral-900 bg-neutral-100 px-2.5 py-0.5 rounded-full border border-neutral-200 font-bold">&lt;15ms Recall</span>
               </div>
-              <h3 class="text-sm font-normal text-neutral-950 mb-1">Continual Learning &amp; Agent Memory</h3>
-              <p class="text-xs text-neutral-600 leading-relaxed mb-3">
+              <h3 class="text-base font-normal tracking-tight text-neutral-950 mb-2 group-hover:text-black">Continual Learning &amp; Agent Memory</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-6">
                 Prevent context window overflow and quadratic attention costs. Store user preferences, past tool results, and episodic dialogue state directly in edge SQLite FTS5 for sub-15ms recall.
               </p>
             </div>
-            <div class="pt-3 border-t border-neutral-100 text-[11px] text-neutral-500 font-num">
-              Replaces: Pinecone, Weaviate, Supermemory
+            <div class="mt-auto pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-500 font-medium">Replaces: Pinecone, Weaviate, Supermemory</span>
+              <svg class="w-3.5 h-3.5 text-neutral-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </div>
           </div>
 
           <!-- Card 2 -->
-          <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-400 transition-all duration-200 overflow-hidden">
             <div>
-              <div class="flex items-center justify-between mb-3">
-                <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-700">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.3-4.3"/></svg>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.3-4.3"/></svg>
                 </div>
-                <span class="font-num text-[10px] text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200 font-semibold">Zero 3rd-Party Leaks</span>
+                <span class="font-num text-[10px] text-neutral-900 bg-neutral-100 px-2.5 py-0.5 rounded-full border border-neutral-200 font-bold">Zero 3rd-Party Leaks</span>
               </div>
-              <h3 class="text-sm font-normal text-neutral-950 mb-1">Sovereign Web Grounding &amp; RAG</h3>
-              <p class="text-xs text-neutral-600 leading-relaxed mb-3">
+              <h3 class="text-base font-normal tracking-tight text-neutral-950 mb-2 group-hover:text-black">Sovereign Web Grounding &amp; RAG</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-6">
                 Ground LLM generations in verifiable, live-crawled web data. Never send proprietary user queries to external search brokers. Full PageRank and BM25 pass scoring on your terms.
               </p>
             </div>
-            <div class="pt-3 border-t border-neutral-100 text-[11px] text-neutral-500 font-num">
-              Replaces: Tavily, Exa, Google Search API
+            <div class="mt-auto pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-500 font-medium">Replaces: Tavily, Exa, Google Search API</span>
+              <svg class="w-3.5 h-3.5 text-neutral-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </div>
           </div>
 
           <!-- Card 3 -->
-          <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-400 transition-all duration-200 overflow-hidden">
             <div>
-              <div class="flex items-center justify-between mb-3">
-                <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-700">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 9.4 7.55 4.24a1.78 1.78 0 0 0-2.5 1.55v12.42a1.78 1.78 0 0 0 2.5 1.55L16.5 14.6a1.78 1.78 0 0 0 0-3.2z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12H17"/></svg>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 9.4 7.55 4.24a1.78 1.78 0 0 0-2.5 1.55v12.42a1.78 1.78 0 0 0 2.5 1.55L16.5 14.6a1.78 1.78 0 0 0 0-3.2z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12H17"/></svg>
                 </div>
-                <span class="font-num text-[10px] text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200 font-semibold">Real-Time Fluidity</span>
+                <span class="font-num text-[10px] text-neutral-900 bg-neutral-100 px-2.5 py-0.5 rounded-full border border-neutral-200 font-bold">Real-Time Fluidity</span>
               </div>
-              <h3 class="text-sm font-normal text-neutral-950 mb-1">Low-Latency Voice &amp; Chat Assistants</h3>
-              <p class="text-xs text-neutral-600 leading-relaxed mb-3">
+              <h3 class="text-base font-normal tracking-tight text-neutral-950 mb-2 group-hover:text-black">Low-Latency Voice &amp; Chat Assistants</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-6">
                 Voice agents (ElevenLabs, LiveKit, Gemini Live) demand sub-100ms total conversational loops. UltraMemory’s 12ms edge recall guarantees zero dead air or voice hesitation.
               </p>
             </div>
-            <div class="pt-3 border-t border-neutral-100 text-[11px] text-neutral-500 font-num">
-              Optimal for: ElevenLabs Conversational, LiveKit Agents
+            <div class="mt-auto pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-500 font-medium">Optimal for: ElevenLabs, LiveKit, Gemini Live</span>
+              <svg class="w-3.5 h-3.5 text-neutral-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </div>
           </div>
 
           <!-- Card 4 -->
-          <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-400 transition-all duration-200 overflow-hidden">
             <div>
-              <div class="flex items-center justify-between mb-3">
-                <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-700">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-11 h-11 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                 </div>
-                <span class="font-num text-[10px] text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200 font-semibold">Namespaces</span>
+                <span class="font-num text-[10px] text-neutral-900 bg-neutral-100 px-2.5 py-0.5 rounded-full border border-neutral-200 font-bold">Namespaces</span>
               </div>
-              <h3 class="text-sm font-normal text-neutral-950 mb-1">Multi-Tenant Knowledge Containers</h3>
-              <p class="text-xs text-neutral-600 leading-relaxed mb-3">
+              <h3 class="text-base font-normal tracking-tight text-neutral-950 mb-2 group-hover:text-black">Multi-Tenant Knowledge Containers</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-6">
                 Partition memories securely by user ID, workspace ID, or agent role using <code class="bg-neutral-100 px-1 py-0.5 rounded font-num text-[11px]">container_tag</code>. Full multi-tenant isolation without provisioning separate databases.
               </p>
             </div>
-            <div class="pt-3 border-t border-neutral-100 text-[11px] text-neutral-500 font-num">
-              Architecture: D1 Edge Multi-Tenant Partitioning
+            <div class="mt-auto pt-4 border-t border-neutral-100 flex items-center justify-between text-xs font-num">
+              <span class="text-neutral-500 font-medium">Architecture: D1 Multi-Tenant Isolation</span>
+              <svg class="w-3.5 h-3.5 text-neutral-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </div>
           </div>
         </div>
@@ -1898,49 +2066,110 @@ curl "${origin}/v1/memory/context?q=preference" \\
           </p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+          <!-- Free Tier Card -->
+          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 sm:p-7 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-300 transition-all duration-200 overflow-hidden">
             <div>
-              <div class="text-xs font-semibold text-neutral-500 mb-1">Free</div>
-              <div class="text-2xl font-extrabold font-num text-neutral-950 mb-3">$0<span class="text-xs text-neutral-400 font-sans font-normal">/mo</span></div>
-              <ul class="text-xs text-neutral-600 space-y-2 mb-4">
-                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span><strong class="font-num font-semibold text-neutral-900">100</strong> requests / day</span></li>
-                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>UltraMemory Recall (&lt;15ms)</span></li>
-                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>UltraSearch Mode 1</span></li>
-                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>KV Hot Cache</span></li>
+              <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">DEVELOPER HOBBY</span>
+              <h3 class="text-base font-normal text-neutral-950">Free</h3>
+              <div class="text-3xl font-extrabold font-num text-neutral-950 my-3">
+                $0<span class="text-xs text-neutral-400 font-sans font-normal"> / mo</span>
+              </div>
+              <ul class="text-xs text-neutral-600 space-y-2.5 mb-6">
+                <li class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span><strong class="font-num font-semibold text-neutral-900">100</strong> requests / day</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>UltraMemory Recall (&lt;15ms)</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>UltraSearch Mode 1 Instant</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>KV Distributed Hot Cache</span>
+                </li>
               </ul>
             </div>
-            <button onclick="handleProvisionKeyClick('free')" class="w-full py-1.5 text-center text-xs font-semibold rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 cursor-pointer">Get Free Key</button>
+            <button onclick="handleProvisionKeyClick('free')" class="w-full py-2.5 text-center text-xs font-semibold rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 transition cursor-pointer">
+              Get Free Key
+            </button>
           </div>
 
-          <div class="card-clean p-5 rounded-2xl border-black relative flex flex-col justify-between shadow-xs">
-            <div class="absolute -top-2.5 right-4 px-2 py-0.2 text-[9px] font-bold bg-black text-white rounded-full font-num">POPULAR</div>
+          <!-- Pro Tier Card (Featured Product Card) -->
+          <div class="group relative bg-white rounded-2xl border-2 border-neutral-950 p-6 sm:p-7 flex flex-col justify-between shadow-xl hover:-translate-y-2 hover:shadow-2xl transition-all duration-200 ring-4 ring-neutral-950/5 overflow-hidden">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-0.5 text-[10px] font-bold bg-neutral-950 text-white rounded-full font-num uppercase tracking-wider shadow-md flex items-center gap-1.5 whitespace-nowrap">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>MOST POPULAR</span>
+            </div>
             <div>
-              <div class="text-xs font-semibold text-neutral-900 mb-1">Pro</div>
-              <div class="text-2xl font-extrabold font-num text-neutral-950 mb-3">$29<span class="text-xs text-neutral-400 font-sans font-normal">/mo</span></div>
-              <ul class="text-xs text-neutral-600 space-y-2 mb-4">
-                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span><strong class="font-num font-semibold text-neutral-900">10,000</strong> requests / day</span></li>
-                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>UltraMemory File Storage</span></li>
-                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>UltraSearch Mode 2 Standard</span></li>
-                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Full Edge Crawler Access</span></li>
-                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Unified MCP Server</span></li>
+              <span class="inline-block text-[10px] font-num font-bold text-neutral-900 uppercase tracking-wider mb-2">AUTONOMOUS PRODUCTION</span>
+              <h3 class="text-base font-semibold text-neutral-950">Pro</h3>
+              <div class="text-3xl font-extrabold font-num text-neutral-950 my-3">
+                $29<span class="text-xs text-neutral-400 font-sans font-normal"> / mo</span>
+              </div>
+              <ul class="text-xs text-neutral-700 space-y-2.5 mb-6">
+                <li class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-neutral-950 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span><strong class="font-num font-bold text-neutral-950">10,000</strong> requests / day</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-neutral-950 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>UltraMemory File Storage &amp; Ingestion</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-neutral-950 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>UltraSearch Mode 2 Standard</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-neutral-950 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Full Edge Crawler Access</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-neutral-950 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Unified MCP Server (Claude/Cursor SSE)</span>
+                </li>
               </ul>
             </div>
-            <button onclick="handleProvisionKeyClick('pro')" class="w-full py-1.5 text-center text-xs font-semibold rounded-lg bg-black hover:bg-neutral-800 text-white cursor-pointer shadow-xs">Choose Pro</button>
+            <button onclick="handleProvisionKeyClick('pro')" class="w-full py-2.5 text-center text-xs font-semibold rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white transition shadow-md cursor-pointer flex items-center justify-center gap-2">
+              <span>Choose Pro</span>
+              <svg class="w-3.5 h-3.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
           </div>
 
-          <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+          <!-- Ultra Tier Card -->
+          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 sm:p-7 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-300 transition-all duration-200 overflow-hidden">
             <div>
-              <div class="text-xs font-semibold text-neutral-500 mb-1">Ultra</div>
-              <div class="text-2xl font-extrabold font-num text-neutral-950 mb-3">$99<span class="text-xs text-neutral-400 font-sans font-normal">/mo</span></div>
-              <ul class="text-xs text-neutral-600 space-y-2 mb-4">
-                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span><strong class="font-num font-semibold text-neutral-900">100,000</strong> requests / day</span></li>
-                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Multi-Agent Container Namespaces</span></li>
-                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>UltraSearch Mode 3 Deep</span></li>
-                <li class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Priority Edge Execution</span></li>
+              <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">SCALE &amp; MULTI-TENANT</span>
+              <h3 class="text-base font-normal text-neutral-950">Ultra</h3>
+              <div class="text-3xl font-extrabold font-num text-neutral-950 my-3">
+                $99<span class="text-xs text-neutral-400 font-sans font-normal"> / mo</span>
+              </div>
+              <ul class="text-xs text-neutral-600 space-y-2.5 mb-6">
+                <li class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span><strong class="font-num font-semibold text-neutral-900">100,000</strong> requests / day</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Multi-Agent Container Namespaces</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>UltraSearch Mode 3 Deep Research</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Priority Cloudflare Edge Execution</span>
+                </li>
               </ul>
             </div>
-            <button onclick="handleProvisionKeyClick('ultra')" class="w-full py-1.5 text-center text-xs font-semibold rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 cursor-pointer">Choose Ultra</button>
+            <button onclick="handleProvisionKeyClick('ultra')" class="w-full py-2.5 text-center text-xs font-semibold rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 transition cursor-pointer">
+              Choose Ultra
+            </button>
           </div>
         </div>
       </section>
@@ -3078,8 +3307,7 @@ function skipJacket(e) {
 
       function updateNav() {
         const y = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || window.scrollY || 0;
-        const isScrolled = y > 25;
-        if (isScrolled) {
+        if (y > 20) {
           header.classList.add('scrolled-light');
         } else {
           header.classList.remove('scrolled-light');
@@ -3089,7 +3317,23 @@ function skipJacket(e) {
       window.addEventListener('scroll', updateNav, { passive: true });
       document.addEventListener('scroll', updateNav, { passive: true });
       window.addEventListener('resize', updateNav, { passive: true });
+      window.addEventListener('hashchange', () => {
+        setTimeout(updateNav, 20);
+        setTimeout(updateNav, 150);
+        setTimeout(updateNav, 450);
+      });
       window.addEventListener('load', updateNav);
+      
+      // Handle anchor clicks instantaneously
+      document.addEventListener('click', (e) => {
+        const a = e.target && e.target.closest && e.target.closest('a[href^="#"]');
+        if (a) {
+          setTimeout(updateNav, 30);
+          setTimeout(updateNav, 200);
+          setTimeout(updateNav, 600);
+        }
+      });
+
       updateNav();
 
       if ('IntersectionObserver' in window) {
@@ -3097,13 +3341,14 @@ function skipJacket(e) {
         if (sentinel) {
           const obs = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-              if (entry.isIntersecting) {
+              const y = window.pageYOffset || document.documentElement.scrollTop || 0;
+              if (entry.isIntersecting && y <= 20) {
                 header.classList.remove('scrolled-light');
-              } else {
+              } else if (y > 20 || !entry.isIntersecting) {
                 header.classList.add('scrolled-light');
               }
             });
-          }, { rootMargin: '-25px 0px 0px 0px' });
+          }, { rootMargin: '-20px 0px 0px 0px' });
           obs.observe(sentinel);
         }
       }

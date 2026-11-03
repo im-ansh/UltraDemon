@@ -193,27 +193,66 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
     <!-- SECTION 1: OVERVIEW -->
     <section id="view-overview" class="space-y-6">
-      <!-- 4 Top Metric Cards -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div class="card-clean p-4 rounded-2xl">
-          <span class="text-[10px] text-neutral-400 uppercase tracking-wider font-bold">Daily Requests</span>
-          <div class="text-2xl font-extrabold font-num text-neutral-950 mt-1" id="metricUsed">0</div>
-          <div class="text-[11px] text-neutral-500 mt-1 font-num">Limit: <span id="metricLimit">100</span></div>
+      <!-- 4 Top Metric Cards (Card Design Skill) -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Daily Requests -->
+        <div class="group relative bg-white rounded-2xl border border-neutral-200 p-5 flex flex-col justify-between hover:-translate-y-1 hover:shadow-lg hover:border-neutral-300 transition-all duration-200 overflow-hidden">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Daily Requests</span>
+            <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+          </div>
+          <div class="text-3xl font-extrabold font-num text-neutral-950 tracking-tight" id="metricUsed">0</div>
+          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Quota Limit</span>
+            <span class="font-bold text-neutral-900" id="metricLimit">100</span>
+          </div>
         </div>
-        <div class="card-clean p-4 rounded-2xl">
-          <span class="text-[10px] text-neutral-400 uppercase tracking-wider font-bold">Active Keys</span>
-          <div class="text-2xl font-extrabold font-num text-neutral-950 mt-1" id="metricKeys">0</div>
-          <div class="text-[11px] text-neutral-500 mt-1 font-num">D1 SQLite Bound</div>
+
+        <!-- Active Keys -->
+        <div class="group relative bg-white rounded-2xl border border-neutral-200 p-5 flex flex-col justify-between hover:-translate-y-1 hover:shadow-lg hover:border-neutral-300 transition-all duration-200 overflow-hidden">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Active Keys</span>
+            <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+            </div>
+          </div>
+          <div class="text-3xl font-extrabold font-num text-neutral-950 tracking-tight" id="metricKeys">0</div>
+          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Edge Bound</span>
+            <span class="font-bold text-neutral-900">D1 SQLite</span>
+          </div>
         </div>
-        <div class="card-clean p-4 rounded-2xl">
-          <span class="text-[10px] text-neutral-400 uppercase tracking-wider font-bold">Stored Memories</span>
-          <div class="text-2xl font-extrabold font-num text-neutral-950 mt-1" id="metricMemories">0</div>
-          <div class="text-[11px] text-neutral-500 mt-1 font-num">Recall: &lt;15ms</div>
+
+        <!-- Stored Memories -->
+        <div class="group relative bg-white rounded-2xl border border-neutral-200 p-5 flex flex-col justify-between hover:-translate-y-1 hover:shadow-lg hover:border-neutral-300 transition-all duration-200 overflow-hidden">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Stored Memories</span>
+            <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+            </div>
+          </div>
+          <div class="text-3xl font-extrabold font-num text-neutral-950 tracking-tight" id="metricMemories">0</div>
+          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Recall Latency</span>
+            <span class="font-bold text-emerald-600">&lt;15ms</span>
+          </div>
         </div>
-        <div class="card-clean p-4 rounded-2xl">
-          <span class="text-[10px] text-neutral-400 uppercase tracking-wider font-bold">Indexed Pages</span>
-          <div class="text-2xl font-extrabold font-num text-neutral-950 mt-1" id="metricIndexed">369</div>
-          <div class="text-[11px] text-neutral-500 mt-1 font-num">FTS5 Porter BM25</div>
+
+        <!-- Indexed Pages -->
+        <div class="group relative bg-white rounded-2xl border border-neutral-200 p-5 flex flex-col justify-between hover:-translate-y-1 hover:shadow-lg hover:border-neutral-300 transition-all duration-200 overflow-hidden">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Indexed Pages</span>
+            <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+            </div>
+          </div>
+          <div class="text-3xl font-extrabold font-num text-neutral-950 tracking-tight" id="metricIndexed">369</div>
+          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Algorithm</span>
+            <span class="font-bold text-neutral-900">BM25 Edge</span>
+          </div>
         </div>
       </div>
 
@@ -494,48 +533,51 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
         <h2 class="text-sm font-bold text-neutral-950">Manage Membership Tier</h2>
         <p class="text-xs text-neutral-600">Select a plan to immediately expand your daily D1 execution quotas across all your API keys.</p>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2 items-stretch">
           <!-- Free -->
-          <div class="card-clean p-5 rounded-2xl flex flex-col justify-between" id="tierCardFree">
+          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-300 transition-all duration-200 overflow-hidden" id="tierCardFree">
             <div>
-              <div class="text-xs font-semibold text-neutral-500 mb-1">Free Tier</div>
-              <div class="text-2xl font-extrabold font-num text-neutral-950 mb-2">$0<span class="text-xs font-sans text-neutral-400">/mo</span></div>
-              <ul class="text-xs text-neutral-600 space-y-1.5 mb-4 font-num">
-                <li>• 100 requests / day</li>
-                <li>• UltraMemory &lt;15ms recall</li>
-                <li>• KV Hot Cache</li>
+              <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">DEVELOPER HOBBY</span>
+              <h3 class="text-base font-semibold text-neutral-950">Free Tier</h3>
+              <div class="text-3xl font-extrabold font-num text-neutral-950 my-3">$0<span class="text-xs font-sans text-neutral-400">/mo</span></div>
+              <ul class="text-xs text-neutral-600 space-y-2 mb-6 font-num">
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>100 requests / day</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>UltraMemory &lt;15ms recall</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>KV Hot Cache</span></li>
               </ul>
             </div>
-            <button onclick="upgradeTier('free')" class="w-full py-1.5 text-xs font-semibold rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 cursor-pointer">Select Free</button>
+            <button onclick="upgradeTier('free')" class="w-full py-2.5 text-xs font-semibold rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 transition cursor-pointer">Select Free</button>
           </div>
 
           <!-- Pro -->
-          <div class="card-clean p-5 rounded-2xl border-black relative flex flex-col justify-between shadow-xs" id="tierCardPro">
-            <div class="absolute -top-2.5 right-4 px-2 py-0.2 text-[9px] font-bold bg-black text-white rounded-full font-num">POPULAR</div>
+          <div class="group relative bg-white rounded-2xl border-2 border-neutral-950 p-6 flex flex-col justify-between shadow-xl hover:-translate-y-2 hover:shadow-2xl transition-all duration-200 ring-4 ring-neutral-950/5 overflow-hidden" id="tierCardPro">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 text-[10px] font-bold bg-neutral-950 text-white rounded-full font-num uppercase tracking-wider shadow-md whitespace-nowrap">POPULAR</div>
             <div>
-              <div class="text-xs font-semibold text-neutral-900 mb-1">Pro Tier</div>
-              <div class="text-2xl font-extrabold font-num text-neutral-950 mb-2">$29<span class="text-xs font-sans text-neutral-400">/mo</span></div>
-              <ul class="text-xs text-neutral-600 space-y-1.5 mb-4 font-num">
-                <li>• 10,000 requests / day</li>
-                <li>• UltraMemory File Ingestion</li>
-                <li>• Full Crawler Access</li>
+              <span class="inline-block text-[10px] font-num font-bold text-neutral-900 uppercase tracking-wider mb-2">PRODUCTION FLEET</span>
+              <h3 class="text-base font-semibold text-neutral-950">Pro Tier</h3>
+              <div class="text-3xl font-extrabold font-num text-neutral-950 my-3">$29<span class="text-xs font-sans text-neutral-400">/mo</span></div>
+              <ul class="text-xs text-neutral-700 space-y-2 mb-6 font-num">
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span><strong class="font-bold">10,000</strong> requests / day</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>UltraMemory File Ingestion</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Full Crawler Access</span></li>
               </ul>
             </div>
-            <button onclick="upgradeTier('pro')" class="w-full py-1.5 text-xs font-semibold rounded-lg bg-black hover:bg-neutral-800 text-white cursor-pointer shadow-xs">Upgrade to Pro</button>
+            <button onclick="upgradeTier('pro')" class="w-full py-2.5 text-xs font-semibold rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white cursor-pointer shadow-md transition">Upgrade to Pro</button>
           </div>
 
           <!-- Ultra -->
-          <div class="card-clean p-5 rounded-2xl flex flex-col justify-between" id="tierCardUltra">
+          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-300 transition-all duration-200 overflow-hidden" id="tierCardUltra">
             <div>
-              <div class="text-xs font-semibold text-neutral-500 mb-1">Ultra Tier</div>
-              <div class="text-2xl font-extrabold font-num text-neutral-950 mb-2">$99<span class="text-xs font-sans text-neutral-400">/mo</span></div>
-              <ul class="text-xs text-neutral-600 space-y-1.5 mb-4 font-num">
-                <li>• 100,000 requests / day</li>
-                <li>• Priority Edge Queue</li>
-                <li>• Dedicated Containers</li>
+              <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">MULTI-TENANT SCALE</span>
+              <h3 class="text-base font-semibold text-neutral-950">Ultra Tier</h3>
+              <div class="text-3xl font-extrabold font-num text-neutral-950 my-3">$99<span class="text-xs font-sans text-neutral-400">/mo</span></div>
+              <ul class="text-xs text-neutral-600 space-y-2 mb-6 font-num">
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span><strong class="font-bold text-neutral-900">100,000</strong> requests / day</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Priority Edge Queue</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Dedicated Containers</span></li>
               </ul>
             </div>
-            <button onclick="upgradeTier('ultra')" class="w-full py-1.5 text-xs font-semibold rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 cursor-pointer">Upgrade to Ultra</button>
+            <button onclick="upgradeTier('ultra')" class="w-full py-2.5 text-xs font-semibold rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 transition cursor-pointer">Upgrade to Ultra</button>
           </div>
         </div>
       </div>
