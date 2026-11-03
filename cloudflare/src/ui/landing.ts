@@ -269,7 +269,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <!-- Interactive Light Blue Jacket Unzip Experience -->
   <div id="jacketCurtain" class="fixed inset-0 z-[99998] flex overflow-hidden select-none transition-opacity duration-700">
     <!-- Left Flap of the Jacket -->
-    <div id="jacketLeft" class="relative w-1/2 h-full jacket-flap shadow-2xl transition-transform duration-300 will-change-transform flex flex-col justify-between p-6 sm:p-10 border-r border-[#0284c7]/50">
+    <div id="jacketLeft" class="relative w-1/2 h-full jacket-flap shadow-2xl will-change-transform flex flex-col justify-between p-6 sm:p-10 border-r border-[#0284c7]/50">
       <div class="absolute inset-0 pointer-events-none opacity-25 jacket-baffles"></div>
       
       <!-- Left Chest Badge -->
@@ -297,7 +297,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     </div>
 
     <!-- Right Flap of the Jacket -->
-    <div id="jacketRight" class="relative w-1/2 h-full jacket-flap shadow-2xl transition-transform duration-300 will-change-transform flex flex-col justify-between p-6 sm:p-10 border-l border-[#0284c7]/50" style="background: linear-gradient(225deg, #38bdf8 0%, #0ea5e9 45%, #0284c7 100%);">
+    <div id="jacketRight" class="relative w-1/2 h-full jacket-flap shadow-2xl will-change-transform flex flex-col justify-between p-6 sm:p-10 border-l border-[#0284c7]/50" style="background: linear-gradient(225deg, #38bdf8 0%, #0ea5e9 45%, #0284c7 100%);">
       <div class="absolute inset-0 pointer-events-none opacity-25 jacket-baffles"></div>
 
       <!-- Right Shoulder Specs -->
@@ -315,8 +315,11 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </div>
     </div>
 
-    <!-- Center Zipper Pull & Slider Component -->
-    <div id="zipperHandle" class="absolute left-1/2 -translate-x-1/2 top-16 z-30 flex flex-col items-center cursor-grab active:cursor-grabbing touch-none select-none transition-transform will-change-transform">
+    <!-- Center Zipper Pull & Slider Component with Large Interactive Hit Area -->
+    <div id="zipperHandle" class="absolute left-1/2 -translate-x-1/2 top-16 z-30 flex flex-col items-center cursor-grab active:cursor-grabbing touch-none select-none will-change-transform">
+      <!-- Invisible extended grab zone for effortless targeting -->
+      <div id="zipperHitZone" class="absolute -inset-x-16 -inset-y-10 z-10 cursor-grab active:cursor-grabbing"></div>
+
       <!-- Metal Slider Housing -->
       <div class="w-8 h-10 rounded-sm bg-gradient-to-b from-neutral-200 via-neutral-300 to-neutral-500 shadow-2xl border border-white/70 flex items-center justify-center relative">
         <div class="w-3.5 h-4.5 rounded-xs bg-neutral-800/60 border border-neutral-400"></div>
@@ -2738,12 +2741,13 @@ curl "${origin}/v1/memory/context?q=preference" \\
     }
 
 
-    // 1. Interactive Light Blue Jacket Unzip Physics
+    // 1. Interactive Light Blue Jacket Unzip Physics (Unified PointerEvents + Touch + Gesture)
     (function initJacketUnzip() {
       const curtain = document.getElementById('jacketCurtain');
       const handle = document.getElementById('zipperHandle');
       const flapLeft = document.getElementById('jacketLeft');
       const flapRight = document.getElementById('jacketRight');
+      const hitZone = document.getElementById('zipperHitZone');
       if (!curtain || !handle || !flapLeft || !flapRight) return;
 
       const hasUnzipped = sessionStorage.getItem('ultrademon_jacket_unzipped');
@@ -2756,62 +2760,106 @@ curl "${origin}/v1/memory/context?q=preference" \\
       let startY = 0;
       let currentY = 0;
       let isCompleted = false;
+      let hasDraggedDown = false;
 
-      function onStart(e) {
+      function onPointerDown(e) {
         if (isCompleted) return;
+        // Prevent default native browser element dragging / ghosting and scrolling
+        if (e.cancelable) e.preventDefault();
         isDragging = true;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        hasDraggedDown = false;
+
+        const clientY = (e.touches && e.touches.length > 0) ? e.touches[0].clientY : e.clientY;
         startY = clientY - currentY;
+
+        // Strip CSS transitions during active manual drag for instant 1:1 hardware tracking
+        handle.style.transition = 'none';
+        flapLeft.style.transition = 'none';
+        flapRight.style.transition = 'none';
+        curtain.style.transition = 'none';
+
         handle.classList.add('cursor-grabbing');
+        handle.classList.remove('cursor-grab');
         document.body.style.userSelect = 'none';
       }
 
-      function onMove(e) {
+      function onPointerMove(e) {
         if (!isDragging || isCompleted) return;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        if (e.cancelable) e.preventDefault();
+
+        const clientY = (e.touches && e.touches.length > 0) ? e.touches[0].clientY : e.clientY;
         const rawY = clientY - startY;
         currentY = Math.max(0, rawY);
-        const maxTravel = Math.max(200, window.innerHeight - 150);
+
+        if (currentY > 10) {
+          hasDraggedDown = true;
+        }
+
+        // Responsive travel limit: 340px or 45% of viewport
+        const maxTravel = Math.min(360, Math.max(200, window.innerHeight * 0.45));
         const progress = Math.min(1, currentY / maxTravel);
 
-        handle.style.transform = 'translate(-50%, ' + currentY + 'px)';
-        flapLeft.style.transform = 'translateX(-' + (progress * 105) + '%) rotateY(-' + (progress * 25) + 'deg)';
-        flapRight.style.transform = 'translateX(' + (progress * 105) + '%) rotateY(' + (progress * 25) + 'deg)';
-        curtain.style.opacity = '' + Math.max(0.1, 1 - progress * 0.5);
+        // Hardware accelerated 3D transform updates
+        handle.style.transform = 'translate3d(-50%, ' + currentY + 'px, 0)';
+        flapLeft.style.transform = 'translate3d(-' + (progress * 105) + '%, 0, 0) rotateY(-' + (progress * 28) + 'deg)';
+        flapRight.style.transform = 'translate3d(' + (progress * 105) + '%, 0, 0) rotateY(' + (progress * 28) + 'deg)';
+        curtain.style.opacity = '' + Math.max(0.08, 1 - progress * 0.5);
 
-        if (progress >= 0.45) {
+        // Dynamic Tag Guidance
+        const tag = document.getElementById('zipperTag');
+        if (tag) {
+          if (progress > 0.15) {
+            tag.classList.remove('animate-bounce');
+            tag.innerHTML = '<span class="text-sky-300 font-bold">UNZIPPING... RELEASE TO OPEN</span>';
+          } else {
+            tag.classList.add('animate-bounce');
+            tag.innerHTML = '<svg class="w-3.5 h-3.5 text-sky-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg><span>HOLD &amp; PULL DOWN TO UNZIP</span>';
+          }
+        }
+
+        // If pulled past threshold (26%), immediately auto-complete unzip!
+        if (progress >= 0.26) {
           finishUnzip();
         }
       }
 
-      function onEnd() {
+      function onPointerUp(e) {
         if (!isDragging || isCompleted) return;
         isDragging = false;
+
         handle.classList.remove('cursor-grabbing');
+        handle.classList.add('cursor-grab');
         document.body.style.userSelect = '';
 
-        const maxTravel = Math.max(200, window.innerHeight - 150);
+        // If user tapped or barely pulled down (< 18px), treat as instant click-to-unzip!
+        if (!hasDraggedDown || currentY < 18) {
+          finishUnzip();
+          return;
+        }
+
+        const maxTravel = Math.min(360, Math.max(200, window.innerHeight * 0.45));
         const progress = currentY / maxTravel;
-        if (progress >= 0.35) {
+
+        if (progress >= 0.20) {
           finishUnzip();
         } else {
-          // Snap back up
-          handle.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
-          flapLeft.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
-          flapRight.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
-          curtain.style.transition = 'opacity 0.3s ease';
+          // Snap back up smoothly
+          handle.style.transition = 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
+          flapLeft.style.transition = 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
+          flapRight.style.transition = 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
+          curtain.style.transition = 'opacity 0.35s ease';
 
-          handle.style.transform = 'translate(-50%, 0px)';
-          flapLeft.style.transform = 'translateX(0%)';
-          flapRight.style.transform = 'translateX(0%)';
+          handle.style.transform = 'translate3d(-50%, 0px, 0)';
+          flapLeft.style.transform = 'translate3d(0%, 0, 0) rotateY(0deg)';
+          flapRight.style.transform = 'translate3d(0%, 0, 0) rotateY(0deg)';
           curtain.style.opacity = '1';
           currentY = 0;
-          setTimeout(() => {
-            handle.style.transition = '';
-            flapLeft.style.transition = '';
-            flapRight.style.transition = '';
-            curtain.style.transition = '';
-          }, 300);
+
+          const tag = document.getElementById('zipperTag');
+          if (tag) {
+            tag.classList.add('animate-bounce');
+            tag.innerHTML = '<svg class="w-3.5 h-3.5 text-sky-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg><span>HOLD &amp; PULL DOWN TO UNZIP</span>';
+          }
         }
       }
 
@@ -2821,31 +2869,42 @@ curl "${origin}/v1/memory/context?q=preference" \\
         isDragging = false;
         sessionStorage.setItem('ultrademon_jacket_unzipped', 'true');
 
-        handle.style.transition = 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)';
-        flapLeft.style.transition = 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)';
-        flapRight.style.transition = 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)';
-        curtain.style.transition = 'opacity 0.55s ease';
+        handle.style.transition = 'transform 0.65s cubic-bezier(0.16, 1, 0.3, 1)';
+        flapLeft.style.transition = 'transform 0.65s cubic-bezier(0.16, 1, 0.3, 1)';
+        flapRight.style.transition = 'transform 0.65s cubic-bezier(0.16, 1, 0.3, 1)';
+        curtain.style.transition = 'opacity 0.65s ease';
 
-        handle.style.transform = 'translate(-50%, ' + window.innerHeight + 'px)';
-        flapLeft.style.transform = 'translateX(-115%) rotateY(-35deg)';
-        flapRight.style.transform = 'translateX(115%) rotateY(35deg)';
+        const endDistance = Math.max(window.innerHeight + 120, 800);
+        handle.style.transform = 'translate3d(-50%, ' + endDistance + 'px, 0)';
+        flapLeft.style.transform = 'translate3d(-115%, 0, 0) rotateY(-35deg)';
+        flapRight.style.transform = 'translate3d(115%, 0, 0) rotateY(35deg)';
         curtain.style.opacity = '0';
 
         setTimeout(() => {
           curtain.style.display = 'none';
-        }, 600);
+        }, 700);
       }
 
-      handle.addEventListener('mousedown', onStart);
-      window.addEventListener('mousemove', onMove);
-      window.addEventListener('mouseup', onEnd);
+      // Pointer events for desktop & modern devices
+      handle.addEventListener('pointerdown', onPointerDown);
+      window.addEventListener('pointermove', onPointerMove, { passive: false });
+      window.addEventListener('pointerup', onPointerUp);
+      window.addEventListener('pointercancel', onPointerUp);
 
-      handle.addEventListener('touchstart', onStart, { passive: true });
-      window.addEventListener('touchmove', onMove, { passive: true });
-      window.addEventListener('touchend', onEnd);
+      // Touch events with non-passive touchmove for robust mobile dragging
+      handle.addEventListener('touchstart', onPointerDown, { passive: false });
+      window.addEventListener('touchmove', onPointerMove, { passive: false });
+      window.addEventListener('touchend', onPointerUp);
+      window.addEventListener('touchcancel', onPointerUp);
 
-      handle.addEventListener('click', () => {
-        if (currentY < 15 && !isCompleted) {
+      // Mouse events fallback for older desktop browsers
+      handle.addEventListener('mousedown', onPointerDown);
+      window.addEventListener('mousemove', onPointerMove);
+      window.addEventListener('mouseup', onPointerUp);
+
+      // Direct click handler on handle & tag: immediate fluid unzip
+      handle.addEventListener('click', (e) => {
+        if (!hasDraggedDown && !isCompleted) {
           finishUnzip();
         }
       });
