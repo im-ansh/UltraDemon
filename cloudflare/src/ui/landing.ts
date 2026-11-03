@@ -238,6 +238,50 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     }
 
 
+
+    /* Header Scrolled Light State (Pure White Background + Crisp Dark Text Theme) */
+    #mainHeader.scrolled-light {
+      background-color: rgba(255, 255, 255, 0.96) !important;
+      color: #09090b !important;
+      border-bottom-color: #e4e4e7 !important;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+    }
+    #mainHeader.scrolled-light .nav-link {
+      color: #52525b !important;
+    }
+    #mainHeader.scrolled-light .nav-link:hover {
+      color: #09090b !important;
+    }
+    #mainHeader.scrolled-light #brandName {
+      color: #09090b !important;
+    }
+    #mainHeader.scrolled-light #logoEngine {
+      color: #71717a !important;
+    }
+    #mainHeader.scrolled-light #logoIconBox {
+      background-color: #f4f4f5 !important;
+      border-color: #e4e4e7 !important;
+      color: #18181b !important;
+    }
+    #mainHeader.scrolled-light #headerMemoryBadge {
+      background-color: #f4f4f5 !important;
+      color: #18181b !important;
+      border-color: #e4e4e7 !important;
+    }
+    #mainHeader.scrolled-light #navSignInBtn {
+      color: #52525b !important;
+    }
+    #mainHeader.scrolled-light #navSignInBtn:hover {
+      color: #09090b !important;
+    }
+    #mainHeader.scrolled-light #navSignUpBtn {
+      background-color: #09090b !important;
+      color: #ffffff !important;
+    }
+    #mainHeader.scrolled-light #navSignUpBtn:hover {
+      background-color: #27272a !important;
+    }
+
     /* Light Blue Jacket Unzip Simulation */
     #jacketCurtain {
       perspective: 1200px;
@@ -476,7 +520,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
 
         <!-- Supermemory-inspired editorial hero headline pairing Geist Sans and Michelangelus Serif Italic -->
-        <h1 class="text-3xl sm:text-5xl lg:text-6xl tracking-tight text-white mb-6 leading-[1.12] max-w-3xl mx-auto drop-shadow-sm font-sans font-extrabold">
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl tracking-tight text-white mb-6 leading-[1.18] max-w-3xl mx-auto drop-shadow-sm font-sans font-normal">
           ultrademon is building the <span class="font-serif font-bold italic text-white underline decoration-white/70 decoration-2 underline-offset-8">sovereign engine</span> for web search, agent memory, and <span class="font-serif font-bold italic text-white">continual context</span>.
         </h1>
 
@@ -2993,45 +3037,8 @@ function skipJacket(e) {
       if (!header) return;
 
       function updateNav() {
-        const hero = document.getElementById('heroSection');
-        const heroBottom = hero ? (hero.offsetTop + hero.offsetHeight - 64) : 420;
-        const isScrolled = window.scrollY >= heroBottom;
-
-        if (isScrolled) {
-          header.className = 'sticky top-0 z-40 transition-all duration-300 bg-white/95 text-neutral-950 backdrop-blur-md border-b border-neutral-200 shadow-xs';
-          header.querySelectorAll('.nav-link').forEach(a => {
-            a.className = 'nav-link text-neutral-600 hover:text-black transition flex items-center gap-1.5';
-          });
-          const brandName = document.getElementById('brandName');
-          if (brandName) brandName.className = 'font-extrabold text-base tracking-tight text-neutral-950 flex items-center gap-1 transition-colors';
-          const badge = document.getElementById('headerMemoryBadge');
-          if (badge) badge.className = 'font-num text-[9px] bg-neutral-100 text-neutral-800 border border-neutral-200 px-1 py-0.2 rounded font-semibold';
-          const signInBtn = document.getElementById('navSignInBtn');
-          if (signInBtn) signInBtn.className = 'px-2.5 py-1.5 text-xs font-medium text-neutral-600 hover:text-black transition cursor-pointer';
-          const signUpBtn = document.getElementById('navSignUpBtn');
-          if (signUpBtn) signUpBtn.className = 'px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition shadow-xs cursor-pointer';
-          const logoEngine = document.getElementById('logoEngine');
-          if (logoEngine) logoEngine.className = 'font-serif text-xs font-bold italic text-neutral-500';
-          const logoIconBox = document.getElementById('logoIconBox');
-          if (logoIconBox) logoIconBox.className = 'w-7 h-7 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:bg-black group-hover:text-white group-hover:border-black transition';
-        } else {
-          header.className = 'sticky top-0 z-40 transition-all duration-300 bg-[#38bdf8]/90 text-white backdrop-blur-md border-b border-white/20';
-          header.querySelectorAll('.nav-link').forEach(a => {
-            a.className = 'nav-link text-white/90 hover:text-white transition flex items-center gap-1.5';
-          });
-          const brandName = document.getElementById('brandName');
-          if (brandName) brandName.className = 'font-extrabold text-base tracking-tight text-white flex items-center gap-1 transition-colors';
-          const badge = document.getElementById('headerMemoryBadge');
-          if (badge) badge.className = 'font-num text-[9px] bg-white/20 text-white border border-white/40 px-1 py-0.2 rounded font-semibold backdrop-blur-xs';
-          const signInBtn = document.getElementById('navSignInBtn');
-          if (signInBtn) signInBtn.className = 'px-2.5 py-1.5 text-xs font-medium text-white/90 hover:text-white transition cursor-pointer';
-          const signUpBtn = document.getElementById('navSignUpBtn');
-          if (signUpBtn) signUpBtn.className = 'px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-white text-neutral-950 hover:bg-neutral-100 transition shadow-xs cursor-pointer';
-          const logoEngine = document.getElementById('logoEngine');
-          if (logoEngine) logoEngine.className = 'font-serif text-xs font-bold italic text-white/80';
-          const logoIconBox = document.getElementById('logoIconBox');
-          if (logoIconBox) logoIconBox.className = 'w-7 h-7 rounded-lg bg-white/20 border border-white/30 flex items-center justify-center text-white transition';
-        }
+        const isScrolled = window.scrollY > 40;
+        header.classList.toggle('scrolled-light', isScrolled);
       }
 
       window.addEventListener('scroll', updateNav, { passive: true });
