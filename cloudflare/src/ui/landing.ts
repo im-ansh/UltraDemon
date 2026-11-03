@@ -237,13 +237,52 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       transform: translateY(0) !important;
     }
 
+    /* Header Base (Sky Blue Hero State) */
+    #mainHeader {
+      background-color: rgba(56, 189, 248, 0.92);
+      color: #ffffff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    #mainHeader .nav-link {
+      color: rgba(255, 255, 255, 0.9);
+      transition: color 0.15s ease;
+    }
+    #mainHeader .nav-link:hover {
+      color: #ffffff;
+    }
+    #mainHeader #brandName {
+      color: #ffffff;
+    }
+    #mainHeader #logoEngine {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    #mainHeader #logoIconBox {
+      background-color: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      color: #ffffff;
+    }
+    #mainHeader #headerMemoryBadge {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+    #mainHeader #navSignInBtn {
+      color: rgba(255, 255, 255, 0.9);
+    }
+    #mainHeader #navSignInBtn:hover {
+      color: #ffffff;
+    }
+    #mainHeader #navSignUpBtn {
+      background-color: #ffffff;
+      color: #09090b;
+    }
 
-
-    /* Header Scrolled Light State (Pure White Background + Crisp Dark Text Theme) */
+    /* Header Scrolled State (Pure White Background + Crisp Dark Text Theme) */
     #mainHeader.scrolled-light {
-      background-color: rgba(255, 255, 255, 0.96) !important;
+      background-color: rgba(255, 255, 255, 0.98) !important;
       color: #09090b !important;
-      border-bottom-color: #e4e4e7 !important;
+      border-bottom: 1px solid #e4e4e7 !important;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
     }
     #mainHeader.scrolled-light .nav-link {
@@ -282,7 +321,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       background-color: #27272a !important;
     }
 
-    /* Light Blue Jacket Unzip Simulation */
+/* Light Blue Jacket Unzip Simulation */
     #jacketCurtain {
       perspective: 1200px;
     }
@@ -445,7 +484,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   </div>
 
   <!-- Top Minimalist Centered Header -->
-  <header id="mainHeader" class="sticky top-0 z-40 transition-all duration-300 bg-[#38bdf8]/90 text-white backdrop-blur-md border-b border-white/20">
+  <header id="mainHeader" class="sticky top-0 z-40 backdrop-blur-md">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
       <!-- Brand Logo with Grey Vector Spark Icon -->
       <a href="/" class="flex items-center gap-2.5 group flex-shrink-0">
@@ -462,19 +501,19 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
       <!-- Minimal Essential Nav Links -->
       <nav class="hidden md:flex items-center gap-8 text-xs font-medium">
-        <a href="#memory" class="nav-link text-white/90 hover:text-white transition flex items-center gap-1.5">
+        <a href="#memory" class="nav-link transition flex items-center gap-1.5">
           <span>Memory</span>
           <span id="headerMemoryBadge" class="font-num text-[9px] bg-white/20 text-white border border-white/40 px-1 py-0.2 rounded font-semibold backdrop-blur-xs">&lt;15ms</span>
         </a>
-        <a href="#search" class="nav-link text-white/90 hover:text-white transition">Search</a>
-        <a href="#benchmarks" class="nav-link text-white/90 hover:text-white transition">Benchmarks</a>
-        <a href="#pricing" class="nav-link text-white/90 hover:text-white transition">Pricing</a>
+        <a href="#search" class="nav-link transition">Search</a>
+        <a href="#benchmarks" class="nav-link transition">Benchmarks</a>
+        <a href="#pricing" class="nav-link transition">Pricing</a>
       </nav>
 
       <!-- Nav Auth Buttons -->
       <div class="flex items-center gap-2.5 flex-shrink-0">
         <div id="navAuthLoggedOut" class="flex items-center gap-3">
-          <a href="/login" id="navSignInBtn" class="px-2.5 py-1.5 text-xs font-medium text-white/90 hover:text-white transition cursor-pointer">
+          <a href="/login" id="navSignInBtn" class="px-2.5 py-1.5 text-xs font-medium transition cursor-pointer">
             Sign In
           </a>
           <a href="/signup" id="navSignUpBtn" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-white text-neutral-950 hover:bg-neutral-100 transition shadow-xs cursor-pointer">
@@ -500,6 +539,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
   <!-- Full-Width Hero Section Canvas (Light Blue Background with White Text) -->
   <section id="heroSection" class="relative w-full text-white pt-8 pb-16 overflow-hidden" style="background: linear-gradient(180deg, #38bdf8 0%, #7dd3fc 30%, #bae6fd 60%, #e0f2fe 82%, #f0f9ff 94%, #ffffff 100%);">
+    <div id="heroTopSentinel" class="absolute top-0 left-0 w-full h-8 pointer-events-none"></div>
     <!-- Subtle background particles -->
     <div class="absolute inset-0 pointer-events-none opacity-10" style="background-image: radial-gradient(rgba(255,255,255,0.8) 1px, transparent 1px); background-size: 24px 24px;"></div>
 
@@ -620,7 +660,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 mb-3">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             </div>
-            <h3 class="text-sm font-bold text-neutral-950 mb-1.5">Autonomous Web Search</h3>
+            <h3 class="text-sm font-normal text-neutral-950 mb-1.5">Autonomous Web Search</h3>
             <p class="text-xs text-neutral-600 leading-relaxed">
               Native edge crawler, HTMLRewriter extraction, and BM25 ranking on D1. Sub-40ms P50 latency with zero external search API dependencies.
             </p>
@@ -629,7 +669,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             <div class="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center mb-3">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/><path d="M12 2v20"/><path d="M8 8h8"/><path d="M7 13h10"/><path d="M9 18h6"/></svg>
             </div>
-            <h3 class="text-sm font-bold text-neutral-950 mb-1.5">UltraMemory API</h3>
+            <h3 class="text-sm font-normal text-neutral-950 mb-1.5">UltraMemory API</h3>
             <p class="text-xs text-neutral-600 leading-relaxed">
               Store agent facts, preferences, profiles, and conversations. Retrieve needles with BM25 in under 15ms at the Cloudflare edge.
             </p>
@@ -638,7 +678,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 mb-3">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5M3 12A9 3 0 0 0 21 12"/></svg>
             </div>
-            <h3 class="text-sm font-bold text-neutral-950 mb-1.5">File &amp; Context Ingestion</h3>
+            <h3 class="text-sm font-normal text-neutral-950 mb-1.5">File &amp; Context Ingestion</h3>
             <p class="text-xs text-neutral-600 leading-relaxed">
               Ingest full text documents, Markdown, and source files with smart chunking and instant full-text indexing for agent lookup.
             </p>
@@ -651,7 +691,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
           <div>
             <div class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">The Architecture of UltraSpeed</div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
+            <h2 class="text-2xl sm:text-3xl font-normal tracking-tight text-neutral-950 mt-1">
               Edge Capabilities &amp; <span class="font-serif font-bold italic text-black">Execution Flow</span>
             </h2>
             <p class="text-xs text-neutral-600 mt-1">
@@ -678,7 +718,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/><path d="M12 2v20"/><path d="M8 8h8"/><path d="M7 13h10"/><path d="M9 18h6"/></svg>
               </div>
               <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">01 / RETRIEVAL</div>
-              <h3 class="text-base font-bold text-neutral-950 mb-2">Sub-15ms BM25 Recall</h3>
+              <h3 class="text-base font-normal text-neutral-950 mb-2">Sub-15ms BM25 Recall</h3>
               <p class="text-xs text-neutral-600 leading-relaxed">
                 Direct SQLite FTS5 indices compiled on 330+ edge PoPs. Zero vector embedder overhead or remote database roundtrips.
               </p>
@@ -696,7 +736,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
               </div>
               <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">02 / INGESTION</div>
-              <h3 class="text-base font-bold text-neutral-950 mb-2">Autonomous Web Crawler</h3>
+              <h3 class="text-base font-normal text-neutral-950 mb-2">Autonomous Web Crawler</h3>
               <p class="text-xs text-neutral-600 leading-relaxed">
                 Recursive depth crawl directly inside Cloudflare Workers. Cleans HTML, extracts markdown, and indexes pages into FTS5 in real time.
               </p>
@@ -714,7 +754,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
               </div>
               <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">03 / NAMESPACES</div>
-              <h3 class="text-base font-bold text-neutral-950 mb-2">Agent Container Namespaces</h3>
+              <h3 class="text-base font-normal text-neutral-950 mb-2">Agent Container Namespaces</h3>
               <p class="text-xs text-neutral-600 leading-relaxed">
                 Isolate memory namespaces dynamically using container_tag parameters. Partition memories by session, workspace, or agent role.
               </p>
@@ -732,7 +772,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
               </div>
               <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">04 / PROTOCOL</div>
-              <h3 class="text-base font-bold text-neutral-950 mb-2">Native MCP Tool Server</h3>
+              <h3 class="text-base font-normal text-neutral-950 mb-2">Native MCP Tool Server</h3>
               <p class="text-xs text-neutral-600 leading-relaxed">
                 Plug directly into Claude Desktop, Cursor, and Windsurf via Server-Sent Events (SSE). Grant your coding agents instant persistent recall.
               </p>
@@ -750,7 +790,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
               </div>
               <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">05 / SECURITY</div>
-              <h3 class="text-base font-bold text-neutral-950 mb-2">Scoped Keys (um_ / us_)</h3>
+              <h3 class="text-base font-normal text-neutral-950 mb-2">Scoped Keys (um_ / us_)</h3>
               <p class="text-xs text-neutral-600 leading-relaxed">
                 Issue scoped tokens restricted to Memory-only or Search-only operations. Protect customer privacy and limit agent blast radius.
               </p>
@@ -768,7 +808,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
               </div>
               <div class="text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-1">06 / ECONOMICS</div>
-              <h3 class="text-base font-bold text-neutral-950 mb-2">90% Cost Reduction</h3>
+              <h3 class="text-base font-normal text-neutral-950 mb-2">90% Cost Reduction</h3>
               <p class="text-xs text-neutral-600 leading-relaxed">
                 Cut out embedding API costs and heavy vector database clusters. D1 SQLite edge tables scale automatically with predictable pricing.
               </p>
@@ -785,7 +825,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       <section id="benchmarks" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
         <div class="mb-6">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Speed &amp; Latency Benchmark</span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
+          <h2 class="text-2xl sm:text-3xl font-normal tracking-tight text-neutral-950 mt-1">
             Our promise: the <span class="font-serif font-bold italic text-black">fastest agent memory</span> ever built.
           </h2>
           <p class="text-xs text-neutral-600 mt-1">
@@ -858,7 +898,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-neutral-100 text-[10px] font-bold text-neutral-800 font-num mb-2">
             API #1 · ULTRAMEMORY
           </div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950">
+          <h2 class="text-2xl sm:text-3xl font-normal tracking-tight text-neutral-950">
             Live Memory <span class="font-serif font-bold italic text-black">Playground</span>
           </h2>
           <p class="text-xs text-neutral-600 mt-1">
@@ -1045,7 +1085,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-neutral-100 text-[10px] font-bold text-neutral-800 font-num mb-2">
             API #2 · ULTRASEARCH
           </div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950">
+          <h2 class="text-2xl sm:text-3xl font-normal tracking-tight text-neutral-950">
             Live Search <span class="font-serif font-bold italic text-black">Playground</span>
           </h2>
           <p class="text-xs text-neutral-600 mt-1">
@@ -1129,7 +1169,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       <section id="usecases" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
         <div class="mb-6">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Architectural Pillars</span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
+          <h2 class="text-2xl sm:text-3xl font-normal tracking-tight text-neutral-950 mt-1">
             Engineered for <span class="font-serif font-bold italic text-black">Autonomous AI</span>
           </h2>
           <p class="text-xs text-neutral-600 mt-1">
@@ -1147,7 +1187,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                 </div>
                 <span class="font-num text-[10px] text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200 font-semibold">&lt;15ms Recall</span>
               </div>
-              <h3 class="text-sm font-bold text-neutral-950 mb-1">Continual Learning &amp; Agent Memory</h3>
+              <h3 class="text-sm font-normal text-neutral-950 mb-1">Continual Learning &amp; Agent Memory</h3>
               <p class="text-xs text-neutral-600 leading-relaxed mb-3">
                 Prevent context window overflow and quadratic attention costs. Store user preferences, past tool results, and episodic dialogue state directly in edge SQLite FTS5 for sub-15ms recall.
               </p>
@@ -1166,7 +1206,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                 </div>
                 <span class="font-num text-[10px] text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200 font-semibold">Zero 3rd-Party Leaks</span>
               </div>
-              <h3 class="text-sm font-bold text-neutral-950 mb-1">Sovereign Web Grounding &amp; RAG</h3>
+              <h3 class="text-sm font-normal text-neutral-950 mb-1">Sovereign Web Grounding &amp; RAG</h3>
               <p class="text-xs text-neutral-600 leading-relaxed mb-3">
                 Ground LLM generations in verifiable, live-crawled web data. Never send proprietary user queries to external search brokers. Full PageRank and BM25 pass scoring on your terms.
               </p>
@@ -1185,7 +1225,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                 </div>
                 <span class="font-num text-[10px] text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200 font-semibold">Real-Time Fluidity</span>
               </div>
-              <h3 class="text-sm font-bold text-neutral-950 mb-1">Low-Latency Voice &amp; Chat Assistants</h3>
+              <h3 class="text-sm font-normal text-neutral-950 mb-1">Low-Latency Voice &amp; Chat Assistants</h3>
               <p class="text-xs text-neutral-600 leading-relaxed mb-3">
                 Voice agents (ElevenLabs, LiveKit, Gemini Live) demand sub-100ms total conversational loops. UltraMemory’s 12ms edge recall guarantees zero dead air or voice hesitation.
               </p>
@@ -1204,7 +1244,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                 </div>
                 <span class="font-num text-[10px] text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200 font-semibold">Namespaces</span>
               </div>
-              <h3 class="text-sm font-bold text-neutral-950 mb-1">Multi-Tenant Knowledge Containers</h3>
+              <h3 class="text-sm font-normal text-neutral-950 mb-1">Multi-Tenant Knowledge Containers</h3>
               <p class="text-xs text-neutral-600 leading-relaxed mb-3">
                 Partition memories securely by user ID, workspace ID, or agent role using <code class="bg-neutral-100 px-1 py-0.5 rounded font-num text-[11px]">container_tag</code>. Full multi-tenant isolation without provisioning separate databases.
               </p>
@@ -1220,7 +1260,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       <section id="build" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
         <div class="mb-6">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Production Blueprints</span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
+          <h2 class="text-2xl sm:text-3xl font-normal tracking-tight text-neutral-950 mt-1">
             What You Can <span class="font-serif font-bold italic text-black">Build Today</span>
           </h2>
           <p class="text-xs text-neutral-600 mt-1">
@@ -1241,7 +1281,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           <div id="buildFinance" class="space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h3 class="text-sm font-bold text-neutral-950">Autonomous SEC &amp; Earnings Intelligence Agent</h3>
+                <h3 class="text-sm font-normal text-neutral-950">Autonomous SEC &amp; Earnings Intelligence Agent</h3>
                 <p class="text-xs text-neutral-600">Continuously indexes SEC 10-K filings and earnings call transcripts into D1; answers complex margin trend queries in &lt;30ms.</p>
               </div>
               <span class="self-start sm:self-auto font-num text-[10px] bg-neutral-100 text-neutral-800 border border-neutral-200 px-2 py-0.5 rounded font-semibold">Crawl + Memory + Search</span>
@@ -1295,7 +1335,7 @@ print("Recalled Evidence:", memory["results"][0]["snippet"])</pre>
           <div id="buildCode" class="space-y-4 hidden">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h3 class="text-sm font-bold text-neutral-950">Sovereign Code Copilot with Eternal Repo Memory</h3>
+                <h3 class="text-sm font-normal text-neutral-950">Sovereign Code Copilot with Eternal Repo Memory</h3>
                 <p class="text-xs text-neutral-600">Indexes architectural decisions, PR review discussions, and team conventions so coding agents never repeat past mistakes.</p>
               </div>
               <span class="self-start sm:self-auto font-num text-[10px] bg-neutral-100 text-neutral-800 border border-neutral-200 px-2 py-0.5 rounded font-semibold">GitHub Hook + D1 FTS5</span>
@@ -1340,7 +1380,7 @@ const recallRepoRule = tool({
           <div id="buildSupport" class="space-y-4 hidden">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h3 class="text-sm font-bold text-neutral-950">Omnichannel Customer Support &amp; Context Memory</h3>
+                <h3 class="text-sm font-normal text-neutral-950">Omnichannel Customer Support &amp; Context Memory</h3>
                 <p class="text-xs text-neutral-600">Preserves customer interaction context across Zendesk, Discord, and Live Chat. Agents recall preferences in &lt;15ms.</p>
               </div>
               <span class="self-start sm:self-auto font-num text-[10px] bg-neutral-100 text-neutral-800 border border-neutral-200 px-2 py-0.5 rounded font-semibold">Vercel AI SDK + UltraMemory</span>
@@ -1374,7 +1414,7 @@ const { text } = await generateText({
           <div id="buildResearch" class="space-y-4 hidden">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h3 class="text-sm font-bold text-neutral-950">Autonomous Multi-Angle Deep Research Bot</h3>
+                <h3 class="text-sm font-normal text-neutral-950">Autonomous Multi-Angle Deep Research Bot</h3>
                 <p class="text-xs text-neutral-600">Takes a research query, queries the sovereign index in Mode 3 (Deep Research), extracts citations, and synthesizes an authoritative report.</p>
               </div>
               <span class="self-start sm:self-auto font-num text-[10px] bg-neutral-100 text-neutral-800 border border-neutral-200 px-2 py-0.5 rounded font-semibold">UltraSearch Mode 3 + Citations</span>
@@ -1407,7 +1447,7 @@ for r in res["results"]:
       <section id="console" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
         <div class="mb-6">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Unified Developer Platform</span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
+          <h2 class="text-2xl sm:text-3xl font-normal tracking-tight text-neutral-950 mt-1">
             API Keys &amp; <span class="font-serif font-bold italic text-black">Console</span>
           </h2>
           <p class="text-xs text-neutral-600 mt-1">
@@ -1437,7 +1477,7 @@ for r in res["results"]:
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <!-- Generate Key Form -->
           <div class="card-clean p-5 rounded-2xl">
-            <h3 class="text-xs font-bold text-neutral-950 mb-3 flex items-center gap-1.5">
+            <h3 class="text-xs font-normal text-neutral-950 mb-3 flex items-center gap-1.5">
               <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
               <span>Generate Unified Key</span>
             </h3>
@@ -1565,7 +1605,7 @@ for r in res["results"]:
       <section id="crawler" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
         <div class="mb-6">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Autonomous Ingestion</span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
+          <h2 class="text-2xl sm:text-3xl font-normal tracking-tight text-neutral-950 mt-1">
             Edge Web <span class="font-serif font-bold italic text-black">Crawler</span>
           </h2>
           <p class="text-xs text-neutral-600 mt-1">
@@ -1621,7 +1661,7 @@ for r in res["results"]:
       <section id="integrations" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
         <div class="mb-6">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Ecosystem</span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
+          <h2 class="text-2xl sm:text-3xl font-normal tracking-tight text-neutral-950 mt-1">
             Universal Integrations &amp; <span class="font-serif font-bold italic text-black">SDKs</span>
           </h2>
           <p class="text-xs text-neutral-600 mt-1">
@@ -1850,7 +1890,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
       <section id="pricing" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
         <div class="mb-6">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Predictable Pricing</span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 mt-1">
+          <h2 class="text-2xl sm:text-3xl font-normal tracking-tight text-neutral-950 mt-1">
             Sovereign Access for <span class="font-serif font-bold italic text-black">Every Scale</span>
           </h2>
           <p class="text-xs text-neutral-600 mt-1">
@@ -1934,7 +1974,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         </div>
         <div>
-          <h3 id="authModalTitle" class="text-base font-bold text-neutral-950">
+          <h3 id="authModalTitle" class="text-base font-normal text-neutral-950">
             Sign In to <span class="font-serif font-bold italic text-black">UltraDemon</span>
           </h3>
           <p class="text-[11px] text-neutral-500">Unified credentials for Search &amp; Memory</p>
@@ -2594,7 +2634,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
                   '<span class="truncate max-w-xs text-neutral-600 font-mono">' + (r.url || 'edge://d1/indexed') + '</span>' +
                   '<span class="font-bold text-neutral-900">BM25: ' + (r.score ? r.score.toFixed(2) : '1.00') + '</span>' +
                 '</div>' +
-                '<h3 class="font-bold text-xs text-neutral-950 hover:underline cursor-pointer mb-1">' + (r.title || 'Indexed Document') + '</h3>' +
+                '<h3 class="font-normal text-xs text-neutral-950 hover:underline cursor-pointer mb-1">' + (r.title || 'Indexed Document') + '</h3>' +
                 '<p class="text-neutral-600 text-xs line-clamp-2 leading-relaxed">' + (r.snippet || r.content || '') + '</p>' +
               '</div>'
             ).join('');
@@ -2648,7 +2688,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
               '<span class="truncate max-w-xs text-neutral-600 font-mono">' + r.url + '</span>' +
               '<span class="font-bold text-neutral-900">BM25: ' + r.score.toFixed(2) + '</span>' +
             '</div>' +
-            '<h3 class="font-bold text-xs text-neutral-950 hover:underline cursor-pointer mb-1">' + r.title + '</h3>' +
+            '<h3 class="font-normal text-xs text-neutral-950 hover:underline cursor-pointer mb-1">' + r.title + '</h3>' +
             '<p class="text-neutral-600 text-xs line-clamp-2 leading-relaxed">' + r.snippet + '</p>' +
           '</div>'
         ).join('');
@@ -3037,12 +3077,36 @@ function skipJacket(e) {
       if (!header) return;
 
       function updateNav() {
-        const isScrolled = window.scrollY > 40;
-        header.classList.toggle('scrolled-light', isScrolled);
+        const y = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || window.scrollY || 0;
+        const isScrolled = y > 25;
+        if (isScrolled) {
+          header.classList.add('scrolled-light');
+        } else {
+          header.classList.remove('scrolled-light');
+        }
       }
 
       window.addEventListener('scroll', updateNav, { passive: true });
+      document.addEventListener('scroll', updateNav, { passive: true });
+      window.addEventListener('resize', updateNav, { passive: true });
+      window.addEventListener('load', updateNav);
       updateNav();
+
+      if ('IntersectionObserver' in window) {
+        const sentinel = document.getElementById('heroTopSentinel');
+        if (sentinel) {
+          const obs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                header.classList.remove('scrolled-light');
+              } else {
+                header.classList.add('scrolled-light');
+              }
+            });
+          }, { rootMargin: '-25px 0px 0px 0px' });
+          obs.observe(sentinel);
+        }
+      }
     })();
 
     // 3. Side-Scroll Mouse Drag-to-Scroll & Card Step
