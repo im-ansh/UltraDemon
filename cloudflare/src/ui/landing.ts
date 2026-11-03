@@ -746,15 +746,15 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           </div>
         </div>
 
-        <!-- Editorial Prose in white -->
-        <div class="space-y-4 text-sm text-white/90 leading-relaxed max-w-3xl mx-auto mb-4 text-left">
+        <!-- Editorial Prose in lighter shade of grey -->
+        <div class="space-y-4 text-sm text-neutral-500 leading-relaxed max-w-3xl mx-auto mb-4 text-left">
           <p>
-            Current memory tools like Supermemory, Mem0, and centralized vector databases were designed around single-region cloud servers and heavy embedding pipelines. When an autonomous agent queries memory or web search in an interactive loop, centralized roundtrips cost <strong>350ms to 500ms</strong> per step.
+            Current memory tools like Supermemory, Mem0, and centralized vector databases were designed around single-region cloud servers and heavy embedding pipelines. When an autonomous agent queries memory or web search in an interactive loop, centralized roundtrips cost <strong class="font-semibold text-neutral-700">350ms to 500ms</strong> per step.
           </p>
           <p>
-            <strong>UltraDemon</strong> takes a radically different approach: running both full-text BM25 web search and structured agent memory directly inside <span class="font-semibold text-white">Cloudflare D1 SQLite with FTS5</span> across 330+ edge PoPs worldwide. 
+            <strong class="font-semibold text-neutral-700">UltraDemon</strong> takes a radically different approach: running both full-text BM25 web search and structured agent memory directly inside <span class="font-semibold text-neutral-700">Cloudflare D1 SQLite with FTS5</span> across 330+ edge PoPs worldwide. 
           </p>
-          <p class="font-serif font-bold italic text-base text-white pl-4 border-l-2 border-white">
+          <p class="font-serif font-bold italic text-base text-neutral-600 pl-4 border-l-2 border-neutral-300">
             &ldquo;The result: memory recall drops to under 15ms globally, with zero telemetry leakage and a single unified API key.&rdquo;
           </p>
         </div>
