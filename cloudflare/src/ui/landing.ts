@@ -321,6 +321,37 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       background-color: #27272a !important;
     }
 
+    /* Interactive 3D Perspective Tilt Cards */
+    .card-3d-tilt {
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: transform 0.12s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .card-3d-tilt.is-resetting {
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+    }
+    .card-3d-tilt .tilt-content {
+      transform: translateZ(18px);
+      transform-style: preserve-3d;
+      pointer-events: none;
+    }
+    .card-3d-tilt .tilt-glare {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      mix-blend-mode: soft-light;
+      z-index: 20;
+    }
+    .card-3d-tilt:hover .tilt-glare {
+      opacity: 1;
+    }
+    .card-3d-tilt:hover {
+      box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.22), 0 12px 18px -6px rgba(0, 0, 0, 0.1);
+    }
+
 /* Light Blue Jacket Unzip Simulation */
     #jacketCurtain {
       perspective: 1200px;
@@ -389,7 +420,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <!-- Top-Right Skip Intro Button (Fixed in Corner with Absolute Highest Z-Index) -->
   <button 
     id="skipJacketBtn" 
-    onclick="skipJacket(event); this.style.display='none'; var c=document.getElementById('jacketCurtain'); if(c){ c.style.pointerEvents='none'; c.style.opacity='0'; setTimeout(function(){ if(c.parentNode) c.parentNode.removeChild(c); }, 180); }" 
+    onclick="skipJacket(event); this.style.display='none'; var c=document.getElementById('jacketCurtain'); if(c){ c.style.pointerEvents='none'; c.style.opacity='0'; setTimeout(function(){ if(c.parentNode) c.parentNode.removeChild(c); }, 180); } if(window.updateNav) window.updateNav();" 
     class="fixed top-5 right-5 z-[9999999] px-4 py-2 rounded-full bg-black hover:bg-neutral-900 text-white text-xs font-num font-semibold shadow-2xl border-2 border-white flex items-center gap-1.5 transition cursor-pointer backdrop-blur-md hover:scale-105 active:scale-95"
     style="cursor: pointer;"
     title="Skip intro animation and access website directly"
@@ -595,110 +626,122 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           </a>
         </div>
 
-        <!-- System Architecture Flow Diagram with Translucent Glass Cards (Card Design Skill) -->
-        <div class="p-6 sm:p-8 rounded-3xl mb-12 bg-white/15 backdrop-blur-md border border-white/30 text-white shadow-2xl">
+        <!-- System Architecture Flow Diagram with High-Visibility 3D Tilt Cards (Card Design Skill) -->
+        <div class="p-6 sm:p-8 rounded-3xl mb-12 bg-white/25 backdrop-blur-xl border border-white/60 shadow-2xl text-neutral-950">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
-            <div class="text-[11px] font-semibold uppercase tracking-wider text-white/90 font-num flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
-              <span>System Architecture &amp; Execution Topology</span>
+            <div class="text-[11px] font-bold uppercase tracking-wider text-neutral-950 font-num flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-xs"></span>
+              <span class="text-neutral-950 font-extrabold tracking-wide">SYSTEM ARCHITECTURE &amp; EXECUTION TOPOLOGY</span>
             </div>
-            <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 border border-white/30 text-[10px] font-num text-white font-medium">
+            <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-white text-[10px] font-num text-neutral-950 font-bold shadow-xs">
               CLOUDFLARE ANYCAST EDGE · 330+ CITIES
             </span>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left [perspective:1200px]">
             <!-- Node 1: AI Agent Fleet -->
-            <div class="group relative p-5 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 hover:border-white/60 hover:bg-white/25 hover:-translate-y-1 hover:shadow-2xl transition-all duration-200 flex flex-col justify-between overflow-hidden">
-              <div>
-                <div class="flex items-center justify-between mb-3">
-                  <span class="text-[10px] font-num font-bold tracking-wider px-2 py-0.5 rounded-md bg-white/20 text-white border border-white/30">STEP 01</span>
-                  <span class="flex items-center gap-1 text-[10px] font-num text-white/80">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
-                    <span>Client Layer</span>
-                  </span>
+            <div class="card-3d-tilt group relative p-5 rounded-2xl bg-white/95 hover:bg-white text-neutral-950 shadow-lg hover:shadow-2xl border border-white/80 ring-2 ring-white/50 flex flex-col justify-between overflow-hidden cursor-pointer select-none">
+              <div class="tilt-glare"></div>
+              <div class="tilt-content flex flex-col justify-between h-full">
+                <div>
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="text-[10px] font-num font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-900 border border-neutral-200">STEP 01</span>
+                    <span class="flex items-center gap-1 text-[10px] font-num text-neutral-600 font-medium">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span>Client Layer</span>
+                    </span>
+                  </div>
+                  <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-900 mb-3 group-hover:scale-105 transition-transform shadow-xs">
+                    <svg class="w-5 h-5 text-neutral-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2M15 20v2M2 15h2M2 9h2M20 15h2M20 9h2M9 2v2M9 20v2"/></svg>
+                  </div>
+                  <h3 class="text-sm font-semibold text-neutral-950 mb-1">AI Agent Fleet</h3>
+                  <p class="text-xs text-neutral-600 leading-relaxed font-normal">
+                    Claude Desktop, Cursor, Windsurf, LangChain &amp; autonomous agent loops.
+                  </p>
                 </div>
-                <div class="w-10 h-10 rounded-xl bg-white/25 border border-white/40 flex items-center justify-center text-white mb-3 group-hover:scale-105 transition-transform">
-                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2M15 20v2M2 15h2M2 9h2M20 15h2M20 9h2M9 2v2M9 20v2"/></svg>
+                <div class="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between text-[11px] font-num">
+                  <span class="text-neutral-500">Integration</span>
+                  <span class="font-bold text-neutral-950 font-num">Zero SDK Bloat</span>
                 </div>
-                <h3 class="text-sm font-normal text-white mb-1">AI Agent Fleet</h3>
-                <p class="text-xs text-white/85 leading-relaxed">
-                  Claude Desktop, Cursor, Windsurf, LangChain &amp; autonomous agent loops.
-                </p>
-              </div>
-              <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-[11px] font-num text-white/90">
-                <span>Integration</span>
-                <span class="font-bold text-white">Zero SDK Bloat</span>
               </div>
             </div>
 
             <!-- Node 2: Sovereign Gateway -->
-            <div class="group relative p-5 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 hover:border-white/60 hover:bg-white/25 hover:-translate-y-1 hover:shadow-2xl transition-all duration-200 flex flex-col justify-between overflow-hidden">
-              <div>
-                <div class="flex items-center justify-between mb-3">
-                  <span class="text-[10px] font-num font-bold tracking-wider px-2 py-0.5 rounded-md bg-white/20 text-white border border-white/30">STEP 02</span>
-                  <span class="text-[10px] font-num text-white/80">Edge Ingress</span>
+            <div class="card-3d-tilt group relative p-5 rounded-2xl bg-white/95 hover:bg-white text-neutral-950 shadow-lg hover:shadow-2xl border border-white/80 ring-2 ring-white/50 flex flex-col justify-between overflow-hidden cursor-pointer select-none">
+              <div class="tilt-glare"></div>
+              <div class="tilt-content flex flex-col justify-between h-full">
+                <div>
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="text-[10px] font-num font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-900 border border-neutral-200">STEP 02</span>
+                    <span class="text-[10px] font-num text-neutral-600 font-medium">Edge Ingress</span>
+                  </div>
+                  <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-900 mb-3 group-hover:scale-105 transition-transform shadow-xs">
+                    <svg class="w-5 h-5 text-neutral-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                  </div>
+                  <h3 class="text-sm font-semibold text-neutral-950 mb-1">Sovereign Gateway</h3>
+                  <p class="text-xs text-neutral-600 leading-relaxed font-normal">
+                    Anycast HTTP/3 edge routing with unified REST, MCP SSE streaming, and auth.
+                  </p>
                 </div>
-                <div class="w-10 h-10 rounded-xl bg-white/25 border border-white/40 flex items-center justify-center text-white mb-3 group-hover:scale-105 transition-transform">
-                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                <div class="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between text-[11px] font-num">
+                  <span class="text-neutral-500">Ingress</span>
+                  <span class="font-bold text-neutral-950 font-num">&lt;2ms Handshake</span>
                 </div>
-                <h3 class="text-sm font-normal text-white mb-1">Sovereign Gateway</h3>
-                <p class="text-xs text-white/85 leading-relaxed">
-                  Anycast HTTP/3 edge routing with unified REST, MCP SSE streaming, and auth.
-                </p>
-              </div>
-              <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-[11px] font-num text-white/90">
-                <span>Ingress</span>
-                <span class="font-bold text-white">&lt;2ms Handshake</span>
               </div>
             </div>
 
             <!-- Node 3: D1 SQLite FTS5 (Hero Highlight Card) -->
-            <div class="group relative p-5 rounded-2xl bg-white text-neutral-950 shadow-2xl border-2 border-white ring-4 ring-white/30 hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-200 flex flex-col justify-between overflow-hidden">
-              <div>
-                <div class="flex items-center justify-between mb-3">
-                  <span class="text-[10px] font-num font-bold tracking-wider px-2 py-0.5 rounded-md bg-neutral-950 text-white">STEP 03 · CORE</span>
-                  <span class="flex items-center gap-1 text-[10px] font-num font-bold text-neutral-900">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>&lt; 15ms</span>
-                  </span>
+            <div class="card-3d-tilt group relative p-5 rounded-2xl bg-white text-neutral-950 shadow-2xl border-2 border-neutral-950 ring-4 ring-neutral-950/10 flex flex-col justify-between overflow-hidden cursor-pointer select-none">
+              <div class="tilt-glare"></div>
+              <div class="tilt-content flex flex-col justify-between h-full">
+                <div>
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="text-[10px] font-num font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-neutral-950 text-white border border-neutral-950">STEP 03 · CORE</span>
+                    <span class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-num font-bold">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span>&lt; 15ms</span>
+                    </span>
+                  </div>
+                  <div class="w-10 h-10 rounded-xl bg-neutral-950 text-white flex items-center justify-center mb-3 group-hover:scale-105 transition-transform shadow-sm">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/><path d="M12 2v20"/><path d="M8 8h8"/><path d="M7 13h10"/><path d="M9 18h6"/></svg>
+                  </div>
+                  <h3 class="text-sm font-semibold text-neutral-950 mb-1">D1 SQLite FTS5</h3>
+                  <p class="text-xs text-neutral-600 leading-relaxed font-normal">
+                    Compiled C SQLite engine with BM25 ranking across edge PoPs. Zero vector overhead.
+                  </p>
                 </div>
-                <div class="w-10 h-10 rounded-xl bg-neutral-950 text-white flex items-center justify-center mb-3 group-hover:scale-105 transition-transform shadow-sm">
-                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/><path d="M12 2v20"/><path d="M8 8h8"/><path d="M7 13h10"/><path d="M9 18h6"/></svg>
+                <div class="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between text-[11px] font-num text-neutral-950">
+                  <span class="text-neutral-500">Retrieval</span>
+                  <span class="font-bold text-neutral-950 font-num">&lt; 15ms BM25</span>
                 </div>
-                <h3 class="text-sm font-semibold text-neutral-950 mb-1">D1 SQLite FTS5</h3>
-                <p class="text-xs text-neutral-600 leading-relaxed">
-                  Compiled C SQLite engine with BM25 ranking across edge PoPs. Zero vector overhead.
-                </p>
-              </div>
-              <div class="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between text-[11px] font-num text-neutral-950">
-                <span class="text-neutral-500">Retrieval</span>
-                <span class="font-bold text-neutral-950 font-num">&lt; 15ms BM25</span>
               </div>
             </div>
 
             <!-- Node 4: Autonomous Index -->
-            <div class="group relative p-5 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 hover:border-white/60 hover:bg-white/25 hover:-translate-y-1 hover:shadow-2xl transition-all duration-200 flex flex-col justify-between overflow-hidden">
-              <div>
-                <div class="flex items-center justify-between mb-3">
-                  <span class="text-[10px] font-num font-bold tracking-wider px-2 py-0.5 rounded-md bg-white/20 text-white border border-white/30">STEP 04</span>
-                  <span class="text-[10px] font-num text-white/80">Real-Time</span>
+            <div class="card-3d-tilt group relative p-5 rounded-2xl bg-white/95 hover:bg-white text-neutral-950 shadow-lg hover:shadow-2xl border border-white/80 ring-2 ring-white/50 flex flex-col justify-between overflow-hidden cursor-pointer select-none">
+              <div class="tilt-glare"></div>
+              <div class="tilt-content flex flex-col justify-between h-full">
+                <div>
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="text-[10px] font-num font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-900 border border-neutral-200">STEP 04</span>
+                    <span class="text-[10px] font-num text-neutral-600 font-medium">Real-Time</span>
+                  </div>
+                  <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-900 mb-3 group-hover:scale-105 transition-transform shadow-xs">
+                    <svg class="w-5 h-5 text-neutral-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+                  </div>
+                  <h3 class="text-sm font-semibold text-neutral-950 mb-1">Autonomous Index</h3>
+                  <p class="text-xs text-neutral-600 leading-relaxed font-normal">
+                    Streaming edge crawler indexes HTML in real-time with full BM25 ranking and scoring.
+                  </p>
                 </div>
-                <div class="w-10 h-10 rounded-xl bg-white/25 border border-white/40 flex items-center justify-center text-white mb-3 group-hover:scale-105 transition-transform">
-                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+                <div class="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between text-[11px] font-num">
+                  <span class="text-neutral-500">Search P50</span>
+                  <span class="font-bold text-neutral-950 font-num">&lt; 40ms Edge</span>
                 </div>
-                <h3 class="text-sm font-normal text-white mb-1">Autonomous Index</h3>
-                <p class="text-xs text-white/85 leading-relaxed">
-                  Streaming edge crawler indexes HTML in real-time with full BM25 ranking and scoring.
-                </p>
-              </div>
-              <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-[11px] font-num text-white/90">
-                <span>Search P50</span>
-                <span class="font-bold text-white">&lt; 40ms Edge</span>
               </div>
             </div>
           </div>
-          <div class="text-[11px] text-white/90 text-center mt-5 font-serif font-bold italic">
+          <div class="text-[11px] text-neutral-900 font-medium text-center mt-5 font-num">
             Zero third-party APIs. Zero external vector databases. 100% self-contained Cloudflare Anycast edge.
           </div>
         </div>
@@ -2066,7 +2109,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch pt-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch pt-8">
           <!-- Free Tier Card -->
           <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 sm:p-7 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-300 transition-all duration-200">
             <div>
@@ -2100,8 +2143,8 @@ curl "${origin}/v1/memory/context?q=preference" \\
           </div>
 
           <!-- Pro Tier Card (Featured Product Card) -->
-          <div class="group relative bg-white rounded-2xl border-2 border-neutral-950 p-6 sm:p-7 flex flex-col justify-between shadow-xl hover:-translate-y-2 hover:shadow-2xl transition-all duration-200 ring-4 ring-neutral-950/5">
-            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20 px-4 py-1 text-[10px] font-bold bg-neutral-950 text-white rounded-full font-num uppercase tracking-wider shadow-lg flex items-center gap-1.5 whitespace-nowrap border border-neutral-800">
+          <div class="group relative bg-white rounded-2xl border-2 border-neutral-950 p-6 sm:p-7 flex flex-col justify-between shadow-xl hover:-translate-y-2 hover:shadow-2xl transition-all duration-200 ring-4 ring-neutral-950/5 overflow-visible">
+            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 z-30 px-4 py-1.5 text-[10px] font-bold bg-neutral-950 text-white rounded-full font-num uppercase tracking-wider shadow-lg flex items-center gap-2 whitespace-nowrap border border-neutral-700 pointer-events-none select-none">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
               <span>MOST POPULAR</span>
             </div>
@@ -3009,8 +3052,10 @@ function skipJacket(e) {
         curtain.style.pointerEvents = 'none';
         setTimeout(() => {
           curtain.style.display = 'none';
+          if (curtain.parentNode) curtain.parentNode.removeChild(curtain);
         }, 260);
       }
+      if (window.updateNav) window.updateNav();
     }
     window.skipJacket = skipJacket;
 
@@ -3159,7 +3204,9 @@ function skipJacket(e) {
 
         setTimeout(() => {
           curtain.style.display = 'none';
+          if (curtain.parentNode) curtain.parentNode.removeChild(curtain);
         }, 600);
+        if (window.updateNav) window.updateNav();
       }
 
       handle.addEventListener('pointerdown', onPointerDown);
@@ -3189,8 +3236,9 @@ function skipJacket(e) {
       if (!header) return;
 
       function updateNav() {
-        const y = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || window.scrollY || 0;
-        if (y > 20) {
+        const y = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        const hasHash = window.location.hash && window.location.hash !== '#overview' && window.location.hash !== '#';
+        if (y > 20 || hasHash) {
           header.classList.add('scrolled-light');
         } else {
           header.classList.remove('scrolled-light');
@@ -3211,23 +3259,29 @@ function skipJacket(e) {
       document.addEventListener('click', (e) => {
         const a = e.target && e.target.closest && e.target.closest('a[href^="#"]');
         if (a) {
+          const targetHash = a.getAttribute('href');
+          if (targetHash && targetHash !== '#overview' && targetHash !== '#') {
+            header.classList.add('scrolled-light');
+          }
           setTimeout(updateNav, 30);
-          setTimeout(updateNav, 200);
-          setTimeout(updateNav, 600);
+          setTimeout(updateNav, 150);
+          setTimeout(updateNav, 450);
         }
       });
 
       updateNav();
+      window.updateNav = updateNav;
 
       if ('IntersectionObserver' in window) {
         const sentinel = document.getElementById('heroTopSentinel');
         if (sentinel) {
           const obs = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-              const y = window.pageYOffset || document.documentElement.scrollTop || 0;
-              if (entry.isIntersecting && y <= 20) {
+              const y = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+              const hasHash = window.location.hash && window.location.hash !== '#overview' && window.location.hash !== '#';
+              if (entry.isIntersecting && y <= 20 && !hasHash) {
                 header.classList.remove('scrolled-light');
-              } else if (y > 20 || !entry.isIntersecting) {
+              } else if (y > 20 || !entry.isIntersecting || hasHash) {
                 header.classList.add('scrolled-light');
               }
             });
@@ -3265,6 +3319,46 @@ function skipJacket(e) {
         const x = e.pageX - track.offsetLeft;
         const walk = (x - startX) * 1.5;
         track.scrollLeft = scrollLeft - walk;
+      });
+    })();
+
+    // 4. Interactive 3D Perspective Tilt Cards (Corner Hovering & Dynamic Specular Glare)
+    (function init3DTiltCards() {
+      const cards = document.querySelectorAll('.card-3d-tilt');
+      cards.forEach(card => {
+        let frameId = null;
+
+        function handleMove(e) {
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+
+          // Corner hovering physics: corner under cursor lifts up toward viewer
+          const maxTilt = 14;
+          const tiltX = (y - 0.5) * (maxTilt * 2);
+          const tiltY = (0.5 - x) * (maxTilt * 2);
+
+          if (frameId) cancelAnimationFrame(frameId);
+          frameId = requestAnimationFrame(() => {
+            card.classList.remove('is-resetting');
+            card.style.transform = 'perspective(900px) rotateX(' + tiltX.toFixed(2) + 'deg) rotateY(' + tiltY.toFixed(2) + 'deg) scale3d(1.04, 1.04, 1.04)';
+
+            const glare = card.querySelector('.tilt-glare');
+            if (glare) {
+              glare.style.background = 'radial-gradient(circle at ' + (x * 100).toFixed(1) + '% ' + (y * 100).toFixed(1) + '%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 65%)';
+            }
+          });
+        }
+
+        function handleLeave() {
+          if (frameId) cancelAnimationFrame(frameId);
+          card.classList.add('is-resetting');
+          card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        }
+
+        card.addEventListener('mousemove', handleMove, { passive: true });
+        card.addEventListener('mouseenter', () => card.classList.remove('is-resetting'));
+        card.addEventListener('mouseleave', handleLeave);
       });
     })();
 
