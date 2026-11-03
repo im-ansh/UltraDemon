@@ -50,6 +50,9 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
       font-weight: 400;
       font-style: normal;
     }
+    .hidden {
+      display: none !important;
+    }
     body {
       font-family: 'Geist', sans-serif;
       background-color: #ffffff;
@@ -74,7 +77,7 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
           <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
         </svg>
       </div>
-      <span class="font-extrabold text-base tracking-tight text-neutral-950 flex items-center gap-1">
+      <span class="font-normal text-base tracking-tight text-neutral-950 flex items-center gap-1">
         ultrademon
         <span class="font-serif text-xs font-bold italic text-neutral-500">engine</span>
       </span>
@@ -97,7 +100,7 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
             <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
           </svg>
         </div>
-        <h1 id="pageTitle" class="text-2xl font-extrabold tracking-tight text-neutral-950">
+        <h1 id="pageTitle" class="text-2xl font-normal tracking-tight text-neutral-950">
           ${isLogin ? 'Sign in to <span class="font-serif font-bold italic">UltraDemon</span>' : 'Create your <span class="font-serif font-bold italic">UltraDemon</span> account'}
         </h1>
         <p id="pageSubtitle" class="text-xs text-neutral-500 mt-1">

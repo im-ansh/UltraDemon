@@ -23,6 +23,59 @@ interface AuthBody {
   plan?: string;
 }
 
+// ── POST /v1/auth/anonymous — Instant Sovereign Guest Workspace Session ────────
+authRouter.post('/anonymous', async (c) => {
+  const body: { plan?: string } = await c.req.json<{ plan?: string }>().catch(() => ({}));
+  const requestedPlan = ['free', 'pro', 'ultra', 'enterprise'].includes((body.plan || '').toLowerCase())
+    ? (body.plan || '').toLowerCase()
+    : 'free';
+
+  const guestSuffix = crypto.randomUUID().replace(/-/g, '').slice(0, 8);
+  const userId = `usr_guest_${guestSuffix}`;
+  const email = `guest_${guestSuffix}@edge.ultrademon.internal`;
+  const now = Date.now();
+
+  try {
+    await c.env.DB.prepare(
+      'INSERT INTO users (user_id, email, password_hash, created_at, plan) VALUES (?, ?, ?, ?, ?)'
+    ).bind(userId, email, 'guest_account_no_password', now, requestedPlan).run();
+  } catch (err: unknown) {
+    console.warn('Guest user insert non-fatal:', err);
+  }
+
+  let initialKey = '';
+  try {
+    const { plainKey } = await createApiKey(
+      c.env,
+      userId,
+      requestedPlan,
+      'Guest Primary Key',
+      'unified'
+    );
+    initialKey = plainKey;
+  } catch (keyErr) {
+    console.warn('Initial key creation for guest non-fatal:', keyErr);
+  }
+
+  const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
+  const sessionPayload = { id: userId, email, plan: requestedPlan, active_key: initialKey, is_guest: true };
+
+  await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), {
+    expirationTtl: 86400 * 30, // 30 days
+  });
+
+  return c.json({
+    message: 'Guest workspace initialized successfully',
+    user: sessionPayload,
+    initial_key: initialKey,
+    session: {
+      access_token: sessionToken,
+      token_type: 'bearer',
+      expires_in: 86400 * 30,
+    },
+  }, 201);
+});
+
 // ── POST /v1/auth/signup — Instant Edge Account Creation ──────────────────────
 authRouter.post('/signup', async (c) => {
   const body: AuthBody = await c.req.json<AuthBody>().catch(() => ({}));

@@ -222,6 +222,10 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       }
     }
 
+    .hidden {
+      display: none !important;
+    }
+
     /* Scroll-reveal animations - safe fallback so page is NEVER blank */
     .reveal-on-scroll {
       opacity: 1;
@@ -2426,7 +2430,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
           });
-          const data = await res.json();
+          let data = await res.json();
           if (!res.ok) {
             throw new Error(data.error || 'Failed to create account');
           }
@@ -2451,7 +2455,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
           });
-          const data = await res.json();
+          let data = await res.json();
           if (!res.ok) {
             // Fallback to Supabase if available
             if (supabase) {
@@ -3490,7 +3494,7 @@ function skipJacket(e) {
             headers: { 'Authorization': 'Bearer ' + token }
           });
           if (res.ok) {
-            const data = await res.json();
+            let data = await res.json();
             if (data.user) {
               updateAuthUI(data.user);
               refreshStoredMemories();

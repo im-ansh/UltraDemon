@@ -48,6 +48,9 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       font-weight: 400;
       font-style: normal;
     }
+    .hidden {
+      display: none !important;
+    }
     body {
       font-family: 'Geist', sans-serif;
       background-color: #ffffff;
@@ -90,7 +93,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
             <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
           </svg>
         </div>
-        <span class="font-extrabold text-base tracking-tight text-neutral-950 flex items-center gap-1">
+        <span class="font-normal text-base tracking-tight text-neutral-950 flex items-center gap-1">
           ultrademon
           <span class="font-serif text-xs font-bold italic text-neutral-500">workspace</span>
         </span>
@@ -110,13 +113,13 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       </div>
 
       <!-- App Navigation Links -->
-      <nav class="flex flex-col space-y-1 text-xs font-medium text-neutral-600">
-        <button onclick="setAppView('overview')" id="nav-overview" class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-black text-white cursor-pointer transition text-left">
+      <nav class="flex flex-col space-y-1 text-xs font-medium text-neutral-600" id="sidebarNav">
+        <button type="button" onclick="setAppView('overview')" data-view-target="overview" id="nav-overview" class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-black text-white cursor-pointer transition text-left">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
           <span>Overview</span>
         </button>
 
-        <button onclick="setAppView('keys')" id="nav-keys" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left">
+        <button type="button" onclick="setAppView('keys')" data-view-target="keys" id="nav-keys" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left text-neutral-600">
           <div class="flex items-center gap-2.5">
             <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
             <span>API Keys</span>
@@ -124,7 +127,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
           <span id="keysCountBadge" class="font-num text-[10px] text-neutral-400">0</span>
         </button>
 
-        <button onclick="setAppView('memory')" id="nav-memory" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left">
+        <button type="button" onclick="setAppView('memory')" data-view-target="memory" id="nav-memory" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left text-neutral-600">
           <div class="flex items-center gap-2.5">
             <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
             <span>UltraMemory</span>
@@ -132,22 +135,22 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
           <span class="font-num text-[10px] bg-neutral-100 text-neutral-900 border border-neutral-200 px-1.5 rounded font-bold">&lt;15ms</span>
         </button>
 
-        <button onclick="setAppView('search')" id="nav-search" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left">
+        <button type="button" onclick="setAppView('search')" data-view-target="search" id="nav-search" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left text-neutral-600">
           <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
           <span>UltraSearch Studio</span>
         </button>
 
-        <button onclick="setAppView('crawler')" id="nav-crawler" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left">
+        <button type="button" onclick="setAppView('crawler')" data-view-target="crawler" id="nav-crawler" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left text-neutral-600">
           <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
           <span>Web Crawler</span>
         </button>
 
-        <button onclick="setAppView('membership')" id="nav-membership" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left">
+        <button type="button" onclick="setAppView('membership')" data-view-target="membership" id="nav-membership" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left text-neutral-600">
           <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           <span>Memberships &amp; Quotas</span>
         </button>
 
-        <button onclick="setAppView('integrations')" id="nav-integrations" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left">
+        <button type="button" onclick="setAppView('integrations')" data-view-target="integrations" id="nav-integrations" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left text-neutral-600">
           <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
           <span>Integrations &amp; MCP</span>
         </button>
@@ -173,7 +176,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     <!-- Top Bar -->
     <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b border-neutral-200">
       <div>
-        <h1 id="viewHeaderTitle" class="text-2xl font-extrabold text-neutral-950 tracking-tight flex items-center gap-2">
+        <h1 id="viewHeaderTitle" class="text-2xl font-normal text-neutral-950 tracking-tight flex items-center gap-2">
           Workspace Overview
         </h1>
         <p id="viewHeaderDesc" class="text-xs text-neutral-500 mt-0.5">
@@ -203,7 +206,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
             </div>
           </div>
-          <div class="text-3xl font-extrabold font-num text-neutral-950 tracking-tight" id="metricUsed">0</div>
+          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricUsed">0</div>
           <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
             <span>Quota Limit</span>
             <span class="font-bold text-neutral-900" id="metricLimit">100</span>
@@ -218,7 +221,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
             </div>
           </div>
-          <div class="text-3xl font-extrabold font-num text-neutral-950 tracking-tight" id="metricKeys">0</div>
+          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricKeys">0</div>
           <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
             <span>Edge Bound</span>
             <span class="font-bold text-neutral-900">D1 SQLite</span>
@@ -233,7 +236,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
             </div>
           </div>
-          <div class="text-3xl font-extrabold font-num text-neutral-950 tracking-tight" id="metricMemories">0</div>
+          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricMemories">0</div>
           <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
             <span>Recall Latency</span>
             <span class="font-bold text-emerald-600">&lt;15ms</span>
@@ -248,7 +251,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
             </div>
           </div>
-          <div class="text-3xl font-extrabold font-num text-neutral-950 tracking-tight" id="metricIndexed">369</div>
+          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricIndexed">369</div>
           <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
             <span>Algorithm</span>
             <span class="font-bold text-neutral-900">BM25 Edge</span>
@@ -353,7 +356,7 @@ curl -X POST "${origin}/v1/memory/query" \\
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-neutral-200 pb-3">
           <div>
             <span class="text-[10px] font-semibold uppercase tracking-wider text-neutral-500 font-num">Autonomous Agent Long-Term Memory</span>
-            <h2 class="text-sm font-extrabold text-neutral-950 mt-0.5">UltraMemory API Reference</h2>
+            <h2 class="text-sm font-normal text-neutral-950 mt-0.5">UltraMemory API Reference</h2>
           </div>
           <div class="flex items-center gap-2">
             <span class="text-[10px] font-num bg-neutral-200 text-neutral-800 px-2 py-0.5 rounded font-bold">&lt;15ms BM25 Edge</span>
@@ -539,7 +542,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
             <div>
               <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">DEVELOPER HOBBY</span>
               <h3 class="text-base font-semibold text-neutral-950">Free Tier</h3>
-              <div class="text-3xl font-extrabold font-num text-neutral-950 my-3">$0<span class="text-xs font-sans text-neutral-400">/mo</span></div>
+              <div class="text-3xl font-normal font-num text-neutral-950 my-3">$0<span class="text-xs font-sans text-neutral-400">/mo</span></div>
               <ul class="text-xs text-neutral-600 space-y-2 mb-6 font-num">
                 <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>100 requests / day</span></li>
                 <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>UltraMemory &lt;15ms recall</span></li>
@@ -555,7 +558,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
             <div>
               <span class="inline-block text-[10px] font-num font-bold text-neutral-900 uppercase tracking-wider mb-2">PRODUCTION FLEET</span>
               <h3 class="text-base font-semibold text-neutral-950">Pro Tier</h3>
-              <div class="text-3xl font-extrabold font-num text-neutral-950 my-3">$29<span class="text-xs font-sans text-neutral-400">/mo</span></div>
+              <div class="text-3xl font-normal font-num text-neutral-950 my-3">$29<span class="text-xs font-sans text-neutral-400">/mo</span></div>
               <ul class="text-xs text-neutral-700 space-y-2 mb-6 font-num">
                 <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span><strong class="font-bold">10,000</strong> requests / day</span></li>
                 <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>UltraMemory File Ingestion</span></li>
@@ -570,7 +573,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
             <div>
               <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">MULTI-TENANT SCALE</span>
               <h3 class="text-base font-semibold text-neutral-950">Ultra Tier</h3>
-              <div class="text-3xl font-extrabold font-num text-neutral-950 my-3">$99<span class="text-xs font-sans text-neutral-400">/mo</span></div>
+              <div class="text-3xl font-normal font-num text-neutral-950 my-3">$99<span class="text-xs font-sans text-neutral-400">/mo</span></div>
               <ul class="text-xs text-neutral-600 space-y-2 mb-6 font-num">
                 <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span><strong class="font-bold text-neutral-900">100,000</strong> requests / day</span></li>
                 <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Priority Edge Queue</span></li>
@@ -606,6 +609,9 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
 
   </main>
 
+  <!-- Floating Minimalist Toast Notifications -->
+  <div id="appToastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
   <!-- Client-side Workspace Script -->
   <script>
     const ORIGIN = "${origin}";
@@ -614,6 +620,24 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
     let currentSessionToken = null;
     let currentUser = null;
     let localKeys = [];
+
+    // Sleek, non-blocking notification toast
+    function showAppToast(msg, isError = false) {
+      const container = document.getElementById('appToastContainer');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = 'px-4 py-2.5 rounded-xl text-xs font-semibold shadow-xl border pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 ' +
+        (isError ? 'bg-neutral-900 text-red-400 border-red-900' : 'bg-neutral-950 text-white border-neutral-800');
+      toast.innerText = msg;
+      container.appendChild(toast);
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 2600);
+    }
 
     function getAuthToken() {
       const sess = localStorage.getItem('ultrademon_auth_session');
@@ -626,7 +650,37 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
       return null;
     }
 
+    // Auto-initialize sovereign guest workspace if unauthenticated
+    async function initGuestSession() {
+      try {
+        const res = await fetch('/v1/auth/anonymous', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan: 'free' })
+        });
+        const data = await res.json();
+        if (data.session && data.session.access_token) {
+          localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session));
+          localStorage.setItem('ultrademon_user', JSON.stringify(data.user));
+          if (data.initial_key) {
+            localStorage.setItem('ultrademon_active_key', data.initial_key);
+            const saved = JSON.parse(localStorage.getItem('ultrademon_saved_plain_keys') || '{}');
+            saved['primary_' + data.user.id] = data.initial_key;
+            localStorage.setItem('ultrademon_saved_plain_keys', JSON.stringify(saved));
+          }
+          currentUser = data.user;
+          return data.session.access_token;
+        }
+      } catch (err) {
+        console.warn('Anonymous session init non-fatal:', err);
+      }
+      return null;
+    }
+
     function getActiveKey() {
+      const direct = localStorage.getItem('ultrademon_active_key');
+      if (direct) return direct;
+
       const sess = localStorage.getItem('ultrademon_auth_session');
       if (sess) {
         try {
@@ -643,36 +697,54 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
       const apiKey = getActiveKey();
       if (apiKey) {
         headers['X-API-Key'] = apiKey;
-      } else {
-        const token = getAuthToken();
-        if (token) {
-          headers['Authorization'] = 'Bearer ' + token;
-        }
+      }
+      const token = getAuthToken();
+      if (token) {
+        headers['Authorization'] = 'Bearer ' + token;
       }
       return headers;
     }
 
     function copyToClipboard(text) {
+      if (!text) return;
       navigator.clipboard.writeText(text);
-      alert('Copied to clipboard');
+      showAppToast('Copied to clipboard');
     }
 
     function copyActiveKey() {
       const k = getActiveKey();
-      if (k) copyToClipboard(k);
+      if (k) {
+        copyToClipboard(k);
+      } else {
+        showAppToast('No active key selected', true);
+      }
     }
 
     function setAppView(viewId) {
-      ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations'].forEach(id => {
+      const views = ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations'];
+      views.forEach(id => {
         const viewEl = document.getElementById('view-' + id);
-        if (viewEl) viewEl.classList.toggle('hidden', id !== viewId);
+        if (viewEl) {
+          if (id === viewId) {
+            viewEl.classList.remove('hidden');
+            viewEl.style.display = 'block';
+          } else {
+            viewEl.classList.add('hidden');
+            viewEl.style.display = 'none';
+          }
+        }
 
         const navBtn = document.getElementById('nav-' + id);
         if (navBtn) {
+          const svg = navBtn.querySelector('svg');
           if (id === viewId) {
-            navBtn.className = 'flex items-center gap-2.5 px-3 py-2 rounded-lg bg-black text-white cursor-pointer transition text-left';
+            navBtn.classList.add('bg-black', 'text-white');
+            navBtn.classList.remove('text-neutral-600', 'hover:bg-neutral-100', 'hover:text-black');
+            if (svg) svg.classList.remove('text-neutral-400');
           } else {
-            navBtn.className = 'flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left text-neutral-600';
+            navBtn.classList.remove('bg-black', 'text-white');
+            navBtn.classList.add('text-neutral-600', 'hover:bg-neutral-100', 'hover:text-black');
+            if (svg) svg.classList.add('text-neutral-400');
           }
         }
       });
@@ -687,114 +759,180 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
         integrations: ['Integrations & Protocol', 'Connect UltraDemon to Claude Desktop, Cursor, and Vercel AI SDK.'],
       };
       if (titles[viewId]) {
-        document.getElementById('viewHeaderTitle').innerText = titles[viewId][0];
-        document.getElementById('viewHeaderDesc').innerText = titles[viewId][1];
+        const t = document.getElementById('viewHeaderTitle');
+        const d = document.getElementById('viewHeaderDesc');
+        if (t) t.innerText = titles[viewId][0];
+        if (d) d.innerText = titles[viewId][1];
+      }
+
+      try {
+        const u = new URL(window.location.href);
+        u.searchParams.set('tab', viewId);
+        window.history.replaceState(null, '', u.toString());
+      } catch {}
+
+      if (window.innerWidth < 1024) {
+        document.querySelector('main')?.scrollIntoView({ behavior: 'smooth' });
       }
     }
 
     async function handleAppCreateKey(e) {
-      e.preventDefault();
-      const plan = document.getElementById('appKeyPlan').value;
-      const keyType = document.getElementById('appKeyType') ? document.getElementById('appKeyType').value : 'memory';
-      const label = document.getElementById('appKeyLabel').value.trim();
+      if (e && e.preventDefault) e.preventDefault();
+      const plan = document.getElementById('appKeyPlan')?.value || 'free';
+      const keyType = document.getElementById('appKeyType')?.value || 'memory';
+      const labelInput = document.getElementById('appKeyLabel');
+      const label = labelInput ? labelInput.value.trim() : '';
       const spinner = document.getElementById('spinnerCreateKeyApp');
-      const token = getAuthToken();
+
+      let token = getAuthToken();
       if (!token) {
-        window.location.href = '/login';
-        return;
+        token = await initGuestSession();
       }
 
-      spinner.classList.remove('hidden');
+      if (spinner) spinner.classList.remove('hidden');
       try {
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+
         const res = await fetch('/v1/keys', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          headers,
           body: JSON.stringify({ plan, key_type: keyType, label })
         });
         const data = await res.json();
         if (data.plain_key) {
-          document.getElementById('newKeyDisplayApp').innerText = data.plain_key;
-          document.getElementById('newKeyAlertApp').classList.remove('hidden');
-          await loadAppKeys();
+          // 1. Show key in persistent alert box
+          const disp = document.getElementById('newKeyDisplayApp');
+          const alertBox = document.getElementById('newKeyAlertApp');
+          if (disp) disp.innerText = data.plain_key;
+          if (alertBox) alertBox.classList.remove('hidden');
+
+          // 2. Persist in plain keys storage
+          const saved = JSON.parse(localStorage.getItem('ultrademon_saved_plain_keys') || '{}');
+          saved[data.key_id] = data.plain_key;
+          localStorage.setItem('ultrademon_saved_plain_keys', JSON.stringify(saved));
+          localStorage.setItem('ultrademon_active_key', data.plain_key);
+
+          // 3. Prepend to local keys array
+          localKeys.unshift({
+            key_id: data.key_id,
+            plain_key: data.plain_key,
+            plan: data.plan || plan,
+            key_type: data.key_type || keyType,
+            label: data.label || label || 'Workspace Key',
+            created_at: Date.now()
+          });
+
+          renderAppKeysTable();
           refreshTelemetry();
+          if (labelInput) labelInput.value = '';
+          showAppToast('API Key created: ' + data.plain_key.slice(0, 12) + '...');
         } else {
-          alert('Error: ' + (data.error || 'Failed to create key'));
+          showAppToast('Error: ' + (data.error || 'Failed to create key'), true);
         }
       } catch (err) {
-        alert('Network error: ' + err.message);
+        showAppToast('Network error: ' + err.message, true);
       } finally {
-        spinner.classList.add('hidden');
+        if (spinner) spinner.classList.add('hidden');
       }
     }
 
     async function loadAppKeys() {
       const token = getAuthToken();
-      if (!token) return;
-      try {
-        const res = await fetch('/v1/keys', {
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
-        const data = await res.json();
-        if (data.keys) {
-          localKeys = data.keys;
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(localKeys));
-          renderAppKeysTable();
-        }
-      } catch {}
+      const saved = JSON.parse(localStorage.getItem('ultrademon_saved_plain_keys') || '{}');
+      const activePlain = localStorage.getItem('ultrademon_active_key') || '';
+
+      if (token) {
+        try {
+          const res = await fetch('/v1/keys', {
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
+          const data = await res.json();
+          if (data.keys && Array.isArray(data.keys)) {
+            localKeys = data.keys.map(k => ({
+              ...k,
+              plain_key: saved[k.key_id] || (activePlain && localKeys.length === 0 ? activePlain : '')
+            }));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(localKeys));
+          }
+        } catch {}
+      }
+      renderAppKeysTable();
     }
 
     function renderAppKeysTable() {
       const tbody = document.getElementById('appKeysTableBody');
-      document.getElementById('keysCountBadge').innerText = localKeys.length;
-      document.getElementById('metricKeys').innerText = localKeys.length;
+      const countBadge = document.getElementById('keysCountBadge');
+      const metric = document.getElementById('metricKeys');
+      if (countBadge) countBadge.innerText = localKeys.length;
+      if (metric) metric.innerText = localKeys.length;
 
       if (localKeys.length === 0) {
-        tbody.innerHTML = '<tr><td colspan=\"6\" class=\"py-4 text-center text-neutral-400\">No API keys found. Generate one above!</td></tr>';
-        document.getElementById('topActiveKeyLabel').innerText = 'None';
-        document.getElementById('topCopyBtn').classList.add('hidden');
+        if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="py-4 text-center text-neutral-400">No API keys found. Generate one above!</td></tr>';
+        const topLabel = document.getElementById('topActiveKeyLabel');
+        if (topLabel) topLabel.innerText = 'None';
+        document.getElementById('topCopyBtn')?.classList.add('hidden');
         return;
       }
 
       const active = localKeys[0];
-      document.getElementById('topActiveKeyLabel').innerText = active.plain_key ? (active.plain_key.slice(0, 8) + '...') : active.key_id;
-      document.getElementById('topCopyBtn').classList.remove('hidden');
+      const topLabel = document.getElementById('topActiveKeyLabel');
+      if (topLabel) topLabel.innerText = active.plain_key ? (active.plain_key.slice(0, 10) + '...') : active.key_id;
+      document.getElementById('topCopyBtn')?.classList.remove('hidden');
 
-      tbody.innerHTML = localKeys.map((k, idx) => {
-        const scopeBadge = k.key_type === 'memory'
-          ? '<span class=\"px-2 py-0.5 rounded bg-black text-white text-[10px] font-bold uppercase font-num\">Memory API</span>'
-          : (k.key_type === 'search'
-            ? '<span class=\"px-2 py-0.5 rounded bg-neutral-200 text-neutral-800 text-[10px] font-bold uppercase font-num\">Search API</span>'
-            : '<span class=\"px-2 py-0.5 rounded bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase font-num\">Unified API</span>');
+      if (tbody) {
+        tbody.innerHTML = localKeys.map(k => {
+          const displayKey = k.plain_key || ('key_' + k.key_id);
+          const isPlain = !!k.plain_key;
+          const scopeBadge = k.key_type === 'memory'
+            ? '<span class="px-2 py-0.5 rounded bg-black text-white text-[10px] font-bold uppercase font-num">Memory API</span>'
+            : (k.key_type === 'search'
+              ? '<span class="px-2 py-0.5 rounded bg-neutral-200 text-neutral-800 text-[10px] font-bold uppercase font-num">Search API</span>'
+              : '<span class="px-2 py-0.5 rounded bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase font-num">Unified API</span>');
 
-        return '<tr class="hover:bg-neutral-50">' +
-          '<td class="py-3 font-mono text-neutral-900">' +
-            '<span class="truncate max-w-[150px] inline-block">' + (k.plain_key || 'Key: ' + k.key_id) + '</span>' +
-            (k.plain_key ? ' <button data-key="' + k.plain_key + '" onclick="copyToClipboard(this.dataset.key)" class="text-neutral-400 hover:text-black cursor-pointer inline-flex items-center ml-1" title="Copy Key"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>' : '') +
-          '</td>' +
-          '<td class="py-3">' + scopeBadge + '</td>' +
-          '<td class="py-3"><span class="px-2 py-0.5 rounded bg-neutral-100 text-neutral-900 text-[10px] font-bold uppercase font-num">' + k.plan + '</span></td>' +
-          '<td class="py-3 text-neutral-600 font-sans">' + (k.label || 'Default') + '</td>' +
-          '<td class="py-3 text-neutral-400">' + new Date(k.created_at || Date.now()).toLocaleDateString() + '</td>' +
-          '<td class="py-3 text-right"><button data-key="' + (k.plain_key || k.key_id) + '" onclick="revokeAppKey(this.dataset.key)" class="text-neutral-400 hover:text-red-600 font-semibold cursor-pointer">Revoke</button></td>' +
-        '</tr>';
-      }).join('');
+          return '<tr class="hover:bg-neutral-50">' +
+            '<td class="py-3 font-mono text-neutral-900">' +
+              '<span class="truncate max-w-[160px] inline-block align-middle">' + displayKey + '</span>' +
+              (isPlain ? ' <button type="button" onclick="copyToClipboard(\'' + k.plain_key + '\')" class="text-neutral-400 hover:text-black cursor-pointer inline-flex items-center ml-1.5 p-1 rounded hover:bg-neutral-100" title="Copy Full Key"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>' : '') +
+            '</td>' +
+            '<td class="py-3">' + scopeBadge + '</td>' +
+            '<td class="py-3"><span class="px-2 py-0.5 rounded bg-neutral-100 text-neutral-900 text-[10px] font-bold uppercase font-num">' + (k.plan || 'free') + '</span></td>' +
+            '<td class="py-3 text-neutral-600 font-sans">' + (k.label || 'Default') + '</td>' +
+            '<td class="py-3 text-neutral-400 font-num">' + new Date(k.created_at || Date.now()).toLocaleDateString() + '</td>' +
+            '<td class="py-3 text-right"><button type="button" onclick="revokeAppKey(\'' + (k.plain_key || k.key_id) + '\')" class="text-neutral-400 hover:text-red-600 font-semibold cursor-pointer">Revoke</button></td>' +
+          '</tr>';
+        }).join('');
+      }
     }
 
     async function revokeAppKey(key) {
       if (!confirm('Are you sure you want to revoke this API key?')) return;
       const token = getAuthToken();
-      await fetch('/v1/keys/' + key, {
-        method: 'DELETE',
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
-      await loadAppKeys();
+      const headers = {};
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      try {
+        await fetch('/v1/keys/' + key, {
+          method: 'DELETE',
+          headers
+        });
+        showAppToast('Key revoked successfully');
+        const saved = JSON.parse(localStorage.getItem('ultrademon_saved_plain_keys') || '{}');
+        delete saved[key];
+        localStorage.setItem('ultrademon_saved_plain_keys', JSON.stringify(saved));
+        if (localStorage.getItem('ultrademon_active_key') === key) {
+          localStorage.removeItem('ultrademon_active_key');
+        }
+        await loadAppKeys();
+      } catch (err) {
+        showAppToast('Revoke failed: ' + err.message, true);
+      }
     }
 
     async function handleAppStoreMemory(e) {
-      e.preventDefault();
-      const memoryType = document.getElementById('appMemType').value;
-      const containerTag = document.getElementById('appMemContainer').value.trim() || 'default';
-      const content = document.getElementById('appMemContent').value.trim();
+      if (e && e.preventDefault) e.preventDefault();
+      const memoryType = document.getElementById('appMemType')?.value || 'fact';
+      const containerTag = document.getElementById('appMemContainer')?.value.trim() || 'default';
+      const content = document.getElementById('appMemContent')?.value.trim();
       const alertBox = document.getElementById('alertStoreMemApp');
 
       if (!content) return;
@@ -809,24 +947,30 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
         if (data.memory || data.memory_id || data.status === 'success') {
           const mem = data.memory || data;
           const timeMs = data.storage_time_ms ? (' · stored in ' + data.storage_time_ms + 'ms') : '';
-          alertBox.className = 'p-3 rounded-xl bg-neutral-100 border border-neutral-300 text-neutral-950 font-num text-xs';
-          alertBox.innerText = 'Stored memory ID: ' + (mem.memory_id || 'saved') + timeMs;
-          alertBox.classList.remove('hidden');
+          if (alertBox) {
+            alertBox.className = 'p-3 rounded-xl bg-neutral-100 border border-neutral-300 text-neutral-950 font-num text-xs';
+            alertBox.innerText = 'Stored memory ID: ' + (mem.memory_id || 'saved') + timeMs;
+            alertBox.classList.remove('hidden');
+          }
           document.getElementById('appMemContent').value = '';
           loadStoredMemories();
+          showAppToast('Memory stored into edge D1 FTS5' + timeMs);
         } else {
           throw new Error(data.error || 'Failed to store memory');
         }
       } catch (err) {
-        alertBox.className = 'p-3 rounded-xl bg-neutral-100 border border-neutral-300 text-red-600 font-num text-xs';
-        alertBox.innerText = 'Error: ' + err.message;
-        alertBox.classList.remove('hidden');
+        if (alertBox) {
+          alertBox.className = 'p-3 rounded-xl bg-neutral-100 border border-neutral-300 text-red-600 font-num text-xs';
+          alertBox.innerText = 'Error: ' + err.message;
+          alertBox.classList.remove('hidden');
+        }
+        showAppToast(err.message, true);
       }
     }
 
     async function handleAppQueryMemory(e) {
-      e.preventDefault();
-      const query = document.getElementById('appMemQuery').value.trim();
+      if (e && e.preventDefault) e.preventDefault();
+      const query = document.getElementById('appMemQuery')?.value.trim();
       const resultsDiv = document.getElementById('appMemResults');
       const timer = document.getElementById('appRecallTimer');
 
@@ -839,8 +983,10 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
         });
         const data = await res.json();
         const duration = Math.round(performance.now() - t0);
-        timer.innerText = (data.retrieval_time_ms || duration) + 'ms';
-        timer.classList.remove('hidden');
+        if (timer) {
+          timer.innerText = (data.retrieval_time_ms || duration) + 'ms';
+          timer.classList.remove('hidden');
+        }
 
         if (data.memories && data.memories.length > 0) {
           let html = '';
@@ -859,12 +1005,12 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
               '<p class="text-neutral-900 font-medium">' + m.content + '</p>' +
             '</div>'
           ).join('');
-          resultsDiv.innerHTML = html;
+          if (resultsDiv) resultsDiv.innerHTML = html;
         } else {
-          resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">No memories matching query.</div>';
+          if (resultsDiv) resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">No memories matching query.</div>';
         }
       } catch (err) {
-        resultsDiv.innerHTML = '<div class="text-center py-4 text-red-600 text-xs font-num">Error: ' + err.message + '</div>';
+        if (resultsDiv) resultsDiv.innerHTML = '<div class="text-center py-4 text-red-600 text-xs font-num">Error: ' + err.message + '</div>';
       }
     }
 
@@ -873,19 +1019,22 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
         const res = await fetch('/v1/memory?limit=30', { headers: getAppAuthHeaders() });
         const data = await res.json();
         const tbody = document.getElementById('appMemoriesTableBody');
+        const metric = document.getElementById('metricMemories');
         if (data.memories && data.memories.length > 0) {
-          document.getElementById('metricMemories').innerText = data.total || data.memories.length;
-          tbody.innerHTML = data.memories.map(m =>
-            '<tr class="hover:bg-neutral-50">' +
-              '<td class="py-2.5 font-mono text-neutral-900">' + m.memory_id + '</td>' +
-              '<td class="py-2.5 font-mono text-neutral-600">' + m.container_tag + '</td>' +
-              '<td class="py-2.5"><span class="px-1.5 py-0.5 rounded bg-neutral-100 text-[10px] uppercase font-bold">' + m.memory_type + '</span></td>' +
-              '<td class="py-2.5 truncate max-w-xs text-neutral-900 font-sans">' + (m.title || m.content) + '</td>' +
-              '<td class="py-2.5 text-right"><button onclick="deleteAppMem(\'' + m.memory_id + '\')" class="text-neutral-400 hover:text-black cursor-pointer">Delete</button></td>' +
-            '</tr>'
-          ).join('');
+          if (metric) metric.innerText = data.total || data.memories.length;
+          if (tbody) {
+            tbody.innerHTML = data.memories.map(m =>
+              '<tr class="hover:bg-neutral-50">' +
+                '<td class="py-2.5 font-mono text-neutral-900">' + m.memory_id + '</td>' +
+                '<td class="py-2.5 font-mono text-neutral-600">' + m.container_tag + '</td>' +
+                '<td class="py-2.5"><span class="px-1.5 py-0.5 rounded bg-neutral-100 text-[10px] uppercase font-bold">' + m.memory_type + '</span></td>' +
+                '<td class="py-2.5 truncate max-w-xs text-neutral-900 font-sans">' + (m.title || m.content) + '</td>' +
+                '<td class="py-2.5 text-right"><button type="button" onclick="deleteAppMem(\'' + m.memory_id + '\')" class="text-neutral-400 hover:text-black cursor-pointer">Delete</button></td>' +
+              '</tr>'
+            ).join('');
+          }
         } else {
-          tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-neutral-400">No memories stored yet.</td></tr>';
+          if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-neutral-400">No memories stored yet.</td></tr>';
         }
       } catch {}
     }
@@ -893,19 +1042,22 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
     async function deleteAppMem(id) {
       try {
         await fetch('/v1/memory/' + id, { method: 'DELETE', headers: getAppAuthHeaders() });
+        showAppToast('Memory deleted');
         loadStoredMemories();
-      } catch {}
+      } catch (err) {
+        showAppToast('Failed to delete memory', true);
+      }
     }
 
     async function handleAppSearch(e) {
-      e.preventDefault();
-      const query = document.getElementById('appSearchQuery').value.trim();
+      if (e && e.preventDefault) e.preventDefault();
+      const query = document.getElementById('appSearchQuery')?.value.trim();
       const mode = parseInt(document.querySelector('input[name="appSearchMode"]:checked')?.value || '1', 10);
       const resultsDiv = document.getElementById('appSearchResults');
 
       if (!query) return;
 
-      resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">Searching edge index...</div>';
+      if (resultsDiv) resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">Searching edge index...</div>';
       try {
         const res = await fetch('/v1/search', {
           method: 'POST',
@@ -914,34 +1066,38 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
         });
         const data = await res.json();
         if (data.results && data.results.length > 0) {
-          resultsDiv.innerHTML = data.results.map(r =>
-            '<div class="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 text-xs space-y-1">' +
-              '<div class="flex items-center justify-between text-[10px] text-neutral-500 font-num">' +
-                '<span class="truncate max-w-sm">' + r.url + '</span>' +
-                '<span class="font-bold text-neutral-900">BM25: ' + (r.score || 0.95).toFixed(2) + '</span>' +
-              '</div>' +
-              '<a href="' + r.url + '" target="_blank" class="font-bold text-neutral-950 hover:underline block">' + r.title + '</a>' +
-              '<p class="text-neutral-600">' + r.snippet + '</p>' +
-            '</div>'
-          ).join('');
+          if (resultsDiv) {
+            resultsDiv.innerHTML = data.results.map(r =>
+              '<div class="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 text-xs space-y-1">' +
+                '<div class="flex items-center justify-between text-[10px] text-neutral-500 font-num">' +
+                  '<span class="truncate max-w-sm">' + r.url + '</span>' +
+                  '<span class="font-bold text-neutral-900">BM25: ' + (r.score || 0.95).toFixed(2) + '</span>' +
+                '</div>' +
+                '<a href="' + r.url + '" target="_blank" class="font-bold text-neutral-950 hover:underline block">' + r.title + '</a>' +
+                '<p class="text-neutral-600">' + r.snippet + '</p>' +
+              '</div>'
+            ).join('');
+          }
         } else {
-          resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">No results found for query.</div>';
+          if (resultsDiv) resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">No results found for query.</div>';
         }
       } catch (err) {
-        resultsDiv.innerHTML = '<div class="text-center py-4 text-red-600 text-xs font-num">Search error: ' + err.message + '</div>';
+        if (resultsDiv) resultsDiv.innerHTML = '<div class="text-center py-4 text-red-600 text-xs font-num">Search error: ' + err.message + '</div>';
       }
     }
 
     async function handleAppCrawl(e) {
-      e.preventDefault();
-      const url = document.getElementById('appCrawlUrl').value.trim();
-      const depth = parseInt(document.getElementById('appCrawlDepth').value, 10);
+      if (e && e.preventDefault) e.preventDefault();
+      const url = document.getElementById('appCrawlUrl')?.value.trim();
+      const depth = parseInt(document.getElementById('appCrawlDepth')?.value || '0', 10);
       const box = document.getElementById('appCrawlResult');
 
       if (!url) return;
 
-      box.innerText = 'Crawling and parsing URL into D1 FTS5...';
-      box.classList.remove('hidden');
+      if (box) {
+        box.innerText = 'Crawling and parsing URL into D1 FTS5...';
+        box.classList.remove('hidden');
+      }
 
       try {
         const res = await fetch('/v1/crawl', {
@@ -950,15 +1106,19 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
           body: JSON.stringify({ url, depth })
         });
         const data = await res.json();
-        box.innerText = JSON.stringify(data, null, 2);
+        if (box) box.innerText = JSON.stringify(data, null, 2);
+        showAppToast('Crawl completed');
       } catch (err) {
-        box.innerText = 'Crawl error: ' + err.message;
+        if (box) box.innerText = 'Crawl error: ' + err.message;
+        showAppToast('Crawl failed', true);
       }
     }
 
-    async function upgradeTier(plan) {
-      const token = getAuthToken();
+    async function upgradeTier(plan, silent = false) {
+      let token = getAuthToken();
+      if (!token) token = await initGuestSession();
       if (!token) return;
+
       try {
         const res = await fetch('/v1/auth/membership', {
           method: 'POST',
@@ -967,13 +1127,16 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
         });
         const data = await res.json();
         if (data.plan) {
-          alert('Membership tier updated to ' + data.plan.toUpperCase());
-          document.getElementById('userPlanBadge').innerText = data.plan;
+          const badge = document.getElementById('userPlanBadge');
+          if (badge) badge.innerText = data.plan.toUpperCase();
           await loadAppKeys();
           refreshTelemetry();
+          if (!silent) {
+            showAppToast('Membership tier updated to ' + data.plan.toUpperCase());
+          }
         }
       } catch (err) {
-        alert('Upgrade failed: ' + err.message);
+        if (!silent) showAppToast('Upgrade failed: ' + err.message, true);
       }
     }
 
@@ -982,8 +1145,10 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
         const res = await fetch('/v1/usage', { headers: getAppAuthHeaders() });
         const data = await res.json();
         if (data.daily_limit !== undefined) {
-          document.getElementById('metricUsed').innerText = data.requests_today || 0;
-          document.getElementById('metricLimit').innerText = data.daily_limit === 'unlimited' ? '∞' : data.daily_limit;
+          const used = document.getElementById('metricUsed');
+          const limit = document.getElementById('metricLimit');
+          if (used) used.innerText = data.requests_today || 0;
+          if (limit) limit.innerText = data.daily_limit === -1 || data.daily_limit === 'unlimited' ? '∞' : data.daily_limit;
         }
       } catch {}
     }
@@ -995,11 +1160,13 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
       }
       localStorage.removeItem('ultrademon_auth_session');
       localStorage.removeItem('ultrademon_user');
+      localStorage.removeItem('ultrademon_active_key');
       window.location.href = '/login';
     }
 
     async function autoProvisionInitialKey(plan) {
-      const token = getAuthToken();
+      let token = getAuthToken();
+      if (!token) token = await initGuestSession();
       if (!token) return;
       try {
         const res = await fetch('/v1/keys', {
@@ -1009,55 +1176,96 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
         });
         const data = await res.json();
         if (data.plain_key) {
+          const saved = JSON.parse(localStorage.getItem('ultrademon_saved_plain_keys') || '{}');
+          saved[data.key_id] = data.plain_key;
+          localStorage.setItem('ultrademon_saved_plain_keys', JSON.stringify(saved));
+          localStorage.setItem('ultrademon_active_key', data.plain_key);
           await loadAppKeys();
           refreshTelemetry();
         }
       } catch {}
     }
 
+    // Export all global handlers to window immediately
+    window.setAppView = setAppView;
+    window.handleAppCreateKey = handleAppCreateKey;
+    window.copyToClipboard = copyToClipboard;
+    window.copyActiveKey = copyActiveKey;
+    window.revokeAppKey = revokeAppKey;
+    window.handleAppStoreMemory = handleAppStoreMemory;
+    window.handleAppQueryMemory = handleAppQueryMemory;
+    window.loadStoredMemories = loadStoredMemories;
+    window.deleteAppMem = deleteAppMem;
+    window.handleAppSearch = handleAppSearch;
+    window.handleAppCrawl = handleAppCrawl;
+    window.upgradeTier = upgradeTier;
+    window.refreshTelemetry = refreshTelemetry;
+    window.handleAppSignOut = handleAppSignOut;
+    window.showAppToast = showAppToast;
+
     // Initialize Workspace on Page Load
     window.addEventListener('DOMContentLoaded', async () => {
-      const token = getAuthToken();
+      // 1. Direct event listener bindings for sidebar buttons
+      document.querySelectorAll('#sidebarNav button[data-view-target]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = btn.getAttribute('data-view-target');
+          if (target) setAppView(target);
+        });
+      });
+
+      // 2. Authentication and Session Handling
+      let token = getAuthToken();
       if (!token) {
-        window.location.href = '/login';
-        return;
+        token = await initGuestSession();
       }
 
       try {
-        const res = await fetch('/v1/auth/me', {
+        let res = await fetch('/v1/auth/me', {
           headers: { 'Authorization': 'Bearer ' + token }
         });
         if (!res.ok) {
-          localStorage.removeItem('ultrademon_auth_session');
-          window.location.href = '/login';
-          return;
+          // Fallback to fresh guest session if token expired
+          token = await initGuestSession();
+          res = await fetch('/v1/auth/me', {
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
         }
-        const data = await res.json();
-        currentUser = data.user;
-        document.getElementById('userEmailDisplay').innerText = currentUser.email || currentUser.id;
-        document.getElementById('userPlanBadge').innerText = (currentUser.plan || 'free').toUpperCase();
+
+        if (res.ok) {
+          const data = await res.json();
+          currentUser = data.user;
+          const emailDisplay = document.getElementById('userEmailDisplay');
+          const planBadge = document.getElementById('userPlanBadge');
+          if (emailDisplay) emailDisplay.innerText = currentUser.email || currentUser.id || 'Edge Guest';
+          if (planBadge) planBadge.innerText = (currentUser.plan || 'free').toUpperCase();
+        }
 
         const urlParams = new URLSearchParams(window.location.search);
         const targetPlan = (urlParams.get('plan') || urlParams.get('upgrade') || '').toLowerCase();
         if (targetPlan && ['free', 'pro', 'ultra', 'enterprise'].includes(targetPlan)) {
-          if (currentUser.plan !== targetPlan) {
-            await upgradeTier(targetPlan);
+          if (currentUser && currentUser.plan !== targetPlan) {
+            await upgradeTier(targetPlan, true);
           }
         }
 
         await loadAppKeys();
         if (localKeys.length === 0) {
-          await autoProvisionInitialKey(currentUser.plan || targetPlan || 'free');
+          await autoProvisionInitialKey(currentUser ? currentUser.plan : (targetPlan || 'free'));
         }
         loadStoredMemories();
         refreshTelemetry();
 
-        const targetTab = urlParams.get('tab');
+        // 3. Select target tab from URL param or hash
+        const hashTab = (window.location.hash || '').replace('#', '');
+        const targetTab = urlParams.get('tab') || hashTab;
         if (targetTab && ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations'].includes(targetTab)) {
           setAppView(targetTab);
+        } else {
+          setAppView('overview');
         }
-      } catch {
-        window.location.href = '/login';
+      } catch (err) {
+        console.warn('Dashboard initialization non-fatal:', err);
       }
     });
   </script>

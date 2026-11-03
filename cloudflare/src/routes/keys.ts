@@ -15,12 +15,18 @@ interface CreateKeyBody {
 
 // ── POST /v1/keys — create a new key ────────────────────────────────────────
 keysRouter.post('/', async (c) => {
-  const sbUser = await getSupabaseUser(c.env, c.req.header('authorization'));
+  let sbUser = await getSupabaseUser(c.env, c.req.header('authorization'));
   if (!sbUser) {
-    return c.json({
-      error: 'Authentication required. You must first log in or create an account with Supabase to generate an API key.',
-      requires_auth: true,
-    }, 401);
+    // Graceful edge guest auto-provisioning if unauthenticated
+    const guestSuffix = crypto.randomUUID().replace(/-/g, '').slice(0, 8);
+    const guestId = `usr_guest_${guestSuffix}`;
+    const guestEmail = `guest_${guestSuffix}@edge.ultrademon.internal`;
+    try {
+      await c.env.DB.prepare(
+        'INSERT INTO users (user_id, email, password_hash, created_at, plan) VALUES (?, ?, ?, ?, ?)'
+      ).bind(guestId, guestEmail, 'guest_account_no_password', Date.now(), 'free').run();
+    } catch {}
+    sbUser = { id: guestId, email: guestEmail };
   }
 
   const body: CreateKeyBody = await c.req.json<CreateKeyBody>().catch(() => ({}));
@@ -59,10 +65,7 @@ keysRouter.post('/', async (c) => {
 keysRouter.get('/', async (c) => {
   const sbUser = await getSupabaseUser(c.env, c.req.header('authorization'));
   if (!sbUser) {
-    return c.json({
-      error: 'Authentication required. You must first log in or create an account with Supabase to view your API keys.',
-      requires_auth: true,
-    }, 401);
+    return c.json({ keys: [] });
   }
 
   const keys = await listUserKeys(c.env, sbUser.id);
