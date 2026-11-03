@@ -533,9 +533,9 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
         <h2 class="text-sm font-bold text-neutral-950">Manage Membership Tier</h2>
         <p class="text-xs text-neutral-600">Select a plan to immediately expand your daily D1 execution quotas across all your API keys.</p>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2 items-stretch">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-5 items-stretch">
           <!-- Free -->
-          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-300 transition-all duration-200 overflow-hidden" id="tierCardFree">
+          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-300 transition-all duration-200" id="tierCardFree">
             <div>
               <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">DEVELOPER HOBBY</span>
               <h3 class="text-base font-semibold text-neutral-950">Free Tier</h3>
@@ -550,8 +550,8 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
           </div>
 
           <!-- Pro -->
-          <div class="group relative bg-white rounded-2xl border-2 border-neutral-950 p-6 flex flex-col justify-between shadow-xl hover:-translate-y-2 hover:shadow-2xl transition-all duration-200 ring-4 ring-neutral-950/5 overflow-hidden" id="tierCardPro">
-            <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 text-[10px] font-bold bg-neutral-950 text-white rounded-full font-num uppercase tracking-wider shadow-md whitespace-nowrap">POPULAR</div>
+          <div class="group relative bg-white rounded-2xl border-2 border-neutral-950 p-6 flex flex-col justify-between shadow-xl hover:-translate-y-2 hover:shadow-2xl transition-all duration-200 ring-4 ring-neutral-950/5" id="tierCardPro">
+            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20 px-4 py-1 text-[10px] font-bold bg-neutral-950 text-white rounded-full font-num uppercase tracking-wider shadow-lg whitespace-nowrap border border-neutral-800">POPULAR</div>
             <div>
               <span class="inline-block text-[10px] font-num font-bold text-neutral-900 uppercase tracking-wider mb-2">PRODUCTION FLEET</span>
               <h3 class="text-base font-semibold text-neutral-950">Pro Tier</h3>
@@ -566,7 +566,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
           </div>
 
           <!-- Ultra -->
-          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-300 transition-all duration-200 overflow-hidden" id="tierCardUltra">
+          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-300 transition-all duration-200" id="tierCardUltra">
             <div>
               <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">MULTI-TENANT SCALE</span>
               <h3 class="text-base font-semibold text-neutral-950">Ultra Tier</h3>

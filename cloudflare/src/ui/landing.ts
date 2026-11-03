@@ -2066,9 +2066,9 @@ curl "${origin}/v1/memory/context?q=preference" \\
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch pt-5">
           <!-- Free Tier Card -->
-          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 sm:p-7 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-300 transition-all duration-200 overflow-hidden">
+          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 sm:p-7 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-300 transition-all duration-200">
             <div>
               <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">DEVELOPER HOBBY</span>
               <h3 class="text-base font-normal text-neutral-950">Free</h3>
@@ -2100,8 +2100,8 @@ curl "${origin}/v1/memory/context?q=preference" \\
           </div>
 
           <!-- Pro Tier Card (Featured Product Card) -->
-          <div class="group relative bg-white rounded-2xl border-2 border-neutral-950 p-6 sm:p-7 flex flex-col justify-between shadow-xl hover:-translate-y-2 hover:shadow-2xl transition-all duration-200 ring-4 ring-neutral-950/5 overflow-hidden">
-            <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-0.5 text-[10px] font-bold bg-neutral-950 text-white rounded-full font-num uppercase tracking-wider shadow-md flex items-center gap-1.5 whitespace-nowrap">
+          <div class="group relative bg-white rounded-2xl border-2 border-neutral-950 p-6 sm:p-7 flex flex-col justify-between shadow-xl hover:-translate-y-2 hover:shadow-2xl transition-all duration-200 ring-4 ring-neutral-950/5">
+            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20 px-4 py-1 text-[10px] font-bold bg-neutral-950 text-white rounded-full font-num uppercase tracking-wider shadow-lg flex items-center gap-1.5 whitespace-nowrap border border-neutral-800">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
               <span>MOST POPULAR</span>
             </div>
@@ -2141,7 +2141,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
           </div>
 
           <!-- Ultra Tier Card -->
-          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 sm:p-7 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-300 transition-all duration-200 overflow-hidden">
+          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 sm:p-7 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-300 transition-all duration-200">
             <div>
               <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">SCALE &amp; MULTI-TENANT</span>
               <h3 class="text-base font-normal text-neutral-950">Ultra</h3>
