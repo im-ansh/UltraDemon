@@ -48,6 +48,9 @@ app.get('/', (c) => {
 
   // Serve landing page and console to browsers
   if (accept.includes('text/html') || !accept.includes('application/json')) {
+    c.header('Cache-Control', 'no-cache, no-store, must-revalidate');
+    c.header('Pragma', 'no-cache');
+    c.header('Expires', '0');
     return c.html(renderLandingPage(origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
   }
 

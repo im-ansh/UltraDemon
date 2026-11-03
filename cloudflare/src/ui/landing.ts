@@ -242,9 +242,15 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     #jacketCurtain {
       perspective: 1200px;
     }
-    .jacket-flap {
-      background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 45%, #0284c7 100%);
-      box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.15);
+    .jacket-flap-left {
+      background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 40%, #38bdf8 80%, #7dd3fc 100%);
+      box-shadow: inset 0 0 100px rgba(2, 132, 199, 0.3);
+      transform-origin: left center;
+    }
+    .jacket-flap-right {
+      background: linear-gradient(225deg, #0284c7 0%, #0ea5e9 40%, #38bdf8 80%, #7dd3fc 100%);
+      box-shadow: inset 0 0 100px rgba(2, 132, 199, 0.3);
+      transform-origin: right center;
     }
     .jacket-baffles {
       background-image: repeating-linear-gradient(
@@ -314,18 +320,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
   <!-- Interactive Light Blue Jacket Unzip Experience -->
   <div id="jacketCurtain" onclick="if(!event.target.closest('#zipperHandle')){ skipJacket(event); }" class="fixed inset-0 z-[99998] flex overflow-hidden select-none transition-opacity duration-500 cursor-pointer">
-    <!-- Top-Right Skip Intro Button (Always Visible & Instant Bypass) -->
-    <button 
-      id="skipJacketBtn" 
-      onclick="skipJacket(event)" 
-      class="fixed top-5 right-5 z-[99999] px-4 py-2 rounded-full bg-black/90 hover:bg-black text-white text-xs font-num font-semibold shadow-2xl border border-white/40 flex items-center gap-1.5 transition cursor-pointer backdrop-blur-md hover:scale-105 active:scale-95"
-      title="Skip intro animation and access website directly"
-    >
-      <span>Skip Intro</span>
-      <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-    </button>
     <!-- Left Flap of the Jacket -->
-    <div id="jacketLeft" class="relative w-1/2 h-full jacket-flap shadow-2xl will-change-transform flex flex-col justify-between p-6 sm:p-10 border-r border-[#0284c7]/50">
+    <div id="jacketLeft" class="relative w-1/2 h-full jacket-flap-left shadow-2xl will-change-transform flex flex-col justify-between p-6 sm:p-10 border-r border-[#0284c7]/50">
       <div class="absolute inset-0 pointer-events-none opacity-25 jacket-baffles"></div>
       
       <!-- Left Chest Badge -->
@@ -353,7 +349,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     </div>
 
     <!-- Right Flap of the Jacket -->
-    <div id="jacketRight" class="relative w-1/2 h-full jacket-flap shadow-2xl will-change-transform flex flex-col justify-between p-6 sm:p-10 border-l border-[#0284c7]/50" style="background: linear-gradient(225deg, #38bdf8 0%, #0ea5e9 45%, #0284c7 100%);">
+    <div id="jacketRight" class="relative w-1/2 h-full jacket-flap-right shadow-2xl will-change-transform flex flex-col justify-between p-6 sm:p-10 border-l border-[#0284c7]/50">
       <div class="absolute inset-0 pointer-events-none opacity-25 jacket-baffles"></div>
 
       <!-- Right Shoulder Specs -->
@@ -372,9 +368,9 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     </div>
 
     <!-- Center Zipper Pull & Slider Component with Large Interactive Hit Area -->
-    <div id="zipperHandle" class="absolute left-1/2 -translate-x-1/2 top-16 z-30 flex flex-col items-center cursor-grab active:cursor-grabbing touch-none select-none will-change-transform">
-      <!-- Invisible extended grab zone for effortless targeting -->
-      <div id="zipperHitZone" class="absolute -inset-x-16 -inset-y-10 z-10 cursor-grab active:cursor-grabbing"></div>
+    <div id="zipperHandle" class="absolute left-1/2 -translate-x-1/2 top-14 sm:top-16 z-30 flex flex-col items-center cursor-grab active:cursor-grabbing touch-none select-none will-change-transform">
+      <!-- Invisible wide grab zone (240px wide corridor) -->
+      <div id="zipperHitZone" class="absolute -inset-x-28 -inset-y-16 z-10 cursor-grab active:cursor-grabbing"></div>
 
       <!-- Metal Slider Housing -->
       <div class="w-8 h-10 rounded-sm bg-gradient-to-b from-neutral-200 via-neutral-300 to-neutral-500 shadow-2xl border border-white/70 flex items-center justify-center relative">
@@ -414,7 +410,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
           </svg>
         </div>
-        <span class="font-extrabold text-base tracking-tight text-neutral-950 flex items-center gap-1">
+        <span id="brandName" class="font-extrabold text-base tracking-tight text-white flex items-center gap-1 transition-colors">
           ultrademon
           <span id="logoEngine" class="font-serif text-xs font-bold italic text-white/80">engine</span>
         </span>
@@ -437,7 +433,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           <a href="/login" id="navSignInBtn" class="px-2.5 py-1.5 text-xs font-medium text-white/90 hover:text-white transition cursor-pointer">
             Sign In
           </a>
-          <a href="/signup" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition shadow-xs cursor-pointer">
+          <a href="/signup" id="navSignUpBtn" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-white text-neutral-950 hover:bg-neutral-100 transition shadow-xs cursor-pointer">
             Create Account
           </a>
         </div>
@@ -459,7 +455,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   </header>
 
   <!-- Full-Width Hero Section Canvas (Light Blue Background with White Text) -->
-  <section id="heroSection" class="relative w-full bg-gradient-to-b from-[#38bdf8] via-[#60a5fa] to-white text-white pt-8 pb-16 overflow-hidden">
+  <section id="heroSection" class="relative w-full text-white pt-8 pb-16 overflow-hidden" style="background: linear-gradient(180deg, #38bdf8 0%, #7dd3fc 30%, #bae6fd 60%, #e0f2fe 82%, #f0f9ff 94%, #ffffff 100%);">
     <!-- Subtle background particles -->
     <div class="absolute inset-0 pointer-events-none opacity-10" style="background-image: radial-gradient(rgba(255,255,255,0.8) 1px, transparent 1px); background-size: 24px 24px;"></div>
 
@@ -479,9 +475,9 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           </button>
         </div>
 
-        <!-- Supermemory-inspired lowercase editorial hero headline in pure white -->
-        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-6 leading-[1.12] max-w-3xl mx-auto drop-shadow-sm">
-          ultrademon is building the <span class="font-serif font-bold italic text-white underline decoration-white/60 decoration-2 underline-offset-8">sovereign engine</span> for web search, agent memory, and continual context.
+        <!-- Supermemory-inspired editorial hero headline pairing Geist Sans and Michelangelus Serif Italic -->
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl tracking-tight text-white mb-6 leading-[1.12] max-w-3xl mx-auto drop-shadow-sm font-sans font-extrabold">
+          ultrademon is building the <span class="font-serif font-bold italic text-white underline decoration-white/70 decoration-2 underline-offset-8">sovereign engine</span> for web search, agent memory, and <span class="font-serif font-bold italic text-white">continual context</span>.
         </h1>
 
         <p class="text-sm sm:text-base text-white/95 max-w-2xl mx-auto mb-8 font-sans leading-relaxed">
@@ -2822,13 +2818,12 @@ function skipJacket(e) {
     }
     window.skipJacket = skipJacket;
 
-    // 1. Interactive Light Blue Jacket Unzip Physics (Unified PointerEvents + Touch + Gesture)
+    // 1. Interactive Sky Blue Jacket Unzip Physics (PointerEvents + Direct Manipulation)
     (function initJacketUnzip() {
       const curtain = document.getElementById('jacketCurtain');
       const handle = document.getElementById('zipperHandle');
       const flapLeft = document.getElementById('jacketLeft');
       const flapRight = document.getElementById('jacketRight');
-      const hitZone = document.getElementById('zipperHitZone');
       if (!curtain || !handle || !flapLeft || !flapRight) return;
 
       const hasUnzipped = sessionStorage.getItem('ultrademon_jacket_unzipped');
@@ -2845,15 +2840,19 @@ function skipJacket(e) {
 
       function onPointerDown(e) {
         if (isCompleted) return;
-        // Prevent default native browser element dragging / ghosting and scrolling
+        if (e.target.closest('#skipJacketBtn')) return;
         if (e.cancelable) e.preventDefault();
+
         isDragging = true;
         hasDraggedDown = false;
 
         const clientY = (e.touches && e.touches.length > 0) ? e.touches[0].clientY : e.clientY;
         startY = clientY - currentY;
 
-        // Strip CSS transitions during active manual drag for instant 1:1 hardware tracking
+        try {
+          handle.setPointerCapture(e.pointerId);
+        } catch (err) {}
+
         handle.style.transition = 'none';
         flapLeft.style.transition = 'none';
         flapRight.style.transition = 'none';
@@ -2872,24 +2871,21 @@ function skipJacket(e) {
         const rawY = clientY - startY;
         currentY = Math.max(0, rawY);
 
-        if (currentY > 10) {
+        if (currentY > 8) {
           hasDraggedDown = true;
         }
 
-        // Responsive travel limit: 340px or 45% of viewport
-        const maxTravel = Math.min(360, Math.max(200, window.innerHeight * 0.45));
+        const maxTravel = Math.min(340, Math.max(180, window.innerHeight * 0.45));
         const progress = Math.min(1, currentY / maxTravel);
 
-        // Hardware accelerated 3D transform updates
         handle.style.transform = 'translate3d(-50%, ' + currentY + 'px, 0)';
         flapLeft.style.transform = 'translate3d(-' + (progress * 105) + '%, 0, 0) rotateY(-' + (progress * 28) + 'deg)';
         flapRight.style.transform = 'translate3d(' + (progress * 105) + '%, 0, 0) rotateY(' + (progress * 28) + 'deg)';
         curtain.style.opacity = '' + Math.max(0.08, 1 - progress * 0.5);
 
-        // Dynamic Tag Guidance
         const tag = document.getElementById('zipperTag');
         if (tag) {
-          if (progress > 0.15) {
+          if (progress > 0.12) {
             tag.classList.remove('animate-bounce');
             tag.innerHTML = '<span class="text-sky-300 font-bold">UNZIPPING... RELEASE TO OPEN</span>';
           } else {
@@ -2898,8 +2894,7 @@ function skipJacket(e) {
           }
         }
 
-        // If pulled past threshold (26%), immediately auto-complete unzip!
-        if (progress >= 0.26) {
+        if (progress >= 0.22) {
           finishUnzip();
         }
       }
@@ -2908,23 +2903,25 @@ function skipJacket(e) {
         if (!isDragging || isCompleted) return;
         isDragging = false;
 
+        try {
+          handle.releasePointerCapture(e.pointerId);
+        } catch (err) {}
+
         handle.classList.remove('cursor-grabbing');
         handle.classList.add('cursor-grab');
         document.body.style.userSelect = '';
 
-        // If user tapped or barely pulled down (< 18px), treat as instant click-to-unzip!
-        if (!hasDraggedDown || currentY < 18) {
+        if (!hasDraggedDown || currentY < 15) {
           finishUnzip();
           return;
         }
 
-        const maxTravel = Math.min(360, Math.max(200, window.innerHeight * 0.45));
+        const maxTravel = Math.min(340, Math.max(180, window.innerHeight * 0.45));
         const progress = currentY / maxTravel;
 
-        if (progress >= 0.20) {
+        if (progress >= 0.18) {
           finishUnzip();
         } else {
-          // Snap back up smoothly
           handle.style.transition = 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
           flapLeft.style.transition = 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
           flapRight.style.transition = 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
@@ -2948,50 +2945,37 @@ function skipJacket(e) {
         if (isCompleted) return;
         isCompleted = true;
         isDragging = false;
-        sessionStorage.setItem('ultrademon_jacket_unzipped', 'true');
+        try {
+          sessionStorage.setItem('ultrademon_jacket_unzipped', 'true');
+        } catch (err) {}
 
-        handle.style.transition = 'transform 0.65s cubic-bezier(0.16, 1, 0.3, 1)';
-        flapLeft.style.transition = 'transform 0.65s cubic-bezier(0.16, 1, 0.3, 1)';
-        flapRight.style.transition = 'transform 0.65s cubic-bezier(0.16, 1, 0.3, 1)';
-        curtain.style.transition = 'opacity 0.65s ease';
+        handle.style.transition = 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)';
+        flapLeft.style.transition = 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)';
+        flapRight.style.transition = 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)';
+        curtain.style.transition = 'opacity 0.55s ease';
 
         const endDistance = Math.max(window.innerHeight + 120, 800);
         handle.style.transform = 'translate3d(-50%, ' + endDistance + 'px, 0)';
         flapLeft.style.transform = 'translate3d(-115%, 0, 0) rotateY(-35deg)';
         flapRight.style.transform = 'translate3d(115%, 0, 0) rotateY(35deg)';
         curtain.style.opacity = '0';
+        curtain.style.pointerEvents = 'none';
 
         setTimeout(() => {
           curtain.style.display = 'none';
-        }, 700);
+        }, 600);
       }
 
-      // Pointer events for desktop & modern devices
       handle.addEventListener('pointerdown', onPointerDown);
       window.addEventListener('pointermove', onPointerMove, { passive: false });
       window.addEventListener('pointerup', onPointerUp);
       window.addEventListener('pointercancel', onPointerUp);
 
-      // Touch events with non-passive touchmove for robust mobile dragging
-      handle.addEventListener('touchstart', onPointerDown, { passive: false });
-      window.addEventListener('touchmove', onPointerMove, { passive: false });
-      window.addEventListener('touchend', onPointerUp);
-      window.addEventListener('touchcancel', onPointerUp);
-
-      // Mouse events fallback for desktop
-      handle.addEventListener('mousedown', onPointerDown);
-      window.addEventListener('mousemove', onPointerMove);
-      window.addEventListener('mouseup', onPointerUp);
-
-      // Entire curtain click: if user clicks anywhere on the curtain, open immediately!
       curtain.addEventListener('click', (e) => {
         if (e.target.closest('#skipJacketBtn')) return;
-        if (!hasDraggedDown) {
-          finishUnzip();
-        }
+        if (!hasDraggedDown) finishUnzip();
       });
 
-      // Expose finishUnzip on window
       window.finishUnzip = finishUnzip;
     })();
 
@@ -3001,23 +2985,31 @@ function skipJacket(e) {
       } catch (err) {}
       window.location.reload();
     }
+    window.rezipJacket = rezipJacket;
 
-    // 2. Dynamic Navbar Transition: Light Blue in Hero -> White in Body
+    // 2. Dynamic Navbar Transition: Sky Blue in Hero -> Pure White with Black Text in Body
     (function initNavbarScroll() {
       const header = document.getElementById('mainHeader');
       if (!header) return;
 
       function updateNav() {
-        const isScrolled = window.scrollY > 200;
+        const hero = document.getElementById('heroSection');
+        const heroBottom = hero ? (hero.offsetTop + hero.offsetHeight - 64) : 420;
+        const isScrolled = window.scrollY >= heroBottom;
+
         if (isScrolled) {
           header.className = 'sticky top-0 z-40 transition-all duration-300 bg-white/95 text-neutral-950 backdrop-blur-md border-b border-neutral-200 shadow-xs';
           header.querySelectorAll('.nav-link').forEach(a => {
             a.className = 'nav-link text-neutral-600 hover:text-black transition flex items-center gap-1.5';
           });
+          const brandName = document.getElementById('brandName');
+          if (brandName) brandName.className = 'font-extrabold text-base tracking-tight text-neutral-950 flex items-center gap-1 transition-colors';
           const badge = document.getElementById('headerMemoryBadge');
           if (badge) badge.className = 'font-num text-[9px] bg-neutral-100 text-neutral-800 border border-neutral-200 px-1 py-0.2 rounded font-semibold';
           const signInBtn = document.getElementById('navSignInBtn');
           if (signInBtn) signInBtn.className = 'px-2.5 py-1.5 text-xs font-medium text-neutral-600 hover:text-black transition cursor-pointer';
+          const signUpBtn = document.getElementById('navSignUpBtn');
+          if (signUpBtn) signUpBtn.className = 'px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition shadow-xs cursor-pointer';
           const logoEngine = document.getElementById('logoEngine');
           if (logoEngine) logoEngine.className = 'font-serif text-xs font-bold italic text-neutral-500';
           const logoIconBox = document.getElementById('logoIconBox');
@@ -3027,10 +3019,14 @@ function skipJacket(e) {
           header.querySelectorAll('.nav-link').forEach(a => {
             a.className = 'nav-link text-white/90 hover:text-white transition flex items-center gap-1.5';
           });
+          const brandName = document.getElementById('brandName');
+          if (brandName) brandName.className = 'font-extrabold text-base tracking-tight text-white flex items-center gap-1 transition-colors';
           const badge = document.getElementById('headerMemoryBadge');
           if (badge) badge.className = 'font-num text-[9px] bg-white/20 text-white border border-white/40 px-1 py-0.2 rounded font-semibold backdrop-blur-xs';
           const signInBtn = document.getElementById('navSignInBtn');
           if (signInBtn) signInBtn.className = 'px-2.5 py-1.5 text-xs font-medium text-white/90 hover:text-white transition cursor-pointer';
+          const signUpBtn = document.getElementById('navSignUpBtn');
+          if (signUpBtn) signUpBtn.className = 'px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-white text-neutral-950 hover:bg-neutral-100 transition shadow-xs cursor-pointer';
           const logoEngine = document.getElementById('logoEngine');
           if (logoEngine) logoEngine.className = 'font-serif text-xs font-bold italic text-white/80';
           const logoIconBox = document.getElementById('logoIconBox');
