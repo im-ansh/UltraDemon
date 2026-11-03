@@ -203,6 +203,43 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       transform: translateY(0) !important;
     }
 
+
+    /* Light Blue Jacket Unzip Simulation */
+    #jacketCurtain {
+      perspective: 1200px;
+    }
+    .jacket-flap {
+      background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 45%, #0284c7 100%);
+      box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.15);
+    }
+    .jacket-baffles {
+      background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 78px,
+        rgba(255, 255, 255, 0.35) 79px,
+        rgba(0, 0, 0, 0.12) 81px
+      );
+    }
+    .zipper-teeth-left {
+      background-image: repeating-linear-gradient(
+        0deg,
+        #f8fafc 0px,
+        #f8fafc 4px,
+        #334155 4px,
+        #334155 8px
+      );
+    }
+    .zipper-teeth-right {
+      background-image: repeating-linear-gradient(
+        0deg,
+        #334155 0px,
+        #334155 4px,
+        #f8fafc 4px,
+        #f8fafc 8px
+      );
+    }
+
     /* Horizontal Side-Scroll Smooth Snap Track */
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -229,37 +266,113 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <!-- Custom Inverted Cursor element (Cursor Hijack) -->
   <div id="customCursor" class="custom-cursor"></div>
 
+  <!-- Interactive Light Blue Jacket Unzip Experience -->
+  <div id="jacketCurtain" class="fixed inset-0 z-[99998] flex overflow-hidden select-none transition-opacity duration-700">
+    <!-- Left Flap of the Jacket -->
+    <div id="jacketLeft" class="relative w-1/2 h-full jacket-flap shadow-2xl transition-transform duration-300 will-change-transform flex flex-col justify-between p-6 sm:p-10 border-r border-[#0284c7]/50">
+      <div class="absolute inset-0 pointer-events-none opacity-25 jacket-baffles"></div>
+      
+      <!-- Left Chest Badge -->
+      <div class="relative z-10 flex items-center gap-3 pt-4">
+        <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md border border-white/40 flex items-center justify-center text-white shadow-lg">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <div>
+          <div class="font-extrabold text-sm sm:text-base tracking-tight text-white flex items-center gap-1">
+            ultrademon
+            <span class="font-serif text-xs font-bold italic text-sky-100">engine</span>
+          </div>
+          <div class="text-[10px] text-white/80 font-num font-semibold">SOVEREIGN EDGE EDITION</div>
+        </div>
+      </div>
+
+      <!-- Left Teeth -->
+      <div class="absolute top-0 right-0 bottom-0 w-2.5 pointer-events-none opacity-90 z-20 zipper-teeth-left"></div>
+      
+      <!-- Bottom Left Status Tag -->
+      <div class="relative z-10 text-white/80 text-[11px] font-num hidden sm:flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+        <span>SEALED APPARATUS · HOLD &amp; PULL DOWN TO UNZIP</span>
+      </div>
+    </div>
+
+    <!-- Right Flap of the Jacket -->
+    <div id="jacketRight" class="relative w-1/2 h-full jacket-flap shadow-2xl transition-transform duration-300 will-change-transform flex flex-col justify-between p-6 sm:p-10 border-l border-[#0284c7]/50" style="background: linear-gradient(225deg, #38bdf8 0%, #0ea5e9 45%, #0284c7 100%);">
+      <div class="absolute inset-0 pointer-events-none opacity-25 jacket-baffles"></div>
+
+      <!-- Right Shoulder Specs -->
+      <div class="relative z-10 flex flex-col items-end pt-4 text-right">
+        <span class="font-num text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-white/20 text-white border border-white/30 backdrop-blur-sm shadow-sm">D1 BM25 EDGE</span>
+        <span class="text-[10px] text-white/80 font-num mt-1">&lt;15ms SOVEREIGN RECALL</span>
+      </div>
+
+      <!-- Right Teeth -->
+      <div class="absolute top-0 left-0 bottom-0 w-2.5 pointer-events-none opacity-90 z-20 zipper-teeth-right"></div>
+
+      <!-- Bottom Right Note -->
+      <div class="relative z-10 text-right text-white/80 text-[11px] font-num hidden sm:block">
+        CLOUDFLARE ANYCAST EDGE · 330+ CITIES
+      </div>
+    </div>
+
+    <!-- Center Zipper Pull & Slider Component -->
+    <div id="zipperHandle" class="absolute left-1/2 -translate-x-1/2 top-16 z-30 flex flex-col items-center cursor-grab active:cursor-grabbing touch-none select-none transition-transform will-change-transform">
+      <!-- Metal Slider Housing -->
+      <div class="w-8 h-10 rounded-sm bg-gradient-to-b from-neutral-200 via-neutral-300 to-neutral-500 shadow-2xl border border-white/70 flex items-center justify-center relative">
+        <div class="w-3.5 h-4.5 rounded-xs bg-neutral-800/60 border border-neutral-400"></div>
+        <div class="absolute -left-1 top-2.5 w-1 h-5 bg-neutral-400 rounded-l-xs"></div>
+        <div class="absolute -right-1 top-2.5 w-1 h-5 bg-neutral-400 rounded-r-xs"></div>
+      </div>
+
+      <!-- Slider Pull Tab Hinge -->
+      <div class="w-3.5 h-3 bg-neutral-500 rounded-full border border-neutral-300 -mt-1.5 shadow-sm"></div>
+
+      <!-- Heavy Metal Pull Tab -->
+      <div class="w-7 h-16 rounded-b-xl bg-gradient-to-b from-neutral-200 via-neutral-300 to-neutral-500 shadow-2xl border border-white/60 flex flex-col items-center justify-between py-2 -mt-1 transition hover:brightness-110">
+        <div class="w-3 h-3 rounded-full bg-neutral-700 shadow-inner"></div>
+        <div class="text-[9px] font-black tracking-widest text-neutral-800 font-num">UD</div>
+        <div class="w-4 h-1 bg-neutral-600/60 rounded-full"></div>
+      </div>
+
+      <!-- Floating Unzip Tag with Animated Arrow -->
+      <div id="zipperTag" class="mt-4 px-3.5 py-1.5 rounded-full bg-black/90 backdrop-blur-md text-white text-[11px] font-semibold tracking-wide font-num shadow-2xl flex items-center gap-2 border border-white/30 whitespace-nowrap animate-bounce">
+        <svg class="w-3.5 h-3.5 text-sky-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+        <span>HOLD &amp; PULL DOWN TO UNZIP</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Top Minimalist Centered Header -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-neutral-200">
+  <header id="mainHeader" class="sticky top-0 z-40 transition-all duration-300 bg-[#38bdf8]/90 text-white backdrop-blur-md border-b border-white/20">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
       <!-- Brand Logo with Grey Vector Spark Icon -->
       <a href="/" class="flex items-center gap-2.5 group flex-shrink-0">
-        <div class="w-7 h-7 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:bg-black group-hover:text-white group-hover:border-black transition">
+        <div id="logoIconBox" class="w-7 h-7 rounded-lg bg-white/20 border border-white/30 flex items-center justify-center text-white transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
           </svg>
         </div>
         <span class="font-extrabold text-base tracking-tight text-neutral-950 flex items-center gap-1">
           ultrademon
-          <span class="font-serif text-xs font-bold italic text-neutral-500">engine</span>
+          <span id="logoEngine" class="font-serif text-xs font-bold italic text-white/80">engine</span>
         </span>
       </a>
 
       <!-- Minimal Essential Nav Links -->
-      <nav class="hidden md:flex items-center gap-8 text-xs font-medium text-neutral-600">
-        <a href="#memory" class="hover:text-black transition flex items-center gap-1.5">
+      <nav class="hidden md:flex items-center gap-8 text-xs font-medium">
+        <a href="#memory" class="nav-link text-white/90 hover:text-white transition flex items-center gap-1.5">
           <span>Memory</span>
-          <span class="font-num text-[9px] bg-neutral-100 text-neutral-800 border border-neutral-200 px-1 py-0.2 rounded font-semibold">&lt;15ms</span>
+          <span id="headerMemoryBadge" class="font-num text-[9px] bg-white/20 text-white border border-white/40 px-1 py-0.2 rounded font-semibold backdrop-blur-xs">&lt;15ms</span>
         </a>
-        <a href="#search" class="hover:text-black transition">Search</a>
-        <a href="#benchmarks" class="hover:text-black transition">Benchmarks</a>
-        <a href="#pricing" class="hover:text-black transition">Pricing</a>
+        <a href="#search" class="nav-link text-white/90 hover:text-white transition">Search</a>
+        <a href="#benchmarks" class="nav-link text-white/90 hover:text-white transition">Benchmarks</a>
+        <a href="#pricing" class="nav-link text-white/90 hover:text-white transition">Pricing</a>
       </nav>
 
       <!-- Nav Auth Buttons -->
       <div class="flex items-center gap-2.5 flex-shrink-0">
         <div id="navAuthLoggedOut" class="flex items-center gap-3">
-          <a href="/login" class="px-2.5 py-1.5 text-xs font-medium text-neutral-600 hover:text-black transition cursor-pointer">
+          <a href="/login" id="navSignInBtn" class="px-2.5 py-1.5 text-xs font-medium text-white/90 hover:text-white transition cursor-pointer">
             Sign In
           </a>
           <a href="/signup" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition shadow-xs cursor-pointer">
@@ -283,106 +396,119 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     </div>
   </header>
 
-  <!-- Centered Website Main Container -->
-  <main class="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-20">
-    
-    <!-- Hero Section (Centered Conventional Layout) -->
-    <section id="overview" class="text-center mb-16 reveal-on-scroll">
-      <!-- Top Release Pill with Clean Monospaced Minimalist Badge -->
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-neutral-200 bg-neutral-50 text-xs text-neutral-800 mb-6 font-num">
-        <span class="w-1.5 h-1.5 rounded-full bg-neutral-900"></span>
-        <span>ANNOUNCING ULTRADEMON 2.0</span>
-        <span class="text-neutral-300">/</span>
-        <span class="text-neutral-500 font-sans">SOVEREIGN EDGE PLATFORM</span>
-      </div>
+  <!-- Full-Width Hero Section Canvas (Light Blue Background with White Text) -->
+  <section id="heroSection" class="relative w-full bg-gradient-to-b from-[#38bdf8] via-[#60a5fa] to-white text-white pt-8 pb-16 overflow-hidden">
+    <!-- Subtle background particles -->
+    <div class="absolute inset-0 pointer-events-none opacity-10" style="background-image: radial-gradient(rgba(255,255,255,0.8) 1px, transparent 1px); background-size: 24px 24px;"></div>
 
-      <!-- Supermemory-inspired lowercase editorial hero headline -->
-      <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-neutral-950 mb-6 leading-[1.12] max-w-3xl mx-auto">
-        ultrademon is building the <span class="font-serif font-bold italic text-neutral-950 underline decoration-neutral-300 decoration-2 underline-offset-8">sovereign engine</span> for web search, agent memory, and continual context.
-      </h1>
+    <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div id="overview" class="text-center mb-4">
+        <!-- Top Release Pill & Re-Zip Jacket Button -->
+        <div class="flex flex-wrap items-center justify-center gap-2.5 mb-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-white/40 bg-white/20 backdrop-blur-md text-xs text-white font-num shadow-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+            <span>ANNOUNCING ULTRADEMON 2.0</span>
+            <span class="text-white/40">/</span>
+            <span class="text-white/90 font-sans">SOVEREIGN EDGE PLATFORM</span>
+          </div>
+          <button onclick="rezipJacket()" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-num border border-white/30 transition cursor-pointer backdrop-blur-md shadow-sm" title="Re-seal and zip the jacket again">
+            <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            <span>Re-Zip Jacket</span>
+          </button>
+        </div>
 
-      <p class="text-sm sm:text-base text-neutral-600 max-w-2xl mx-auto mb-8 font-sans leading-relaxed">
-        Engineered on Cloudflare Workers edge nodes with D1 SQLite FTS5. Zero third-party LLM latency, zero cloud markups, and sub-15ms BM25 memory recall for autonomous AI agent fleets.
-      </p>
+        <!-- Supermemory-inspired lowercase editorial hero headline in pure white -->
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-6 leading-[1.12] max-w-3xl mx-auto drop-shadow-sm">
+          ultrademon is building the <span class="font-serif font-bold italic text-white underline decoration-white/60 decoration-2 underline-offset-8">sovereign engine</span> for web search, agent memory, and continual context.
+        </h1>
 
-      <!-- Author / Timestamp meta line -->
-      <div class="flex items-center justify-center gap-3 text-xs text-neutral-500 font-num mb-8 pb-4 border-b border-neutral-100 max-w-xl mx-auto">
-        <span class="font-semibold text-neutral-900">Ansh</span>
-        <span>·</span>
-        <span>November 2026</span>
-        <span>·</span>
-        <span>Cloudflare Workers + D1 SQLite FTS5</span>
-      </div>
+        <p class="text-sm sm:text-base text-white/95 max-w-2xl mx-auto mb-8 font-sans leading-relaxed">
+          Engineered on Cloudflare Workers edge nodes with D1 SQLite FTS5. Zero third-party LLM latency, zero cloud markups, and sub-15ms BM25 memory recall for autonomous AI agent fleets.
+        </p>
 
-      <!-- Action Row -->
-      <div class="flex flex-wrap items-center justify-center gap-3 mb-12">
-        <button onclick="handleProvisionKeyClick()" class="px-5 py-2.5 rounded-xl bg-black text-white hover:bg-neutral-800 text-xs font-semibold transition cursor-pointer shadow-xs flex items-center gap-2">
-          <span>Get Started Free</span>
-          <svg class="w-3.5 h-3.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
-        <a href="/app" class="px-4 py-2.5 rounded-xl border border-neutral-300 hover:bg-neutral-100 text-neutral-900 text-xs font-semibold transition flex items-center gap-2 cursor-pointer">
-          <svg class="w-3.5 h-3.5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M14 9l3 3-3 3"/></svg>
-          <span>Launch Workspace</span>
-        </a>
-        <a href="/openapi.json" target="_blank" class="px-4 py-2.5 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-neutral-900 text-xs font-semibold transition flex items-center gap-1.5">
-          <span class="font-num">/openapi.json</span>
-        </a>
-        <a href="#benchmarks" class="px-4 py-2.5 text-xs text-neutral-600 hover:text-black transition">
-          View Latency Benchmark
-        </a>
-      </div>
+        <!-- Author / Timestamp meta line in white -->
+        <div class="flex items-center justify-center gap-3 text-xs text-white/80 font-num mb-8 pb-4 border-b border-white/20 max-w-xl mx-auto">
+          <span class="font-semibold text-white">Ansh</span>
+          <span>·</span>
+          <span>November 2026</span>
+          <span>·</span>
+          <span>Cloudflare Workers + D1 SQLite FTS5</span>
+        </div>
 
-        <!-- Minimalist System Architecture Flow Diagram with Grey SVGs -->
-        <div class="card-clean p-6 rounded-2xl mb-12 bg-neutral-50/50">
-          <div class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 mb-4 font-num">System Architecture &amp; Execution Topology</div>
+        <!-- Action Row (White buttons on blue background) -->
+        <div class="flex flex-wrap items-center justify-center gap-3 mb-12">
+          <button onclick="handleProvisionKeyClick()" class="px-5 py-2.5 rounded-xl bg-white text-neutral-950 hover:bg-neutral-100 text-xs font-semibold transition cursor-pointer shadow-lg flex items-center gap-2">
+            <span>Get Started Free</span>
+            <svg class="w-3.5 h-3.5 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <a href="/app" class="px-4 py-2.5 rounded-xl border border-white/40 hover:bg-white/15 text-white text-xs font-semibold transition flex items-center gap-2 cursor-pointer backdrop-blur-xs">
+            <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M14 9l3 3-3 3"/></svg>
+            <span>Launch Workspace</span>
+          </a>
+          <a href="/openapi.json" target="_blank" class="px-4 py-2.5 rounded-xl border border-white/30 hover:bg-white/10 text-white text-xs font-semibold transition flex items-center gap-1.5 backdrop-blur-xs">
+            <span class="font-num">/openapi.json</span>
+          </a>
+          <a href="#benchmarks" class="px-4 py-2.5 text-xs text-white/90 hover:text-white underline decoration-white/40 transition">
+            View Latency Benchmark
+          </a>
+        </div>
+
+        <!-- System Architecture Flow Diagram with Translucent Glass Cards -->
+        <div class="p-6 rounded-2xl mb-12 bg-white/15 backdrop-blur-md border border-white/30 text-white shadow-xl">
+          <div class="text-[11px] font-semibold uppercase tracking-wider text-white/90 mb-4 font-num">System Architecture &amp; Execution Topology</div>
           <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-center text-xs">
-            <div class="p-4 bg-white border border-neutral-200 rounded-xl">
-              <div class="w-8 h-8 mx-auto rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-600 mb-2">
+            <div class="p-4 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-white">
+              <div class="w-8 h-8 mx-auto rounded-lg bg-white/30 flex items-center justify-center text-white mb-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2M15 20v2M2 15h2M2 9h2M20 15h2M20 9h2M9 2v2M9 20v2"/></svg>
               </div>
-              <div class="font-bold text-neutral-950">AI Agent Fleet</div>
-              <div class="text-[10px] text-neutral-500 mt-1">Claude, Cursor, LangChain</div>
+              <div class="font-bold text-white">AI Agent Fleet</div>
+              <div class="text-[10px] text-white/80 mt-1">Claude, Cursor, LangChain</div>
             </div>
-            <div class="p-4 bg-white border border-neutral-200 rounded-xl">
-              <div class="w-8 h-8 mx-auto rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-600 mb-2">
+            <div class="p-4 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-white">
+              <div class="w-8 h-8 mx-auto rounded-lg bg-white/30 flex items-center justify-center text-white mb-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
               </div>
-              <div class="font-bold text-neutral-950">Sovereign Gateway</div>
-              <div class="text-[10px] text-neutral-500 mt-1 font-num">REST / MCP / SSE</div>
+              <div class="font-bold text-white">Sovereign Gateway</div>
+              <div class="text-[10px] text-white/80 mt-1 font-num">REST / MCP / SSE</div>
             </div>
-            <div class="p-4 bg-white border border-black rounded-xl">
+            <div class="p-4 bg-white text-neutral-950 border border-white rounded-xl shadow-lg">
               <div class="w-8 h-8 mx-auto rounded-lg bg-neutral-900 text-white flex items-center justify-center mb-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/><path d="M12 2v20"/><path d="M8 8h8"/><path d="M7 13h10"/><path d="M9 18h6"/></svg>
               </div>
               <div class="font-bold text-neutral-950">D1 SQLite FTS5</div>
               <div class="text-[10px] font-num text-neutral-900 font-bold">&lt; 15ms BM25 Edge Recall</div>
             </div>
-            <div class="p-4 bg-white border border-neutral-200 rounded-xl">
-              <div class="w-8 h-8 mx-auto rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-600 mb-2">
+            <div class="p-4 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-white">
+              <div class="w-8 h-8 mx-auto rounded-lg bg-white/30 flex items-center justify-center text-white mb-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
               </div>
-              <div class="font-bold text-neutral-950">Autonomous Index</div>
-              <div class="text-[10px] text-neutral-500 mt-1 font-num">&lt; 40ms Web Search</div>
+              <div class="font-bold text-white">Autonomous Index</div>
+              <div class="text-[10px] text-white/80 mt-1 font-num">&lt; 40ms Web Search</div>
             </div>
           </div>
-          <div class="text-[11px] text-neutral-500 text-center mt-3 font-serif font-bold italic">
+          <div class="text-[11px] text-white/90 text-center mt-3 font-serif font-bold italic">
             Zero third-party APIs. Zero external vector databases. 100% self-contained Cloudflare Anycast edge.
           </div>
         </div>
 
-        <!-- Editorial Prose (Linear / Supermemory Essay Style) -->
-        <div class="space-y-4 text-sm text-neutral-700 leading-relaxed max-w-3xl mb-12">
+        <!-- Editorial Prose in white -->
+        <div class="space-y-4 text-sm text-white/90 leading-relaxed max-w-3xl mx-auto mb-4 text-left">
           <p>
             Current memory tools like Supermemory, Mem0, and centralized vector databases were designed around single-region cloud servers and heavy embedding pipelines. When an autonomous agent queries memory or web search in an interactive loop, centralized roundtrips cost <strong>350ms to 500ms</strong> per step.
           </p>
           <p>
-            <strong>UltraDemon</strong> takes a radically different approach: running both full-text BM25 web search and structured agent memory directly inside <span class="font-semibold text-neutral-950">Cloudflare D1 SQLite with FTS5</span> across 330+ edge PoPs worldwide. 
+            <strong>UltraDemon</strong> takes a radically different approach: running both full-text BM25 web search and structured agent memory directly inside <span class="font-semibold text-white">Cloudflare D1 SQLite with FTS5</span> across 330+ edge PoPs worldwide. 
           </p>
-          <p class="font-serif font-bold italic text-base text-neutral-900 pl-4 border-l-2 border-black">
+          <p class="font-serif font-bold italic text-base text-white pl-4 border-l-2 border-white">
             &ldquo;The result: memory recall drops to under 15ms globally, with zero telemetry leakage and a single unified API key.&rdquo;
           </p>
         </div>
-      </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- Centered Website Main Container (Transitions back into pure white background with black text) -->
+  <main class="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-20 bg-white text-neutral-950">
 
       <!-- Three Pillars Section with Grey Minimalist SVGs -->
       <section class="mb-14 reveal-on-scroll">
@@ -1059,7 +1185,7 @@ memory = requests.post(f"{BASE}/v1/memory/query", headers=HEADERS, json={
 }).json()
 
 print("Recalled Evidence:", memory["results"][0]["snippet"])</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -1104,7 +1230,7 @@ const recallRepoRule = tool({
     return await res.json();
   }
 });</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -1138,7 +1264,7 @@ const { text } = await generateText({
   system: "You are an empathetic support agent with access to user memory.",
   prompt: "User context: " + JSON.stringify(customerMemories.results) + "\\n\\nUser Question: Can I expedite my delivery?"
 });</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -1169,7 +1295,7 @@ print(f"Synthesized research sources ({len(res['results'])} citations):")
 for r in res["results"]:
     print(f"- [{r['title']}]({r['url']}) (Score: {r['pagerank']})")
     print(f"  Snippet: {r['snippet']}\\n")</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
         </div>
@@ -1428,7 +1554,7 @@ for r in res["results"]:
     }
   }
 }</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -1446,7 +1572,7 @@ for r in res["results"]:
     }
   }
 }</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -1487,7 +1613,7 @@ export const recallMemory = tool({
     }).then(r => r.json());
   }
 });</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -1515,7 +1641,7 @@ def sovereign_search(query: str) -> str:
         "query": query, "num_results": 5, "mode": 1
     }).json()
     return "\n".join([f"[{r['title']}]({r['url']}): {r['snippet']}" for r in res.get("results", [])])</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -1538,7 +1664,7 @@ class UltraDemonRetriever:
             NodeWithScore(node=TextNode(text=r["content"]), score=r.get("bm25_score", 1.0))
             for r in res.get("results", [])
         ]</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -1568,7 +1694,7 @@ search = requests.post(f"{BASE_URL}/v1/search", headers=HEADERS, json={
     "query": "What is Python?", "num_results": 5
 }).json()
 print("Search:", search["results"])</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -1592,7 +1718,7 @@ const { results } = await fetch("${origin}/v1/memory/query", {
   body: JSON.stringify({ query: "fact", container_tag: "agent_1" })
 }).then(r => r.json());
 console.log(results);</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -1612,7 +1738,7 @@ curl "${origin}/v1/memory/recall?q=preference&container_tag=agent_1" \\
 # 3. Direct LLM prompt context injection
 curl "${origin}/v1/memory/context?q=preference" \\
   -H "X-API-Key: um_your_key_here"</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
         </div>
@@ -1932,7 +2058,9 @@ curl "${origin}/v1/memory/context?q=preference" \\
     function scrollFeatureTrack(direction) {
       const track = document.getElementById('featureScrollTrack');
       if (track) {
-        track.scrollBy({ left: direction * 340, behavior: 'smooth' });
+        const card = track.querySelector('div');
+        const scrollAmount = card ? (card.offsetWidth + 16) : 340;
+        track.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
       }
     }
 
@@ -2048,9 +2176,32 @@ curl "${origin}/v1/memory/context?q=preference" \\
       });
     }
 
-    function copyToClipboard(text) {
+    function copyToClipboard(text, btnElement) {
       navigator.clipboard.writeText(text);
-      alert('Copied to clipboard');
+      if (btnElement && btnElement.innerText) {
+        const origText = btnElement.innerText;
+        btnElement.innerText = 'Copied!';
+        setTimeout(() => { btnElement.innerText = origText; }, 1400);
+      } else {
+        showToast('Copied to clipboard');
+      }
+    }
+
+    function showToast(msg) {
+      let t = document.getElementById('appToast');
+      if (!t) {
+        t = document.createElement('div');
+        t.id = 'appToast';
+        t.className = 'fixed bottom-6 right-6 z-[99999] px-4 py-2 rounded-xl bg-black text-white text-xs font-semibold shadow-2xl transition-all duration-300 font-num';
+        document.body.appendChild(t);
+      }
+      t.innerText = msg;
+      t.style.opacity = '1';
+      t.style.transform = 'translateY(0)';
+      setTimeout(() => {
+        t.style.opacity = '0';
+        t.style.transform = 'translateY(10px)';
+      }, 1600);
     }
 
     function getActiveKey() {
@@ -2066,19 +2217,33 @@ curl "${origin}/v1/memory/context?q=preference" \\
       document.getElementById('memContainerInput').value = container;
     }
 
+    // Guest Demo In-Memory Store
+    const guestMemories = [
+      {
+        memory_id: 'mem_demo_01',
+        memory_type: 'preference',
+        container_tag: 'agent_ui',
+        content: 'User prefers clean minimalist monochrome design, strictly zero gradients, and Michelangelus font.',
+        created_at: new Date().toISOString()
+      },
+      {
+        memory_id: 'mem_demo_02',
+        memory_type: 'fact',
+        container_tag: 'backend_infra',
+        content: 'Database infrastructure is deployed on Cloudflare D1 with SQLite FTS5 BM25 index.',
+        created_at: new Date().toISOString()
+      },
+      {
+        memory_id: 'mem_demo_03',
+        memory_type: 'entity',
+        container_tag: 'product_core',
+        content: 'UltraDemon: Sovereign web search and agent memory platform beating Supermemory.',
+        created_at: new Date().toISOString()
+      }
+    ];
+
     async function handleStoreMemory(e) {
       e.preventDefault();
-      if (!currentUser) {
-        openAuthModal('signin');
-        return;
-      }
-      const apiKey = getActiveKey();
-      if (!apiKey) {
-        alert('Please generate an API key in the Console first.');
-        document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
-        return;
-      }
-
       const content = document.getElementById('memContentInput').value.trim();
       const memoryType = document.getElementById('memTypeInput').value;
       const containerTag = document.getElementById('memContainerInput').value.trim() || 'default';
@@ -2087,50 +2252,66 @@ curl "${origin}/v1/memory/context?q=preference" \\
       const submitBtn = document.getElementById('storeMemBtn');
       const alertBox = document.getElementById('storeMemAlert');
 
+      if (!content) return;
+
       spinner.classList.remove('hidden');
       submitBtn.disabled = true;
       alertBox.classList.add('hidden');
 
-      try {
-        const resp = await fetch('/v1/memory', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
-          body: JSON.stringify({ content, memory_type: memoryType, container_tag: containerTag })
-        });
-        const data = await resp.json();
+      const apiKey = getActiveKey();
 
-        if (resp.ok && data.memory_id) {
-          alertBox.className = 'mt-3 p-2.5 rounded-lg text-xs font-num bg-neutral-100 border border-neutral-300 text-neutral-950 flex items-center justify-between';
-          alertBox.innerHTML = '<span class=\"flex items-center gap-1.5\"><svg class=\"w-3.5 h-3.5 text-neutral-700\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2.5\"><polyline points=\"20 6 9 17 4 12\"/></svg><span>Stored: <strong>' + data.memory_id + '</strong> [' + data.container_tag + ']</span></span><span class=\"text-[10px] text-neutral-500 font-sans\">Edge D1 FTS5</span>';
+      // If user is authenticated and has an API key, use live backend
+      if (currentUser && apiKey) {
+        try {
+          const resp = await fetch('/v1/memory', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
+            body: JSON.stringify({ content, memory_type: memoryType, container_tag: containerTag })
+          });
+          const data = await resp.json();
+
+          if (resp.ok && data.memory_id) {
+            alertBox.className = 'mt-3 p-2.5 rounded-lg text-xs font-num bg-neutral-100 border border-neutral-300 text-neutral-950 flex items-center justify-between';
+            alertBox.innerHTML = '<span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Stored: <strong>' + data.memory_id + '</strong> [' + data.container_tag + ']</span></span><span class="text-[10px] text-neutral-500 font-sans">Edge D1 FTS5</span>';
+            alertBox.classList.remove('hidden');
+            document.getElementById('memContentInput').value = '';
+            refreshStoredMemories();
+          } else {
+            throw new Error(data.error || 'Failed to store memory');
+          }
+        } catch (err) {
+          alertBox.className = 'mt-3 p-2.5 rounded-lg text-xs font-num bg-neutral-100 border border-neutral-300 text-red-600';
+          alertBox.innerText = 'Error: ' + err.message;
           alertBox.classList.remove('hidden');
-          document.getElementById('memContentInput').value = '';
-          refreshStoredMemories();
-        } else {
-          throw new Error(data.error || 'Failed to store memory');
+        } finally {
+          spinner.classList.add('hidden');
+          submitBtn.disabled = false;
         }
-      } catch (err) {
-        alertBox.className = 'mt-3 p-2.5 rounded-lg text-xs font-num bg-neutral-100 border border-neutral-300 text-red-600';
-        alertBox.innerText = 'Error: ' + err.message;
-        alertBox.classList.remove('hidden');
-      } finally {
-        spinner.classList.add('hidden');
-        submitBtn.disabled = false;
+        return;
       }
+
+      // Guest Demo Mode: Instant edge simulated storage
+      await new Promise(r => setTimeout(r, 14));
+      const demoId = 'mem_demo_' + Math.random().toString(36).substring(2, 7);
+      guestMemories.unshift({
+        memory_id: demoId,
+        memory_type: memoryType,
+        container_tag: containerTag,
+        content: content,
+        created_at: new Date().toISOString()
+      });
+
+      alertBox.className = 'mt-3 p-2.5 rounded-lg text-xs font-num bg-neutral-100 border border-neutral-300 text-neutral-950 flex items-center justify-between';
+      alertBox.innerHTML = '<span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Stored: <strong>' + demoId + '</strong> [' + containerTag + ']</span></span><span class="text-[10px] text-sky-700 font-num font-semibold">Guest Demo (14ms Edge)</span>';
+      alertBox.classList.remove('hidden');
+      document.getElementById('memContentInput').value = '';
+      spinner.classList.add('hidden');
+      submitBtn.disabled = false;
+      renderMemoriesTable(guestMemories);
     }
 
     async function handleQueryMemory(e) {
       e.preventDefault();
-      if (!currentUser) {
-        openAuthModal('signin');
-        return;
-      }
-      const apiKey = getActiveKey();
-      if (!apiKey) {
-        alert('Please generate an API key in the Console first.');
-        document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
-        return;
-      }
-
       const query = document.getElementById('memQueryInput').value.trim();
       const containerTag = document.getElementById('memQueryContainer').value.trim();
       const spinner = document.getElementById('queryMemSpinner');
@@ -2142,41 +2323,78 @@ curl "${origin}/v1/memory/context?q=preference" \\
 
       spinner.classList.remove('hidden');
       submitBtn.disabled = true;
-      resultsDiv.innerHTML = '<div class=\"text-center py-4 text-neutral-400 text-xs\">Recalling from edge BM25...</div>';
+      resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">Recalling from edge BM25...</div>';
 
-      const t0 = performance.now();
-      try {
-        const resp = await fetch('/v1/memory/query', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
-          body: JSON.stringify({ query, container_tag: containerTag || undefined, limit: 5 })
-        });
-        const data = await resp.json();
-        const duration = Math.round(performance.now() - t0);
+      const apiKey = getActiveKey();
 
-        latencyBadge.innerText = (data.query_time_ms || duration) + 'ms (Edge D1 BM25)';
-        latencyBadge.classList.remove('hidden');
+      // If authenticated and has active key, run live backend query
+      if (currentUser && apiKey) {
+        const t0 = performance.now();
+        try {
+          const resp = await fetch('/v1/memory/query', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
+            body: JSON.stringify({ query, container_tag: containerTag || undefined, limit: 5 })
+          });
+          const data = await resp.json();
+          const duration = Math.round(performance.now() - t0);
 
-        if (data.results && data.results.length > 0) {
-          resultsDiv.innerHTML = data.results.map(r => 
-            '<div class=\"p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-xs\">' +
-              '<div class=\"flex items-center justify-between font-num text-[10px] text-neutral-500 mb-1\">' +
-                '<span class=\"px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-800 uppercase font-semibold\">' + r.memory_type + '</span>' +
-                '<span class=\"font-mono\">' + r.container_tag + '</span>' +
-                '<span class=\"font-bold text-black\">Score: ' + (r.score || 0.9).toFixed(2) + '</span>' +
-              '</div>' +
-              '<p class=\"text-neutral-800\">' + r.content + '</p>' +
-            '</div>'
-          ).join('');
-        } else {
-          resultsDiv.innerHTML = '<div class=\"text-center py-3 text-neutral-400 text-xs\">No matching memories found in edge index.</div>';
+          latencyBadge.innerText = (data.query_time_ms || duration) + 'ms (Edge D1 BM25)';
+          latencyBadge.classList.remove('hidden');
+
+          if (data.results && data.results.length > 0) {
+            resultsDiv.innerHTML = data.results.map(r => 
+              '<div class="p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-xs">' +
+                '<div class="flex items-center justify-between font-num text-[10px] text-neutral-500 mb-1">' +
+                  '<span class="px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-800 uppercase font-semibold">' + r.memory_type + '</span>' +
+                  '<span class="font-mono">' + r.container_tag + '</span>' +
+                  '<span class="font-bold text-black">Score: ' + (r.score || 0.9).toFixed(2) + '</span>' +
+                '</div>' +
+                '<p class="text-neutral-800">' + r.content + '</p>' +
+              '</div>'
+            ).join('');
+          } else {
+            resultsDiv.innerHTML = '<div class="text-center py-3 text-neutral-400 text-xs">No matching memories found in edge index.</div>';
+          }
+        } catch (err) {
+          resultsDiv.innerHTML = '<div class="p-2.5 bg-neutral-100 border border-neutral-300 text-red-600 text-xs font-num">Error: ' + err.message + '</div>';
+        } finally {
+          spinner.classList.add('hidden');
+          submitBtn.disabled = false;
         }
-      } catch (err) {
-        resultsDiv.innerHTML = '<div class=\"p-2.5 bg-neutral-100 border border-neutral-300 text-red-600 text-xs font-num\">Error: ' + err.message + '</div>';
-      } finally {
-        spinner.classList.add('hidden');
-        submitBtn.disabled = false;
+        return;
       }
+
+      // Guest Demo Mode: Instant sub-12ms BM25 edge simulation
+      const t0 = performance.now();
+      await new Promise(r => setTimeout(r, 12));
+      const qLower = query.toLowerCase();
+      const qTerms = qLower.split(/\s+/);
+
+      const matched = guestMemories.filter(m => {
+        if (containerTag && m.container_tag.toLowerCase() !== containerTag.toLowerCase()) return false;
+        return qTerms.some(term => m.content.toLowerCase().includes(term) || m.memory_type.toLowerCase().includes(term));
+      });
+
+      const displayList = matched.length > 0 ? matched : guestMemories.slice(0, 2);
+      const simulatedDuration = 12;
+
+      latencyBadge.innerText = simulatedDuration + 'ms (Edge D1 BM25 Demo)';
+      latencyBadge.classList.remove('hidden');
+
+      resultsDiv.innerHTML = displayList.map((r, idx) => 
+        '<div class="p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-xs">' +
+          '<div class="flex items-center justify-between font-num text-[10px] text-neutral-500 mb-1">' +
+            '<span class="px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-800 uppercase font-semibold">' + r.memory_type + '</span>' +
+            '<span class="font-mono">' + r.container_tag + '</span>' +
+            '<span class="font-bold text-black">Score: ' + (0.96 - idx * 0.08).toFixed(2) + '</span>' +
+          '</div>' +
+          '<p class="text-neutral-800">' + r.content + '</p>' +
+        '</div>'
+      ).join('');
+
+      spinner.classList.add('hidden');
+      submitBtn.disabled = false;
     }
 
     async function refreshStoredMemories() {
@@ -2242,59 +2460,98 @@ curl "${origin}/v1/memory/context?q=preference" \\
 
       if (!query) return;
 
-      if (!currentUser) {
-        resultsDiv.innerHTML = '<div class=\"p-6 rounded-xl bg-neutral-50 border border-neutral-200 text-center space-y-2\"><div class=\"w-8 h-8 mx-auto rounded-full bg-neutral-200 flex items-center justify-center text-neutral-600\"><svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\" ry=\"2\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg></div><div class=\"text-xs font-bold text-neutral-950\">Authentication Required</div><p class=\"text-[11px] text-neutral-500\">Please log in or sign up before querying the index.</p><button data-mode=\"signin\" onclick=\"openAuthModal(this.dataset.mode)\" class=\"mt-2 px-3 py-1.5 text-xs font-semibold rounded bg-black text-white cursor-pointer\">Sign In</button></div>';
-        openAuthModal('signin');
-        return;
-      }
+      spinner.classList.remove('hidden');
+      resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">Searching sovereign BM25 index...</div>';
 
       const apiKey = getActiveKey();
-      if (!apiKey) {
-        resultsDiv.innerHTML = '<div class=\"p-6 rounded-xl bg-neutral-50 border border-neutral-200 text-center space-y-2\"><div class=\"w-8 h-8 mx-auto rounded-full bg-neutral-200 flex items-center justify-center text-neutral-600\"><svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5-1.5 2-2z\"/><circle cx=\"17.5\" cy=\"6.5\" r=\"1.5\"/></svg></div><div class=\"text-xs font-bold text-neutral-950\">API Key Required</div><p class=\"text-[11px] text-neutral-500\">Generate an API key in the Developer Console first.</p><button onclick=\"scrollToConsole()\" class=\"mt-2 px-3 py-1.5 text-xs font-semibold rounded bg-black text-white cursor-pointer\">Generate Key &darr;</button></div>';
-        scrollToConsole();
+
+      // If user is authenticated and has an API key, use live backend
+      if (currentUser && apiKey) {
+        const t0 = performance.now();
+        try {
+          const resp = await fetch('/v1/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
+            body: JSON.stringify({ query, num_results: 5, mode: currentMode, use_cache: useCache })
+          });
+          const data = await resp.json();
+          const duration = Math.round(performance.now() - t0);
+
+          if (resp.status === 401) {
+            resultsDiv.innerHTML = '<div class="p-4 rounded-xl bg-neutral-100 text-center text-xs font-bold text-neutral-950">Authentication Error: ' + (data.error || 'Invalid Key') + '</div>';
+            return;
+          }
+
+          latencyBadge.innerText = (data.search_time_ms || duration) + 'ms' + (data.cached ? ' (KV Hit)' : '');
+          latencyBadge.classList.remove('hidden');
+
+          if (data.results && data.results.length > 0) {
+            resultsDiv.innerHTML = data.results.map(r => 
+              '<div class="card-clean p-4 rounded-xl">' +
+                '<div class="flex items-center justify-between text-neutral-400 text-[10px] font-num mb-1">' +
+                  '<span class="truncate max-w-xs text-neutral-600 font-mono">' + (r.url || 'edge://d1/indexed') + '</span>' +
+                  '<span class="font-bold text-neutral-900">BM25: ' + (r.score ? r.score.toFixed(2) : '1.00') + '</span>' +
+                '</div>' +
+                '<h3 class="font-bold text-xs text-neutral-950 hover:underline cursor-pointer mb-1">' + (r.title || 'Indexed Document') + '</h3>' +
+                '<p class="text-neutral-600 text-xs line-clamp-2 leading-relaxed">' + (r.snippet || r.content || '') + '</p>' +
+              '</div>'
+            ).join('');
+          } else {
+            resultsDiv.innerHTML = '<div class="text-center py-6 text-neutral-400 text-xs">No edge results found for "' + query + '".</div>';
+          }
+        } catch (err) {
+          resultsDiv.innerHTML = '<div class="p-3 bg-neutral-100 border border-neutral-300 text-red-600 text-xs font-num">Edge search failed: ' + err.message + '</div>';
+        } finally {
+          spinner.classList.add('hidden');
+        }
         return;
       }
 
-      spinner.classList.remove('hidden');
-      resultsDiv.innerHTML = '<div class=\"text-center py-4 text-neutral-400 text-xs\">Searching sovereign BM25 index...</div>';
+      // Guest Demo Mode: Instant sub-18ms sovereign BM25 search simulation
+      await new Promise(r => setTimeout(r, 18));
+      const simulatedDuration = 18;
 
-      const t0 = performance.now();
-      try {
-        const resp = await fetch('/v1/search', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
-          body: JSON.stringify({ query, num_results: 5, mode: currentMode, use_cache: useCache })
-        });
-        const data = await resp.json();
-        const duration = Math.round(performance.now() - t0);
+      latencyBadge.innerText = simulatedDuration + 'ms (Edge D1 BM25 Demo)';
+      latencyBadge.classList.remove('hidden');
 
-        if (resp.status === 401) {
-          resultsDiv.innerHTML = '<div class=\"p-4 rounded-xl bg-neutral-100 text-center text-xs font-bold text-neutral-950\">Authentication Error: ' + (data.error || 'Invalid Key') + '</div>';
-          return;
+      const demoResults = [
+        {
+          title: 'Cloudflare D1 SQLite with FTS5: Sub-15ms Full-Text Search at the Edge',
+          url: 'https://developers.cloudflare.com/d1/platform-features/fts5-bm25',
+          score: 1.42,
+          snippet: 'UltraDemon leverages D1 SQLite with FTS5 virtual tables to perform BM25 text rank queries directly on Cloudflare global edge workers with zero external API calls or vector database latency.'
+        },
+        {
+          title: 'Autonomous AI Agent Memory Architectures: Low-Latency Ephemeral vs Continual Recall',
+          url: 'https://ultrademon.ai/research/agent-memory-benchmarks',
+          score: 1.18,
+          snippet: 'Evaluating Claude 3.5, Cursor, and LangChain autonomous loops. UltraMemory eliminates centralized 450ms embedding bottlenecks by colocating structured memory in Anycast edge nodes.'
+        },
+        {
+          title: 'BM25 Okapi vs Dense Vector Embeddings in Agentic Retrieval Loops',
+          url: 'https://arxiv.org/abs/2402.ultrademon-bm25',
+          score: 0.95,
+          snippet: 'Empirical analysis shows BM25 on edge SQLite delivers 98.4% precision on keyword recall and developer entity names while executing 28x faster than remote vector embedding providers.'
         }
+      ];
 
-        latencyBadge.innerText = (data.search_time_ms || duration) + 'ms' + (data.cached ? ' (KV Hit)' : '');
-        latencyBadge.classList.remove('hidden');
+      resultsDiv.innerHTML = 
+        '<div class="mb-3 px-3 py-1.5 rounded-lg bg-sky-50 border border-sky-200 text-sky-800 text-[11px] font-num flex items-center justify-between">' +
+          '<span><strong>Guest Edge Preview</strong> · Showing simulated D1 BM25 ranking</span>' +
+          '<a href="/login" class="underline font-semibold hover:text-sky-950">Sign In for Private Index &rarr;</a>' +
+        '</div>' +
+        demoResults.map(r => 
+          '<div class="card-clean p-4 rounded-xl mb-2">' +
+            '<div class="flex items-center justify-between text-neutral-400 text-[10px] font-num mb-1">' +
+              '<span class="truncate max-w-xs text-neutral-600 font-mono">' + r.url + '</span>' +
+              '<span class="font-bold text-neutral-900">BM25: ' + r.score.toFixed(2) + '</span>' +
+            '</div>' +
+            '<h3 class="font-bold text-xs text-neutral-950 hover:underline cursor-pointer mb-1">' + r.title + '</h3>' +
+            '<p class="text-neutral-600 text-xs line-clamp-2 leading-relaxed">' + r.snippet + '</p>' +
+          '</div>'
+        ).join('');
 
-        if (data.results && data.results.length > 0) {
-          resultsDiv.innerHTML = data.results.map(r => 
-            '<div class=\"p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 hover:border-neutral-400 transition\">' +
-              '<div class=\"flex items-center justify-between text-[10px] text-neutral-500 mb-1 font-num\">' +
-                '<span class=\"truncate max-w-sm font-mono\">' + r.url + '</span>' +
-                '<span class=\"bg-neutral-200 text-neutral-900 px-1.5 py-0.2 rounded font-semibold\">BM25: ' + (r.score || '0.95') + '</span>' +
-              '</div>' +
-              '<a href=\"' + r.url + '\" target=\"_blank\" class=\"text-xs font-bold text-neutral-950 hover:underline block mb-0.5\">' + r.title + '</a>' +
-              '<p class=\"text-xs text-neutral-600 leading-relaxed\">' + r.snippet + '</p>' +
-            '</div>'
-          ).join('');
-        } else {
-          resultsDiv.innerHTML = '<div class=\"text-center py-4 text-neutral-400 text-xs\">No results found in current index. Crawl more URLs below!</div>';
-        }
-      } catch (err) {
-        resultsDiv.innerHTML = '<div class=\"p-3 bg-neutral-100 border border-neutral-300 text-red-600 text-xs font-num\">Error: ' + err.message + '</div>';
-      } finally {
-        spinner.classList.add('hidden');
-      }
+      spinner.classList.add('hidden');
     }
 
     async function handleCreateKey(e) {
@@ -2479,6 +2736,196 @@ curl "${origin}/v1/memory/context?q=preference" \\
         spinner.classList.add('hidden');
       }
     }
+
+
+    // 1. Interactive Light Blue Jacket Unzip Physics
+    (function initJacketUnzip() {
+      const curtain = document.getElementById('jacketCurtain');
+      const handle = document.getElementById('zipperHandle');
+      const flapLeft = document.getElementById('jacketLeft');
+      const flapRight = document.getElementById('jacketRight');
+      if (!curtain || !handle || !flapLeft || !flapRight) return;
+
+      const hasUnzipped = sessionStorage.getItem('ultrademon_jacket_unzipped');
+      if (hasUnzipped === 'true') {
+        curtain.style.display = 'none';
+        return;
+      }
+
+      let isDragging = false;
+      let startY = 0;
+      let currentY = 0;
+      let isCompleted = false;
+
+      function onStart(e) {
+        if (isCompleted) return;
+        isDragging = true;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        startY = clientY - currentY;
+        handle.classList.add('cursor-grabbing');
+        document.body.style.userSelect = 'none';
+      }
+
+      function onMove(e) {
+        if (!isDragging || isCompleted) return;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        const rawY = clientY - startY;
+        currentY = Math.max(0, rawY);
+        const maxTravel = Math.max(200, window.innerHeight - 150);
+        const progress = Math.min(1, currentY / maxTravel);
+
+        handle.style.transform = 'translate(-50%, ' + currentY + 'px)';
+        flapLeft.style.transform = 'translateX(-' + (progress * 105) + '%) rotateY(-' + (progress * 25) + 'deg)';
+        flapRight.style.transform = 'translateX(' + (progress * 105) + '%) rotateY(' + (progress * 25) + 'deg)';
+        curtain.style.opacity = '' + Math.max(0.1, 1 - progress * 0.5);
+
+        if (progress >= 0.45) {
+          finishUnzip();
+        }
+      }
+
+      function onEnd() {
+        if (!isDragging || isCompleted) return;
+        isDragging = false;
+        handle.classList.remove('cursor-grabbing');
+        document.body.style.userSelect = '';
+
+        const maxTravel = Math.max(200, window.innerHeight - 150);
+        const progress = currentY / maxTravel;
+        if (progress >= 0.35) {
+          finishUnzip();
+        } else {
+          // Snap back up
+          handle.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+          flapLeft.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+          flapRight.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+          curtain.style.transition = 'opacity 0.3s ease';
+
+          handle.style.transform = 'translate(-50%, 0px)';
+          flapLeft.style.transform = 'translateX(0%)';
+          flapRight.style.transform = 'translateX(0%)';
+          curtain.style.opacity = '1';
+          currentY = 0;
+          setTimeout(() => {
+            handle.style.transition = '';
+            flapLeft.style.transition = '';
+            flapRight.style.transition = '';
+            curtain.style.transition = '';
+          }, 300);
+        }
+      }
+
+      function finishUnzip() {
+        if (isCompleted) return;
+        isCompleted = true;
+        isDragging = false;
+        sessionStorage.setItem('ultrademon_jacket_unzipped', 'true');
+
+        handle.style.transition = 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)';
+        flapLeft.style.transition = 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)';
+        flapRight.style.transition = 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)';
+        curtain.style.transition = 'opacity 0.55s ease';
+
+        handle.style.transform = 'translate(-50%, ' + window.innerHeight + 'px)';
+        flapLeft.style.transform = 'translateX(-115%) rotateY(-35deg)';
+        flapRight.style.transform = 'translateX(115%) rotateY(35deg)';
+        curtain.style.opacity = '0';
+
+        setTimeout(() => {
+          curtain.style.display = 'none';
+        }, 600);
+      }
+
+      handle.addEventListener('mousedown', onStart);
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onEnd);
+
+      handle.addEventListener('touchstart', onStart, { passive: true });
+      window.addEventListener('touchmove', onMove, { passive: true });
+      window.addEventListener('touchend', onEnd);
+
+      handle.addEventListener('click', () => {
+        if (currentY < 15 && !isCompleted) {
+          finishUnzip();
+        }
+      });
+    })();
+
+    function rezipJacket() {
+      sessionStorage.removeItem('ultrademon_jacket_unzipped');
+      window.location.reload();
+    }
+
+    // 2. Dynamic Navbar Transition: Light Blue in Hero -> White in Body
+    (function initNavbarScroll() {
+      const header = document.getElementById('mainHeader');
+      if (!header) return;
+
+      function updateNav() {
+        const isScrolled = window.scrollY > 200;
+        if (isScrolled) {
+          header.className = 'sticky top-0 z-40 transition-all duration-300 bg-white/95 text-neutral-950 backdrop-blur-md border-b border-neutral-200 shadow-xs';
+          header.querySelectorAll('.nav-link').forEach(a => {
+            a.className = 'nav-link text-neutral-600 hover:text-black transition flex items-center gap-1.5';
+          });
+          const badge = document.getElementById('headerMemoryBadge');
+          if (badge) badge.className = 'font-num text-[9px] bg-neutral-100 text-neutral-800 border border-neutral-200 px-1 py-0.2 rounded font-semibold';
+          const signInBtn = document.getElementById('navSignInBtn');
+          if (signInBtn) signInBtn.className = 'px-2.5 py-1.5 text-xs font-medium text-neutral-600 hover:text-black transition cursor-pointer';
+          const logoEngine = document.getElementById('logoEngine');
+          if (logoEngine) logoEngine.className = 'font-serif text-xs font-bold italic text-neutral-500';
+          const logoIconBox = document.getElementById('logoIconBox');
+          if (logoIconBox) logoIconBox.className = 'w-7 h-7 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:bg-black group-hover:text-white group-hover:border-black transition';
+        } else {
+          header.className = 'sticky top-0 z-40 transition-all duration-300 bg-[#38bdf8]/90 text-white backdrop-blur-md border-b border-white/20';
+          header.querySelectorAll('.nav-link').forEach(a => {
+            a.className = 'nav-link text-white/90 hover:text-white transition flex items-center gap-1.5';
+          });
+          const badge = document.getElementById('headerMemoryBadge');
+          if (badge) badge.className = 'font-num text-[9px] bg-white/20 text-white border border-white/40 px-1 py-0.2 rounded font-semibold backdrop-blur-xs';
+          const signInBtn = document.getElementById('navSignInBtn');
+          if (signInBtn) signInBtn.className = 'px-2.5 py-1.5 text-xs font-medium text-white/90 hover:text-white transition cursor-pointer';
+          const logoEngine = document.getElementById('logoEngine');
+          if (logoEngine) logoEngine.className = 'font-serif text-xs font-bold italic text-white/80';
+          const logoIconBox = document.getElementById('logoIconBox');
+          if (logoIconBox) logoIconBox.className = 'w-7 h-7 rounded-lg bg-white/20 border border-white/30 flex items-center justify-center text-white transition';
+        }
+      }
+
+      window.addEventListener('scroll', updateNav, { passive: true });
+      updateNav();
+    })();
+
+    // 3. Side-Scroll Mouse Drag-to-Scroll & Card Step
+    (function initDragScroll() {
+      const track = document.getElementById('featureScrollTrack');
+      if (!track) return;
+      let isDown = false;
+      let startX = 0;
+      let scrollLeft = 0;
+
+      track.addEventListener('mousedown', (e) => {
+        isDown = true;
+        track.classList.add('cursor-grabbing');
+        startX = e.pageX - track.offsetLeft;
+        scrollLeft = track.scrollLeft;
+      });
+      track.addEventListener('mouseleave', () => {
+        isDown = false;
+        track.classList.remove('cursor-grabbing');
+      });
+      track.addEventListener('mouseup', () => {
+        isDown = false;
+        track.classList.remove('cursor-grabbing');
+      });
+      track.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - track.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        track.scrollLeft = scrollLeft - walk;
+      });
+    })();
 
     // Custom Inverted Color Cursor Hijack (Difference Blend)
     (function initCustomCursor() {
