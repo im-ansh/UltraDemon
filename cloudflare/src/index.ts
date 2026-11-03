@@ -20,6 +20,7 @@ import { renderLandingPage } from './ui/landing';
 import { renderAuthPage } from './ui/auth-pages';
 import { renderAppDashboard } from './ui/app';
 import { MICHELANGELUS_BOLD_ITALIC_B64 } from './ui/font';
+import { HERO_BRAIN_WEBP_B64, HERO_LENS_WEBP_B64 } from './ui/hero-assets';
 import { processCrawlQueue } from './lib/crawler';
 
 // Re-export Durable Object (required by Cloudflare runtime)
@@ -124,6 +125,37 @@ app.get('/fonts/Michelangelus-BoldItalic.ttf', () => {
   return new Response(bytes.buffer, {
     headers: {
       'Content-Type': 'font/ttf',
+      'Cache-Control': 'public, max-age=31536000, immutable',
+      'Access-Control-Allow-Origin': '*',
+    },
+  });
+});
+
+// Serve 3D Hero Brand Assets directly from edge
+app.get('/images/hero-brain.webp', () => {
+  const binaryString = atob(HERO_BRAIN_WEBP_B64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return new Response(bytes.buffer, {
+    headers: {
+      'Content-Type': 'image/webp',
+      'Cache-Control': 'public, max-age=31536000, immutable',
+      'Access-Control-Allow-Origin': '*',
+    },
+  });
+});
+
+app.get('/images/hero-lens.webp', () => {
+  const binaryString = atob(HERO_LENS_WEBP_B64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return new Response(bytes.buffer, {
+    headers: {
+      'Content-Type': 'image/webp',
       'Cache-Control': 'public, max-age=31536000, immutable',
       'Access-Control-Allow-Origin': '*',
     },
