@@ -28,6 +28,40 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- Immediate Head Script: Fast-Path Skip & Instant Curtain Bypass -->
+  <script>
+    (function() {
+      try {
+        if (sessionStorage.getItem('ultrademon_jacket_unzipped') === 'true') {
+          document.write('<style id="fastSkipStyle">#jacketCurtain, #skipJacketBtn { display: none !important; }</style>');
+        }
+      } catch (e) {}
+
+      window.skipJacket = function(e) {
+        if (e && e.stopPropagation) e.stopPropagation();
+        if (e && e.preventDefault) e.preventDefault();
+        try {
+          sessionStorage.setItem('ultrademon_jacket_unzipped', 'true');
+        } catch (err) {}
+
+        var curtain = document.getElementById('jacketCurtain');
+        if (curtain) {
+          curtain.style.pointerEvents = 'none';
+          curtain.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+          curtain.style.opacity = '0';
+          setTimeout(function() {
+            if (curtain && curtain.parentNode) curtain.parentNode.removeChild(curtain);
+          }, 200);
+        }
+        var btn = document.getElementById('skipJacketBtn');
+        if (btn) btn.style.display = 'none';
+        document.body.style.userSelect = '';
+      };
+      window.finishUnzip = window.skipJacket;
+    })();
+  </script>
+
+
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -165,8 +199,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       height: 14px;
       background-color: #ffffff;
       border-radius: 50%;
-      pointer-events: none;
-      z-index: 99999;
+      pointer-events: none !important;
+      z-index: 99990;
       mix-blend-mode: difference;
       transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1), height 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.08s ease-out, opacity 0.2s ease;
       transform: translate(-50%, -50%);
@@ -263,11 +297,23 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 </head>
 <body class="min-h-screen bg-white text-neutral-950 antialiased selection:bg-black selection:text-white">
 
+  <!-- Top-Right Skip Intro Button (Fixed in Corner with Absolute Highest Z-Index) -->
+  <button 
+    id="skipJacketBtn" 
+    onclick="skipJacket(event); this.style.display='none'; var c=document.getElementById('jacketCurtain'); if(c){ c.style.pointerEvents='none'; c.style.opacity='0'; setTimeout(function(){ if(c.parentNode) c.parentNode.removeChild(c); }, 180); }" 
+    class="fixed top-5 right-5 z-[9999999] px-4 py-2 rounded-full bg-black hover:bg-neutral-900 text-white text-xs font-num font-semibold shadow-2xl border-2 border-white flex items-center gap-1.5 transition cursor-pointer backdrop-blur-md hover:scale-105 active:scale-95"
+    style="cursor: pointer;"
+    title="Skip intro animation and access website directly"
+  >
+    <span>Skip Intro</span>
+    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+  </button>
+
   <!-- Custom Inverted Cursor element (Cursor Hijack) -->
   <div id="customCursor" class="custom-cursor"></div>
 
   <!-- Interactive Light Blue Jacket Unzip Experience -->
-  <div id="jacketCurtain" class="fixed inset-0 z-[99998] flex overflow-hidden select-none transition-opacity duration-700 cursor-pointer">
+  <div id="jacketCurtain" onclick="if(!event.target.closest('#zipperHandle')){ skipJacket(event); }" class="fixed inset-0 z-[99998] flex overflow-hidden select-none transition-opacity duration-500 cursor-pointer">
     <!-- Top-Right Skip Intro Button (Always Visible & Instant Bypass) -->
     <button 
       id="skipJacketBtn" 
@@ -2950,7 +2996,9 @@ function skipJacket(e) {
     })();
 
     function rezipJacket() {
-      sessionStorage.removeItem('ultrademon_jacket_unzipped');
+      try {
+        sessionStorage.removeItem('ultrademon_jacket_unzipped');
+      } catch (err) {}
       window.location.reload();
     }
 
