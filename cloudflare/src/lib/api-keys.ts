@@ -162,7 +162,17 @@ export async function getUsage(
     env.DB.prepare('SELECT request_count, last_used_at FROM usage WHERE hashed_key = ? AND date = ?').bind(hashedKey, today).first<{ request_count: number; last_used_at: number }>(),
   ]);
 
-  if (!keyRow) throw new Error('Key not found');
+  if (!keyRow) {
+    return {
+      plan:           'free',
+      label:          'Edge Sandbox',
+      daily_limit:    100,
+      requests_today: usageRow?.request_count ?? 0,
+      remaining:      Math.max(0, 100 - (usageRow?.request_count ?? 0)),
+      last_used_at:   usageRow?.last_used_at ? new Date(usageRow.last_used_at).toISOString() : null,
+      reset_at:       `${today}T00:00:00Z (next day)`,
+    };
+  }
 
   const planDetails = await env.DB
     .prepare('SELECT daily_limit FROM plans WHERE plan_id = ?')

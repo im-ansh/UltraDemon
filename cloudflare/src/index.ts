@@ -14,6 +14,8 @@ import { mcpRouter }     from './routes/mcp';
 import { crawlerRouter } from './routes/crawler';
 import { openapiRouter } from './routes/openapi';
 import { authRouter }    from './routes/auth';
+import { authMiddleware } from './lib/auth';
+import { getUsage } from './lib/api-keys';
 import { renderLandingPage } from './ui/landing';
 import { renderAuthPage } from './ui/auth-pages';
 import { renderAppDashboard } from './ui/app';
@@ -141,7 +143,15 @@ app.route('/v1/auth',   authRouter);
 app.route('/v1/search', searchRouter);
 app.route('/v1/memory', memoryRouter);
 app.route('/v1/keys',   keysRouter);
-app.route('/v1/usage',  keysRouter);
+app.get('/v1/usage', authMiddleware, async (c) => {
+  const plainKey = c.get('plainKey');
+  try {
+    const stats = await getUsage(c.env, plainKey);
+    return c.json(stats);
+  } catch (e: unknown) {
+    return c.json({ error: (e as Error).message }, 404);
+  }
+});
 app.route('/v1',        crawlerRouter);
 app.route('/mcp',       mcpRouter);
 app.route('/',          openapiRouter); // /openapi.json and /v1/tools

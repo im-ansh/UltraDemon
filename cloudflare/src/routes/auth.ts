@@ -5,6 +5,7 @@
 
 import { Hono } from 'hono';
 import type { Env } from '../types';
+import { createApiKey, listUserKeys } from '../lib/api-keys';
 
 export const authRouter = new Hono<{ Bindings: Env }>();
 
@@ -59,9 +60,24 @@ authRouter.post('/signup', async (c) => {
     return c.json({ error: 'Failed to create user account: ' + (err as Error).message }, 500);
   }
 
+  // Automatically provision initial Unified API Key for user
+  let initialKey = '';
+  try {
+    const { plainKey } = await createApiKey(
+      c.env,
+      userId,
+      requestedPlan,
+      'Primary Workspace Key',
+      'unified'
+    );
+    initialKey = plainKey;
+  } catch (keyErr) {
+    console.warn('Initial key creation non-fatal:', keyErr);
+  }
+
   // Create edge session token valid for 30 days
   const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
-  const sessionPayload = { id: userId, email, plan: requestedPlan };
+  const sessionPayload = { id: userId, email, plan: requestedPlan, active_key: initialKey };
 
   await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), {
     expirationTtl: 86400 * 30, // 30 days
@@ -84,6 +100,7 @@ authRouter.post('/signup', async (c) => {
   return c.json({
     message: 'Account created successfully',
     user: sessionPayload,
+    initial_key: initialKey,
     session: {
       access_token: sessionToken,
       token_type: 'bearer',
@@ -112,7 +129,21 @@ authRouter.post('/signin', async (c) => {
     if (user.password_hash === expectedHash) {
       const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
       const plan = user.plan || 'free';
-      const sessionPayload = { id: user.user_id, email: user.email, plan };
+
+      // Ensure user has an active key in D1
+      let activeKey = '';
+      const keyRow = await c.env.DB.prepare(
+        'SELECT key_id, label, plan FROM api_keys WHERE user_id = ? AND revoked = 0 ORDER BY created_at DESC LIMIT 1'
+      ).bind(user.user_id).first<Record<string, unknown>>();
+
+      if (!keyRow) {
+        try {
+          const newKey = await createApiKey(c.env, user.user_id, plan, 'Primary Workspace Key', 'unified');
+          activeKey = newKey.plainKey;
+        } catch {}
+      }
+
+      const sessionPayload = { id: user.user_id, email: user.email, plan, active_key: activeKey };
 
       await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), {
         expirationTtl: 86400 * 30,
@@ -121,6 +152,7 @@ authRouter.post('/signin', async (c) => {
       return c.json({
         message: 'Signed in successfully',
         user: sessionPayload,
+        active_key: activeKey,
         session: {
           access_token: sessionToken,
           token_type: 'bearer',
@@ -185,7 +217,8 @@ authRouter.get('/me', async (c) => {
     if (cached) {
       const row = await c.env.DB.prepare('SELECT plan FROM users WHERE user_id = ?').bind(cached.id).first<{ plan: string }>();
       const plan = row?.plan || cached.plan || 'free';
-      return c.json({ user: { id: cached.id, email: cached.email, plan } });
+      const keys = await listUserKeys(c.env, cached.id);
+      return c.json({ user: { id: cached.id, email: cached.email, plan, keys } });
     }
     return c.json({ error: 'Session expired or invalid' }, 401);
   }

@@ -627,8 +627,29 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
     }
 
     function getActiveKey() {
-      if (localKeys.length > 0) return localKeys[0].plain_key || '';
+      const sess = localStorage.getItem('ultrademon_auth_session');
+      if (sess) {
+        try {
+          const parsed = JSON.parse(sess);
+          if (parsed && (parsed.active_key || parsed.initial_key)) return parsed.active_key || parsed.initial_key;
+        } catch {}
+      }
+      if (localKeys.length > 0 && localKeys[0].plain_key) return localKeys[0].plain_key;
       return '';
+    }
+
+    function getAppAuthHeaders() {
+      const headers = { 'Content-Type': 'application/json' };
+      const apiKey = getActiveKey();
+      if (apiKey) {
+        headers['X-API-Key'] = apiKey;
+      } else {
+        const token = getAuthToken();
+        if (token) {
+          headers['Authorization'] = 'Bearer ' + token;
+        }
+      }
+      return headers;
     }
 
     function copyToClipboard(text) {
@@ -745,16 +766,16 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
             ? '<span class=\"px-2 py-0.5 rounded bg-neutral-200 text-neutral-800 text-[10px] font-bold uppercase font-num\">Search API</span>'
             : '<span class=\"px-2 py-0.5 rounded bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase font-num\">Unified API</span>');
 
-        return '<tr class=\"hover:bg-neutral-50\">' +
-          '<td class=\"py-3 font-mono text-neutral-900\">' +
-            '<span class=\"truncate max-w-[150px] inline-block\">' + (k.plain_key || 'Key: ' + k.key_id) + '</span>' +
-            (k.plain_key ? ' <button onclick=\"copyToClipboard(\\'' + k.plain_key + '\\')\" class=\"text-neutral-400 hover:text-black cursor-pointer inline-flex items-center ml-1\"><svg class=\"w-3 h-3\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\" ry=\"2\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"/></svg></button>' : '') +
+        return '<tr class="hover:bg-neutral-50">' +
+          '<td class="py-3 font-mono text-neutral-900">' +
+            '<span class="truncate max-w-[150px] inline-block">' + (k.plain_key || 'Key: ' + k.key_id) + '</span>' +
+            (k.plain_key ? ' <button data-key="' + k.plain_key + '" onclick="copyToClipboard(this.dataset.key)" class="text-neutral-400 hover:text-black cursor-pointer inline-flex items-center ml-1" title="Copy Key"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>' : '') +
           '</td>' +
-          '<td class=\"py-3\">' + scopeBadge + '</td>' +
-          '<td class=\"py-3\"><span class=\"px-2 py-0.5 rounded bg-neutral-100 text-neutral-900 text-[10px] font-bold uppercase font-num\">' + k.plan + '</span></td>' +
-          '<td class=\"py-3 text-neutral-600 font-sans\">' + (k.label || 'Default') + '</td>' +
-          '<td class=\"py-3 text-neutral-400\">' + new Date(k.created_at || Date.now()).toLocaleDateString() + '</td>' +
-          '<td class=\"py-3 text-right\"><button onclick=\"revokeAppKey(\\'' + (k.plain_key || k.key_id) + '\\')\" class=\"text-neutral-400 hover:text-red-600 font-semibold cursor-pointer\">Revoke</button></td>' +
+          '<td class="py-3">' + scopeBadge + '</td>' +
+          '<td class="py-3"><span class="px-2 py-0.5 rounded bg-neutral-100 text-neutral-900 text-[10px] font-bold uppercase font-num">' + k.plan + '</span></td>' +
+          '<td class="py-3 text-neutral-600 font-sans">' + (k.label || 'Default') + '</td>' +
+          '<td class="py-3 text-neutral-400">' + new Date(k.created_at || Date.now()).toLocaleDateString() + '</td>' +
+          '<td class="py-3 text-right"><button data-key="' + (k.plain_key || k.key_id) + '" onclick="revokeAppKey(this.dataset.key)" class="text-neutral-400 hover:text-red-600 font-semibold cursor-pointer">Revoke</button></td>' +
         '</tr>';
       }).join('');
     }
@@ -771,31 +792,30 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
 
     async function handleAppStoreMemory(e) {
       e.preventDefault();
-      const apiKey = getActiveKey();
-      if (!apiKey) {
-        alert('Please generate an API key in the Keys tab first.');
-        return;
-      }
       const memoryType = document.getElementById('appMemType').value;
       const containerTag = document.getElementById('appMemContainer').value.trim() || 'default';
       const content = document.getElementById('appMemContent').value.trim();
       const alertBox = document.getElementById('alertStoreMemApp');
 
+      if (!content) return;
+
       try {
         const res = await fetch('/v1/memory', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
+          headers: getAppAuthHeaders(),
           body: JSON.stringify({ content, memory_type: memoryType, container_tag: containerTag })
         });
         const data = await res.json();
-        if (data.memory || data.status === 'success') {
-          const mem = data.memory || {};
+        if (data.memory || data.memory_id || data.status === 'success') {
+          const mem = data.memory || data;
           const timeMs = data.storage_time_ms ? (' · stored in ' + data.storage_time_ms + 'ms') : '';
           alertBox.className = 'p-3 rounded-xl bg-neutral-100 border border-neutral-300 text-neutral-950 font-num text-xs';
           alertBox.innerText = 'Stored memory ID: ' + (mem.memory_id || 'saved') + timeMs;
           alertBox.classList.remove('hidden');
           document.getElementById('appMemContent').value = '';
           loadStoredMemories();
+        } else {
+          throw new Error(data.error || 'Failed to store memory');
         }
       } catch (err) {
         alertBox.className = 'p-3 rounded-xl bg-neutral-100 border border-neutral-300 text-red-600 font-num text-xs';
@@ -806,132 +826,134 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
 
     async function handleAppQueryMemory(e) {
       e.preventDefault();
-      const apiKey = getActiveKey();
-      if (!apiKey) {
-        alert('Generate an API key first');
-        return;
-      }
       const query = document.getElementById('appMemQuery').value.trim();
       const resultsDiv = document.getElementById('appMemResults');
       const timer = document.getElementById('appRecallTimer');
 
-      const t0 = performance.now();
-      const res = await fetch('/v1/memory/recall?q=' + encodeURIComponent(query), {
-        headers: { 'X-API-Key': apiKey }
-      });
-      const data = await res.json();
-      const duration = Math.round(performance.now() - t0);
-      timer.innerText = (data.retrieval_time_ms || duration) + 'ms';
-      timer.classList.remove('hidden');
+      if (!query) return;
 
-      if (data.memories && data.memories.length > 0) {
-        let html = '';
-        if (data.context) {
-          html += '<div class=\"p-3 rounded-xl bg-neutral-900 text-neutral-100 font-mono text-[11px] mb-3\">' +
-            '<div class=\"text-neutral-400 text-[10px] uppercase font-bold mb-1\">LLM Prompt Context Injected:</div>' +
-            '<pre class=\"whitespace-pre-wrap font-mono\">' + data.context + '</pre>' +
-          '</div>';
+      const t0 = performance.now();
+      try {
+        const res = await fetch('/v1/memory/recall?q=' + encodeURIComponent(query), {
+          headers: getAppAuthHeaders()
+        });
+        const data = await res.json();
+        const duration = Math.round(performance.now() - t0);
+        timer.innerText = (data.retrieval_time_ms || duration) + 'ms';
+        timer.classList.remove('hidden');
+
+        if (data.memories && data.memories.length > 0) {
+          let html = '';
+          if (data.context) {
+            html += '<div class="p-3 rounded-xl bg-neutral-900 text-neutral-100 font-mono text-[11px] mb-3">' +
+              '<div class="text-neutral-400 text-[10px] uppercase font-bold mb-1">LLM Prompt Context Injected:</div>' +
+              '<pre class="whitespace-pre-wrap font-mono">' + data.context + '</pre>' +
+            '</div>';
+          }
+          html += data.memories.map(m =>
+            '<div class="p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-xs">' +
+              '<div class="flex items-center justify-between text-[10px] text-neutral-500 font-num mb-1">' +
+                '<span class="uppercase font-bold text-neutral-900">' + m.memory_type + '</span>' +
+                '<span>tag: ' + m.container_tag + ' · score: ' + (m.score || 1.0).toFixed(2) + '</span>' +
+              '</div>' +
+              '<p class="text-neutral-900 font-medium">' + m.content + '</p>' +
+            '</div>'
+          ).join('');
+          resultsDiv.innerHTML = html;
+        } else {
+          resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">No memories matching query.</div>';
         }
-        html += data.memories.map(m =>
-          '<div class=\"p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-xs\">' +
-            '<div class=\"flex items-center justify-between text-[10px] text-neutral-500 font-num mb-1\">' +
-              '<span class=\"uppercase font-bold text-neutral-900\">' + m.memory_type + '</span>' +
-              '<span>tag: ' + m.container_tag + ' · score: ' + (m.score || 1.0).toFixed(2) + '</span>' +
-            '</div>' +
-            '<p class=\"text-neutral-900 font-medium\">' + m.content + '</p>' +
-          '</div>'
-        ).join('');
-        resultsDiv.innerHTML = html;
-      } else {
-        resultsDiv.innerHTML = '<div class=\"text-center py-4 text-neutral-400 text-xs\">No memories matching query.</div>';
+      } catch (err) {
+        resultsDiv.innerHTML = '<div class="text-center py-4 text-red-600 text-xs font-num">Error: ' + err.message + '</div>';
       }
     }
 
     async function loadStoredMemories() {
-      const apiKey = getActiveKey();
-      if (!apiKey) return;
       try {
-        const res = await fetch('/v1/memory?limit=30', { headers: { 'X-API-Key': apiKey } });
+        const res = await fetch('/v1/memory?limit=30', { headers: getAppAuthHeaders() });
         const data = await res.json();
         const tbody = document.getElementById('appMemoriesTableBody');
         if (data.memories && data.memories.length > 0) {
           document.getElementById('metricMemories').innerText = data.total || data.memories.length;
           tbody.innerHTML = data.memories.map(m =>
-            '<tr class=\"hover:bg-neutral-50\">' +
-              '<td class=\"py-2.5 font-mono text-neutral-900\">' + m.memory_id + '</td>' +
-              '<td class=\"py-2.5 font-mono text-neutral-600\">' + m.container_tag + '</td>' +
-              '<td class=\"py-2.5\"><span class=\"px-1.5 py-0.5 rounded bg-neutral-100 text-[10px] uppercase font-bold\">' + m.memory_type + '</span></td>' +
-              '<td class=\"py-2.5 truncate max-w-xs text-neutral-900 font-sans\">' + (m.title || m.content) + '</td>' +
-              '<td class=\"py-2.5 text-right\"><button onclick=\"deleteAppMem(\\'' + m.memory_id + '\\')\" class=\"text-neutral-400 hover:text-black cursor-pointer\">Delete</button></td>' +
+            '<tr class="hover:bg-neutral-50">' +
+              '<td class="py-2.5 font-mono text-neutral-900">' + m.memory_id + '</td>' +
+              '<td class="py-2.5 font-mono text-neutral-600">' + m.container_tag + '</td>' +
+              '<td class="py-2.5"><span class="px-1.5 py-0.5 rounded bg-neutral-100 text-[10px] uppercase font-bold">' + m.memory_type + '</span></td>' +
+              '<td class="py-2.5 truncate max-w-xs text-neutral-900 font-sans">' + (m.title || m.content) + '</td>' +
+              '<td class="py-2.5 text-right"><button onclick="deleteAppMem(\'' + m.memory_id + '\')" class="text-neutral-400 hover:text-black cursor-pointer">Delete</button></td>' +
             '</tr>'
           ).join('');
         } else {
-          tbody.innerHTML = '<tr><td colspan=\"5\" class=\"py-4 text-center text-neutral-400\">No memories stored yet.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-neutral-400">No memories stored yet.</td></tr>';
         }
       } catch {}
     }
 
     async function deleteAppMem(id) {
-      const apiKey = getActiveKey();
-      await fetch('/v1/memory/' + id, { method: 'DELETE', headers: { 'X-API-Key': apiKey } });
-      loadStoredMemories();
+      try {
+        await fetch('/v1/memory/' + id, { method: 'DELETE', headers: getAppAuthHeaders() });
+        loadStoredMemories();
+      } catch {}
     }
 
     async function handleAppSearch(e) {
       e.preventDefault();
-      const apiKey = getActiveKey();
-      if (!apiKey) {
-        alert('Generate an API key in the Keys tab first');
-        return;
-      }
       const query = document.getElementById('appSearchQuery').value.trim();
-      const mode = parseInt(document.querySelector('input[name=\"appSearchMode\"]:checked').value, 10);
+      const mode = parseInt(document.querySelector('input[name="appSearchMode"]:checked')?.value || '1', 10);
       const resultsDiv = document.getElementById('appSearchResults');
 
-      resultsDiv.innerHTML = '<div class=\"text-center py-4 text-neutral-400 text-xs\">Searching edge index...</div>';
-      const res = await fetch('/v1/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
-        body: JSON.stringify({ query, mode, num_results: 5 })
-      });
-      const data = await res.json();
-      if (data.results && data.results.length > 0) {
-        resultsDiv.innerHTML = data.results.map(r =>
-          '<div class=\"p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 text-xs space-y-1\">' +
-            '<div class=\"flex items-center justify-between text-[10px] text-neutral-500 font-num\">' +
-              '<span class=\"truncate max-w-sm\">' + r.url + '</span>' +
-              '<span class=\"font-bold text-neutral-900\">BM25: ' + (r.score || 0.95).toFixed(2) + '</span>' +
-            '</div>' +
-            '<a href=\"' + r.url + '\" target=\"_blank\" class=\"font-bold text-neutral-950 hover:underline block\">' + r.title + '</a>' +
-            '<p class=\"text-neutral-600\">' + r.snippet + '</p>' +
-          '</div>'
-        ).join('');
-      } else {
-        resultsDiv.innerHTML = '<div class=\"text-center py-4 text-neutral-400 text-xs\">No results found.</div>';
+      if (!query) return;
+
+      resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">Searching edge index...</div>';
+      try {
+        const res = await fetch('/v1/search', {
+          method: 'POST',
+          headers: getAppAuthHeaders(),
+          body: JSON.stringify({ query, mode, num_results: 5 })
+        });
+        const data = await res.json();
+        if (data.results && data.results.length > 0) {
+          resultsDiv.innerHTML = data.results.map(r =>
+            '<div class="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 text-xs space-y-1">' +
+              '<div class="flex items-center justify-between text-[10px] text-neutral-500 font-num">' +
+                '<span class="truncate max-w-sm">' + r.url + '</span>' +
+                '<span class="font-bold text-neutral-900">BM25: ' + (r.score || 0.95).toFixed(2) + '</span>' +
+              '</div>' +
+              '<a href="' + r.url + '" target="_blank" class="font-bold text-neutral-950 hover:underline block">' + r.title + '</a>' +
+              '<p class="text-neutral-600">' + r.snippet + '</p>' +
+            '</div>'
+          ).join('');
+        } else {
+          resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">No results found for query.</div>';
+        }
+      } catch (err) {
+        resultsDiv.innerHTML = '<div class="text-center py-4 text-red-600 text-xs font-num">Search error: ' + err.message + '</div>';
       }
     }
 
     async function handleAppCrawl(e) {
       e.preventDefault();
-      const apiKey = getActiveKey();
-      if (!apiKey) {
-        alert('Generate an API key in the Keys tab first');
-        return;
-      }
       const url = document.getElementById('appCrawlUrl').value.trim();
       const depth = parseInt(document.getElementById('appCrawlDepth').value, 10);
       const box = document.getElementById('appCrawlResult');
 
+      if (!url) return;
+
       box.innerText = 'Crawling and parsing URL into D1 FTS5...';
       box.classList.remove('hidden');
 
-      const res = await fetch('/v1/crawl', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
-        body: JSON.stringify({ url, depth })
-      });
-      const data = await res.json();
-      box.innerText = JSON.stringify(data, null, 2);
+      try {
+        const res = await fetch('/v1/crawl', {
+          method: 'POST',
+          headers: getAppAuthHeaders(),
+          body: JSON.stringify({ url, depth })
+        });
+        const data = await res.json();
+        box.innerText = JSON.stringify(data, null, 2);
+      } catch (err) {
+        box.innerText = 'Crawl error: ' + err.message;
+      }
     }
 
     async function upgradeTier(plan) {
@@ -956,10 +978,8 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
     }
 
     async function refreshTelemetry() {
-      const apiKey = getActiveKey();
-      if (!apiKey) return;
       try {
-        const res = await fetch('/v1/usage', { headers: { 'X-API-Key': apiKey } });
+        const res = await fetch('/v1/usage', { headers: getAppAuthHeaders() });
         const data = await res.json();
         if (data.daily_limit !== undefined) {
           document.getElementById('metricUsed').innerText = data.requests_today || 0;

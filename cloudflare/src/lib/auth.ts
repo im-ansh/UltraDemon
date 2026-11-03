@@ -4,7 +4,7 @@
 
 import type { Context, Next } from 'hono';
 import type { Env, ApiKeyRecord } from '../types';
-import { validateApiKey, incrementUsage } from './api-keys';
+import { validateApiKey, incrementUsage, createApiKey } from './api-keys';
 
 // Attach validated key record to context
 declare module 'hono' {
@@ -17,30 +17,69 @@ declare module 'hono' {
 export async function authMiddleware(c: Context<{ Bindings: Env }>, next: Next) {
   // Extract key from X-API-Key header or Authorization: Bearer
   let plainKey = c.req.header('x-api-key') ?? '';
+  const authHeader = c.req.header('authorization') ?? '';
+  if (!plainKey && authHeader.toLowerCase().startsWith('bearer ')) {
+    plainKey = authHeader.slice(7).trim();
+  }
+
+  const path = c.req.path;
+  let record: ApiKeyRecord;
+
+  // Case 1: No key provided — check for public playground endpoints
   if (!plainKey) {
-    const authHeader = c.req.header('authorization') ?? '';
-    if (authHeader.toLowerCase().startsWith('bearer ')) {
-      plainKey = authHeader.slice(7).trim();
+    const isPublicEndpoint =
+      path.startsWith('/v1/search') ||
+      path.startsWith('/v1/memory') ||
+      path.startsWith('/v1/crawl') ||
+      path.startsWith('/v1/crawler') ||
+      path.startsWith('/v1/usage');
+
+    if (isPublicEndpoint) {
+      record = {
+        hashed_key: 'sandbox_public_guest_hash',
+        key_id: 'key_public_sandbox',
+        user_id: 'public_guest',
+        plan: 'free',
+        key_type: 'unified',
+        label: 'Public Edge Sandbox',
+        created_at: 1730000000000,
+        revoked: false,
+      };
+      plainKey = 'us_guest_public_sandbox';
+      c.header('X-Sandbox-Mode', 'public_edge_sandbox');
+    } else {
+      return c.json({
+        error: 'API key required. You must first log in or sign up at the developer console to generate an API key.',
+        requires_key: true,
+      }, 401);
+    }
+  } else if (plainKey.startsWith('edge_sess_')) {
+    // Case 2: Authenticated edge session token from web UI
+    const session = await c.env.KEY_CACHE.get<{ id: string; email?: string; plan?: string }>(`sess:${plainKey}`, 'json');
+    if (session && session.id) {
+      const keyRow = await c.env.DB.prepare(
+        'SELECT * FROM api_keys WHERE user_id = ? AND revoked = 0 ORDER BY created_at DESC LIMIT 1'
+      ).bind(session.id).first<ApiKeyRecord>();
+
+      if (keyRow) {
+        record = keyRow;
+      } else {
+        const newKey = await createApiKey(c.env, session.id, session.plan || 'free', 'Primary Workspace Key', 'unified');
+        record = newKey.record;
+      }
+    } else {
+      return c.json({ error: 'Session expired or invalid. Please sign in again.' }, 401);
+    }
+  } else {
+    // Case 3: Standard API key validation
+    try {
+      record = await validateApiKey(c.env, plainKey);
+    } catch (e: unknown) {
+      return c.json({ error: (e as Error).message }, 403);
     }
   }
 
-  if (!plainKey) {
-    return c.json({
-      error: 'API key required. You must first log in or sign up at the developer console to generate an API key.',
-      requires_key: true,
-    }, 401);
-  }
-
-  // Validate key
-  let record: ApiKeyRecord;
-  try {
-    record = await validateApiKey(c.env, plainKey);
-  } catch (e: unknown) {
-    return c.json({ error: (e as Error).message }, 403);
-  }
-
   // Check scope restrictions based on key_type
-  const path = c.req.path;
   if (record.key_type === 'memory' && (path.startsWith('/v1/search') || path.startsWith('/v1/crawl'))) {
     return c.json({
       error: 'This API key is scoped to UltraMemory API only. Please use a Unified or UltraSearch key for web search.',

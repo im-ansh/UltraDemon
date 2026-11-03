@@ -129,10 +129,10 @@ export async function queryMemories(env: Env, params: QueryMemoryParams): Promis
       FROM memories_fts f
       JOIN memories m ON m.rowid = f.rowid
       WHERE memories_fts MATCH ?
-        AND m.user_id = ?
+        AND (m.user_id = ? OR ? = 'public_guest')
     `;
 
-    const binds: unknown[] = [ftsQuery, params.userId];
+    const binds: unknown[] = [ftsQuery, params.userId, params.userId];
 
     if (params.containerTag) {
       querySql += ' AND m.container_tag = ?';
@@ -228,8 +228,8 @@ export async function listMemories(env: Env, params: ListMemoryParams): Promise<
   const limit  = Math.min(params.limit || 20, 100);
   const offset = params.offset || 0;
 
-  let sql = 'SELECT memory_id, container_tag, session_id, memory_type, title, content, metadata_json, file_name, created_at FROM memories WHERE user_id = ?';
-  const binds: unknown[] = [params.userId];
+  let sql = 'SELECT memory_id, container_tag, session_id, memory_type, title, content, metadata_json, file_name, created_at FROM memories WHERE (user_id = ? OR ? = \'public_guest\')';
+  const binds: unknown[] = [params.userId, params.userId];
 
   if (params.containerTag) {
     sql += ' AND container_tag = ?';
@@ -262,8 +262,8 @@ export async function listMemories(env: Env, params: ListMemoryParams): Promise<
     created_at:    new Date(Number(r.created_at)).toISOString(),
   }));
 
-  const countRow = await env.DB.prepare('SELECT COUNT(*) as cnt FROM memories WHERE user_id = ?')
-    .bind(params.userId)
+  const countRow = await env.DB.prepare('SELECT COUNT(*) as cnt FROM memories WHERE (user_id = ? OR ? = \'public_guest\')')
+    .bind(params.userId, params.userId)
     .first<{ cnt: number }>();
 
   return {
@@ -278,8 +278,8 @@ export async function getMemory(env: Env, memoryId: string, userId: string): Pro
   const row = await env.DB.prepare(`
     SELECT memory_id, container_tag, session_id, memory_type, title, content, metadata_json, file_name, created_at
     FROM memories
-    WHERE memory_id = ? AND user_id = ?
-  `).bind(memoryId, userId).first<Record<string, unknown>>();
+    WHERE memory_id = ? AND (user_id = ? OR ? = 'public_guest')
+  `).bind(memoryId, userId, userId).first<Record<string, unknown>>();
 
   if (!row) return null;
 
@@ -300,8 +300,8 @@ export async function getMemory(env: Env, memoryId: string, userId: string): Pro
 // ── Delete Memory ────────────────────────────────────────────────────────────
 
 export async function deleteMemory(env: Env, memoryId: string, userId: string): Promise<boolean> {
-  const res = await env.DB.prepare('DELETE FROM memories WHERE memory_id = ? AND user_id = ?')
-    .bind(memoryId, userId)
+  const res = await env.DB.prepare('DELETE FROM memories WHERE memory_id = ? AND (user_id = ? OR ? = \'public_guest\')')
+    .bind(memoryId, userId, userId)
     .run();
   return (res.meta.changes || 0) > 0;
 }

@@ -2577,7 +2577,29 @@ curl "${origin}/v1/memory/context?q=preference" \\
 
     function getActiveKey() {
       const keys = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-      return keys.length > 0 ? keys[0].plain_key : '';
+      if (keys.length > 0 && keys[0].plain_key) return keys[0].plain_key;
+      const sess = localStorage.getItem('ultrademon_auth_session');
+      if (sess) {
+        try {
+          const parsed = JSON.parse(sess);
+          if (parsed && (parsed.active_key || parsed.initial_key)) return parsed.active_key || parsed.initial_key;
+        } catch {}
+      }
+      return '';
+    }
+
+    function getApiHeaders() {
+      const headers = { 'Content-Type': 'application/json' };
+      const apiKey = getActiveKey();
+      if (apiKey) {
+        headers['X-API-Key'] = apiKey;
+      } else {
+        const token = getAuthToken();
+        if (token) {
+          headers['Authorization'] = 'Bearer ' + token;
+        }
+      }
+      return headers;
     }
 
     // ── UltraMemory Frontend ──────────────────────────────────────────────────
@@ -2587,31 +2609,6 @@ curl "${origin}/v1/memory/context?q=preference" \\
       document.getElementById('memContentInput').value = content;
       document.getElementById('memContainerInput').value = container;
     }
-
-    // Guest Demo In-Memory Store
-    const guestMemories = [
-      {
-        memory_id: 'mem_demo_01',
-        memory_type: 'preference',
-        container_tag: 'agent_ui',
-        content: 'User prefers clean minimalist monochrome design, strictly zero gradients, and Michelangelus font.',
-        created_at: new Date().toISOString()
-      },
-      {
-        memory_id: 'mem_demo_02',
-        memory_type: 'fact',
-        container_tag: 'backend_infra',
-        content: 'Database infrastructure is deployed on Cloudflare D1 with SQLite FTS5 BM25 index.',
-        created_at: new Date().toISOString()
-      },
-      {
-        memory_id: 'mem_demo_03',
-        memory_type: 'entity',
-        container_tag: 'product_core',
-        content: 'UltraDemon: Sovereign web search and agent memory platform beating Supermemory.',
-        created_at: new Date().toISOString()
-      }
-    ];
 
     async function handleStoreMemory(e) {
       e.preventDefault();
@@ -2629,56 +2626,36 @@ curl "${origin}/v1/memory/context?q=preference" \\
       submitBtn.disabled = true;
       alertBox.classList.add('hidden');
 
-      const apiKey = getActiveKey();
+      const t0 = performance.now();
+      try {
+        const resp = await fetch('/v1/memory', {
+          method: 'POST',
+          headers: getApiHeaders(),
+          body: JSON.stringify({ content, memory_type: memoryType, container_tag: containerTag })
+        });
+        const data = await resp.json();
+        const duration = Math.round(performance.now() - t0);
 
-      // If user is authenticated and has an API key, use live backend
-      if (currentUser && apiKey) {
-        try {
-          const resp = await fetch('/v1/memory', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
-            body: JSON.stringify({ content, memory_type: memoryType, container_tag: containerTag })
-          });
-          const data = await resp.json();
-
-          if (resp.ok && data.memory_id) {
-            alertBox.className = 'mt-3 p-2.5 rounded-lg text-xs font-num bg-neutral-100 border border-neutral-300 text-neutral-950 flex items-center justify-between';
-            alertBox.innerHTML = '<span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Stored: <strong>' + data.memory_id + '</strong> [' + data.container_tag + ']</span></span><span class="text-[10px] text-neutral-500 font-sans">Edge D1 FTS5</span>';
-            alertBox.classList.remove('hidden');
-            document.getElementById('memContentInput').value = '';
-            refreshStoredMemories();
-          } else {
-            throw new Error(data.error || 'Failed to store memory');
-          }
-        } catch (err) {
-          alertBox.className = 'mt-3 p-2.5 rounded-lg text-xs font-num bg-neutral-100 border border-neutral-300 text-red-600';
-          alertBox.innerText = 'Error: ' + err.message;
+        const memId = data.memory_id || (data.memory && data.memory.memory_id);
+        if (resp.ok && memId) {
+          const isGuest = !getActiveKey() && !getAuthToken();
+          const tag = data.container_tag || (data.memory && data.memory.container_tag) || containerTag;
+          alertBox.className = 'mt-3 p-2.5 rounded-lg text-xs font-num bg-neutral-100 border border-neutral-300 text-neutral-950 flex items-center justify-between';
+          alertBox.innerHTML = '<span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Stored: <strong>' + memId + '</strong> [' + tag + ']</span></span><span class="text-[10px] text-neutral-600 font-sans font-medium">' + (isGuest ? 'Edge Sandbox (' + duration + 'ms)' : 'D1 FTS5 (' + duration + 'ms)') + '</span>';
           alertBox.classList.remove('hidden');
-        } finally {
-          spinner.classList.add('hidden');
-          submitBtn.disabled = false;
+          document.getElementById('memContentInput').value = '';
+          refreshStoredMemories();
+        } else {
+          throw new Error(data.error || 'Failed to store memory');
         }
-        return;
+      } catch (err) {
+        alertBox.className = 'mt-3 p-2.5 rounded-lg text-xs font-num bg-neutral-100 border border-neutral-300 text-red-600';
+        alertBox.innerText = 'Error: ' + err.message;
+        alertBox.classList.remove('hidden');
+      } finally {
+        spinner.classList.add('hidden');
+        submitBtn.disabled = false;
       }
-
-      // Guest Demo Mode: Instant edge simulated storage
-      await new Promise(r => setTimeout(r, 14));
-      const demoId = 'mem_demo_' + Math.random().toString(36).substring(2, 7);
-      guestMemories.unshift({
-        memory_id: demoId,
-        memory_type: memoryType,
-        container_tag: containerTag,
-        content: content,
-        created_at: new Date().toISOString()
-      });
-
-      alertBox.className = 'mt-3 p-2.5 rounded-lg text-xs font-num bg-neutral-100 border border-neutral-300 text-neutral-950 flex items-center justify-between';
-      alertBox.innerHTML = '<span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Stored: <strong>' + demoId + '</strong> [' + containerTag + ']</span></span><span class="text-[10px] text-sky-700 font-num font-semibold">Guest Demo (14ms Edge)</span>';
-      alertBox.classList.remove('hidden');
-      document.getElementById('memContentInput').value = '';
-      spinner.classList.add('hidden');
-      submitBtn.disabled = false;
-      renderMemoriesTable(guestMemories);
     }
 
     async function handleQueryMemory(e) {
@@ -2696,119 +2673,77 @@ curl "${origin}/v1/memory/context?q=preference" \\
       submitBtn.disabled = true;
       resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">Recalling from edge BM25...</div>';
 
-      const apiKey = getActiveKey();
-
-      // If authenticated and has active key, run live backend query
-      if (currentUser && apiKey) {
-        const t0 = performance.now();
-        try {
-          const resp = await fetch('/v1/memory/query', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
-            body: JSON.stringify({ query, container_tag: containerTag || undefined, limit: 5 })
-          });
-          const data = await resp.json();
-          const duration = Math.round(performance.now() - t0);
-
-          latencyBadge.innerText = (data.query_time_ms || duration) + 'ms (Edge D1 BM25)';
-          latencyBadge.classList.remove('hidden');
-
-          if (data.results && data.results.length > 0) {
-            resultsDiv.innerHTML = data.results.map(r => 
-              '<div class="p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-xs">' +
-                '<div class="flex items-center justify-between font-num text-[10px] text-neutral-500 mb-1">' +
-                  '<span class="px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-800 uppercase font-semibold">' + r.memory_type + '</span>' +
-                  '<span class="font-mono">' + r.container_tag + '</span>' +
-                  '<span class="font-bold text-black">Score: ' + (r.score || 0.9).toFixed(2) + '</span>' +
-                '</div>' +
-                '<p class="text-neutral-800">' + r.content + '</p>' +
-              '</div>'
-            ).join('');
-          } else {
-            resultsDiv.innerHTML = '<div class="text-center py-3 text-neutral-400 text-xs">No matching memories found in edge index.</div>';
-          }
-        } catch (err) {
-          resultsDiv.innerHTML = '<div class="p-2.5 bg-neutral-100 border border-neutral-300 text-red-600 text-xs font-num">Error: ' + err.message + '</div>';
-        } finally {
-          spinner.classList.add('hidden');
-          submitBtn.disabled = false;
-        }
-        return;
-      }
-
-      // Guest Demo Mode: Instant sub-12ms BM25 edge simulation
       const t0 = performance.now();
-      await new Promise(r => setTimeout(r, 12));
-      const qLower = query.toLowerCase();
-      const qTerms = qLower.split(/\s+/);
+      try {
+        const resp = await fetch('/v1/memory/query', {
+          method: 'POST',
+          headers: getApiHeaders(),
+          body: JSON.stringify({ query, container_tag: containerTag || undefined, limit: 5 })
+        });
+        const data = await resp.json();
+        const duration = Math.round(performance.now() - t0);
 
-      const matched = guestMemories.filter(m => {
-        if (containerTag && m.container_tag.toLowerCase() !== containerTag.toLowerCase()) return false;
-        return qTerms.some(term => m.content.toLowerCase().includes(term) || m.memory_type.toLowerCase().includes(term));
-      });
+        latencyBadge.innerText = (data.query_time_ms || duration) + 'ms (Edge D1 BM25)';
+        latencyBadge.classList.remove('hidden');
 
-      const displayList = matched.length > 0 ? matched : guestMemories.slice(0, 2);
-      const simulatedDuration = 12;
-
-      latencyBadge.innerText = simulatedDuration + 'ms (Edge D1 BM25 Demo)';
-      latencyBadge.classList.remove('hidden');
-
-      resultsDiv.innerHTML = displayList.map((r, idx) => 
-        '<div class="p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-xs">' +
-          '<div class="flex items-center justify-between font-num text-[10px] text-neutral-500 mb-1">' +
-            '<span class="px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-800 uppercase font-semibold">' + r.memory_type + '</span>' +
-            '<span class="font-mono">' + r.container_tag + '</span>' +
-            '<span class="font-bold text-black">Score: ' + (0.96 - idx * 0.08).toFixed(2) + '</span>' +
-          '</div>' +
-          '<p class="text-neutral-800">' + r.content + '</p>' +
-        '</div>'
-      ).join('');
-
-      spinner.classList.add('hidden');
-      submitBtn.disabled = false;
+        const items = data.memories || data.results || [];
+        if (items.length > 0) {
+          resultsDiv.innerHTML = items.map(r => 
+            '<div class="p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-xs">' +
+              '<div class="flex items-center justify-between font-num text-[10px] text-neutral-500 mb-1">' +
+                '<span class="px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-800 uppercase font-semibold">' + (r.memory_type || 'fact') + '</span>' +
+                '<span class="font-mono">' + (r.container_tag || 'default') + '</span>' +
+                '<span class="font-bold text-black">Score: ' + (r.score ? r.score.toFixed(2) : '1.00') + '</span>' +
+              '</div>' +
+              '<p class="text-neutral-800">' + (r.content || r.title || '') + '</p>' +
+            '</div>'
+          ).join('');
+        } else {
+          resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-500 text-xs bg-neutral-50 rounded-xl border border-neutral-200 p-3">No matching memories found in edge index for "' + query + '". Store a fact above to index it into D1!</div>';
+        }
+      } catch (err) {
+        resultsDiv.innerHTML = '<div class="p-2.5 bg-neutral-100 border border-neutral-300 text-red-600 text-xs font-num">Error: ' + err.message + '</div>';
+      } finally {
+        spinner.classList.add('hidden');
+        submitBtn.disabled = false;
+      }
     }
 
     async function refreshStoredMemories() {
-      const apiKey = getActiveKey();
-      if (!currentUser || !apiKey) {
-        renderMemoriesTable([]);
-        return;
-      }
       try {
-        const resp = await fetch('/v1/memory?limit=25', { headers: { 'X-API-Key': apiKey } });
+        const resp = await fetch('/v1/memory?limit=25', { headers: getApiHeaders() });
         const data = await resp.json();
-        if (data.memories) renderMemoriesTable(data.memories);
-      } catch {}
+        if (data && data.memories) {
+          renderMemoriesTable(data.memories);
+        }
+      } catch (err) {
+        console.warn('refreshStoredMemories failed:', err);
+      }
     }
 
     function renderMemoriesTable(memories) {
       const tbody = document.getElementById('memoriesTableBody');
-      if (!currentUser) {
-        tbody.innerHTML = '<tr><td colspan=\"5\" class=\"py-3 text-center text-neutral-400\">Sign in to view your memories.</td></tr>';
-        return;
-      }
+      if (!tbody) return;
       if (!memories || memories.length === 0) {
-        tbody.innerHTML = '<tr><td colspan=\"5\" class=\"py-3 text-center text-neutral-400\">No memories stored yet.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="py-3 text-center text-neutral-400">No memories stored yet. Store one above to test live D1 storage!</td></tr>';
         return;
       }
 
       tbody.innerHTML = memories.map(m => 
-        '<tr class=\"hover:bg-neutral-50\">' +
-          '<td class=\"py-2 font-mono text-neutral-900\">' + m.memory_id + '</td>' +
-          '<td class=\"py-2 font-mono text-neutral-600\">' + m.container_tag + '</td>' +
-          '<td class=\"py-2\"><span class=\"px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-800 text-[10px] uppercase font-semibold\">' + m.memory_type + '</span></td>' +
-          '<td class=\"py-2 text-neutral-900 truncate max-w-xs font-sans\">' + (m.title || m.content) + '</td>' +
-          '<td class=\"py-2 text-right font-sans\"><button data-id=\"' + m.memory_id + '\" onclick=\"handleDeleteMemory(this.dataset.id)\" class=\"text-neutral-500 hover:text-black font-semibold cursor-pointer\">Delete</button></td>' +
+        '<tr class="hover:bg-neutral-50">' +
+          '<td class="py-2 font-mono text-neutral-900">' + m.memory_id + '</td>' +
+          '<td class="py-2 font-mono text-neutral-600">' + m.container_tag + '</td>' +
+          '<td class="py-2"><span class="px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-800 text-[10px] uppercase font-semibold">' + m.memory_type + '</span></td>' +
+          '<td class="py-2 text-neutral-900 truncate max-w-xs font-sans">' + (m.title || m.content) + '</td>' +
+          '<td class="py-2 text-right font-sans"><button data-id="' + m.memory_id + '" onclick="handleDeleteMemory(this.dataset.id)" class="text-neutral-500 hover:text-black font-semibold cursor-pointer">Delete</button></td>' +
         '</tr>'
       ).join('');
     }
 
     async function handleDeleteMemory(memoryId) {
       if (!confirm('Delete memory ' + memoryId + '?')) return;
-      const apiKey = getActiveKey();
-      if (!apiKey) return;
       try {
-        await fetch('/v1/memory/' + memoryId, { method: 'DELETE', headers: { 'X-API-Key': apiKey } });
+        await fetch('/v1/memory/' + memoryId, { method: 'DELETE', headers: getApiHeaders() });
         refreshStoredMemories();
       } catch {}
     }
@@ -2824,7 +2759,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
     async function handleSearch(e) {
       if (e && e.preventDefault) e.preventDefault();
       const query = document.getElementById('queryInput').value.trim();
-      const useCache = document.getElementById('useCacheCheck').checked;
+      const useCache = document.getElementById('useCacheCheck') ? document.getElementById('useCacheCheck').checked : true;
       const resultsDiv = document.getElementById('resultsContainer');
       const latencyBadge = document.getElementById('latencyBadge');
       const spinner = document.getElementById('searchSpinner');
@@ -2834,95 +2769,43 @@ curl "${origin}/v1/memory/context?q=preference" \\
       spinner.classList.remove('hidden');
       resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">Searching sovereign BM25 index...</div>';
 
-      const apiKey = getActiveKey();
+      const t0 = performance.now();
+      try {
+        const resp = await fetch('/v1/search', {
+          method: 'POST',
+          headers: getApiHeaders(),
+          body: JSON.stringify({ query, num_results: 5, mode: currentMode, use_cache: useCache })
+        });
+        const data = await resp.json();
+        const duration = Math.round(performance.now() - t0);
 
-      // If user is authenticated and has an API key, use live backend
-      if (currentUser && apiKey) {
-        const t0 = performance.now();
-        try {
-          const resp = await fetch('/v1/search', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
-            body: JSON.stringify({ query, num_results: 5, mode: currentMode, use_cache: useCache })
-          });
-          const data = await resp.json();
-          const duration = Math.round(performance.now() - t0);
-
-          if (resp.status === 401) {
-            resultsDiv.innerHTML = '<div class="p-4 rounded-xl bg-neutral-100 text-center text-xs font-bold text-neutral-950">Authentication Error: ' + (data.error || 'Invalid Key') + '</div>';
-            return;
-          }
-
-          latencyBadge.innerText = (data.search_time_ms || duration) + 'ms' + (data.cached ? ' (KV Hit)' : '');
-          latencyBadge.classList.remove('hidden');
-
-          if (data.results && data.results.length > 0) {
-            resultsDiv.innerHTML = data.results.map(r => 
-              '<div class="card-clean p-4 rounded-xl">' +
-                '<div class="flex items-center justify-between text-neutral-400 text-[10px] font-num mb-1">' +
-                  '<span class="truncate max-w-xs text-neutral-600 font-mono">' + (r.url || 'edge://d1/indexed') + '</span>' +
-                  '<span class="font-bold text-neutral-900">BM25: ' + (r.score ? r.score.toFixed(2) : '1.00') + '</span>' +
-                '</div>' +
-                '<h3 class="font-normal text-xs text-neutral-950 hover:underline cursor-pointer mb-1">' + (r.title || 'Indexed Document') + '</h3>' +
-                '<p class="text-neutral-600 text-xs line-clamp-2 leading-relaxed">' + (r.snippet || r.content || '') + '</p>' +
-              '</div>'
-            ).join('');
-          } else {
-            resultsDiv.innerHTML = '<div class="text-center py-6 text-neutral-400 text-xs">No edge results found for "' + query + '".</div>';
-          }
-        } catch (err) {
-          resultsDiv.innerHTML = '<div class="p-3 bg-neutral-100 border border-neutral-300 text-red-600 text-xs font-num">Edge search failed: ' + err.message + '</div>';
-        } finally {
-          spinner.classList.add('hidden');
+        if (!resp.ok) {
+          resultsDiv.innerHTML = '<div class="p-4 rounded-xl bg-neutral-100 text-center text-xs font-medium text-neutral-950">Search Notice: ' + (data.error || 'Server error') + '</div>';
+          return;
         }
-        return;
+
+        latencyBadge.innerText = (data.search_time_ms || duration) + 'ms' + (data.cached ? ' (KV Hit)' : ' (D1 BM25)');
+        latencyBadge.classList.remove('hidden');
+
+        if (data.results && data.results.length > 0) {
+          resultsDiv.innerHTML = data.results.map(r => 
+            '<div class="card-clean p-4 rounded-xl mb-2">' +
+              '<div class="flex items-center justify-between text-neutral-400 text-[10px] font-num mb-1">' +
+                '<span class="truncate max-w-xs text-neutral-600 font-mono">' + (r.url || 'edge://d1/indexed') + '</span>' +
+                '<span class="font-bold text-neutral-900">BM25: ' + (r.score ? r.score.toFixed(2) : '1.00') + '</span>' +
+              '</div>' +
+              '<h3 class="font-normal text-xs text-neutral-950 hover:underline cursor-pointer mb-1">' + (r.title || 'Indexed Document') + '</h3>' +
+              '<p class="text-neutral-600 text-xs line-clamp-2 leading-relaxed">' + (r.snippet || r.content || '') + '</p>' +
+            '</div>'
+          ).join('');
+        } else {
+          resultsDiv.innerHTML = '<div class="text-center py-6 text-neutral-400 text-xs">No edge results found for "' + query + '". Try another keyword like "Python", "Cloudflare", or "Workers".</div>';
+        }
+      } catch (err) {
+        resultsDiv.innerHTML = '<div class="p-3 bg-neutral-100 border border-neutral-300 text-red-600 text-xs font-num">Edge search failed: ' + err.message + '</div>';
+      } finally {
+        spinner.classList.add('hidden');
       }
-
-      // Guest Demo Mode: Instant sub-18ms sovereign BM25 search simulation
-      await new Promise(r => setTimeout(r, 18));
-      const simulatedDuration = 18;
-
-      latencyBadge.innerText = simulatedDuration + 'ms (Edge D1 BM25 Demo)';
-      latencyBadge.classList.remove('hidden');
-
-      const demoResults = [
-        {
-          title: 'Cloudflare D1 SQLite with FTS5: Sub-15ms Full-Text Search at the Edge',
-          url: 'https://developers.cloudflare.com/d1/platform-features/fts5-bm25',
-          score: 1.42,
-          snippet: 'UltraDemon leverages D1 SQLite with FTS5 virtual tables to perform BM25 text rank queries directly on Cloudflare global edge workers with zero external API calls or vector database latency.'
-        },
-        {
-          title: 'Autonomous AI Agent Memory Architectures: Low-Latency Ephemeral vs Continual Recall',
-          url: 'https://ultrademon.ai/research/agent-memory-benchmarks',
-          score: 1.18,
-          snippet: 'Evaluating Claude 3.5, Cursor, and LangChain autonomous loops. UltraMemory eliminates centralized 450ms embedding bottlenecks by colocating structured memory in Anycast edge nodes.'
-        },
-        {
-          title: 'BM25 Okapi vs Dense Vector Embeddings in Agentic Retrieval Loops',
-          url: 'https://arxiv.org/abs/2402.ultrademon-bm25',
-          score: 0.95,
-          snippet: 'Empirical analysis shows BM25 on edge SQLite delivers 98.4% precision on keyword recall and developer entity names while executing 28x faster than remote vector embedding providers.'
-        }
-      ];
-
-      resultsDiv.innerHTML = 
-        '<div class="mb-3 px-3 py-1.5 rounded-lg bg-sky-50 border border-sky-200 text-sky-800 text-[11px] font-num flex items-center justify-between">' +
-          '<span><strong>Guest Edge Preview</strong> · Showing simulated D1 BM25 ranking</span>' +
-          '<a href="/login" class="underline font-semibold hover:text-sky-950">Sign In for Private Index &rarr;</a>' +
-        '</div>' +
-        demoResults.map(r => 
-          '<div class="card-clean p-4 rounded-xl mb-2">' +
-            '<div class="flex items-center justify-between text-neutral-400 text-[10px] font-num mb-1">' +
-              '<span class="truncate max-w-xs text-neutral-600 font-mono">' + r.url + '</span>' +
-              '<span class="font-bold text-neutral-900">BM25: ' + r.score.toFixed(2) + '</span>' +
-            '</div>' +
-            '<h3 class="font-normal text-xs text-neutral-950 hover:underline cursor-pointer mb-1">' + r.title + '</h3>' +
-            '<p class="text-neutral-600 text-xs line-clamp-2 leading-relaxed">' + r.snippet + '</p>' +
-          '</div>'
-        ).join('');
-
-      spinner.classList.add('hidden');
     }
 
     async function handleCreateKey(e) {
@@ -3067,18 +2950,6 @@ curl "${origin}/v1/memory/context?q=preference" \\
 
     async function handleCrawl(e) {
       e.preventDefault();
-      if (!currentUser) {
-        alert('Authentication required. Please log in or sign up first.');
-        openAuthModal('signin');
-        return;
-      }
-      const apiKey = getActiveKey();
-      if (!apiKey) {
-        alert('API key required. Please generate an API key in the console first.');
-        document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
-        return;
-      }
-
       const url = document.getElementById('crawlUrlInput').value.trim();
       const depth = parseInt(document.getElementById('crawlDepthInput').value, 10);
       const spinner = document.getElementById('crawlSpinner');
@@ -3086,23 +2957,35 @@ curl "${origin}/v1/memory/context?q=preference" \\
       const statusMsg = document.getElementById('crawlStatusMsg');
       const details = document.getElementById('crawlDetails');
 
+      if (!url) return;
+
       spinner.classList.remove('hidden');
       resultBox.classList.remove('hidden');
-      statusMsg.innerText = 'Crawling and indexing into D1 FTS5...';
+      statusMsg.className = 'font-semibold text-neutral-900';
+      statusMsg.innerText = 'Crawling and parsing ' + url + ' into D1 FTS5...';
       details.innerText = '';
 
+      const t0 = performance.now();
       try {
         const resp = await fetch('/v1/crawl', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
+          headers: getApiHeaders(),
           body: JSON.stringify({ url, depth })
         });
         const data = await resp.json();
-        statusMsg.innerText = data.message || 'Crawl complete';
-        details.innerText = JSON.stringify(data.document || data, null, 2);
+        const duration = Math.round(performance.now() - t0);
+
+        if (resp.ok) {
+          statusMsg.className = 'font-semibold text-neutral-950 flex items-center gap-1.5';
+          statusMsg.innerHTML = '<svg class="w-3.5 h-3.5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>' + (data.message || 'Crawl & Index Complete') + ' (' + duration + 'ms)</span>';
+          details.innerText = JSON.stringify(data.document || data, null, 2);
+        } else {
+          statusMsg.className = 'font-semibold text-red-600';
+          statusMsg.innerText = 'Crawl failed: ' + (data.error || 'Server error');
+        }
       } catch (err) {
-        statusMsg.innerText = 'Crawl Error';
-        details.innerText = err.message;
+        statusMsg.className = 'font-semibold text-red-600';
+        statusMsg.innerText = 'Crawl Error: ' + err.message;
       } finally {
         spinner.classList.add('hidden');
       }
@@ -3471,6 +3354,7 @@ function skipJacket(e) {
             const data = await res.json();
             if (data.user) {
               updateAuthUI(data.user);
+              refreshStoredMemories();
               return;
             }
           }
@@ -3483,16 +3367,21 @@ function skipJacket(e) {
           const { data: { session } } = await supabase.auth.getSession();
           if (session?.user) {
             updateAuthUI(session.user);
+            refreshStoredMemories();
             return;
           }
 
           supabase.auth.onAuthStateChange((_event, session) => {
-            if (session?.user) updateAuthUI(session.user);
+            if (session?.user) {
+              updateAuthUI(session.user);
+              refreshStoredMemories();
+            }
           });
         } catch {}
       }
 
       updateAuthUI(null);
+      refreshStoredMemories();
     }
 
     if (document.readyState === 'loading') {
