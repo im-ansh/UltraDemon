@@ -640,18 +640,18 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left [perspective:1200px]">
             <!-- Node 1: AI Agent Fleet -->
-            <div class="card-3d-tilt group relative p-5 rounded-2xl bg-white/95 hover:bg-white text-neutral-950 shadow-lg hover:shadow-2xl border border-white/80 ring-2 ring-white/50 flex flex-col justify-between overflow-hidden cursor-pointer select-none">
+            <div class="card-3d-tilt group relative p-5 rounded-2xl bg-white/95 hover:bg-white text-neutral-950 shadow-md hover:shadow-xl border border-white/80 ring-2 ring-white/50 flex flex-col justify-between overflow-hidden cursor-pointer select-none transition-all duration-200">
               <div class="tilt-glare"></div>
               <div class="tilt-content flex flex-col justify-between h-full">
                 <div>
-                  <div class="flex items-center justify-between mb-3">
-                    <span class="text-[10px] font-num font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-900 border border-neutral-200">STEP 01</span>
-                    <span class="flex items-center gap-1 text-[10px] font-num text-neutral-600 font-medium">
+                  <div class="flex items-center justify-between gap-1.5 mb-3.5">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-900 border border-neutral-200 text-[10px] font-num font-bold tracking-wider uppercase whitespace-nowrap flex-shrink-0">01 · AGENT</span>
+                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 border border-neutral-200/80 text-[10px] font-num font-medium whitespace-nowrap flex-shrink-0">
                       <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                      <span>Client Layer</span>
+                      <span>Client</span>
                     </span>
                   </div>
-                  <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-900 mb-3 group-hover:scale-105 transition-transform shadow-xs">
+                  <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-900 mb-3 group-hover:scale-105 transition-transform shadow-2xs">
                     <svg class="w-5 h-5 text-neutral-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2M15 20v2M2 15h2M2 9h2M20 15h2M20 9h2M9 2v2M9 20v2"/></svg>
                   </div>
                   <h3 class="text-sm font-semibold text-neutral-950 mb-1">AI Agent Fleet</h3>
@@ -667,15 +667,15 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             </div>
 
             <!-- Node 2: Sovereign Gateway -->
-            <div class="card-3d-tilt group relative p-5 rounded-2xl bg-white/95 hover:bg-white text-neutral-950 shadow-lg hover:shadow-2xl border border-white/80 ring-2 ring-white/50 flex flex-col justify-between overflow-hidden cursor-pointer select-none">
+            <div class="card-3d-tilt group relative p-5 rounded-2xl bg-white/95 hover:bg-white text-neutral-950 shadow-md hover:shadow-xl border border-white/80 ring-2 ring-white/50 flex flex-col justify-between overflow-hidden cursor-pointer select-none transition-all duration-200">
               <div class="tilt-glare"></div>
               <div class="tilt-content flex flex-col justify-between h-full">
                 <div>
-                  <div class="flex items-center justify-between mb-3">
-                    <span class="text-[10px] font-num font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-900 border border-neutral-200">STEP 02</span>
-                    <span class="text-[10px] font-num text-neutral-600 font-medium">Edge Ingress</span>
+                  <div class="flex items-center justify-between gap-1.5 mb-3.5">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-900 border border-neutral-200 text-[10px] font-num font-bold tracking-wider uppercase whitespace-nowrap flex-shrink-0">02 · GATEWAY</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 border border-neutral-200/80 text-[10px] font-num font-medium whitespace-nowrap flex-shrink-0">Ingress</span>
                   </div>
-                  <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-900 mb-3 group-hover:scale-105 transition-transform shadow-xs">
+                  <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-900 mb-3 group-hover:scale-105 transition-transform shadow-2xs">
                     <svg class="w-5 h-5 text-neutral-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                   </div>
                   <h3 class="text-sm font-semibold text-neutral-950 mb-1">Sovereign Gateway</h3>
@@ -684,25 +684,29 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                   </p>
                 </div>
                 <div class="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between text-[11px] font-num">
-                  <span class="text-neutral-500">Ingress</span>
+                  <span class="text-neutral-500">Latency</span>
                   <span class="font-bold text-neutral-950 font-num">&lt;2ms Handshake</span>
                 </div>
               </div>
             </div>
 
             <!-- Node 3: D1 SQLite FTS5 (Hero Highlight Card) -->
-            <div class="card-3d-tilt group relative p-5 rounded-2xl bg-white text-neutral-950 shadow-2xl border-2 border-neutral-950 ring-4 ring-neutral-950/10 flex flex-col justify-between overflow-hidden cursor-pointer select-none">
+            <div class="card-3d-tilt group relative p-5 rounded-2xl bg-white text-neutral-950 shadow-xl hover:shadow-2xl border-2 border-neutral-950 ring-4 ring-neutral-950/10 flex flex-col justify-between overflow-hidden cursor-pointer select-none transition-all duration-200">
               <div class="tilt-glare"></div>
               <div class="tilt-content flex flex-col justify-between h-full">
                 <div>
-                  <div class="flex items-center justify-between mb-3">
-                    <span class="text-[10px] font-num font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-neutral-950 text-white border border-neutral-950">STEP 03 · CORE</span>
-                    <span class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-num font-bold">
+                  <div class="flex items-center justify-between gap-1.5 mb-3.5">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-neutral-950 text-white text-[10px] font-num font-bold tracking-wider uppercase whitespace-nowrap flex-shrink-0 shadow-2xs">
+                      <span>03</span>
+                      <span class="text-neutral-500">·</span>
+                      <span class="text-emerald-400">CORE</span>
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-num font-bold whitespace-nowrap flex-shrink-0">
                       <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                      <span>&lt; 15ms</span>
+                      <span>&lt;15ms</span>
                     </span>
                   </div>
-                  <div class="w-10 h-10 rounded-xl bg-neutral-950 text-white flex items-center justify-center mb-3 group-hover:scale-105 transition-transform shadow-sm">
+                  <div class="w-10 h-10 rounded-xl bg-neutral-950 text-white flex items-center justify-center mb-3 group-hover:scale-105 transition-transform shadow-md border border-neutral-800">
                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/><path d="M12 2v20"/><path d="M8 8h8"/><path d="M7 13h10"/><path d="M9 18h6"/></svg>
                   </div>
                   <h3 class="text-sm font-semibold text-neutral-950 mb-1">D1 SQLite FTS5</h3>
@@ -712,21 +716,27 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                 </div>
                 <div class="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between text-[11px] font-num text-neutral-950">
                   <span class="text-neutral-500">Retrieval</span>
-                  <span class="font-bold text-neutral-950 font-num">&lt; 15ms BM25</span>
+                  <span class="font-bold text-neutral-950 font-num flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <span>&lt; 15ms BM25</span>
+                  </span>
                 </div>
               </div>
             </div>
 
             <!-- Node 4: Autonomous Index -->
-            <div class="card-3d-tilt group relative p-5 rounded-2xl bg-white/95 hover:bg-white text-neutral-950 shadow-lg hover:shadow-2xl border border-white/80 ring-2 ring-white/50 flex flex-col justify-between overflow-hidden cursor-pointer select-none">
+            <div class="card-3d-tilt group relative p-5 rounded-2xl bg-white/95 hover:bg-white text-neutral-950 shadow-md hover:shadow-xl border border-white/80 ring-2 ring-white/50 flex flex-col justify-between overflow-hidden cursor-pointer select-none transition-all duration-200">
               <div class="tilt-glare"></div>
               <div class="tilt-content flex flex-col justify-between h-full">
                 <div>
-                  <div class="flex items-center justify-between mb-3">
-                    <span class="text-[10px] font-num font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-900 border border-neutral-200">STEP 04</span>
-                    <span class="text-[10px] font-num text-neutral-600 font-medium">Real-Time</span>
+                  <div class="flex items-center justify-between gap-1.5 mb-3.5">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-900 border border-neutral-200 text-[10px] font-num font-bold tracking-wider uppercase whitespace-nowrap flex-shrink-0">04 · INDEX</span>
+                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 border border-neutral-200/80 text-[10px] font-num font-medium whitespace-nowrap flex-shrink-0">
+                      <span class="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse"></span>
+                      <span>Real-Time</span>
+                    </span>
                   </div>
-                  <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-900 mb-3 group-hover:scale-105 transition-transform shadow-xs">
+                  <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-900 mb-3 group-hover:scale-105 transition-transform shadow-2xs">
                     <svg class="w-5 h-5 text-neutral-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
                   </div>
                   <h3 class="text-sm font-semibold text-neutral-950 mb-1">Autonomous Index</h3>
