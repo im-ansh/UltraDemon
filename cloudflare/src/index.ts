@@ -17,7 +17,8 @@ import { authRouter }    from './routes/auth';
 import { authMiddleware } from './lib/auth';
 import { getUsage } from './lib/api-keys';
 import { renderLandingPage } from './ui/landing';
-import { renderAuthPage } from './ui/auth-pages';
+import { renderAuthPage, renderAuthCallbackPage } from './ui/auth-pages';
+import { renderPrivacyPage, renderTermsPage } from './ui/legal-pages';
 import { renderAppDashboard } from './ui/app';
 import { MICHELANGELUS_BOLD_ITALIC_B64 } from './ui/font';
 import { HERO_BRAIN_WEBP_B64, HERO_LENS_WEBP_B64 } from './ui/hero-assets';
@@ -89,6 +90,28 @@ app.get('/login', (c) => {
 app.get('/signup', (c) => {
   const origin = new URL(c.req.url).origin;
   return c.html(renderAuthPage('signup', origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
+});
+
+// Dedicated Legal & Compliance Pages
+app.get('/privacy', (c) => {
+  const origin = new URL(c.req.url).origin;
+  return c.html(renderPrivacyPage(origin));
+});
+
+app.get('/terms', (c) => {
+  const origin = new URL(c.req.url).origin;
+  return c.html(renderTermsPage(origin));
+});
+
+// Dedicated Email Verification Callback Pages
+app.get('/auth/callback', (c) => {
+  const origin = new URL(c.req.url).origin;
+  return c.html(renderAuthCallbackPage(origin));
+});
+
+app.get('/verify', (c) => {
+  const origin = new URL(c.req.url).origin;
+  return c.html(renderAuthCallbackPage(origin));
 });
 
 // Dedicated Developer App / Dashboard Workspace

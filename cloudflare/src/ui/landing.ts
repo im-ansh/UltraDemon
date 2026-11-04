@@ -414,7 +414,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
     .hero-asset-floating-left {
       position: absolute;
-      top: 6rem;
+      top: 14rem;
       left: max(1.5rem, calc(50% - 47rem));
       width: 14rem;
       z-index: 25;
@@ -423,7 +423,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     }
     .hero-asset-floating-right {
       position: absolute;
-      top: 7.5rem;
+      top: 16rem;
       right: max(1.5rem, calc(50% - 47rem));
       width: 14rem;
       z-index: 25;
@@ -434,12 +434,12 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     @media (max-width: 1440px) {
       .hero-asset-floating-left {
         left: 1.25rem;
-        top: 5.5rem;
+        top: 13rem;
         width: 12.5rem;
       }
       .hero-asset-floating-right {
         right: 1.25rem;
-        top: 7rem;
+        top: 15rem;
         width: 12.5rem;
       }
     }
@@ -447,12 +447,12 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     @media (max-width: 1160px) {
       .hero-asset-floating-left {
         left: 0.5rem;
-        top: 5rem;
+        top: 12rem;
         width: 10rem;
       }
       .hero-asset-floating-right {
         right: 0.5rem;
-        top: 6.5rem;
+        top: 14rem;
         width: 10rem;
       }
     }
@@ -642,15 +642,17 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </span>
       </a>
 
-      <!-- Minimal Essential Nav Links -->
-      <nav class="hidden md:flex items-center gap-8 text-xs font-medium">
+      <!-- Quick Links Navigation (Pricing, Memory, Search, Benchmarks, Privacy, Terms) -->
+      <nav class="hidden sm:flex items-center gap-3 md:gap-5 lg:gap-6 text-xs font-medium">
+        <a href="#pricing" class="nav-link transition">Pricing</a>
         <a href="#memory" class="nav-link transition flex items-center gap-1.5">
           <span>Memory</span>
           <span id="headerMemoryBadge" class="font-num text-[9px] bg-white/20 text-white border border-white/40 px-1 py-0.2 rounded font-semibold backdrop-blur-xs">&lt;15ms</span>
         </a>
         <a href="#search" class="nav-link transition">Search</a>
         <a href="#benchmarks" class="nav-link transition">Benchmarks</a>
-        <a href="#pricing" class="nav-link transition">Pricing</a>
+        <a href="/privacy" class="nav-link transition whitespace-nowrap">Privacy Policy</a>
+        <a href="/terms" class="nav-link transition whitespace-nowrap">Terms of Use</a>
       </nav>
 
       <!-- Nav Auth Buttons -->
@@ -2401,7 +2403,10 @@ curl "${origin}/v1/memory/context?q=preference" \\
           <span>·</span>
           <span>MIT License</span>
         </div>
-        <div class="flex items-center gap-4 text-neutral-600">
+        <div class="flex items-center gap-4 text-neutral-600 flex-wrap">
+          <a href="#pricing" class="hover:text-black">Pricing</a>
+          <a href="/privacy" class="hover:text-black">Privacy Policy</a>
+          <a href="/terms" class="hover:text-black">Terms of Use</a>
           <a href="/openapi.json" target="_blank" class="hover:text-black">/openapi.json</a>
           <a href="/health" target="_blank" class="hover:text-black">/health</a>
           <a href="https://github.com/im-ansh/UltraDemon" target="_blank" class="hover:text-black">GitHub</a>
@@ -2547,13 +2552,19 @@ curl "${origin}/v1/memory/context?q=preference" \\
 
       try {
         if (currentAuthMode === 'signup') {
-          // Instant Edge Account Creation (Bypasses email confirmation delays)
+          // Sovereign Edge Account Creation with Mandatory Verification
           const res = await fetch('/v1/auth/signup', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
           });
           let data = await res.json();
+          if (data.requires_verification || res.status === 201) {
+            alertBox.className = 'p-3 rounded-lg text-xs font-medium bg-neutral-100 border border-neutral-300 text-neutral-900';
+            alertBox.innerHTML = 'Verification email sent to <strong>' + email + '</strong>.<br>Please click the confirmation link in your email to activate your account.';
+            alertBox.classList.remove('hidden');
+            return;
+          }
           if (!res.ok) {
             throw new Error(data.error || 'Failed to create account');
           }
@@ -2569,7 +2580,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
 
           setTimeout(() => {
             closeAuthModal();
-            document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
+            window.location.href = '/app';
           }, 600);
         } else {
           // Sign In
@@ -2580,15 +2591,13 @@ curl "${origin}/v1/memory/context?q=preference" \\
           });
           let data = await res.json();
           if (!res.ok) {
-            // Fallback to Supabase if available
-            if (supabase) {
-              const sb = await supabase.auth.signInWithPassword({ email, password });
-              if (sb.error) throw new Error(data.error || sb.error.message);
-              updateAuthUI(sb.data.user);
-              data = { user: sb.data.user, session: sb.data.session };
-            } else {
-              throw new Error(data.error || 'Invalid credentials');
+            if (data.requires_verification || res.status === 403) {
+              alertBox.className = 'p-3 rounded-lg text-xs font-medium bg-neutral-100 border border-neutral-300 text-neutral-900';
+              alertBox.innerHTML = 'Email verification is mandatory.<br>Please click the link in your email to verify before signing in.';
+              alertBox.classList.remove('hidden');
+              return;
             }
+            throw new Error(data.error || 'Invalid credentials');
           } else {
             localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session));
             localStorage.setItem('ultrademon_user', JSON.stringify(data.user));
@@ -2601,7 +2610,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
 
           setTimeout(() => {
             closeAuthModal();
-            document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
+            window.location.href = '/app';
           }, 500);
         }
       } catch (err) {

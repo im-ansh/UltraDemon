@@ -76,7 +76,7 @@ authRouter.post('/anonymous', async (c) => {
   }, 201);
 });
 
-// ── POST /v1/auth/signup — Instant Edge Account Creation ──────────────────────
+// ── POST /v1/auth/signup — Edge Account Creation with Mandatory Email Verification ──
 authRouter.post('/signup', async (c) => {
   const body: AuthBody = await c.req.json<AuthBody>().catch(() => ({}));
   const email = (body.email || '').trim().toLowerCase();
@@ -93,11 +93,18 @@ authRouter.post('/signup', async (c) => {
   }
 
   // Check if user already exists in D1
-  const existing = await c.env.DB.prepare('SELECT user_id, email FROM users WHERE email = ?')
+  const existing = await c.env.DB.prepare('SELECT user_id, email, email_verified FROM users WHERE email = ?')
     .bind(email)
-    .first<{ user_id: string; email: string }>();
+    .first<{ user_id: string; email: string; email_verified?: number }>();
 
   if (existing) {
+    if (existing.email_verified === 0) {
+      return c.json({
+        error: 'An account with this email exists but is pending email verification. Please check your inbox or request a new verification link.',
+        requires_verification: true,
+        email
+      }, 409);
+    }
     return c.json({ error: 'An account with this email already exists. Please sign in.' }, 409);
   }
 
@@ -107,62 +114,46 @@ authRouter.post('/signup', async (c) => {
 
   try {
     await c.env.DB.prepare(
-      'INSERT INTO users (user_id, email, password_hash, created_at, plan) VALUES (?, ?, ?, ?, ?)'
+      'INSERT INTO users (user_id, email, password_hash, created_at, plan, email_verified) VALUES (?, ?, ?, ?, ?, 0)'
     ).bind(userId, email, passwordHash, now, requestedPlan).run();
   } catch (err: unknown) {
     return c.json({ error: 'Failed to create user account: ' + (err as Error).message }, 500);
   }
 
-  // Automatically provision initial Unified API Key for user
-  let initialKey = '';
-  try {
-    const { plainKey } = await createApiKey(
-      c.env,
-      userId,
-      requestedPlan,
-      'Primary Workspace Key',
-      'unified'
-    );
-    initialKey = plainKey;
-  } catch (keyErr) {
-    console.warn('Initial key creation non-fatal:', keyErr);
-  }
-
-  // Create edge session token valid for 30 days
-  const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
-  const sessionPayload = { id: userId, email, plan: requestedPlan, active_key: initialKey };
-
-  await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), {
-    expirationTtl: 86400 * 30, // 30 days
-  });
-
-  // Optional background sync with Supabase (fire and forget)
+  // Send Supabase Verification Email with redirect to edge callback
+  const origin = new URL(c.req.url).origin;
   if (c.env.SUPABASE_URL && c.env.SUPABASE_ANON_KEY) {
-    c.executionCtx.waitUntil(
-      fetch(`${c.env.SUPABASE_URL}/auth/v1/signup`, {
+    try {
+      await fetch(`${c.env.SUPABASE_URL}/auth/v1/signup`, {
         method: 'POST',
         headers: {
           'apikey': c.env.SUPABASE_ANON_KEY,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
-      }).catch(err => console.warn('Supabase background signup sync non-fatal:', err))
-    );
+        body: JSON.stringify({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${origin}/auth/callback`,
+            data: { plan: requestedPlan, user_id: userId },
+          },
+        }),
+      });
+    } catch (err: unknown) {
+      console.warn('Supabase verification email dispatch failed:', err);
+    }
   }
 
+  // Mandatory email verification: NO immediate session token granted
   return c.json({
-    message: 'Account created successfully',
-    user: sessionPayload,
-    initial_key: initialKey,
-    session: {
-      access_token: sessionToken,
-      token_type: 'bearer',
-      expires_in: 86400 * 30,
-    },
+    message: 'Verification link sent to your email. You must click the link in your email to verify and activate your account before signing in.',
+    requires_verification: true,
+    email,
+    plan: requestedPlan,
   }, 201);
 });
 
-// ── POST /v1/auth/signin — Instant Edge Sign In ───────────────────────────────
+// ── POST /v1/auth/signin — Edge Sign In with Mandatory Verification Check ────
 authRouter.post('/signin', async (c) => {
   const body: AuthBody = await c.req.json<AuthBody>().catch(() => ({}));
   const email = (body.email || '').trim().toLowerCase();
@@ -173,13 +164,54 @@ authRouter.post('/signin', async (c) => {
   }
 
   // 1. Check D1 first
-  const user = await c.env.DB.prepare('SELECT user_id, email, password_hash, plan FROM users WHERE email = ?')
+  const user = await c.env.DB.prepare('SELECT user_id, email, password_hash, plan, email_verified FROM users WHERE email = ?')
     .bind(email)
-    .first<{ user_id: string; email: string; password_hash: string; plan?: string }>();
+    .first<{ user_id: string; email: string; password_hash: string; plan?: string; email_verified?: number }>();
 
   if (user) {
     const expectedHash = await hashPassword(password, email);
     if (user.password_hash === expectedHash) {
+      
+      // Check mandatory email verification status
+      if (user.email_verified === 0) {
+        let isVerifiedInSupabase = false;
+        if (c.env.SUPABASE_URL && c.env.SUPABASE_ANON_KEY) {
+          try {
+            const sbRes = await fetch(`${c.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+              method: 'POST',
+              headers: {
+                'apikey': c.env.SUPABASE_ANON_KEY,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ email, password }),
+            });
+            if (sbRes.ok) {
+              isVerifiedInSupabase = true;
+            } else {
+              const errData = await sbRes.json<{ error_description?: string; msg?: string }>().catch(() => ({} as { error_description?: string; msg?: string }));
+              const desc = errData.error_description || errData.msg || '';
+              if (desc.toLowerCase().includes('not confirmed') || desc.toLowerCase().includes('confirm')) {
+                return c.json({
+                  error: 'Email verification is mandatory. Please check your inbox and click the verification link before signing in.',
+                  requires_verification: true,
+                  email,
+                }, 403);
+              }
+            }
+          } catch {}
+        }
+
+        if (isVerifiedInSupabase) {
+          await c.env.DB.prepare('UPDATE users SET email_verified = 1 WHERE user_id = ?').bind(user.user_id).run();
+        } else {
+          return c.json({
+            error: 'Email verification is mandatory. Please check your inbox and click the verification link before signing in.',
+            requires_verification: true,
+            email,
+          }, 403);
+        }
+      }
+
       const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
       const plan = user.plan || 'free';
 
@@ -234,7 +266,7 @@ authRouter.post('/signin', async (c) => {
         const passwordHash = await hashPassword(password, email);
         c.executionCtx.waitUntil(
           c.env.DB.prepare(
-            'INSERT OR IGNORE INTO users (user_id, email, password_hash, created_at, plan) VALUES (?, ?, ?, ?, ?)'
+            'INSERT OR IGNORE INTO users (user_id, email, password_hash, created_at, plan, email_verified) VALUES (?, ?, ?, ?, ?, 1)'
           ).bind(sbData.user.id, email, passwordHash, Date.now(), 'free').run()
         );
 
@@ -246,6 +278,16 @@ authRouter.post('/signin', async (c) => {
             token_type: 'bearer',
           },
         });
+      } else {
+        const errData = await sbRes.json<{ error_description?: string; msg?: string }>().catch(() => ({} as { error_description?: string; msg?: string }));
+        const desc = errData.error_description || errData.msg || '';
+        if (desc.toLowerCase().includes('not confirmed') || desc.toLowerCase().includes('confirm')) {
+          return c.json({
+            error: 'Email verification is mandatory. Please check your inbox and click the verification link before signing in.',
+            requires_verification: true,
+            email,
+          }, 403);
+        }
       }
     } catch (sbErr) {
       console.warn('Supabase signin attempt failed:', sbErr);
@@ -253,6 +295,116 @@ authRouter.post('/signin', async (c) => {
   }
 
   return c.json({ error: 'Invalid email or password' }, 401);
+});
+
+// ── POST /v1/auth/resend-verification — Resend Confirmation Email Link ─────────
+authRouter.post('/resend-verification', async (c) => {
+  const body = await c.req.json<{ email?: string }>().catch(() => ({} as { email?: string }));
+  const email = (body.email || '').trim().toLowerCase();
+  if (!email || !email.includes('@')) {
+    return c.json({ error: 'Valid email address is required' }, 400);
+  }
+
+  const origin = new URL(c.req.url).origin;
+  if (c.env.SUPABASE_URL && c.env.SUPABASE_ANON_KEY) {
+    try {
+      const res = await fetch(`${c.env.SUPABASE_URL}/auth/v1/resend`, {
+        method: 'POST',
+        headers: {
+          'apikey': c.env.SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: 'signup',
+          email,
+          options: {
+            emailRedirectTo: `${origin}/auth/callback`,
+          },
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json<{ message?: string; msg?: string; error_description?: string }>();
+        return c.json({ error: data.error_description || data.msg || data.message || 'Failed to resend verification link' }, 400);
+      }
+    } catch (err: unknown) {
+      return c.json({ error: 'Error sending verification link: ' + (err as Error).message }, 500);
+    }
+  }
+
+  return c.json({
+    message: `Verification link successfully resent to ${email}. Please check your inbox and spam folder.`,
+    email,
+  });
+});
+
+// ── POST /v1/auth/confirm-verification — Complete Email Verification Callback ─
+authRouter.post('/confirm-verification', async (c) => {
+  const body = await c.req.json<{ access_token?: string; email?: string }>().catch(() => ({} as { access_token?: string; email?: string }));
+  let email = (body.email || '').trim().toLowerCase();
+  const accessToken = body.access_token || '';
+
+  if (accessToken && c.env.SUPABASE_URL && c.env.SUPABASE_ANON_KEY) {
+    try {
+      const res = await fetch(`${c.env.SUPABASE_URL}/auth/v1/user`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'apikey': c.env.SUPABASE_ANON_KEY,
+        },
+      });
+      if (res.ok) {
+        const u = await res.json<{ id: string; email?: string }>();
+        if (u.email) email = u.email.toLowerCase();
+      }
+    } catch {}
+  }
+
+  if (!email) {
+    return c.json({ error: 'Unable to verify email without a valid token or email' }, 400);
+  }
+
+  // Update D1 users to verified
+  await c.env.DB.prepare('UPDATE users SET email_verified = 1 WHERE email = ?').bind(email).run();
+
+  const user = await c.env.DB.prepare('SELECT user_id, email, plan FROM users WHERE email = ?')
+    .bind(email)
+    .first<{ user_id: string; email: string; plan?: string }>();
+
+  if (!user) {
+    return c.json({ error: 'User record not found' }, 404);
+  }
+
+  const plan = user.plan || 'free';
+
+  // Ensure initial API key exists
+  let activeKey = '';
+  const keyRow = await c.env.DB.prepare(
+    'SELECT key_id, label, plan FROM api_keys WHERE user_id = ? AND revoked = 0 ORDER BY created_at DESC LIMIT 1'
+  ).bind(user.user_id).first<Record<string, unknown>>();
+
+  if (!keyRow) {
+    try {
+      const newKey = await createApiKey(c.env, user.user_id, plan, 'Primary Workspace Key', 'unified');
+      activeKey = newKey.plainKey;
+    } catch {}
+  }
+
+  const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
+  const sessionPayload = { id: user.user_id, email: user.email, plan, active_key: activeKey };
+
+  await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), {
+    expirationTtl: 86400 * 30,
+  });
+
+  return c.json({
+    message: 'Email verified successfully! Workspace activated.',
+    user: sessionPayload,
+    active_key: activeKey,
+    session: {
+      access_token: sessionToken,
+      token_type: 'bearer',
+      expires_in: 86400 * 30,
+    },
+  });
 });
 
 // ── GET /v1/auth/me — Current User Session Verification ───────────────────────
