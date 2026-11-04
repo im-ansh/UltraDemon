@@ -6,6 +6,7 @@
 // Strict Authentication Flow: Login/Signup required before creating and using API keys.
 
 import { MICHELANGELUS_BOLD_ITALIC_WOFF2_B64, MICHELANGELUS_REGULAR_WOFF2_B64 } from './font-data';
+import { HERO_BRAIN_WEBP_B64, HERO_LENS_WEBP_B64 } from './hero-assets';
 
 export function renderLandingPage(origin: string, supabaseUrl: string, supabaseAnonKey: string): string {
   return `<!DOCTYPE html>
@@ -414,6 +415,58 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       box-shadow: 0 35px 65px -15px rgba(15, 23, 42, 0.22), 0 15px 30px -8px rgba(236, 72, 153, 0.18);
     }
 
+    .hero-asset-floating-left {
+      position: absolute;
+      top: 5rem;
+      left: calc(50% - 37rem);
+      width: 12.5rem;
+      z-index: 25;
+      pointer-events: auto;
+      user-select: none;
+    }
+    .hero-asset-floating-right {
+      position: absolute;
+      top: 6.5rem;
+      right: calc(50% - 37rem);
+      width: 12.5rem;
+      z-index: 25;
+      pointer-events: auto;
+      user-select: none;
+    }
+
+    @media (max-width: 1360px) {
+      .hero-asset-floating-left {
+        left: 1.25rem;
+        top: 4.5rem;
+        width: 11.5rem;
+      }
+      .hero-asset-floating-right {
+        right: 1.25rem;
+        top: 6rem;
+        width: 11.5rem;
+      }
+    }
+
+    @media (max-width: 1120px) {
+      .hero-asset-floating-left {
+        left: 0.75rem;
+        top: 4rem;
+        width: 9.5rem;
+      }
+      .hero-asset-floating-right {
+        right: 0.75rem;
+        top: 5.5rem;
+        width: 9.5rem;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .hero-asset-floating-left,
+      .hero-asset-floating-right {
+        display: none !important;
+      }
+    }
+
 /* Light Blue Jacket Unzip Simulation */
     #jacketCurtain {
       perspective: 1200px;
@@ -637,16 +690,16 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     <div class="absolute inset-0 pointer-events-none opacity-10" style="background-image: radial-gradient(rgba(255,255,255,0.8) 1px, transparent 1px); background-size: 24px 24px;"></div>
 
     <!-- Left Hero 3D Floating Asset: Sovereign UltraMemory Brain -->
-    <div class="hidden xl:block absolute left-3 2xl:left-12 top-20 2xl:top-24 z-20 w-44 2xl:w-56 pointer-events-auto select-none hero-float-wrapper">
+    <div class="hero-asset-floating-left hero-float-wrapper">
       <div class="hero-float-left">
-        <div class="hero-3d-card group relative p-3.5 2xl:p-4 rounded-3xl bg-white/30 hover:bg-white/45 backdrop-blur-xl border border-white/60 shadow-[0_20px_50px_rgba(0,0,0,0.12)] cursor-pointer" data-hero-3d>
+        <div class="hero-3d-card group relative p-3.5 2xl:p-4 rounded-3xl bg-white/40 hover:bg-white/55 backdrop-blur-xl border border-white/70 shadow-[0_20px_50px_rgba(2,132,199,0.2)] cursor-pointer" data-hero-3d>
           <div class="hero-3d-glare"></div>
           <div class="hero-3d-inner flex flex-col items-center">
             <div class="relative w-full aspect-square flex items-center justify-center p-1">
-              <img src="/images/hero-brain.webp" alt="UltraMemory Sovereign 3D Brain" class="w-full h-full object-contain filter drop-shadow-[0_16px_24px_rgba(236,72,153,0.3)] transition-transform duration-200 group-hover:scale-105" loading="eager" />
+              <img src="data:image/webp;base64,${HERO_BRAIN_WEBP_B64}" alt="UltraMemory Sovereign 3D Brain" class="w-full h-full object-contain filter drop-shadow-[0_16px_24px_rgba(236,72,153,0.35)] transition-transform duration-200 group-hover:scale-105" loading="eager" />
             </div>
             <div class="mt-2.5 w-full flex items-center justify-center">
-              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 backdrop-blur-md border border-white shadow-xs">
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/85 backdrop-blur-md border border-white shadow-xs">
                 <span class="w-1.5 h-1.5 rounded-full bg-pink-500 animate-pulse"></span>
                 <span class="text-[10px] 2xl:text-[11px] font-num font-semibold text-neutral-900 tracking-wide uppercase">UltraMemory</span>
                 <span class="text-neutral-400">·</span>
@@ -659,16 +712,16 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     </div>
 
     <!-- Right Hero 3D Floating Asset: Sovereign UltraSearch Lens -->
-    <div class="hidden xl:block absolute right-3 2xl:right-12 top-24 2xl:top-28 z-20 w-44 2xl:w-56 pointer-events-auto select-none hero-float-wrapper">
+    <div class="hero-asset-floating-right hero-float-wrapper">
       <div class="hero-float-right">
-        <div class="hero-3d-card group relative p-3.5 2xl:p-4 rounded-3xl bg-white/30 hover:bg-white/45 backdrop-blur-xl border border-white/60 shadow-[0_20px_50px_rgba(0,0,0,0.12)] cursor-pointer" data-hero-3d>
+        <div class="hero-3d-card group relative p-3.5 2xl:p-4 rounded-3xl bg-white/40 hover:bg-white/55 backdrop-blur-xl border border-white/70 shadow-[0_20px_50px_rgba(2,132,199,0.2)] cursor-pointer" data-hero-3d>
           <div class="hero-3d-glare"></div>
           <div class="hero-3d-inner flex flex-col items-center">
             <div class="relative w-full aspect-square flex items-center justify-center p-1">
-              <img src="/images/hero-lens.webp" alt="UltraSearch Sovereign 3D Lens" class="w-full h-full object-contain filter drop-shadow-[0_16px_24px_rgba(236,72,153,0.3)] transition-transform duration-200 group-hover:scale-105" loading="eager" />
+              <img src="data:image/webp;base64,${HERO_LENS_WEBP_B64}" alt="UltraSearch Sovereign 3D Lens" class="w-full h-full object-contain filter drop-shadow-[0_16px_24px_rgba(236,72,153,0.35)] transition-transform duration-200 group-hover:scale-105" loading="eager" />
             </div>
             <div class="mt-2.5 w-full flex items-center justify-center">
-              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 backdrop-blur-md border border-white shadow-xs">
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/85 backdrop-blur-md border border-white shadow-xs">
                 <span class="w-1.5 h-1.5 rounded-full bg-pink-500 animate-pulse"></span>
                 <span class="text-[10px] 2xl:text-[11px] font-num font-semibold text-neutral-900 tracking-wide uppercase">UltraSearch</span>
                 <span class="text-neutral-400">·</span>
