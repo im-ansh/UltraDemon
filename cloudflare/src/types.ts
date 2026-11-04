@@ -74,7 +74,7 @@ export interface ApiKeyRecord {
 
 // ── UltraMemory Types ─────────────────────────────────────────────────────────
 
-export type MemoryType = 'fact' | 'preference' | 'entity' | 'document' | 'file' | 'conversation';
+export type MemoryType = 'fact' | 'preference' | 'entity' | 'document' | 'file' | 'conversation' | 'rule' | 'instruction';
 
 export interface MemoryRecord {
   memory_id:     string;

@@ -22,11 +22,13 @@ export const memoryRouter = new Hono<{ Bindings: Env }>();
 memoryRouter.use('*', authMiddleware);
 
 // Helper: normalize container tag across query params and body keys
-function extractContainerTag(body?: Record<string, unknown>, queryTag?: string): string {
-  if (queryTag?.trim()) return queryTag.trim();
-  if (!body) return 'default';
-  const val = body.container_tag || body.container || body.tag || body.agent_id || body.agentId || body.user_id || body.userId;
-  return typeof val === 'string' && val.trim() ? val.trim() : 'default';
+function extractContainerTag(body?: Record<string, unknown>, fallbackTag?: string): string {
+  if (body) {
+    const val = body.container_tag || body.container || body.tag || body.agent_id || body.agentId;
+    if (typeof val === 'string' && val.trim()) return val.trim();
+  }
+  if (fallbackTag?.trim()) return fallbackTag.trim();
+  return 'default';
 }
 
 // Helper: normalize text content from various agent payload styles
@@ -76,7 +78,7 @@ async function handleStoreMemory(c: any) {
 
       const obj = (typeof item === 'object' && item !== null) ? (item as Record<string, unknown>) : {};
       const title = typeof obj.title === 'string' ? obj.title : undefined;
-      const memType = (['fact', 'preference', 'entity', 'document', 'file', 'conversation'].includes(String(obj.memory_type || obj.type || '')) 
+      const memType = (['fact', 'preference', 'entity', 'document', 'file', 'conversation', 'rule', 'instruction'].includes(String(obj.memory_type || obj.type || '')) 
         ? (obj.memory_type || obj.type) 
         : 'fact') as MemoryType;
       const sessionId = typeof obj.session_id === 'string' ? obj.session_id : (typeof raw.session_id === 'string' ? raw.session_id : '');
@@ -116,7 +118,7 @@ async function handleStoreMemory(c: any) {
   const containerTag = extractContainerTag(raw, queryTag);
   const sessionId    = String(raw.session_id || raw.sessionId || raw.conversation_id || '');
   const rawType      = String(raw.memory_type || raw.type || (Array.isArray(raw.messages) ? 'conversation' : 'fact'));
-  const memoryType   = (['fact', 'preference', 'entity', 'document', 'file', 'conversation'].includes(rawType) 
+  const memoryType   = (['fact', 'preference', 'entity', 'document', 'file', 'conversation', 'rule', 'instruction'].includes(rawType) 
     ? rawType 
     : 'fact') as MemoryType;
   const title        = typeof raw.title === 'string' && raw.title.trim() ? raw.title.trim() : undefined;
