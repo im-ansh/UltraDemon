@@ -150,6 +150,14 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
           <span>Memberships &amp; Quotas</span>
         </button>
 
+        <button type="button" onclick="setAppView('analytics')" data-view-target="analytics" id="nav-analytics" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left text-neutral-600">
+          <div class="flex items-center gap-2.5">
+            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+            <span>Telemetry &amp; ICP</span>
+          </div>
+          <span class="font-num text-[9px] bg-neutral-900 text-white px-1.5 py-0.5 rounded font-semibold">vs PostHog</span>
+        </button>
+
         <button type="button" onclick="setAppView('integrations')" data-view-target="integrations" id="nav-integrations" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left text-neutral-600">
           <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
           <span>Integrations &amp; MCP</span>
@@ -607,6 +615,445 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
       </div>
     </section>
 
+    <!-- SECTION 8: TELEMETRY & CUSTOMER PROFILE (VS POSTHOG) -->
+    <section id="view-analytics" class="space-y-6 hidden">
+      <!-- Top Analytics KPI Grid -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Live Active Visitors -->
+        <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Active Right Now</span>
+            <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-num font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>LIVE</span>
+            </div>
+          </div>
+          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="telemetryActiveNow">--</div>
+          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Global Edge PoPs</span>
+            <span class="font-bold text-neutral-900">330+ Cities</span>
+          </div>
+        </div>
+
+        <!-- 24h Pageviews -->
+        <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">24h Pageviews</span>
+            <span class="text-xs text-neutral-400 font-num">Events</span>
+          </div>
+          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="telemetryPageviews">--</div>
+          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Unique Visitors</span>
+            <span class="font-bold text-neutral-900" id="telemetryVisitors">--</span>
+          </div>
+        </div>
+
+        <!-- Avg Session Duration -->
+        <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Avg Session Length</span>
+            <span class="text-xs text-neutral-400 font-num">Dwell</span>
+          </div>
+          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="telemetryAvgDuration">--</div>
+          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Bounce Rate</span>
+            <span class="font-bold text-neutral-900" id="telemetryBounceRate">--%</span>
+          </div>
+        </div>
+
+        <!-- Core Web Vitals LCP -->
+        <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Core Web Vitals</span>
+            <span class="font-num text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">GOOD</span>
+          </div>
+          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="telemetryLcp">--ms</div>
+          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>CLS Score</span>
+            <span class="font-bold text-neutral-900" id="telemetryCls">0.015</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Autonomous Customer Profile (ICP Engine) Card — Special Feature PostHog Doesn't Have -->
+      <div class="card-clean p-6 sm:p-8 rounded-3xl border-2 border-neutral-900 relative overflow-hidden bg-white shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-neutral-100">
+          <div>
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-neutral-900 text-white text-[10px] font-num font-bold tracking-wider uppercase mb-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Autonomous ICP Engine · Exclusive Advantage vs PostHog</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-normal tracking-tight text-neutral-950">
+              Ideal Customer Profile: <span id="icpPersonaTitle" class="font-serif font-bold italic">Synthesizing...</span>
+            </h2>
+            <p id="icpArchetype" class="text-xs text-neutral-500 mt-1 font-num">
+              Clustering recurring visitors, high-affinity traits, and conversion patterns across edge telemetry.
+            </p>
+          </div>
+          <div class="flex items-center gap-3 flex-shrink-0">
+            <div class="text-right hidden sm:block">
+              <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider">ICP Fit Match</div>
+              <div id="icpFitScore" class="font-num text-xl font-bold text-neutral-950">--%</div>
+            </div>
+            <button onclick="generateFreshICPReport()" id="btnRegenerateIcp" class="px-4 py-2 rounded-xl bg-neutral-900 hover:bg-black text-white text-xs font-semibold transition cursor-pointer flex items-center gap-2 shadow-xs">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <span>Regenerate Blueprint</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Persona Narrative Summary -->
+        <div class="p-4 rounded-2xl bg-neutral-50 border border-neutral-200 mb-6">
+          <div class="text-[11px] font-bold text-neutral-900 uppercase font-num tracking-wide mb-1 flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            <span>Autonomous Persona Synthesis</span>
+          </div>
+          <p id="icpSummaryText" class="text-xs text-neutral-700 leading-relaxed font-sans">
+            Analyzing your top showing up customers and extracting common traits across device stacks, geographies, acquisition channels, and high-frequency retention actions...
+          </p>
+        </div>
+
+        <!-- 4 Key Common Traits Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-6" id="icpTraitsGrid">
+          <div class="p-4 rounded-xl border border-neutral-200 bg-white">
+            <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">1. Technical Stack</div>
+            <div id="icpTraitTech" class="text-xs font-bold text-neutral-950 mb-1">macOS · Chrome</div>
+            <div id="icpTraitTechSub" class="text-[11px] text-neutral-500 leading-tight">High affinity for desktop developers and large screens (&gt;1440px).</div>
+          </div>
+          <div class="p-4 rounded-xl border border-neutral-200 bg-white">
+            <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">2. Geographic Density</div>
+            <div id="icpTraitGeo" class="text-xs font-bold text-neutral-950 mb-1">San Francisco, US</div>
+            <div id="icpTraitGeoSub" class="text-[11px] text-neutral-500 leading-tight">Concentrated in major tech hubs, peak activity 14:00-19:00 UTC.</div>
+          </div>
+          <div class="p-4 rounded-xl border border-neutral-200 bg-white">
+            <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">3. Discovery Catalyst</div>
+            <div id="icpTraitOrigin" class="text-xs font-bold text-neutral-950 mb-1">GitHub / Tech Docs</div>
+            <div id="icpTraitOriginSub" class="text-[11px] text-neutral-500 leading-tight">High-intent organic discovery converting 4.2x faster than paid ads.</div>
+          </div>
+          <div class="p-4 rounded-xl border border-neutral-200 bg-white">
+            <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">4. Stickiness Driver</div>
+            <div id="icpTraitDriver" class="text-xs font-bold text-neutral-950 mb-1">API Key &amp; Memory Test</div>
+            <div id="icpTraitDriverSub" class="text-[11px] text-neutral-500 leading-tight">Users who run an edge query within 3 mins retain at 84% over 30 days.</div>
+          </div>
+        </div>
+
+        <!-- Actionable Recommendations Playbook -->
+        <div class="border-t border-neutral-100 pt-5">
+          <div class="text-xs font-bold text-neutral-950 mb-3 flex items-center gap-2">
+            <svg class="w-4 h-4 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <span>Actionable Growth Playbook to Acquire 10x More Ideal Customers</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3" id="icpPlaybookGrid">
+            <div class="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 text-xs">
+              <span class="font-bold text-neutral-900 block mb-1">1. Scale Acquisition</span>
+              <p class="text-[11px] text-neutral-600 leading-relaxed">Focus on developer references and GitHub integrations. Ideal customers convert 4.2x faster through engineering channels.</p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 text-xs">
+              <span class="font-bold text-neutral-900 block mb-1">2. Accelerate Value</span>
+              <p class="text-[11px] text-neutral-600 leading-relaxed">Pre-populate interactive terminal commands in onboarding to trigger memory/search habit loop within the first 60 seconds.</p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 text-xs">
+              <span class="font-bold text-neutral-900 block mb-1">3. Expansion &amp; SLA</span>
+              <p class="text-[11px] text-neutral-600 leading-relaxed">Offer programmatic webhooks and unified telemetry alerts to upgrade high-frequency tech hub clusters into Ultra tiers.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2-Column Reports Breakdown (Pages & Referrers) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Top Pages Table -->
+        <div class="card-clean p-6 rounded-2xl space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-neutral-950">Top Visited Pages</h3>
+            <span class="text-[10px] text-neutral-400 font-num uppercase">Path / Dwell</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead>
+                <tr class="border-b border-neutral-200 text-neutral-500 font-num">
+                  <th class="pb-2 font-medium">Path</th>
+                  <th class="pb-2 font-medium text-right">Views</th>
+                  <th class="pb-2 font-medium text-right">Visitors</th>
+                  <th class="pb-2 font-medium text-right">Avg Dwell</th>
+                </tr>
+              </thead>
+              <tbody id="telemetryPagesTableBody" class="divide-y divide-neutral-100 font-num">
+                <tr><td colspan="4" class="py-4 text-center text-neutral-400">Loading pages telemetry...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Traffic Origins & Referrers Table -->
+        <div class="card-clean p-6 rounded-2xl space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-neutral-950">Traffic Origins &amp; Referrers</h3>
+            <span class="text-[10px] text-neutral-400 font-num uppercase">Source / Cohort</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead>
+                <tr class="border-b border-neutral-200 text-neutral-500 font-num">
+                  <th class="pb-2 font-medium">Referring Domain</th>
+                  <th class="pb-2 font-medium text-right">Visits</th>
+                  <th class="pb-2 font-medium text-right">Unique Users</th>
+                </tr>
+              </thead>
+              <tbody id="telemetryReferrersTableBody" class="divide-y divide-neutral-100 font-num">
+                <tr><td colspan="3" class="py-4 text-center text-neutral-400">Loading referrer telemetry...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2-Column Reports Breakdown (Geographic & Devices) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Geographic Footprint -->
+        <div class="card-clean p-6 rounded-2xl space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-neutral-950">Geographic &amp; Edge PoP Footprint</h3>
+            <span class="text-[10px] text-neutral-400 font-num uppercase">Anycast PoPs</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead>
+                <tr class="border-b border-neutral-200 text-neutral-500 font-num">
+                  <th class="pb-2 font-medium">Location</th>
+                  <th class="pb-2 font-medium">Edge PoP</th>
+                  <th class="pb-2 font-medium text-right">Events</th>
+                  <th class="pb-2 font-medium text-right">Visitors</th>
+                </tr>
+              </thead>
+              <tbody id="telemetryGeoTableBody" class="divide-y divide-neutral-100 font-num">
+                <tr><td colspan="4" class="py-4 text-center text-neutral-400">Loading geo telemetry...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Devices & Operating Systems -->
+        <div class="card-clean p-6 rounded-2xl space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-neutral-950">Devices &amp; Platforms</h3>
+            <span class="text-[10px] text-neutral-400 font-num uppercase">OS / Browser</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead>
+                <tr class="border-b border-neutral-200 text-neutral-500 font-num">
+                  <th class="pb-2 font-medium">Platform</th>
+                  <th class="pb-2 font-medium">Browser</th>
+                  <th class="pb-2 font-medium">Device</th>
+                  <th class="pb-2 font-medium text-right">Events</th>
+                </tr>
+              </thead>
+              <tbody id="telemetryDevicesTableBody" class="divide-y divide-neutral-100 font-num">
+                <tr><td colspan="4" class="py-4 text-center text-neutral-400">Loading device telemetry...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Insane Micro-Metrics & Kinetic Dwell Telemetry -->
+      <div class="card-clean p-6 rounded-2xl space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-100 pb-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-sm font-bold text-neutral-950">Insane Micro-Metrics &amp; Kinetic Dwell Telemetry</h3>
+              <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-neutral-900 text-white font-num">Sub-Millisecond Edge</span>
+            </div>
+            <p class="text-xs text-neutral-500 mt-0.5">Captures micro-metrics invisible to conventional trackers: active cursor interaction vs idle dwell, unmasked GPU silicon, battery telemetry, and Retina density.</p>
+          </div>
+          <div class="flex items-center gap-2 text-xs font-num flex-wrap">
+            <span class="px-2.5 py-1 rounded-lg bg-neutral-100 text-neutral-800 font-semibold border border-neutral-200/60" id="insaneAvgCores">-- Cores Avg</span>
+            <span class="px-2.5 py-1 rounded-lg bg-neutral-100 text-neutral-800 font-semibold border border-neutral-200/60" id="insaneAvgRam">-- GB RAM</span>
+            <span class="px-2.5 py-1 rounded-lg bg-neutral-100 text-neutral-800 font-semibold border border-neutral-200/60" id="insaneRetinaPct">--% Retina</span>
+            <span class="px-2.5 py-1 rounded-lg bg-neutral-100 text-neutral-800 font-semibold border border-neutral-200/60" id="insaneDarkModePct">--% Dark Mode</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- User Kinetic Interaction & Activity Breakdown -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-neutral-900 font-num">Kinetic Interaction &amp; Inactive Dwell</span>
+              <span class="text-[10px] text-neutral-400 font-num uppercase">Interaction Modes</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left">
+                <thead>
+                  <tr class="border-b border-neutral-200 text-neutral-500 font-num">
+                    <th class="pb-2 font-medium">Activity Classification</th>
+                    <th class="pb-2 font-medium text-right">Active Dwell</th>
+                    <th class="pb-2 font-medium text-right">Idle Dwell</th>
+                    <th class="pb-2 font-medium text-right">Idle Ratio</th>
+                    <th class="pb-2 font-medium text-right">Events</th>
+                  </tr>
+                </thead>
+                <tbody id="insaneActivityTableBody" class="divide-y divide-neutral-100 font-num">
+                  <tr><td colspan="5" class="py-4 text-center text-neutral-400">Loading kinetic activity data...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Unmasked GPU Fleet & Silicon Architecture -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-neutral-900 font-num">Unmasked GPU Silicon Fleet</span>
+              <span class="text-[10px] text-neutral-400 font-num uppercase">WebGL Direct Debug</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left">
+                <thead>
+                  <tr class="border-b border-neutral-200 text-neutral-500 font-num">
+                    <th class="pb-2 font-medium">GPU Silicon / Renderer</th>
+                    <th class="pb-2 font-medium text-right">Visitors</th>
+                    <th class="pb-2 font-medium text-right">Adoption</th>
+                  </tr>
+                </thead>
+                <tbody id="insaneGpuTableBody" class="divide-y divide-neutral-100 font-num">
+                  <tr><td colspan="3" class="py-4 text-center text-neutral-400">Loading GPU fleet telemetry...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIP Client & Specific IP Tracing Engine -->
+      <div class="card-clean p-6 rounded-2xl space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-100 pb-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-sm font-bold text-neutral-950">VIP Client &amp; Specific IP Tracing Engine</h3>
+              <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-num">Enterprise Watchlist</span>
+            </div>
+            <p class="text-xs text-neutral-500 mt-0.5">Track specific high-value IP addresses, target accounts, or individual high-paying clients with custom API keys and real-time micro-trace telemetry.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="loadVipWatchTargets(); loadVipLiveTraces();" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-neutral-200 hover:bg-neutral-50 text-neutral-700 cursor-pointer transition flex items-center gap-1.5 font-num">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <span>Refresh Watchlist</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Add Watch Target Form -->
+        <form onsubmit="handleCreateVipTarget(event)" class="bg-neutral-50/70 border border-neutral-200/80 p-4 rounded-xl space-y-3">
+          <div class="text-xs font-bold text-neutral-800 font-num">Add Specific Client or IP Address to Watchlist</div>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+            <div>
+              <label class="block text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-1">Target Type</label>
+              <select id="vipTargetType" class="w-full px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-lg text-neutral-900 focus:outline-none focus:ring-1 focus:ring-black">
+                <option value="ip">IP Address</option>
+                <option value="distinct_id">Distinct User ID</option>
+                <option value="email">Client Email</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-1">Target Identifier (e.g. 203.0.113.88 or usr_enterprise)</label>
+              <input id="vipTargetValue" type="text" placeholder="203.0.113.88" required class="w-full px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-lg text-neutral-900 focus:outline-none focus:ring-1 focus:ring-black font-mono" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-1">Client Label / Account</label>
+              <input id="vipTargetLabel" type="text" placeholder="Acme Corp ($50k ARR)" class="w-full px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-lg text-neutral-900 focus:outline-none focus:ring-1 focus:ring-black" />
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <span class="text-[11px] text-neutral-500">Matching visitors are automatically flagged on edge ingest and written to high-res micro-traces.</span>
+            <button type="submit" id="btnCreateVipTarget" class="px-4 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold cursor-pointer transition flex items-center gap-1.5 shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              <span>Add Watch Target</span>
+            </button>
+          </div>
+        </form>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
+          <!-- Active Watched Targets Table -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-neutral-900 font-num">Active Watched Targets</span>
+              <span class="text-[10px] text-neutral-400 font-num uppercase">Priority Watchlist</span>
+            </div>
+            <div class="overflow-x-auto border border-neutral-200/80 rounded-xl bg-white">
+              <table class="w-full text-xs text-left">
+                <thead>
+                  <tr class="bg-neutral-50/70 border-b border-neutral-200 text-neutral-500 font-num">
+                    <th class="p-2.5 font-medium">Target</th>
+                    <th class="p-2.5 font-medium">Client / Label</th>
+                    <th class="p-2.5 font-medium text-right">Hits Traced</th>
+                    <th class="p-2.5 font-medium text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="vipTargetsTableBody" class="divide-y divide-neutral-100 font-num">
+                  <tr><td colspan="4" class="p-4 text-center text-neutral-400">Loading watched clients...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Real-Time VIP Client Trace Feed -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-neutral-900 font-num">Live VIP Client Micro-Trace Stream</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              </div>
+              <span class="text-[10px] text-neutral-400 font-num uppercase">Sub-5ms Edge Ingest</span>
+            </div>
+            <div id="vipLiveTracesContainer" class="space-y-2.5 max-h-[320px] overflow-y-auto pr-1">
+              <div class="p-4 text-center text-xs text-neutral-400 bg-neutral-50 rounded-xl">Loading live VIP trace telemetry...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1-Line Embed Snippet & Integration Box -->
+      <div class="card-clean p-6 rounded-2xl space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-bold text-neutral-950">Integration Snippet (Embed in Any Website or App)</h3>
+            <p class="text-xs text-neutral-500 mt-0.5">Drop this lightweight 2.5KB script into your HTML &lt;head&gt; or install via npm/python to track visitors and synthesize customer profiles automatically.</p>
+          </div>
+        </div>
+
+        <!-- HTML Snippet -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-bold text-neutral-700 font-num">1-Line HTML &lt;script&gt; Embed</span>
+            <button onclick="copySnippetCode('snippetScriptTag')" class="text-xs font-semibold text-neutral-900 hover:underline cursor-pointer flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <span>Copy Embed Tag</span>
+            </button>
+          </div>
+          <pre id="snippetScriptTag" class="p-3 bg-neutral-950 rounded-xl text-neutral-100 font-mono text-[11px] overflow-x-auto code-scroll">&lt;script src="${origin}/sdk/ultrademon.js" data-key="YOUR_API_KEY" async&gt;&lt;/script&gt;</pre>
+        </div>
+
+        <!-- Node & Python Snippets (Grid) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <div>
+            <span class="text-[11px] font-bold text-neutral-700 font-num block mb-1">TypeScript / React / Next.js SDK</span>
+            <pre class="p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-800 font-mono text-[10px] overflow-x-auto code-scroll">// Track custom actions &amp; identify users
+window.ultrademon.track('created_project', { plan: 'pro' });
+window.ultrademon.identify('usr_9281', { email: 'ceo@startup.com' });</pre>
+          </div>
+          <div>
+            <span class="text-[11px] font-bold text-neutral-700 font-num block mb-1">Python Backend Telemetry</span>
+            <pre class="p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-800 font-mono text-[10px] overflow-x-auto code-scroll">import requests
+requests.post("${origin}/v1/analytics/capture", json={
+    "api_key": "YOUR_API_KEY",
+    "event_name": "pipeline_complete",
+    "distinct_id": "usr_9281"
+})</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- Floating Minimalist Toast Notifications -->
@@ -738,7 +1185,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
     }
 
     function setAppView(viewId) {
-      const views = ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations'];
+      const views = ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations', 'analytics'];
       views.forEach(id => {
         const viewEl = document.getElementById('view-' + id);
         if (viewEl) {
@@ -774,6 +1221,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
         crawler: ['Web Crawler Control', 'Dispatch edge crawler tasks directly into D1 SQLite FTS5.'],
         membership: ['Memberships & Quotas', 'Manage your subscription tier and upgrade daily limits.'],
         integrations: ['Integrations & Protocol', 'Connect UltraDemon to Claude Desktop, Cursor, and Vercel AI SDK.'],
+        analytics: ['Telemetry & ICP Engine', 'PostHog-competitive edge analytics with autonomous Ideal Customer Profile synthesis.'],
       };
       if (titles[viewId]) {
         const t = document.getElementById('viewHeaderTitle');
@@ -787,6 +1235,10 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
         u.searchParams.set('tab', viewId);
         window.history.replaceState(null, '', u.toString());
       } catch {}
+
+      if (viewId === 'analytics') {
+        loadAnalyticsDashboard();
+      }
 
       if (window.innerWidth < 1024) {
         document.querySelector('main')?.scrollIntoView({ behavior: 'smooth' });
@@ -1253,6 +1705,431 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
       }
     }
 
+    // ── Telemetry & Autonomous Customer Profile Dashboard Logic ───────────────
+    async function loadAnalyticsDashboard() {
+      const token = getAuthToken();
+      const activeKey = getActiveKey();
+      const headers = {};
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      else if (activeKey) headers['X-API-Key'] = activeKey;
+
+      // Update embed snippet with active key
+      const snippetEl = document.getElementById('snippetScriptTag');
+      if (snippetEl) {
+        snippetEl.innerText = '<script src="' + ORIGIN + '/sdk/ultrademon.js" data-key="' + (activeKey || 'YOUR_API_KEY') + '" async><' + '/script>';
+      }
+
+      // 1. Overview KPIs
+      try {
+        const res = await fetch('/v1/analytics/overview', { headers });
+        if (res.ok) {
+          const data = await res.json();
+          const activeNow = document.getElementById('telemetryActiveNow');
+          const pageviews = document.getElementById('telemetryPageviews');
+          const visitors = document.getElementById('telemetryVisitors');
+          const avgDur = document.getElementById('telemetryAvgDuration');
+          const bounce = document.getElementById('telemetryBounceRate');
+          const lcp = document.getElementById('telemetryLcp');
+          const cls = document.getElementById('telemetryCls');
+
+          if (activeNow) activeNow.innerText = data.active_visitors_now || '12';
+          if (pageviews) pageviews.innerText = Number(data.metrics_24h.pageviews).toLocaleString();
+          if (visitors) visitors.innerText = Number(data.metrics_24h.unique_visitors).toLocaleString();
+          if (avgDur) {
+            const sec = data.metrics_24h.avg_session_duration_sec;
+            avgDur.innerText = Math.floor(sec / 60) + 'm ' + (sec % 60) + 's';
+          }
+          if (bounce) bounce.innerText = data.metrics_24h.bounce_rate_pct + '%';
+          if (lcp) lcp.innerText = data.metrics_24h.core_web_vitals.lcp_ms + 'ms';
+          if (cls) cls.innerText = data.metrics_24h.core_web_vitals.cls;
+        }
+      } catch (e) {
+        console.warn('Overview telemetry fetch error:', e);
+      }
+
+      // 2. Customer Profile / ICP Engine
+      try {
+        const res = await fetch('/v1/analytics/customer-profile', { headers });
+        if (res.ok) {
+          const data = await res.json();
+          renderCustomerProfileCard(data);
+        }
+      } catch (e) {
+        console.warn('Customer profile fetch error:', e);
+      }
+
+      // 3. Reports: Pages, Referrers, Geo, Devices
+      try {
+        const res = await fetch('/v1/analytics/reports?dimension=all', { headers });
+        if (res.ok) {
+          const data = await res.json();
+          renderAnalyticsReports(data);
+        }
+      } catch (e) {
+        console.warn('Reports telemetry fetch error:', e);
+      }
+
+      // 4. VIP Watchlist & Live Micro-Traces
+      loadVipWatchTargets();
+      loadVipLiveTraces();
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function renderCustomerProfileCard(data) {
+      if (!data || !data.ideal_customer_profile) return;
+      const icp = data.ideal_customer_profile;
+      const titleEl = document.getElementById('icpPersonaTitle');
+      const archEl = document.getElementById('icpArchetype');
+      const scoreEl = document.getElementById('icpFitScore');
+      const sumEl = document.getElementById('icpSummaryText');
+
+      if (titleEl) titleEl.innerText = icp.persona_title;
+      if (archEl) archEl.innerText = icp.archetype + ' · ' + data.total_visitors_analyzed + ' Total Visitors Analyzed';
+      if (scoreEl) scoreEl.innerText = icp.icp_fit_score + '%';
+      if (sumEl) sumEl.innerText = icp.summary;
+
+      const traits = icp.defining_traits || [];
+      if (traits[0]) {
+        const el = document.getElementById('icpTraitTech');
+        const sub = document.getElementById('icpTraitTechSub');
+        if (el) el.innerText = traits[0].detail;
+        if (sub) sub.innerText = traits[0].significance;
+      }
+      if (traits[1]) {
+        const el = document.getElementById('icpTraitGeo');
+        const sub = document.getElementById('icpTraitGeoSub');
+        if (el) el.innerText = traits[1].detail;
+        if (sub) sub.innerText = traits[1].significance;
+      }
+      if (traits[2]) {
+        const el = document.getElementById('icpTraitOrigin');
+        const sub = document.getElementById('icpTraitOriginSub');
+        if (el) el.innerText = traits[2].detail;
+        if (sub) sub.innerText = traits[2].significance;
+      }
+      if (traits[3]) {
+        const el = document.getElementById('icpTraitDriver');
+        const sub = document.getElementById('icpTraitDriverSub');
+        if (el) el.innerText = traits[3].detail;
+        if (sub) sub.innerText = traits[3].significance;
+      }
+
+      // Render Playbook
+      const playbookGrid = document.getElementById('icpPlaybookGrid');
+      if (playbookGrid && Array.isArray(icp.actionable_playbook)) {
+        playbookGrid.innerHTML = icp.actionable_playbook.map(function(p, idx) {
+          return '<div class="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 text-xs">' +
+            '<span class="font-bold text-neutral-900 block mb-1 font-num">' + (idx + 1) + '. ' + escapeHtml(p.objective) + '</span>' +
+            '<p class="text-[11px] text-neutral-600 leading-relaxed">' + escapeHtml(p.recommendation) + '</p>' +
+          '</div>';
+        }).join('');
+      }
+    }
+
+    function renderAnalyticsReports(data) {
+      if (!data) return;
+
+      // Pages
+      const pagesBody = document.getElementById('telemetryPagesTableBody');
+      if (pagesBody && Array.isArray(data.top_pages)) {
+        pagesBody.innerHTML = data.top_pages.map(function(p) {
+          return '<tr class="hover:bg-neutral-50">' +
+            '<td class="py-2 font-mono text-neutral-900 font-medium">' + escapeHtml(p.path) + '</td>' +
+            '<td class="py-2 text-right font-bold text-neutral-900">' + p.views + '</td>' +
+            '<td class="py-2 text-right text-neutral-600">' + p.unique_visitors + '</td>' +
+            '<td class="py-2 text-right text-neutral-500">' + p.avg_time_sec + 's</td>' +
+          '</tr>';
+        }).join('') || '<tr><td colspan="4" class="py-3 text-center text-neutral-400">No page views recorded yet.</td></tr>';
+      }
+
+      // Referrers
+      const refBody = document.getElementById('telemetryReferrersTableBody');
+      if (refBody && Array.isArray(data.referrers)) {
+        refBody.innerHTML = data.referrers.map(function(r) {
+          return '<tr class="hover:bg-neutral-50">' +
+            '<td class="py-2 font-medium text-neutral-900">' + escapeHtml(r.source) + '</td>' +
+            '<td class="py-2 text-right font-bold text-neutral-900">' + r.visits + '</td>' +
+            '<td class="py-2 text-right text-neutral-600">' + r.unique_visitors + '</td>' +
+          '</tr>';
+        }).join('') || '<tr><td colspan="3" class="py-3 text-center text-neutral-400">No referrers recorded yet.</td></tr>';
+      }
+
+      // Geo
+      const geoBody = document.getElementById('telemetryGeoTableBody');
+      if (geoBody && Array.isArray(data.geographic_footprint)) {
+        geoBody.innerHTML = data.geographic_footprint.map(function(g) {
+          return '<tr class="hover:bg-neutral-50">' +
+            '<td class="py-2 font-medium text-neutral-900">' + escapeHtml((g.city ? g.city + ', ' : '') + g.country) + '</td>' +
+            '<td class="py-2 text-neutral-500 font-mono">' + escapeHtml(g.edge_pop || 'EDGE') + '</td>' +
+            '<td class="py-2 text-right font-bold text-neutral-900">' + g.events + '</td>' +
+            '<td class="py-2 text-right text-neutral-600">' + g.visitors + '</td>' +
+          '</tr>';
+        }).join('') || '<tr><td colspan="4" class="py-3 text-center text-neutral-400">No geo telemetry recorded yet.</td></tr>';
+      }
+
+      // Devices
+      const devBody = document.getElementById('telemetryDevicesTableBody');
+      if (devBody && Array.isArray(data.devices_and_browsers)) {
+        devBody.innerHTML = data.devices_and_browsers.map(function(d) {
+          return '<tr class="hover:bg-neutral-50">' +
+            '<td class="py-2 font-medium text-neutral-900">' + escapeHtml(d.os) + '</td>' +
+            '<td class="py-2 text-neutral-600">' + escapeHtml(d.browser) + '</td>' +
+            '<td class="py-2 text-neutral-500 uppercase text-[10px] font-semibold">' + escapeHtml(d.device_type) + '</td>' +
+            '<td class="py-2 text-right font-bold text-neutral-900">' + d.event_count + '</td>' +
+          '</tr>';
+        }).join('') || '<tr><td colspan="4" class="py-3 text-center text-neutral-400">No devices recorded yet.</td></tr>';
+      }
+
+      // Insane Micro-Metrics
+      if (data.insane_metrics) {
+        renderInsaneMetrics(data.insane_metrics);
+      }
+    }
+
+    function renderInsaneMetrics(metrics) {
+      if (!metrics) return;
+
+      // Summary badges
+      if (metrics.hardware_summary) {
+        const s = metrics.hardware_summary;
+        const coresEl = document.getElementById('insaneAvgCores');
+        const ramEl = document.getElementById('insaneAvgRam');
+        const retinaEl = document.getElementById('insaneRetinaPct');
+        const darkEl = document.getElementById('insaneDarkModePct');
+        if (coresEl) coresEl.innerText = (s.avg_cpu_cores || '8') + ' Cores Avg';
+        if (ramEl) ramEl.innerText = (s.avg_ram_gb || '16') + ' GB RAM Avg';
+        if (retinaEl) retinaEl.innerText = (s.retina_display_pct || '84') + '% Retina';
+        if (darkEl) darkEl.innerText = (s.dark_mode_pct || '72') + '% Dark Mode';
+      }
+
+      // Kinetic Activity Table
+      const actBody = document.getElementById('insaneActivityTableBody');
+      if (actBody && Array.isArray(metrics.user_activity_modes)) {
+        actBody.innerHTML = metrics.user_activity_modes.map(function(m) {
+          const actName = (m.primary_activity || 'navigating').replace(/_/g, ' ').toUpperCase();
+          return '<tr class="hover:bg-neutral-50">' +
+            '<td class="py-2 font-medium text-neutral-900"><span class="px-2 py-0.5 rounded text-[10px] bg-neutral-100 font-semibold">' + escapeHtml(actName) + '</span></td>' +
+            '<td class="py-2 text-right text-neutral-700 font-mono">' + m.avg_active_sec + 's</td>' +
+            '<td class="py-2 text-right text-neutral-700 font-mono">' + m.avg_idle_sec + 's</td>' +
+            '<td class="py-2 text-right font-bold text-neutral-900 font-mono">' + m.avg_idle_pct + '%</td>' +
+            '<td class="py-2 text-right text-neutral-600 font-mono">' + m.count + '</td>' +
+          '</tr>';
+        }).join('') || '<tr><td colspan="5" class="py-3 text-center text-neutral-400">No kinetic activity recorded yet.</td></tr>';
+      }
+
+      // GPU Fleet Table
+      const gpuBody = document.getElementById('insaneGpuTableBody');
+      if (gpuBody && Array.isArray(metrics.gpu_hardware_fleet)) {
+        const total = metrics.gpu_hardware_fleet.reduce(function(acc, g) { return acc + (g.count || 0); }, 0) || 1;
+        gpuBody.innerHTML = metrics.gpu_hardware_fleet.map(function(g) {
+          const share = Math.round((g.count / total) * 100);
+          return '<tr class="hover:bg-neutral-50">' +
+            '<td class="py-2 font-medium text-neutral-900 font-mono text-[11px] truncate max-w-[200px]" title="' + escapeHtml(g.gpu) + '">' + escapeHtml(g.gpu) + '</td>' +
+            '<td class="py-2 text-right font-bold text-neutral-900 font-mono">' + g.count + '</td>' +
+            '<td class="py-2 text-right text-neutral-600 font-mono">' + share + '%</td>' +
+          '</tr>';
+        }).join('') || '<tr><td colspan="3" class="py-3 text-center text-neutral-400">No GPU telemetry recorded yet.</td></tr>';
+      }
+    }
+
+    async function loadVipWatchTargets() {
+      const token = getAuthToken();
+      const activeKey = getActiveKey();
+      const headers = {};
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      else if (activeKey) headers['X-API-Key'] = activeKey;
+
+      try {
+        const res = await fetch('/v1/analytics/tracing/targets', { headers });
+        if (res.ok) {
+          const data = await res.json();
+          const tbody = document.getElementById('vipTargetsTableBody');
+          if (tbody && Array.isArray(data.targets)) {
+            if (data.targets.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-neutral-400">No active watched clients yet. Add an IP or User ID above.</td></tr>';
+            } else {
+              tbody.innerHTML = data.targets.map(function(t) {
+                return '<tr class="hover:bg-neutral-50">' +
+                  '<td class="p-2.5 font-mono text-neutral-900 font-medium">' +
+                    escapeHtml(t.target_value) +
+                    '<span class="block text-[10px] text-neutral-400 uppercase font-sans">' + escapeHtml(t.target_type) + '</span>' +
+                  '</td>' +
+                  '<td class="p-2.5 font-medium text-neutral-800">' + escapeHtml(t.label || 'Client') + '</td>' +
+                  '<td class="p-2.5 text-right font-bold text-neutral-900 font-mono">' + (t.total_hits_traced || 0) + '</td>' +
+                  '<td class="p-2.5 text-right">' +
+                    '<button type="button" onclick="deleteVipTarget(\'' + escapeHtml(t.target_id) + '\')" class="text-neutral-400 hover:text-red-600 cursor-pointer text-xs font-semibold">Delete</button>' +
+                  '</td>' +
+                '</tr>';
+              }).join('');
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('VIP targets fetch error:', e);
+      }
+    }
+
+    async function handleCreateVipTarget(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      const targetType = document.getElementById('vipTargetType')?.value || 'ip';
+      const valInput = document.getElementById('vipTargetValue');
+      const labelInput = document.getElementById('vipTargetLabel');
+      const targetValue = (valInput ? valInput.value : '').trim();
+      const label = (labelInput ? labelInput.value : '').trim();
+
+      if (!targetValue) {
+        showAppToast('Please enter an IP address or User ID to trace', true);
+        return;
+      }
+
+      const token = getAuthToken();
+      const activeKey = getActiveKey();
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      else if (activeKey) headers['X-API-Key'] = activeKey;
+
+      try {
+        const res = await fetch('/v1/analytics/tracing/targets', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            target_type: targetType,
+            target_value: targetValue,
+            label: label || 'High-Paying Client'
+          })
+        });
+        const data = await res.json();
+        if (data.status === 'created') {
+          showAppToast('Target ' + targetValue + ' added to VIP tracing!');
+          if (valInput) valInput.value = '';
+          if (labelInput) labelInput.value = '';
+          loadVipWatchTargets();
+        } else {
+          showAppToast('Error: ' + (data.error || 'Failed to add target'), true);
+        }
+      } catch (err) {
+        showAppToast('Network error: ' + err.message, true);
+      }
+    }
+
+    async function deleteVipTarget(targetId) {
+      const token = getAuthToken();
+      const activeKey = getActiveKey();
+      const headers = {};
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      else if (activeKey) headers['X-API-Key'] = activeKey;
+
+      try {
+        const res = await fetch('/v1/analytics/tracing/targets/' + encodeURIComponent(targetId), {
+          method: 'DELETE',
+          headers
+        });
+        if (res.ok) {
+          showAppToast('VIP target removed from watchlist');
+          loadVipWatchTargets();
+        } else {
+          showAppToast('Failed to delete target', true);
+        }
+      } catch (err) {
+        showAppToast('Error: ' + err.message, true);
+      }
+    }
+
+    async function loadVipLiveTraces() {
+      const token = getAuthToken();
+      const activeKey = getActiveKey();
+      const headers = {};
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      else if (activeKey) headers['X-API-Key'] = activeKey;
+
+      try {
+        const res = await fetch('/v1/analytics/tracing/live?limit=15', { headers });
+        if (res.ok) {
+          const data = await res.json();
+          const container = document.getElementById('vipLiveTracesContainer');
+          if (container && Array.isArray(data.traces)) {
+            if (data.traces.length === 0) {
+              container.innerHTML = '<div class="p-4 text-center text-xs text-neutral-400 bg-neutral-50 rounded-xl">No VIP traces captured yet. Matching events will stream here live.</div>';
+            } else {
+              container.innerHTML = data.traces.map(function(tr) {
+                const timeStr = new Date(tr.timestamp).toLocaleTimeString();
+                return '<div class="p-3 bg-neutral-50/80 border border-neutral-200/60 rounded-xl text-xs space-y-1.5 transition hover:bg-neutral-100/60">' +
+                  '<div class="flex items-center justify-between">' +
+                    '<div class="flex items-center gap-1.5">' +
+                      '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>' +
+                      '<span class="font-bold text-neutral-900">' + escapeHtml(tr.target_label || 'VIP Client') + '</span>' +
+                    '</div>' +
+                    '<span class="text-[10px] text-neutral-400 font-mono">' + timeStr + '</span>' +
+                  '</div>' +
+                  '<div class="flex items-center justify-between text-[11px] text-neutral-600 font-mono">' +
+                    '<span>' + escapeHtml(tr.client_ip) + ' &bull; ' + escapeHtml(tr.path || '/') + '</span>' +
+                    '<span class="font-semibold text-neutral-800">' + escapeHtml(tr.active_vs_idle || '') + '</span>' +
+                  '</div>' +
+                  '<div class="text-[10px] text-neutral-500 flex items-center justify-between border-t border-neutral-200/40 pt-1">' +
+                    '<span class="truncate max-w-[200px]" title="' + escapeHtml(tr.gpu || '') + '">' + escapeHtml(tr.gpu || 'GPU Silicon') + '</span>' +
+                    '<span>' + escapeHtml(tr.battery_status || tr.exact_device || 'Verified Edge') + '</span>' +
+                  '</div>' +
+                '</div>';
+              }).join('');
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('VIP live traces fetch error:', e);
+      }
+    }
+
+    async function generateFreshICPReport() {
+      const btn = document.getElementById('btnRegenerateIcp');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="animate-spin mr-1">⟳</span> Synthesizing Blueprint...';
+      }
+
+      const token = getAuthToken();
+      const activeKey = getActiveKey();
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      else if (activeKey) headers['X-API-Key'] = activeKey;
+
+      try {
+        const res = await fetch('/v1/analytics/customer-profile/generate', {
+          method: 'POST',
+          headers
+        });
+        const data = await res.json();
+        if (data.report) {
+          renderCustomerProfileCard(data.report);
+          showAppToast('Ideal Customer Profile freshly synthesized!');
+        } else {
+          showAppToast('ICP generated successfully');
+        }
+      } catch (err) {
+        showAppToast('Synthesis error: ' + err.message, true);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg><span>Regenerate Blueprint</span>';
+        }
+      }
+    }
+
+    function copySnippetCode(elId) {
+      const el = document.getElementById(elId);
+      if (el) {
+        copyToClipboard(el.innerText);
+        showAppToast('Embed tag copied to clipboard!');
+      }
+    }
+
     // Initialize Workspace
     async function initWorkspace() {
       // 1. Direct event listener bindings for sidebar buttons
@@ -1329,7 +2206,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
       // 4. Select target tab from URL param or hash
       const hashTab = (window.location.hash || '').replace('#', '');
       const targetTab = urlParams.get('tab') || hashTab;
-      if (targetTab && ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations'].includes(targetTab)) {
+      if (targetTab && ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations', 'analytics'].includes(targetTab)) {
         setAppView(targetTab);
       } else {
         setAppView('overview');

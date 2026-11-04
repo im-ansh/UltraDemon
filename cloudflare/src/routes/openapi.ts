@@ -293,6 +293,82 @@ export function getOpenAPISpec(origin: string) {
           },
         },
       },
+      '/v1/analytics/capture': {
+        post: {
+          summary: 'Capture Telemetry Events (PostHog-Compatible Edge Ingest)',
+          description: 'Sub-5ms edge event ingestion at 330+ Anycast cities. Captures pageviews, custom events, Core Web Vitals, scroll depth, and user properties.',
+          operationId: 'captureAnalyticsEvent',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    api_key: { type: 'string' },
+                    event_name: { type: 'string', example: '$pageview' },
+                    distinct_id: { type: 'string', example: 'usr_8291' },
+                    session_id: { type: 'string', example: 'sess_1029' },
+                    url: { type: 'string' },
+                    properties: { type: 'object' },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            '201': { description: 'Event recorded to edge D1 database in <5ms' },
+          },
+        },
+      },
+      '/v1/analytics/overview': {
+        get: {
+          summary: 'Get Real-Time KPIs & 24h Metrics',
+          description: 'Active visitors right now, pageviews, unique visitors, dwell time, and Core Web Vitals.',
+          operationId: 'getAnalyticsOverview',
+          security: [{ ApiKeyAuth: [] }, { BearerAuth: [] }],
+          responses: {
+            '200': { description: 'Live KPI summary' },
+          },
+        },
+      },
+      '/v1/analytics/reports': {
+        get: {
+          summary: 'Get Granular Dimension Reports',
+          description: 'Individual reports for pages, referrers, campaigns, geo, devices, vitals, events, and retention.',
+          operationId: 'getAnalyticsReports',
+          parameters: [
+            { name: 'dimension', in: 'query', schema: { type: 'string', enum: ['pages', 'referrers', 'campaigns', 'geo', 'devices', 'vitals', 'events', 'all'] } },
+            { name: 'limit', in: 'query', schema: { type: 'integer', default: 15 } },
+          ],
+          security: [{ ApiKeyAuth: [] }, { BearerAuth: [] }],
+          responses: {
+            '200': { description: 'Granular analytics report' },
+          },
+        },
+      },
+      '/v1/analytics/customer-profile': {
+        get: {
+          summary: 'Autonomous Ideal Customer Profile (ICP) Blueprint',
+          description: 'The PostHog Killer: Automatically clusters recurring power visitors, identifies common technical, geographic, and behavioral traits, and synthesizes an actionable Ideal Customer Profile (ICP) report.',
+          operationId: 'getCustomerProfile',
+          security: [{ ApiKeyAuth: [] }, { BearerAuth: [] }],
+          responses: {
+            '200': { description: 'Synthesized Ideal Customer Profile report' },
+          },
+        },
+      },
+      '/v1/analytics/customer-profile/generate': {
+        post: {
+          summary: 'Regenerate Fresh Customer Profile Blueprint',
+          description: 'Forces edge re-clustering of all tracked visitors and recalculates defining traits, fit scores, and the growth playbook.',
+          operationId: 'regenerateCustomerProfile',
+          security: [{ ApiKeyAuth: [] }, { BearerAuth: [] }],
+          responses: {
+            '200': { description: 'Freshly synthesized ICP blueprint' },
+          },
+        },
+      },
     },
     components: {
       securitySchemes: {

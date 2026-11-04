@@ -642,7 +642,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </span>
       </a>
 
-      <!-- Quick Links Navigation (Pricing, Memory, Search, Benchmarks, Privacy, Terms) -->
+      <!-- Quick Links Navigation (Pricing, Memory, Search, Telemetry, Benchmarks, Privacy, Terms) -->
       <nav class="hidden sm:flex items-center gap-3 md:gap-5 lg:gap-6 text-xs font-medium">
         <a href="#pricing" class="nav-link transition">Pricing</a>
         <a href="#memory" class="nav-link transition flex items-center gap-1.5">
@@ -650,6 +650,10 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           <span id="headerMemoryBadge" class="font-num text-[9px] bg-white/20 text-white border border-white/40 px-1 py-0.2 rounded font-semibold backdrop-blur-xs">&lt;15ms</span>
         </a>
         <a href="#search" class="nav-link transition">Search</a>
+        <a href="#analytics" class="nav-link transition flex items-center gap-1.5">
+          <span>Telemetry</span>
+          <span class="font-num text-[9px] bg-white/20 text-white border border-white/40 px-1 py-0.2 rounded font-semibold backdrop-blur-xs">vs PostHog</span>
+        </a>
         <a href="#benchmarks" class="nav-link transition">Benchmarks</a>
         <a href="/privacy" class="nav-link transition whitespace-nowrap">Privacy Policy</a>
         <a href="/terms" class="nav-link transition whitespace-nowrap">Terms of Use</a>
@@ -1544,6 +1548,115 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           <div id="resultsContainer" class="mt-4 pt-4 border-t border-neutral-100 space-y-3">
             <div class="text-center py-4 text-neutral-400 text-xs">
               Click <span class="font-semibold text-neutral-900">Search</span> above to test the autonomous search engine.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Autonomous Telemetry & Customer Profile Section (Competing with PostHog) -->
+      <section id="analytics" class="mb-16 pt-8 border-t border-neutral-200 reveal-on-scroll">
+        <div class="mb-8">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100 border border-neutral-200 text-neutral-800 text-[10px] font-num font-bold tracking-wider uppercase mb-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Product Analytics &amp; Telemetry · Competing with PostHog</span>
+          </div>
+          <h2 class="text-2xl sm:text-4xl font-normal tracking-tight text-neutral-950 mt-1">
+            Replace PostHog with <span class="font-serif font-bold italic text-black">sub-5ms edge telemetry</span> and <span class="font-serif font-bold italic text-black">Autonomous Customer Profiles</span>.
+          </h2>
+          <p class="text-xs sm:text-sm text-neutral-600 mt-2 max-w-3xl leading-relaxed">
+            Engineered directly on Cloudflare Anycast edge nodes. Zero third-party cloud data routing, 100% sovereign D1 SQLite storage, and a revolutionary feature PostHog doesn't have: automated AI clustering that discovers your most loyal showing-up customers and generates an actionable Ideal Customer Profile (ICP) blueprint.
+          </p>
+        </div>
+
+        <!-- 3 Feature Highlight Columns (Card Design) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <!-- Column 1: Sub-5ms Anycast Ingest -->
+          <div class="card-clean p-6 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4 font-num text-xs font-bold">
+                01
+              </div>
+              <h3 class="text-sm font-bold text-neutral-950 mb-2">Sub-5ms Edge Ingestion</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-4">
+                PostHog routes telemetry to centralized US cloud clusters (180-320ms latency). UltraDemon ingests events at 330+ Cloudflare edge cities nearest to your visitor with sub-5ms write times and zero client slowdown.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-neutral-100 flex items-center justify-between font-num text-[11px] text-neutral-500">
+              <span>Ingestion Speed</span>
+              <span class="font-bold text-emerald-600">&lt;5ms Edge</span>
+            </div>
+          </div>
+
+          <!-- Column 2: Exclusive Feature: Autonomous Customer Profile (ICP) -->
+          <div class="card-clean p-6 rounded-2xl border-2 border-neutral-900 flex flex-col justify-between relative bg-neutral-50/50">
+            <div>
+              <div class="w-8 h-8 rounded-lg bg-neutral-900 text-white flex items-center justify-center mb-4 font-num text-xs font-bold">
+                02
+              </div>
+              <div class="inline-block px-2 py-0.5 rounded bg-neutral-900 text-white text-[9px] font-num font-bold uppercase mb-2">Exclusive to UltraDemon</div>
+              <h3 class="text-sm font-bold text-neutral-950 mb-2">Autonomous "Customer Profile" Engine</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-4">
+                PostHog only lists individual raw persons. UltraDemon analyzes your most frequent, returning customers, identifies their common technical, geographic, and behavioral traits, and synthesizes an automated Ideal Customer Profile (ICP) persona report.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-neutral-200 flex items-center justify-between font-num text-[11px] text-neutral-500">
+              <span>PostHog Feature Gap</span>
+              <span class="font-bold text-neutral-900">Automated ICP AI</span>
+            </div>
+          </div>
+
+          <!-- Column 3: Niche Metrics & Core Web Vitals -->
+          <div class="card-clean p-6 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4 font-num text-xs font-bold">
+                03
+              </div>
+              <h3 class="text-sm font-bold text-neutral-950 mb-2">Deep Niche &amp; Performance Metrics</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed mb-4">
+                Automatic capture of Core Web Vitals (p75 LCP, CLS, FID, TTFB), scroll depth milestones (25%, 50%, 75%, 100%), Cloudflare Anycast colocation PoP routing, and individual granular reports for each metric dimension.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-neutral-100 flex items-center justify-between font-num text-[11px] text-neutral-500">
+              <span>Script Footprint</span>
+              <span class="font-bold text-neutral-900">2.5 KB (vs 70KB PostHog)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive ICP Showcase Preview Card -->
+        <div class="card-clean p-6 sm:p-8 rounded-3xl bg-white border border-neutral-200">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-neutral-100">
+            <div>
+              <span class="font-num text-[11px] text-neutral-500 uppercase tracking-wider font-semibold">Live ICP Archetype Demonstration</span>
+              <h3 class="text-base sm:text-lg font-bold text-neutral-950">
+                Persona Archetype: <span class="font-serif italic font-bold">The Autonomous Edge Builder</span>
+              </h3>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="font-num text-xs px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">94% ICP FIT SCORE</span>
+              <a href="/app?tab=analytics" class="px-3.5 py-1.5 rounded-lg bg-black text-white text-xs font-semibold hover:bg-neutral-800 transition">View in Console &rarr;</a>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-700 leading-relaxed mb-6 font-sans">
+            "Your most recurring, high-conversion visitors are power software builders who primarily operate on macOS and Chrome, based in San Francisco and London. They discover your product via GitHub and developer references, return over 4 times per week, and spend over 10 minutes per session inspecting APIs and creating keys."
+          </p>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+            <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-100">
+              <span class="text-[10px] text-neutral-400 font-num uppercase block">Top Stack</span>
+              <span class="font-bold text-neutral-900">macOS · Chrome</span>
+            </div>
+            <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-100">
+              <span class="text-[10px] text-neutral-400 font-num uppercase block">Top Geography</span>
+              <span class="font-bold text-neutral-900">San Francisco, US (52%)</span>
+            </div>
+            <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-100">
+              <span class="text-[10px] text-neutral-400 font-num uppercase block">Acquisition Channel</span>
+              <span class="font-bold text-neutral-900">GitHub / Technical Docs</span>
+            </div>
+            <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-100">
+              <span class="text-[10px] text-neutral-400 font-num uppercase block">Retention Trigger</span>
+              <span class="font-bold text-neutral-900">API Key Created &lt; 3 mins</span>
             </div>
           </div>
         </div>

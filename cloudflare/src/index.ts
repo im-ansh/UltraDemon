@@ -14,6 +14,8 @@ import { mcpRouter }     from './routes/mcp';
 import { crawlerRouter } from './routes/crawler';
 import { openapiRouter } from './routes/openapi';
 import { authRouter }    from './routes/auth';
+import { analyticsRouter } from './routes/analytics';
+import { sdkRouter }       from './routes/sdk';
 import { authMiddleware } from './lib/auth';
 import { getUsage } from './lib/api-keys';
 import { renderLandingPage } from './ui/landing';
@@ -194,10 +196,13 @@ app.get('/v1/plans', async (c) => {
 });
 
 // Mounted sub-routers
-app.route('/v1/auth',   authRouter);
-app.route('/v1/search', searchRouter);
-app.route('/v1/memory', memoryRouter);
-app.route('/v1/keys',   keysRouter);
+app.route('/v1/auth',      authRouter);
+app.route('/v1/search',    searchRouter);
+app.route('/v1/memory',    memoryRouter);
+app.route('/v1/keys',      keysRouter);
+app.route('/v1/analytics', analyticsRouter);
+app.route('/v1/telemetry', analyticsRouter);
+app.route('/sdk',          sdkRouter);
 app.get('/v1/usage', authMiddleware, async (c) => {
   const plainKey = c.get('plainKey');
   try {
