@@ -414,7 +414,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
     .hero-asset-floating-left {
       position: absolute;
-      top: 14rem;
+      top: 24rem;
       left: max(1.5rem, calc(50% - 47rem));
       width: 14rem;
       z-index: 25;
@@ -423,7 +423,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     }
     .hero-asset-floating-right {
       position: absolute;
-      top: 16rem;
+      top: 26.5rem;
       right: max(1.5rem, calc(50% - 47rem));
       width: 14rem;
       z-index: 25;
@@ -434,12 +434,12 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     @media (max-width: 1440px) {
       .hero-asset-floating-left {
         left: 1.25rem;
-        top: 13rem;
+        top: 23rem;
         width: 12.5rem;
       }
       .hero-asset-floating-right {
         right: 1.25rem;
-        top: 15rem;
+        top: 25.5rem;
         width: 12.5rem;
       }
     }
@@ -447,12 +447,12 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     @media (max-width: 1160px) {
       .hero-asset-floating-left {
         left: 0.5rem;
-        top: 12rem;
+        top: 22rem;
         width: 10rem;
       }
       .hero-asset-floating-right {
         right: 0.5rem;
-        top: 14rem;
+        top: 24.5rem;
         width: 10rem;
       }
     }

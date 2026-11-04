@@ -365,13 +365,23 @@ authRouter.post('/confirm-verification', async (c) => {
   // Update D1 users to verified
   await c.env.DB.prepare('UPDATE users SET email_verified = 1 WHERE email = ?').bind(email).run();
 
-  const user = await c.env.DB.prepare('SELECT user_id, email, plan FROM users WHERE email = ?')
-    .bind(email)
-    .first<{ user_id: string; email: string; plan?: string }>();
+    let user = await c.env.DB.prepare('SELECT user_id, email, plan FROM users WHERE email = ?')
+      .bind(email)
+      .first<{ user_id: string; email: string; plan?: string }>();
 
-  if (!user) {
-    return c.json({ error: 'User record not found' }, 404);
-  }
+    if (!user) {
+      const newUserId = `usr_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
+      try {
+        await c.env.DB.prepare(
+          'INSERT OR IGNORE INTO users (user_id, email, password_hash, created_at, plan, email_verified) VALUES (?, ?, ?, ?, ?, 1)'
+        ).bind(newUserId, email, 'supabase_auth', Date.now(), 'free').run();
+        user = { user_id: newUserId, email, plan: 'free' };
+      } catch {}
+    }
+
+    if (!user) {
+      return c.json({ error: 'User record could not be provisioned' }, 500);
+    }
 
   const plan = user.plan || 'free';
 
@@ -453,10 +463,24 @@ authRouter.get('/me', async (c) => {
     }
 
     if (user && user.id) {
-      const row = await c.env.DB.prepare('SELECT plan FROM users WHERE user_id = ?').bind(user.id).first<{ plan: string }>();
-      const plan = row?.plan || 'free';
-      const keys = await listUserKeys(c.env, user.id, user.email);
-      return c.json({ user: { id: user.id, email: user.email, plan, keys } });
+      let d1User = await c.env.DB.prepare('SELECT user_id, email, plan FROM users WHERE user_id = ? OR email = ?')
+        .bind(user.id, (user.email || '').trim().toLowerCase())
+        .first<{ user_id: string; email: string; plan?: string }>();
+
+      if (!d1User && user.email) {
+        const newUserId = `usr_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
+        try {
+          await c.env.DB.prepare(
+            'INSERT OR IGNORE INTO users (user_id, email, password_hash, created_at, plan, email_verified) VALUES (?, ?, ?, ?, ?, 1)'
+          ).bind(newUserId, user.email.trim().toLowerCase(), 'supabase_auth', Date.now(), 'free').run();
+          d1User = { user_id: newUserId, email: user.email, plan: 'free' };
+        } catch {}
+      }
+
+      const effectiveId = d1User?.user_id || user.id;
+      const plan = d1User?.plan || 'free';
+      const keys = await listUserKeys(c.env, effectiveId, user.email);
+      return c.json({ user: { id: effectiveId, email: user.email || d1User?.email, plan, keys } });
     }
   }
 

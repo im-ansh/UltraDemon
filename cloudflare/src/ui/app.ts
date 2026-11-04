@@ -108,7 +108,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
           </span>
         </div>
         <div id="userEmailDisplay" class="font-num text-xs font-semibold text-neutral-900 truncate">
-          Loading...
+          Active Workspace
         </div>
       </div>
 
@@ -1465,6 +1465,29 @@ requests.post("${origin}/v1/analytics/capture", json={
     }
 
     function getAuthToken() {
+      // 0. Check URL hash for Supabase access_token (e.g. from email verification link or OAuth redirect)
+      try {
+        const hash = window.location.hash.substring(1);
+        if (hash) {
+          const hashParams = new URLSearchParams(hash);
+          const hashToken = hashParams.get('access_token');
+          if (hashToken) {
+            localStorage.setItem('ultrademon_auth_session', JSON.stringify({ access_token: hashToken }));
+            try {
+              const cleanUrl = window.location.pathname + window.location.search;
+              window.history.replaceState(null, '', cleanUrl);
+            } catch {}
+            return hashToken;
+          }
+        }
+        const searchParams = new URLSearchParams(window.location.search);
+        const qToken = searchParams.get('access_token') || searchParams.get('token');
+        if (qToken) {
+          localStorage.setItem('ultrademon_auth_session', JSON.stringify({ access_token: qToken }));
+          return qToken;
+        }
+      } catch {}
+
       // 1. Direct Edge Session in ultrademon_auth_session
       const sess = localStorage.getItem('ultrademon_auth_session');
       if (sess) {
@@ -1704,21 +1727,46 @@ requests.post("${origin}/v1/analytics/capture", json={
 
     function updateAllSuiteSnippets() {
       const activeKey = getActiveKey() || 'YOUR_API_KEY';
+      const NL = String.fromCharCode(10);
+      const DQ = String.fromCharCode(34);
+      const Q = String.fromCharCode(39);
 
       // Search snippets
       const sTs = document.getElementById('searchTsSnippet');
       if (sTs) {
-        sTs.innerText = "import { UltraSearch } from '@ultrademon/sdk';\n\nconst search = new UltraSearch({ apiKey: '" + activeKey + "' });\nconst { results, latency_ms } = await search.query('LLM edge retrieval', {\n  mode: 1 // 1: Instant <50ms, 2: Standard, 3: Deep\n});";
+        sTs.innerText = [
+          "import { UltraSearch } from " + Q + "@ultrademon/sdk" + Q + ";",
+          "",
+          "const search = new UltraSearch({ apiKey: " + Q + activeKey + Q + " });",
+          "const { results, latency_ms } = await search.query(" + Q + "LLM edge retrieval" + Q + ", {",
+          "  mode: 1 // 1: Instant <50ms, 2: Standard, 3: Deep",
+          "});"
+        ].join(NL);
       }
       const sPy = document.getElementById('searchPySnippet');
       if (sPy) {
-        sPy.innerText = 'import requests\n\nres = requests.get("' + ORIGIN + '/v1/search",\n    params={"q": "LLM edge retrieval", "mode": 1},\n    headers={"X-API-Key": "' + activeKey + '"}).json()\nprint(f"Results in {res[\'latency_ms\']}ms: {res[\'results\']}")';
+        sPy.innerText = [
+          "import requests",
+          "",
+          "url = " + DQ + ORIGIN + "/v1/search" + DQ,
+          "headers = {" + DQ + "X-API-Key" + DQ + ": " + DQ + activeKey + DQ + "}",
+          "params = {" + DQ + "q" + DQ + ": " + DQ + "LLM edge retrieval" + DQ + ", " + DQ + "mode" + DQ + ": 1}",
+          "res = requests.get(url, params=params, headers=headers).json()",
+          "print(" + DQ + "Results:" + DQ + ", res)"
+        ].join(NL);
       }
 
       // Memory snippet
       const mQuick = document.getElementById('memQuickSnippet');
       if (mQuick) {
-        mQuick.innerText = '# 1. Store memory from agent\ncurl -X POST "' + ORIGIN + '/v1/memory" \\\n  -H "X-API-Key: ' + activeKey + '" \\\n  -H "Content-Type: application/json" \\\n  -d \'{"content": "User prefers Michelangelus font and monochrome UI", "container_tag": "agent_prod"}\'\n\n# 2. Recall memory in <15ms\ncurl "' + ORIGIN + '/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\\n  -H "X-API-Key: ' + activeKey + '"';
+        const payload = JSON.stringify({ content: "User prefers monochrome UI", container_tag: "agent_prod" });
+        mQuick.innerText = [
+          "# 1. Store memory from autonomous agent",
+          "curl -X POST " + DQ + ORIGIN + "/v1/memory" + DQ + " -H " + DQ + "X-API-Key: " + activeKey + DQ + " -H " + DQ + "Content-Type: application/json" + DQ + " -d " + Q + payload + Q,
+          "",
+          "# 2. Recall memory in <15ms",
+          "curl " + DQ + ORIGIN + "/v1/memory/recall?q=user+preferences&container_tag=agent_prod" + DQ + " -H " + DQ + "X-API-Key: " + activeKey + DQ
+        ].join(NL);
       }
 
       // Telemetry embed snippets
@@ -1985,13 +2033,13 @@ requests.post("${origin}/v1/analytics/capture", json={
           return '<tr class="hover:bg-neutral-50">' +
             '<td class="py-3 font-mono text-neutral-900">' +
               '<span class="truncate max-w-[160px] inline-block align-middle">' + displayKey + '</span>' +
-              (isPlain ? ' <button type="button" onclick="copyToClipboard(\'' + k.plain_key + '\')" class="text-neutral-400 hover:text-black cursor-pointer inline-flex items-center ml-1.5 p-1 rounded hover:bg-neutral-100" title="Copy Full Key"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>' : '') +
+              (isPlain ? ' <button type="button" onclick="copyToClipboard(&apos;' + k.plain_key + '&apos;)" class="text-neutral-400 hover:text-black cursor-pointer inline-flex items-center ml-1.5 p-1 rounded hover:bg-neutral-100" title="Copy Full Key"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>' : '') +
             '</td>' +
             '<td class="py-3">' + scopeBadge + '</td>' +
             '<td class="py-3"><span class="px-2 py-0.5 rounded bg-neutral-100 text-neutral-900 text-[10px] font-bold uppercase font-num">' + (k.plan || 'free') + '</span></td>' +
             '<td class="py-3 text-neutral-600 font-sans">' + (k.label || 'Default') + '</td>' +
             '<td class="py-3 text-neutral-400 font-num">' + new Date(k.created_at || Date.now()).toLocaleDateString() + '</td>' +
-            '<td class="py-3 text-right"><button type="button" onclick="revokeAppKey(\'' + (k.plain_key || k.key_id) + '\')" class="text-neutral-400 hover:text-red-600 font-semibold cursor-pointer">Revoke</button></td>' +
+            '<td class="py-3 text-right"><button type="button" onclick="revokeAppKey(&apos;' + (k.plain_key || k.key_id) + '&apos;)" class="text-neutral-400 hover:text-red-600 font-semibold cursor-pointer">Revoke</button></td>' +
           '</tr>';
         }).join('');
       }
@@ -2122,7 +2170,7 @@ requests.post("${origin}/v1/analytics/capture", json={
                 '<td class="py-2.5 font-mono text-neutral-600">' + m.container_tag + '</td>' +
                 '<td class="py-2.5"><span class="px-1.5 py-0.5 rounded bg-neutral-100 text-[10px] uppercase font-bold">' + m.memory_type + '</span></td>' +
                 '<td class="py-2.5 truncate max-w-xs text-neutral-900 font-sans">' + (m.title || m.content) + '</td>' +
-                '<td class="py-2.5 text-right"><button type="button" onclick="deleteAppMem(\'' + m.memory_id + '\')" class="text-neutral-400 hover:text-black cursor-pointer">Delete</button></td>' +
+                '<td class="py-2.5 text-right"><button type="button" onclick="deleteAppMem(&apos;' + m.memory_id + '&apos;)" class="text-neutral-400 hover:text-black cursor-pointer">Delete</button></td>' +
               '</tr>'
             ).join('');
           }
@@ -2281,6 +2329,10 @@ requests.post("${origin}/v1/analytics/capture", json={
 
     // Export all global handlers to window immediately
     window.setAppView = setAppView;
+    window.switchSuite = switchSuite;
+    window.switchSuiteTab = switchSuite;
+    window.switchProfilePeriod = switchProfilePeriod;
+    window.generateFreshICPReport = generateFreshICPReport;
     window.handleAppCreateKey = handleAppCreateKey;
     window.copyToClipboard = copyToClipboard;
     window.copyActiveKey = copyActiveKey;
@@ -2298,15 +2350,45 @@ requests.post("${origin}/v1/analytics/capture", json={
 
     // Immediate Synchronous State Hydration (Zero Latency Profile Display)
     function hydrateCachedState() {
+      // 1. Direct user profile
       const userStr = localStorage.getItem('ultrademon_user');
       if (userStr) {
         try {
           currentUser = JSON.parse(userStr);
-          const emailDisplay = document.getElementById('userEmailDisplay');
-          const planBadge = document.getElementById('userPlanBadge');
-          if (emailDisplay && currentUser) emailDisplay.innerText = currentUser.email || currentUser.id || 'Active Workspace';
-          if (planBadge && currentUser) planBadge.innerText = (currentUser.plan || 'free').toUpperCase();
         } catch {}
+      }
+
+      // 2. Check Supabase auth cache if currentUser has no email
+      if (!currentUser || !currentUser.email) {
+        try {
+          for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (k && k.startsWith('sb-') && k.endsWith('-auth-token')) {
+              const sbData = JSON.parse(localStorage.getItem(k) || '{}');
+              if (sbData && sbData.user && sbData.user.email) {
+                currentUser = currentUser || {};
+                currentUser.id = currentUser.id || sbData.user.id;
+                currentUser.email = sbData.user.email;
+                currentUser.plan = currentUser.plan || 'free';
+                localStorage.setItem('ultrademon_user', JSON.stringify(currentUser));
+                break;
+              }
+            }
+          }
+        } catch {}
+      }
+
+      const emailDisplay = document.getElementById('userEmailDisplay');
+      const planBadge = document.getElementById('userPlanBadge');
+      if (emailDisplay) {
+        if (currentUser && (currentUser.email || currentUser.id)) {
+          emailDisplay.innerText = currentUser.email || currentUser.id;
+        } else {
+          emailDisplay.innerText = 'Active Workspace';
+        }
+      }
+      if (planBadge) {
+        planBadge.innerText = ((currentUser && currentUser.plan) || 'free').toUpperCase();
       }
 
       const activeKey = getActiveKey();
@@ -2315,6 +2397,9 @@ requests.post("${origin}/v1/analytics/capture", json={
       if (activeKey && topLabel) {
         topLabel.innerText = activeKey.slice(0, 10) + '...';
         if (topCopyBtn) topCopyBtn.classList.remove('hidden');
+      } else if (topLabel) {
+        topLabel.innerText = 'None';
+        if (topCopyBtn) topCopyBtn.classList.add('hidden');
       }
 
       const storedKeysStr = localStorage.getItem(STORAGE_KEY);
@@ -2690,7 +2775,7 @@ requests.post("${origin}/v1/analytics/capture", json={
                   '<td class="p-2.5 font-medium text-neutral-800">' + escapeHtml(t.label || 'Client') + '</td>' +
                   '<td class="p-2.5 text-right font-bold text-neutral-900 font-mono">' + (t.total_hits_traced || 0) + '</td>' +
                   '<td class="p-2.5 text-right">' +
-                    '<button type="button" onclick="deleteVipTarget(\'' + escapeHtml(t.target_id) + '\')" class="text-neutral-400 hover:text-red-600 cursor-pointer text-xs font-semibold">Delete</button>' +
+                    '<button type="button" onclick="deleteVipTarget(&apos;' + escapeHtml(t.target_id) + '&apos;)" class="text-neutral-400 hover:text-red-600 cursor-pointer text-xs font-semibold">Delete</button>' +
                   '</td>' +
                 '</tr>';
               }).join('');
@@ -2858,7 +2943,7 @@ requests.post("${origin}/v1/analytics/capture", json={
 
     // Initialize Workspace
     async function initWorkspace() {
-      // 1. Direct event listener bindings for sidebar buttons
+      // 1. Direct event listener bindings for sidebar buttons (synchronous)
       document.querySelectorAll('#sidebarNav button[data-view-target]').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.preventDefault();
@@ -2867,10 +2952,26 @@ requests.post("${origin}/v1/analytics/capture", json={
         });
       });
 
-      // 2. Synchronous hydration first (<1ms)
+      // 2. Synchronous hydration first (<1ms) - instantaneous local state render
       hydrateCachedState();
 
-      // 3. Authentication & Verification
+      // 3. Immediately activate target view from URL / hash so UI is interactive instantly
+      const urlParams = new URLSearchParams(window.location.search);
+      const hashTab = (window.location.hash || '').replace('#', '');
+      const suiteParam = urlParams.get('suite');
+      let targetTab = urlParams.get('tab') || hashTab;
+      if (suiteParam === 'search') targetTab = 'search';
+      else if (suiteParam === 'memory') targetTab = 'memory';
+      else if (suiteParam === 'metrics') targetTab = 'analytics';
+
+      if (targetTab && ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations', 'analytics'].includes(targetTab)) {
+        setAppView(targetTab);
+      } else {
+        setAppView('overview');
+      }
+      updateAllSuiteSnippets();
+
+      // 4. Authentication & Verification (in background)
       let token = getAuthToken();
       if (!token && !currentUser) {
         token = await initGuestSession();
@@ -2887,7 +2988,7 @@ requests.post("${origin}/v1/analytics/capture", json={
             localStorage.setItem('ultrademon_user', JSON.stringify(currentUser));
             const emailDisplay = document.getElementById('userEmailDisplay');
             const planBadge = document.getElementById('userPlanBadge');
-            if (emailDisplay) emailDisplay.innerText = currentUser.email || currentUser.id || 'Edge Workspace';
+            if (emailDisplay) emailDisplay.innerText = currentUser.email || currentUser.id || 'Active Workspace';
             if (planBadge) planBadge.innerText = (currentUser.plan || 'free').toUpperCase();
             if (data.user && Array.isArray(data.user.keys) && data.user.keys.length > 0) {
               const saved = JSON.parse(localStorage.getItem('ultrademon_saved_plain_keys') || '{}');
@@ -2900,7 +3001,6 @@ requests.post("${origin}/v1/analytics/capture", json={
               renderAppKeysTable();
             }
           } else if (!currentUser) {
-            // Only fallback to guest if completely unauthenticated
             token = await initGuestSession();
           }
         } catch (err) {
@@ -2914,7 +3014,6 @@ requests.post("${origin}/v1/analytics/capture", json={
         emailDisplay.innerText = (currentUser && (currentUser.email || currentUser.id)) || 'Active Workspace';
       }
 
-      const urlParams = new URLSearchParams(window.location.search);
       const targetPlan = (urlParams.get('plan') || urlParams.get('upgrade') || '').toLowerCase();
       if (targetPlan && ['free', 'pro', 'ultra', 'enterprise'].includes(targetPlan)) {
         if (currentUser && currentUser.plan !== targetPlan) {
@@ -2928,20 +3027,6 @@ requests.post("${origin}/v1/analytics/capture", json={
       }
       loadStoredMemories();
       refreshTelemetry();
-
-      // 4. Select target tab or suite from URL param or hash
-      const hashTab = (window.location.hash || '').replace('#', '');
-      const suiteParam = urlParams.get('suite');
-      let targetTab = urlParams.get('tab') || hashTab;
-      if (suiteParam === 'search') targetTab = 'search';
-      else if (suiteParam === 'memory') targetTab = 'memory';
-      else if (suiteParam === 'metrics') targetTab = 'analytics';
-
-      if (targetTab && ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations', 'analytics'].includes(targetTab)) {
-        setAppView(targetTab);
-      } else {
-        setAppView('overview');
-      }
       updateAllSuiteSnippets();
     }
 
