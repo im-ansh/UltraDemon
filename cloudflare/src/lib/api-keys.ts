@@ -33,7 +33,7 @@ export async function createApiKey(
   userId: string,
   plan: string = 'free',
   label: string = '',
-  keyType: 'unified' | 'memory' | 'search' = 'unified',
+  keyType: 'unified' | 'memory' | 'search' | 'telemetry' = 'unified',
 ): Promise<{ plainKey: string; record: ApiKeyRecord }> {
   // Validate plan exists in D1
   const planRow = await env.DB
@@ -42,7 +42,7 @@ export async function createApiKey(
     .first();
   if (!planRow) throw new Error(`Unknown plan: ${plan}`);
 
-  const prefix = keyType === 'memory' ? 'um_' : KEY_PREFIX;
+  const prefix = keyType === 'memory' ? 'um_' : keyType === 'telemetry' ? 'ut_' : KEY_PREFIX;
   const plainKey = `${prefix}${randomB62(KEY_BODY_LEN)}`;
   const hashedKey = await hashKey(plainKey, env.ULTRASEARCH_SECRET);
   const keyId = randomHex(16);
@@ -54,7 +54,7 @@ export async function createApiKey(
     user_id:    userId,
     plan,
     key_type:   keyType,
-    label:      label || `${keyType === 'memory' ? 'UltraMemory' : keyType === 'search' ? 'UltraSearch' : 'Unified'} key`,
+    label:      label || `${keyType === 'memory' ? 'UltraMemory' : keyType === 'search' ? 'UltraSearch' : keyType === 'telemetry' ? 'UltraMetrics' : 'Unified'} key`,
     created_at: now,
     revoked:    false,
   };

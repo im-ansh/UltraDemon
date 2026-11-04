@@ -202,6 +202,30 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       </div>
     </header>
 
+    <!-- Sovereign Engine Suite Switcher (Search • Memory • Metrics) -->
+    <div class="mb-8 p-1.5 bg-neutral-100/90 border border-neutral-200/90 rounded-2xl flex items-center gap-1.5 shadow-2xs">
+      <!-- 1. Search Suite -->
+      <button type="button" onclick="switchSuite('search')" id="suiteBtn-search" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
+        <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span class="font-bold">Search</span>
+        <span class="text-[9px] bg-neutral-200/70 border border-neutral-300/50 px-1.5 py-0.2 rounded font-num text-neutral-700 hidden sm:inline">&lt;40ms Edge</span>
+      </button>
+
+      <!-- 2. Memory Suite -->
+      <button type="button" onclick="switchSuite('memory')" id="suiteBtn-memory" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
+        <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+        <span class="font-bold">Memory</span>
+        <span class="text-[9px] bg-neutral-200/70 border border-neutral-300/50 px-1.5 py-0.2 rounded font-num text-neutral-700 hidden sm:inline">&lt;15ms BM25</span>
+      </button>
+
+      <!-- 3. Metrics Suite -->
+      <button type="button" onclick="switchSuite('metrics')" id="suiteBtn-metrics" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
+        <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        <span class="font-bold">Metrics</span>
+        <span class="text-[9px] bg-neutral-900 text-white px-1.5 py-0.2 rounded font-num hidden sm:inline">vs PostHog</span>
+      </button>
+    </div>
+
     <!-- SECTION 1: OVERVIEW -->
     <section id="view-overview" class="space-y-6">
       <!-- 4 Top Metric Cards (Card Design Skill) -->
@@ -302,9 +326,10 @@ curl -X POST "${origin}/v1/memory/query" \\
           <div>
             <label class="block text-[11px] font-medium text-neutral-600 mb-1">API Function / Scope</label>
             <select id="appKeyType" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 focus:outline-none focus:bg-white focus:border-black font-num">
+              <option value="search">UltraSearch API (us_*)</option>
               <option value="memory" selected>UltraMemory API (um_*)</option>
-              <option value="unified">Unified API (Search + Memory)</option>
-              <option value="search">UltraSearch API (Search Only)</option>
+              <option value="telemetry">UltraMetrics Telemetry (ut_*)</option>
+              <option value="unified">Unified API (All 3 Engines)</option>
             </select>
           </div>
           <div>
@@ -367,6 +392,10 @@ curl -X POST "${origin}/v1/memory/query" \\
             <h2 class="text-sm font-normal text-neutral-950 mt-0.5">UltraMemory API Reference</h2>
           </div>
           <div class="flex items-center gap-2">
+            <button type="button" onclick="quickCreateSuiteKey('memory')" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 cursor-pointer transition flex items-center gap-1.5 shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              <span>Create Memory Key</span>
+            </button>
             <span class="text-[10px] font-num bg-neutral-200 text-neutral-800 px-2 py-0.5 rounded font-bold">&lt;15ms BM25 Edge</span>
             <span class="text-[10px] font-num bg-neutral-900 text-white px-2 py-0.5 rounded font-bold">330+ Cities</span>
           </div>
@@ -491,6 +520,107 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
 
     <!-- SECTION 4: ULTRASEARCH STUDIO -->
     <section id="view-search" class="space-y-6 hidden">
+      <!-- Search Suite Top KPI Strip -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">BM25 Edge P50</span>
+            <span class="text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.2 rounded font-num font-bold">&lt;40ms</span>
+          </div>
+          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight">38ms</div>
+          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Anycast PoPs</span>
+            <span class="font-bold text-neutral-900">330+ Cities</span>
+          </div>
+        </div>
+
+        <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">KV Cache Hit Rate</span>
+            <span class="text-xs text-neutral-400 font-num">Speed</span>
+          </div>
+          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight">94.8%</div>
+          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Cache Recall</span>
+            <span class="font-bold text-neutral-900">&lt;5ms</span>
+          </div>
+        </div>
+
+        <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Engine Topology</span>
+            <span class="text-xs text-neutral-400 font-num">C-Compiled</span>
+          </div>
+          <div class="text-2xl font-normal font-num text-neutral-950 tracking-tight">D1 SQLite FTS5</div>
+          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Cloud Markup</span>
+            <span class="font-bold text-neutral-900">Zero</span>
+          </div>
+        </div>
+
+        <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Search Modes</span>
+            <span class="text-xs text-neutral-400 font-num">Routing</span>
+          </div>
+          <div class="text-2xl font-normal font-num text-neutral-950 tracking-tight">Modes 1, 2, 3</div>
+          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Deep Research</span>
+            <span class="font-bold text-neutral-900">Supported</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search API & SDK Management Card -->
+      <div class="card-clean p-6 rounded-2xl space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-100 pb-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-sm font-bold text-neutral-950">UltraSearch API &amp; SDK Quickstart</h3>
+              <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-neutral-900 text-white font-num">&lt;40ms BM25 Edge</span>
+            </div>
+            <p class="text-xs text-neutral-500 mt-0.5">Direct BM25 web index queries with compiled SQLite FTS5. Zero third-party LLM latency, zero cloud markups.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="quickCreateSuiteKey('search')" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 cursor-pointer transition flex items-center gap-1.5 shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              <span>Create Search Key</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <!-- TypeScript SDK -->
+          <div>
+            <div class="flex items-center justify-between mb-1 font-bold font-num text-neutral-700">
+              <span>TypeScript / Node.js SDK</span>
+              <button onclick="copySnippetCode('searchTsSnippet')" class="text-[10px] text-neutral-500 hover:text-black underline cursor-pointer">Copy</button>
+            </div>
+            <pre id="searchTsSnippet" class="p-3 bg-neutral-950 rounded-xl text-neutral-100 font-mono text-[10px] overflow-x-auto code-scroll">import { UltraSearch } from '@ultrademon/sdk';
+
+const search = new UltraSearch({ apiKey: 'YOUR_SEARCH_KEY' });
+const { results, latency_ms } = await search.query('LLM edge retrieval', {
+  mode: 1 // 1: Instant &lt;50ms, 2: Standard, 3: Deep
+});</pre>
+          </div>
+
+          <!-- Python SDK / REST -->
+          <div>
+            <div class="flex items-center justify-between mb-1 font-bold font-num text-neutral-700">
+              <span>Python Backend / LangChain</span>
+              <button onclick="copySnippetCode('searchPySnippet')" class="text-[10px] text-neutral-500 hover:text-black underline cursor-pointer">Copy</button>
+            </div>
+            <pre id="searchPySnippet" class="p-3 bg-neutral-950 rounded-xl text-neutral-100 font-mono text-[10px] overflow-x-auto code-scroll">import requests
+
+res = requests.get("${origin}/v1/search",
+    params={"q": "LLM edge retrieval", "mode": 1},
+    headers={"X-API-Key": "YOUR_SEARCH_KEY"}).json()
+print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Search Query Studio -->
       <div class="card-clean p-6 rounded-2xl space-y-4">
         <h2 class="text-sm font-bold text-neutral-950">Test Sovereign Web Index</h2>
         <form onsubmit="handleAppSearch(event)" class="space-y-3">
@@ -508,6 +638,34 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
         <div id="appSearchResults" class="space-y-3 pt-4 border-t border-neutral-100">
           <div class="text-center py-4 text-neutral-400 text-xs">Execute a search to view BM25 ranked passages.</div>
         </div>
+      </div>
+
+      <!-- Web Crawler & URL Ingestion -->
+      <div class="card-clean p-6 rounded-2xl space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-bold text-neutral-950">Ingest URL into Sovereign Index</h2>
+          <span class="text-[10px] bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded font-num text-neutral-700">Autonomous Edge Crawler</span>
+        </div>
+        <form onsubmit="handleAppCrawl(event)" class="space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="sm:col-span-2">
+              <label class="block text-[11px] font-medium text-neutral-600 mb-1">Target URL</label>
+              <input type="url" id="appCrawlUrlSearch" placeholder="https://docs.python.org" required class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-medium text-neutral-600 mb-1">Depth</label>
+              <select id="appCrawlDepthSearch" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-num">
+                <option value="0">Depth 0 (Exact URL only)</option>
+                <option value="1">Depth 1 (URL + outgoing links)</option>
+                <option value="2">Depth 2 (Deep recursive crawl)</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" id="btnCrawlAppSearch" class="px-4 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer">
+            Start Edge Crawl &amp; Index
+          </button>
+        </form>
+        <div id="appCrawlResultSearch" class="hidden p-4 rounded-xl bg-neutral-50 border border-neutral-200 font-mono text-xs"></div>
       </div>
     </section>
 
@@ -617,6 +775,104 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
 
     <!-- SECTION 8: TELEMETRY & CUSTOMER PROFILE (VS POSTHOG) -->
     <section id="view-analytics" class="space-y-6 hidden">
+      <!-- Interactive Tracking Simulator & Live Event Emitter -->
+      <div class="card-clean p-6 rounded-2xl space-y-5 bg-gradient-to-b from-neutral-50/80 to-white">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-200/80 pb-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-sm font-bold text-neutral-950">Interactive Telemetry Simulator &amp; Event Emitter</h3>
+              <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-neutral-900 text-white font-num">Instant Verification</span>
+            </div>
+            <p class="text-xs text-neutral-500 mt-0.5">Test tracking and micro-metric capture in 1-click. Emits real-time edge events to verify KPIs, kinetic dwell, and VIP trace streams instantly.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="simulatorLastEmitStatus" class="text-[11px] font-mono text-emerald-700 font-semibold hidden bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg"></span>
+          </div>
+        </div>
+
+        <!-- 3 Quick Simulation Presets -->
+        <div>
+          <span class="text-[11px] font-bold text-neutral-700 uppercase tracking-wider block mb-2 font-num">1-Click Telemetry Simulation Scenarios</span>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <button type="button" onclick="emitSimulationEvent('deep_working')" class="p-3.5 bg-white hover:bg-neutral-50 border border-neutral-200 hover:border-neutral-400 rounded-xl text-left transition cursor-pointer group shadow-2xs">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-bold text-neutral-900 group-hover:text-black">Active Power User</span>
+                <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-800 font-num">65s Active</span>
+              </div>
+              <p class="text-[10px] text-neutral-500 leading-normal">Deep working session with Apple M3 Max GPU, 16 cores, Retina 2x, dark mode.</p>
+            </button>
+
+            <button type="button" onclick="emitSimulationEvent('vip_client')" class="p-3.5 bg-white hover:bg-neutral-50 border border-neutral-200 hover:border-neutral-400 rounded-xl text-left transition cursor-pointer group shadow-2xs">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-bold text-emerald-950 group-hover:text-emerald-900">VIP Target Hit</span>
+                <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-num">VIP Traced</span>
+              </div>
+              <p class="text-[10px] text-neutral-500 leading-normal">Triggers high-paying client trace for IP / account with deep micro-trace snapshot.</p>
+            </button>
+
+            <button type="button" onclick="emitSimulationEvent('idle_lurking')" class="p-3.5 bg-white hover:bg-neutral-50 border border-neutral-200 hover:border-neutral-400 rounded-xl text-left transition cursor-pointer group shadow-2xs">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-bold text-neutral-900 group-hover:text-black">Inactive Lurker</span>
+                <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-800 font-num">85% Idle</span>
+              </div>
+              <p class="text-[10px] text-neutral-500 leading-normal">Simulates high inactive dwell without mouse movement and tab switching.</p>
+            </button>
+          </div>
+        </div>
+
+        <!-- Custom Event Emitter Strip -->
+        <form onsubmit="handleCustomSimulation(event)" class="pt-2 border-t border-neutral-100 grid grid-cols-1 sm:grid-cols-5 gap-2.5 items-end">
+          <div class="sm:col-span-2">
+            <label class="block text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-1">Custom Event Name</label>
+            <input type="text" id="simEventName" value="feature_activated" required class="w-full px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-lg text-neutral-900 focus:outline-none focus:ring-1 focus:ring-black font-mono" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-1">Distinct ID</label>
+            <input type="text" id="simDistinctId" value="usr_test_edge" required class="w-full px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-lg text-neutral-900 focus:outline-none focus:ring-1 focus:ring-black font-mono" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-1">Client IP (Optional)</label>
+            <input type="text" id="simClientIp" placeholder="e.g. 203.0.113.88" class="w-full px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-lg text-neutral-900 focus:outline-none focus:ring-1 focus:ring-black font-mono" />
+          </div>
+          <div>
+            <button type="submit" id="btnEmitSimEvent" class="w-full py-1.5 px-3 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold cursor-pointer transition flex items-center justify-center gap-1.5 shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              <span>Emit Event</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Telemetry API Key & SDK Quickstart Card -->
+      <div class="card-clean p-6 rounded-2xl space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-100 pb-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-sm font-bold text-neutral-950">UltraMetrics Telemetry API &amp; SDK Quickstart</h3>
+              <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-neutral-900 text-white font-num">Sub-5ms Edge Ingest</span>
+            </div>
+            <p class="text-xs text-neutral-500 mt-0.5">Drop our 2.5KB script into any web app to capture kinetic dwell, unmasked GPU silicon, and autonomous customer profiles.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="quickCreateSuiteKey('telemetry')" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 cursor-pointer transition flex items-center gap-1.5 shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              <span>Create Telemetry Key</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-bold text-neutral-700 font-num">1-Line HTML &lt;script&gt; Embed Tag</span>
+            <button onclick="copySnippetCode('snippetScriptTagTop')" class="text-xs font-semibold text-neutral-900 hover:underline cursor-pointer flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <span>Copy Embed Tag</span>
+            </button>
+          </div>
+          <pre id="snippetScriptTagTop" class="p-3 bg-neutral-950 rounded-xl text-neutral-100 font-mono text-[11px] overflow-x-auto code-scroll">&lt;script src="${origin}/sdk/ultrademon.js" data-key="YOUR_API_KEY" async&gt;&lt;/script&gt;</pre>
+        </div>
+      </div>
+
       <!-- Top Analytics KPI Grid -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Live Active Visitors -->
@@ -1184,6 +1440,29 @@ requests.post("${origin}/v1/analytics/capture", json={
       }
     }
 
+    function switchSuite(suite) {
+      if (suite === 'search') setAppView('search');
+      else if (suite === 'memory') setAppView('memory');
+      else if (suite === 'metrics') setAppView('analytics');
+    }
+
+    function updateSuiteSwitcher(suite) {
+      const suites = ['search', 'memory', 'metrics'];
+      suites.forEach(s => {
+        const btn = document.getElementById('suiteBtn-' + s);
+        if (!btn) return;
+        if (s === suite) {
+          btn.className = 'suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer bg-white text-neutral-950 shadow-xs border border-neutral-300';
+          const svg = btn.querySelector('svg');
+          if (svg) svg.className = 'w-3.5 h-3.5 text-neutral-950';
+        } else {
+          btn.className = 'suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent';
+          const svg = btn.querySelector('svg');
+          if (svg) svg.className = 'w-3.5 h-3.5 text-neutral-400';
+        }
+      });
+    }
+
     function setAppView(viewId) {
       const views = ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations', 'analytics'];
       views.forEach(id => {
@@ -1230,6 +1509,16 @@ requests.post("${origin}/v1/analytics/capture", json={
         if (d) d.innerText = titles[viewId][1];
       }
 
+      if (viewId === 'search' || viewId === 'crawler') {
+        updateSuiteSwitcher('search');
+      } else if (viewId === 'memory') {
+        updateSuiteSwitcher('memory');
+      } else if (viewId === 'analytics') {
+        updateSuiteSwitcher('metrics');
+      } else {
+        updateSuiteSwitcher(null);
+      }
+
       try {
         const u = new URL(window.location.href);
         u.searchParams.set('tab', viewId);
@@ -1240,8 +1529,218 @@ requests.post("${origin}/v1/analytics/capture", json={
         loadAnalyticsDashboard();
       }
 
+      updateAllSuiteSnippets();
+
       if (window.innerWidth < 1024) {
         document.querySelector('main')?.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    async function quickCreateSuiteKey(suiteType) {
+      const plan = 'free';
+      const keyType = suiteType === 'search' ? 'search' : suiteType === 'memory' ? 'memory' : 'telemetry';
+      const label = suiteType === 'search' ? 'UltraSearch API Key' : suiteType === 'memory' ? 'UltraMemory API Key' : 'UltraMetrics Telemetry Key';
+
+      let token = getAuthToken();
+      if (!token) token = await initGuestSession();
+
+      try {
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+
+        const res = await fetch('/v1/keys', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ plan, key_type: keyType, label })
+        });
+        const data = await res.json();
+        if (data.plain_key) {
+          const saved = JSON.parse(localStorage.getItem('ultrademon_saved_plain_keys') || '{}');
+          saved[data.key_id] = data.plain_key;
+          localStorage.setItem('ultrademon_saved_plain_keys', JSON.stringify(saved));
+          localStorage.setItem('ultrademon_active_key', data.plain_key);
+
+          localKeys.unshift({
+            key_id: data.key_id,
+            plain_key: data.plain_key,
+            plan: data.plan || plan,
+            key_type: data.key_type || keyType,
+            label: data.label || label,
+            created_at: Date.now()
+          });
+
+          renderAppKeysTable();
+          updateAllSuiteSnippets();
+          showAppToast('Created ' + label + ': ' + data.plain_key.slice(0, 14) + '...');
+        } else {
+          showAppToast('Error: ' + (data.error || 'Failed to create key'), true);
+        }
+      } catch (err) {
+        showAppToast('Network error: ' + err.message, true);
+      }
+    }
+
+    function updateAllSuiteSnippets() {
+      const activeKey = getActiveKey() || 'YOUR_API_KEY';
+
+      // Search snippets
+      const sTs = document.getElementById('searchTsSnippet');
+      if (sTs) {
+        sTs.innerText = "import { UltraSearch } from '@ultrademon/sdk';\n\nconst search = new UltraSearch({ apiKey: '" + activeKey + "' });\nconst { results, latency_ms } = await search.query('LLM edge retrieval', {\n  mode: 1 // 1: Instant <50ms, 2: Standard, 3: Deep\n});";
+      }
+      const sPy = document.getElementById('searchPySnippet');
+      if (sPy) {
+        sPy.innerText = 'import requests\n\nres = requests.get("' + ORIGIN + '/v1/search",\n    params={"q": "LLM edge retrieval", "mode": 1},\n    headers={"X-API-Key": "' + activeKey + '"}).json()\nprint(f"Results in {res[\'latency_ms\']}ms: {res[\'results\']}")';
+      }
+
+      // Memory snippet
+      const mQuick = document.getElementById('memQuickSnippet');
+      if (mQuick) {
+        mQuick.innerText = '# 1. Store memory from agent\ncurl -X POST "' + ORIGIN + '/v1/memory" \\\n  -H "X-API-Key: ' + activeKey + '" \\\n  -H "Content-Type: application/json" \\\n  -d \'{"content": "User prefers Michelangelus font and monochrome UI", "container_tag": "agent_prod"}\'\n\n# 2. Recall memory in <15ms\ncurl "' + ORIGIN + '/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\\n  -H "X-API-Key: ' + activeKey + '"';
+      }
+
+      // Telemetry embed snippets
+      const tScriptTop = document.getElementById('snippetScriptTagTop');
+      if (tScriptTop) {
+        tScriptTop.innerText = '<script src="' + ORIGIN + '/sdk/ultrademon.js" data-key="' + activeKey + '" async><' + '/script>';
+      }
+      const tScript = document.getElementById('snippetScriptTag');
+      if (tScript) {
+        tScript.innerText = '<script src="' + ORIGIN + '/sdk/ultrademon.js" data-key="' + activeKey + '" async><' + '/script>';
+      }
+    }
+
+    async function emitSimulationEvent(presetType) {
+      const activeKey = getActiveKey();
+      const token = getAuthToken();
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      else if (activeKey) headers['X-API-Key'] = activeKey;
+
+      let payload = {};
+      if (presetType === 'deep_working') {
+        payload = {
+          event_name: 'project_deployed',
+          distinct_id: 'usr_devops_pro',
+          path: '/deployments/production',
+          url: 'https://ultrademon.com/deployments/production',
+          active_time_ms: 65000,
+          idle_time_ms: 12000,
+          idle_ratio_pct: 15,
+          primary_activity: 'deep_working',
+          gpu_renderer: 'Apple M3 Max (38 cores)',
+          hardware_concurrency: 16,
+          device_memory_gb: 64,
+          battery_level: 0.95,
+          battery_charging: 1,
+          pixel_ratio: 2.0,
+          dark_mode: 1
+        };
+      } else if (presetType === 'vip_client') {
+        payload = {
+          client_ip: '198.51.100.77',
+          distinct_id: 'usr_vip_enterprise_82',
+          event_name: 'contract_annual_upgrade',
+          path: '/checkout/enterprise',
+          url: 'https://ultrademon.com/checkout/enterprise',
+          active_time_ms: 95000,
+          idle_time_ms: 15000,
+          idle_ratio_pct: 13,
+          primary_activity: 'deep_working',
+          gpu_renderer: 'Apple M3 Pro',
+          hardware_concurrency: 14,
+          device_memory_gb: 36,
+          battery_level: 1.0,
+          battery_charging: 1,
+          pixel_ratio: 2.0,
+          dark_mode: 1
+        };
+      } else if (presetType === 'idle_lurking') {
+        payload = {
+          event_name: 'documentation_browse',
+          distinct_id: 'usr_lurker_44',
+          path: '/docs/edge-retrieval',
+          url: 'https://ultrademon.com/docs/edge-retrieval',
+          active_time_ms: 8000,
+          idle_time_ms: 75000,
+          idle_ratio_pct: 90,
+          primary_activity: 'idle_lurking',
+          gpu_renderer: 'Intel Iris Xe Graphics',
+          hardware_concurrency: 8,
+          device_memory_gb: 16,
+          pixel_ratio: 1.0,
+          dark_mode: 0,
+          rage_clicks: 3
+        };
+      }
+
+      const t0 = performance.now();
+      try {
+        const res = await fetch('/v1/analytics/capture', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(payload)
+        });
+        const elapsed = Math.round(performance.now() - t0);
+        const data = await res.json();
+
+        const statusEl = document.getElementById('simulatorLastEmitStatus');
+        if (statusEl) {
+          statusEl.classList.remove('hidden');
+          statusEl.innerText = 'Captured in ' + elapsed + 'ms (' + (data.is_vip_traced ? '[VIP TRACED]' : 'Standard') + ')';
+        }
+
+        showAppToast('Simulated event [' + payload.event_name + '] captured in ' + elapsed + 'ms!');
+        loadAnalyticsDashboard();
+      } catch (err) {
+        showAppToast('Simulation error: ' + err.message, true);
+      }
+    }
+
+    async function handleCustomSimulation(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      const eventName = (document.getElementById('simEventName')?.value || 'custom_event').trim();
+      const distinctId = (document.getElementById('simDistinctId')?.value || 'usr_custom').trim();
+      const clientIp = (document.getElementById('simClientIp')?.value || '').trim();
+
+      const activeKey = getActiveKey();
+      const token = getAuthToken();
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      else if (activeKey) headers['X-API-Key'] = activeKey;
+
+      const payload = {
+        event_name: eventName,
+        distinct_id: distinctId,
+        path: '/' + eventName.replace(/_/g, '-'),
+        active_time_ms: 45000,
+        idle_time_ms: 10000,
+        idle_ratio_pct: 18,
+        primary_activity: 'deep_working',
+        gpu_renderer: 'Apple M3 Pro'
+      };
+      if (clientIp) payload.client_ip = clientIp;
+
+      const t0 = performance.now();
+      try {
+        const res = await fetch('/v1/analytics/capture', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(payload)
+        });
+        const elapsed = Math.round(performance.now() - t0);
+        const data = await res.json();
+
+        const statusEl = document.getElementById('simulatorLastEmitStatus');
+        if (statusEl) {
+          statusEl.classList.remove('hidden');
+          statusEl.innerText = 'Captured in ' + elapsed + 'ms (' + (data.is_vip_traced ? '[VIP TRACED]' : 'Standard') + ')';
+        }
+
+        showAppToast('Event [' + eventName + '] emitted in ' + elapsed + 'ms!');
+        loadAnalyticsDashboard();
+      } catch (err) {
+        showAppToast('Emission error: ' + err.message, true);
       }
     }
 
@@ -1357,7 +1856,9 @@ requests.post("${origin}/v1/analytics/capture", json={
             ? '<span class="px-2 py-0.5 rounded bg-black text-white text-[10px] font-bold uppercase font-num">Memory API</span>'
             : (k.key_type === 'search'
               ? '<span class="px-2 py-0.5 rounded bg-neutral-200 text-neutral-800 text-[10px] font-bold uppercase font-num">Search API</span>'
-              : '<span class="px-2 py-0.5 rounded bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase font-num">Unified API</span>');
+              : (k.key_type === 'telemetry'
+                ? '<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-bold uppercase font-num">Telemetry</span>'
+                : '<span class="px-2 py-0.5 rounded bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase font-num">Unified API</span>'));
 
           return '<tr class="hover:bg-neutral-50">' +
             '<td class="py-3 font-mono text-neutral-900">' +
@@ -1372,6 +1873,7 @@ requests.post("${origin}/v1/analytics/capture", json={
           '</tr>';
         }).join('');
       }
+      updateAllSuiteSnippets();
     }
 
     async function revokeAppKey(key) {
@@ -1557,9 +2059,9 @@ requests.post("${origin}/v1/analytics/capture", json={
 
     async function handleAppCrawl(e) {
       if (e && e.preventDefault) e.preventDefault();
-      const url = document.getElementById('appCrawlUrl')?.value.trim();
-      const depth = parseInt(document.getElementById('appCrawlDepth')?.value || '0', 10);
-      const box = document.getElementById('appCrawlResult');
+      const url = (document.getElementById('appCrawlUrlSearch')?.value || document.getElementById('appCrawlUrl')?.value || '').trim();
+      const depth = parseInt(document.getElementById('appCrawlDepthSearch')?.value || document.getElementById('appCrawlDepth')?.value || '0', 10);
+      const box = document.getElementById('appCrawlResultSearch') || document.getElementById('appCrawlResult');
 
       if (!url) return;
 
@@ -1832,6 +2334,7 @@ requests.post("${origin}/v1/analytics/capture", json={
           '</div>';
         }).join('');
       }
+      updateAllSuiteSnippets();
     }
 
     function renderAnalyticsReports(data) {
@@ -2203,14 +2706,20 @@ requests.post("${origin}/v1/analytics/capture", json={
       loadStoredMemories();
       refreshTelemetry();
 
-      // 4. Select target tab from URL param or hash
+      // 4. Select target tab or suite from URL param or hash
       const hashTab = (window.location.hash || '').replace('#', '');
-      const targetTab = urlParams.get('tab') || hashTab;
+      const suiteParam = urlParams.get('suite');
+      let targetTab = urlParams.get('tab') || hashTab;
+      if (suiteParam === 'search') targetTab = 'search';
+      else if (suiteParam === 'memory') targetTab = 'memory';
+      else if (suiteParam === 'metrics') targetTab = 'analytics';
+
       if (targetTab && ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations', 'analytics'].includes(targetTab)) {
         setAppView(targetTab);
       } else {
         setAppView('overview');
       }
+      updateAllSuiteSnippets();
     }
 
     // Execute immediately or on DOM ready

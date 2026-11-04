@@ -193,7 +193,7 @@ async function resolveProjectId(c: Context<{ Bindings: Env }>, payloadKey?: stri
       if (keyRecord) {
         return { projectId: keyRecord.user_id, keyRecord, isGuest: false };
       }
-    } catch {}
+    } catch { }
   }
 
   return { projectId: 'project_sovereign_sandbox', isGuest: true };
@@ -217,8 +217,8 @@ async function handleCapture(c: Context<{ Bindings: Env }>) {
   const eventsList: CaptureEventPayload[] = Array.isArray((rawBody as CaptureBatchPayload).events)
     ? (rawBody as CaptureBatchPayload).events!
     : Array.isArray((rawBody as CaptureBatchPayload).batch)
-    ? (rawBody as CaptureBatchPayload).batch!
-    : [rawBody as CaptureEventPayload];
+      ? (rawBody as CaptureBatchPayload).batch!
+      : [rawBody as CaptureEventPayload];
 
   if (eventsList.length === 0) {
     return c.json({ error: 'No events provided in payload' }, 400);
@@ -236,9 +236,8 @@ async function handleCapture(c: Context<{ Bindings: Env }>) {
   const asn = typeof cf.asn === 'number' ? cf.asn : parseInt(String(cf.asn || 0), 10) || 0;
   const isp = String(cf.asOrganization || '');
 
-  // Exact Client IP (allows server-side SDK override via client_ip)
-  const rawClientIp = (rawBody as { client_ip?: string }).client_ip;
-  const headerIp = c.req.header('cf-connecting-ip') || c.req.header('x-real-ip') || c.req.header('x-forwarded-for')?.split(',')[0].trim() || '127.0.0.1';
+  // Exact Client IP (allows client_ip in payload for server-side SDKs and simulator)
+  const clientIp = ((rawBody as { client_ip?: string }).client_ip || eventsList[0]?.client_ip || c.req.header('cf-connecting-ip') || c.req.header('x-real-ip') || c.req.header('x-forwarded-for')?.split(',')[0].trim() || '127.0.0.1');
 
   // Load VIP Watch Targets for this project
   let vipTargets: { target_id: string; target_type: string; target_value: string; label: string; tier: string }[] = [];
@@ -249,16 +248,14 @@ async function handleCapture(c: Context<{ Bindings: Env }>) {
       WHERE project_id = ?
     `).bind(projectId).all<{ target_id: string; target_type: string; target_value: string; label: string; tier: string }>();
     if (vt && vt.results) vipTargets = vt.results;
-  } catch {}
+  } catch { }
 
   const userAgentStr = c.req.header('user-agent') || '';
   const now = Date.now();
   let processedCount = 0;
-  let totalVipTracedHits = 0;
   const statements: D1PreparedStatement[] = [];
 
   for (const ev of eventsList.slice(0, 100)) {
-    const clientIp = (ev.client_ip as string) || rawClientIp || headerIp;
     const parsedUA = parseUserAgent(userAgentStr, ev.touch_points || 0);
     const eventName = (ev.event_name || ev.event || '$pageview').trim();
     const distinctId = (ev.distinct_id || 'anon_' + Math.random().toString(36).substring(2, 12)).trim();
@@ -274,7 +271,7 @@ async function handleCapture(c: Context<{ Bindings: Env }>) {
         const pUrl = new URL(url);
         if (!path) path = pUrl.pathname;
         if (!host) host = pUrl.hostname;
-      } catch {}
+      } catch { }
     }
 
     const referrer = ev.referrer || '';
@@ -329,8 +326,6 @@ async function handleCapture(c: Context<{ Bindings: Env }>) {
           WHERE target_id = ?
         `).bind(timestamp, matchedTargetId)
       );
-
-      totalVipTracedHits++;
     }
 
     // 1. Insert Granular Event with All Insane Micro-Metrics
@@ -435,8 +430,7 @@ async function handleCapture(c: Context<{ Bindings: Env }>) {
     processed: processedCount,
     project_id: projectId,
     edge_colo: colo,
-    client_ip: (eventsList[0]?.client_ip as string) || rawClientIp || headerIp,
-    is_vip_traced: totalVipTracedHits > 0,
+    client_ip: clientIp,
     timestamp: now,
   }, 201);
 }
@@ -809,7 +803,7 @@ analyticsRouter.get('/customer-profile', async (c) => {
   if (cachedReport && Date.now() - cachedReport.generated_at < 24 * 60 * 60 * 1000) {
     try {
       return c.json(JSON.parse(cachedReport.report_json));
-    } catch {}
+    } catch { }
   }
 
   const freshReport = await generateCustomerProfileReport(c.env, projectId);

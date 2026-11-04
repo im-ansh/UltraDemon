@@ -10,7 +10,7 @@ export const keysRouter = new Hono<{ Bindings: Env }>();
 interface CreateKeyBody {
   plan?: string;
   label?: string;
-  key_type?: 'unified' | 'memory' | 'search';
+  key_type?: 'unified' | 'memory' | 'search' | 'telemetry';
 }
 
 // ── POST /v1/keys — create a new key ────────────────────────────────────────
@@ -30,14 +30,16 @@ keysRouter.post('/', async (c) => {
   }
 
   const body: CreateKeyBody = await c.req.json<CreateKeyBody>().catch(() => ({}));
-  const keyType = (['unified', 'memory', 'search'].includes(body.key_type || '') ? body.key_type : 'unified') as 'unified' | 'memory' | 'search';
+  const keyType = (['unified', 'memory', 'search', 'telemetry'].includes(body.key_type || '') ? body.key_type : 'unified') as 'unified' | 'memory' | 'search' | 'telemetry';
 
   try {
     const defaultLabel = keyType === 'memory' 
       ? 'UltraMemory API Key' 
       : keyType === 'search' 
         ? 'UltraSearch API Key' 
-        : (sbUser.email ? `Unified Key for ${sbUser.email}` : 'Unified Key');
+        : keyType === 'telemetry'
+          ? 'UltraMetrics Telemetry Key'
+          : (sbUser.email ? `Unified Key for ${sbUser.email}` : 'Unified Key');
 
     const { plainKey, record } = await createApiKey(
       c.env,
