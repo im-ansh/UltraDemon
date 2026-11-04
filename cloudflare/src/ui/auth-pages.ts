@@ -176,7 +176,7 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
       </div>
 
       <!-- Auth Form -->
-      <form id="authForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+      <form id="authForm" onsubmit="event.preventDefault(); handleFormSubmit(event); return false;" class="space-y-4">
         <div>
           <label class="block text-xs font-medium text-neutral-700 mb-1.5">Email address</label>
           <input 
@@ -208,7 +208,8 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
 
         <!-- Submit Button -->
         <button 
-          type="submit" 
+          type="button" 
+          onclick="handleFormSubmit(event); return false;"
           id="authSubmitBtn"
           class="w-full py-2.5 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl transition shadow-xs flex items-center justify-center gap-2 cursor-pointer mt-2"
         >

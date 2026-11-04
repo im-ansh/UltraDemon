@@ -1361,7 +1361,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
               <div class="flex items-center justify-between pt-1">
                 <span class="text-[10px] text-neutral-400">Indexed into D1 FTS5</span>
                 <button 
-                  type="submit" 
+                  type="button" 
+                  onclick="handleStoreMemory(event); return false;"
                   id="storeMemBtn"
                   class="px-4 py-1.5 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-lg transition shadow-xs flex items-center gap-1.5 cursor-pointer"
                 >
@@ -1400,7 +1401,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
                 </span>
                 <button 
-                  type="submit" 
+                  type="button" 
+                  onclick="handleQueryMemory(event); return false;"
                   id="queryMemBtn"
                   class="absolute right-1 top-1 px-3 py-1 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-lg transition shadow-xs flex items-center gap-1 cursor-pointer"
                 >
@@ -1513,7 +1515,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.3-4.3"/></svg>
               </span>
               <button 
-                type="submit" 
+                type="button" 
+                onclick="handleSearch(event); return false;"
                 id="searchBtn"
                 class="absolute right-1 top-1 px-4 py-1.5 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-lg transition shadow-xs flex items-center gap-1 cursor-pointer"
               >
@@ -2027,7 +2030,8 @@ for r in res["results"]:
                 />
               </div>
               <button 
-                type="submit" 
+                type="button" 
+                onclick="handleCreateKey(event); return false;"
                 id="createKeyBtn"
                 class="w-full py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-lg transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
               >
@@ -2140,7 +2144,8 @@ for r in res["results"]:
             <div class="flex items-center justify-between pt-1">
               <span class="text-[10px] text-neutral-400">Cloudflare HTMLRewriter strips scripts and indexes raw text.</span>
               <button 
-                type="submit" 
+                type="button" 
+                onclick="handleCrawl(event); return false;"
                 id="crawlBtn"
                 class="px-4 py-1.5 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-lg transition shadow-xs flex items-center gap-1.5 cursor-pointer"
               >
@@ -2578,7 +2583,8 @@ curl "${origin}/v1/memory/context?q=preference" \\
         <div id="authAlert" class="hidden p-2.5 rounded-lg text-[11px] font-medium"></div>
 
         <button 
-          type="submit" 
+          type="button" 
+          onclick="handleAuthSubmit(event); return false;"
           id="authSubmitBtn"
           class="w-full py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-lg transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
         >
@@ -2778,37 +2784,12 @@ curl "${origin}/v1/memory/context?q=preference" \\
     function scrollFeatureTrack(direction) {
       const track = document.getElementById('featureScrollTrack');
       if (!track) return;
-      const cards = Array.from(track.children).filter(el => el.nodeType === 1);
-      if (!cards.length) return;
-
-      const trackRect = track.getBoundingClientRect();
-      let targetCard = null;
-
-      if (direction > 0) {
-        for (let i = 0; i < cards.length; i++) {
-          const r = cards[i].getBoundingClientRect();
-          if (r.left - trackRect.left > 30) {
-            targetCard = cards[i];
-            break;
-          }
-        }
-        if (!targetCard) targetCard = cards[cards.length - 1];
-      } else {
-        for (let j = cards.length - 1; j >= 0; j--) {
-          const r = cards[j].getBoundingClientRect();
-          if (r.left - trackRect.left < -30) {
-            targetCard = cards[j];
-            break;
-          }
-        }
-        if (!targetCard) targetCard = cards[0];
-      }
-
-      if (targetCard && typeof targetCard.scrollIntoView === 'function') {
-        targetCard.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
-      } else {
-        const step = (cards[0] ? cards[0].offsetWidth : 320) + 16;
-        track.scrollLeft += direction * step;
+      const firstCard = track.querySelector(':scope > div');
+      const cardWidth = firstCard ? (firstCard.offsetWidth + 16) : 356;
+      try {
+        track.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
+      } catch (e) {
+        track.scrollLeft += direction * cardWidth;
       }
     }
 
@@ -2953,6 +2934,8 @@ curl "${origin}/v1/memory/context?q=preference" \\
     }
 
     function getActiveKey() {
+      const explicit = localStorage.getItem('ultrademon_active_key');
+      if (explicit) return explicit;
       const keys = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
       if (keys.length > 0 && keys[0].plain_key) return keys[0].plain_key;
       const sess = localStorage.getItem('ultrademon_auth_session');
@@ -2982,9 +2965,13 @@ curl "${origin}/v1/memory/context?q=preference" \\
     // ── UltraMemory Frontend ──────────────────────────────────────────────────
 
     function fillMemorySample(type, content, container) {
-      document.getElementById('memTypeInput').value = type;
-      document.getElementById('memContentInput').value = content;
-      document.getElementById('memContainerInput').value = container;
+      const typeEl = document.getElementById('memTypeInput');
+      const contentEl = document.getElementById('memContentInput');
+      const contEl = document.getElementById('memContainerInput');
+      if (typeEl) typeEl.value = type;
+      if (contentEl) contentEl.value = content;
+      if (contEl) contEl.value = container;
+      showToast('Loaded ' + type + ' memory template');
     }
 
     async function handleStoreMemory(e) {
@@ -3128,9 +3115,9 @@ curl "${origin}/v1/memory/context?q=preference" \\
     // ── UltraSearch Frontend ──────────────────────────────────────────────────
 
     function setQuery(q) {
-      document.getElementById('queryInput').value = q;
-      const form = document.getElementById('searchForm');
-      if (form) handleSearch(new Event('submit'));
+      const input = document.getElementById('queryInput');
+      if (input) input.value = q;
+      handleSearch();
     }
 
     async function handleSearch(e) {
@@ -3893,16 +3880,16 @@ function skipJacket(e) {
       const btnLeft = document.getElementById('btnFeatureScrollLeft');
       const btnRight = document.getElementById('btnFeatureScrollRight');
       if (btnLeft) {
-        btnLeft.addEventListener('click', (e) => {
-          e.preventDefault();
+        btnLeft.onclick = (e) => {
+          if (e && e.preventDefault) e.preventDefault();
           scrollFeatureTrack(-1);
-        });
+        };
       }
       if (btnRight) {
-        btnRight.addEventListener('click', (e) => {
-          e.preventDefault();
+        btnRight.onclick = (e) => {
+          if (e && e.preventDefault) e.preventDefault();
           scrollFeatureTrack(1);
-        });
+        };
       }
     }
 

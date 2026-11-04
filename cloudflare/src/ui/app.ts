@@ -283,7 +283,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
             </div>
           </div>
-          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricIndexed">369</div>
+          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricIndexed">0</div>
           <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
             <span>Algorithm</span>
             <span class="font-bold text-neutral-900">BM25 Edge</span>
@@ -337,7 +337,7 @@ curl -X POST "${origin}/v1/memory/query" \\
             <input type="text" id="appKeyLabel" placeholder="e.g. Agent Memory Key" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 focus:outline-none focus:bg-white focus:border-black" />
           </div>
           <div class="flex items-end">
-            <button type="submit" id="btnCreateKeyApp" class="w-full py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer">
+            <button type="button" onclick="handleAppCreateKey(event); return false;" id="btnCreateKeyApp" class="w-full py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer">
               <span>Create Key</span>
               <span id="spinnerCreateKeyApp" class="hidden">
                 <svg class="w-3.5 h-3.5 text-white animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/></svg>
@@ -471,7 +471,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
             <label class="block text-[11px] font-medium text-neutral-600 mb-1">Memory Content</label>
             <textarea id="appMemContent" rows="3" placeholder="Enter text to store in long-term memory..." required class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs focus:outline-none focus:bg-white focus:border-black"></textarea>
           </div>
-          <button type="submit" id="btnStoreMemApp" class="px-4 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl transition shadow-xs flex items-center gap-1.5 cursor-pointer">
+          <button type="button" onclick="handleAppStoreMemory(event); return false;" id="btnStoreMemApp" class="px-4 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl transition shadow-xs flex items-center gap-1.5 cursor-pointer">
             <span>Store into Memory</span>
             <span id="spinnerStoreMemApp" class="hidden">
               <svg class="w-3.5 h-3.5 text-white animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/></svg>
@@ -489,7 +489,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
         </div>
         <form onsubmit="event.preventDefault(); return handleAppQueryMemory(event);" class="flex gap-2">
           <input type="text" id="appMemQuery" placeholder="Query memories..." required class="flex-1 px-3.5 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs" />
-          <button type="submit" class="px-4 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer">Recall</button>
+          <button type="button" onclick="handleAppQueryMemory(event); return false;" class="px-4 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer">Recall</button>
         </form>
         <div id="appMemResults" class="space-y-2 pt-2">
           <div class="text-center py-4 text-neutral-400 text-xs">Run a query to recall memories.</div>
@@ -626,7 +626,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
         <form onsubmit="event.preventDefault(); return handleAppSearch(event);" class="space-y-3">
           <div class="flex gap-2">
             <input type="text" id="appSearchQuery" value="What is Python?" placeholder="Search index..." required class="flex-1 px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-xs" />
-            <button type="submit" class="px-5 py-2.5 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer">Search</button>
+            <button type="button" onclick="handleAppSearch(event); return false;" class="px-5 py-2.5 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer">Search</button>
           </div>
           <div class="flex items-center gap-3 text-xs text-neutral-600 font-num">
             <span>Mode:</span>
@@ -661,7 +661,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
               </select>
             </div>
           </div>
-          <button type="submit" id="btnCrawlAppSearch" class="px-4 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer">
+          <button type="button" onclick="handleAppCrawl(event); return false;" id="btnCrawlAppSearch" class="px-4 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer">
             Start Edge Crawl &amp; Index
           </button>
         </form>
@@ -688,7 +688,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
               </select>
             </div>
           </div>
-          <button type="submit" id="btnCrawlApp" class="px-4 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer">
+          <button type="button" onclick="handleAppCrawl(event); return false;" id="btnCrawlApp" class="px-4 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer">
             Start Edge Crawl &amp; Index
           </button>
         </form>
@@ -835,7 +835,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
             <input type="text" id="simClientIp" placeholder="e.g. 203.0.113.88" class="w-full px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-lg text-neutral-900 focus:outline-none focus:ring-1 focus:ring-black font-mono" />
           </div>
           <div>
-            <button type="submit" id="btnEmitSimEvent" class="w-full py-1.5 px-3 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold cursor-pointer transition flex items-center justify-center gap-1.5 shadow-sm">
+            <button type="button" onclick="handleCustomSimulation(event); return false;" id="btnEmitSimEvent" class="w-full py-1.5 px-3 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold cursor-pointer transition flex items-center justify-center gap-1.5 shadow-sm">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
               <span>Emit Event</span>
             </button>
@@ -921,12 +921,12 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
         <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
           <div class="flex items-center justify-between mb-3">
             <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Core Web Vitals</span>
-            <span class="font-num text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">GOOD</span>
+            <span id="telemetryVitalsStatus" class="font-num text-[10px] px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-600 border border-neutral-200 font-semibold">PENDING</span>
           </div>
           <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="telemetryLcp">--ms</div>
           <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
             <span>CLS Score</span>
-            <span class="font-bold text-neutral-900" id="telemetryCls">0.015</span>
+            <span class="font-bold text-neutral-900" id="telemetryCls">--</span>
           </div>
         </div>
       </div>
@@ -1343,7 +1343,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
           </div>
           <div class="flex items-center justify-between pt-1">
             <span class="text-[11px] text-neutral-500">Matching visitors are automatically flagged on edge ingest and written to high-res micro-traces.</span>
-            <button type="submit" id="btnCreateVipTarget" class="px-4 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold cursor-pointer transition flex items-center gap-1.5 shadow-sm">
+            <button type="button" onclick="handleCreateVipTarget(event); return false;" id="btnCreateVipTarget" class="px-4 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold cursor-pointer transition flex items-center gap-1.5 shadow-sm">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
               <span>Add Watch Target</span>
             </button>
@@ -2292,6 +2292,14 @@ requests.post("${origin}/v1/analytics/capture", json={
           if (limit) limit.innerText = data.daily_limit === -1 || data.daily_limit === 'unlimited' ? '∞' : data.daily_limit;
         }
       } catch {}
+      try {
+        const cRes = await fetch('/v1/crawler/stats', { headers: getAppAuthHeaders() });
+        const cData = await cRes.json();
+        const indexed = document.getElementById('metricIndexed');
+        if (indexed && cData.total_documents !== undefined) {
+          indexed.innerText = cData.total_documents;
+        }
+      } catch {}
     }
 
     function handleAppSignOut() {
@@ -2355,6 +2363,9 @@ requests.post("${origin}/v1/analytics/capture", json={
     window.handleCreateVipTarget = handleCreateVipTarget;
     window.deleteVipTarget = deleteVipTarget;
     window.loadVipLiveTraces = loadVipLiveTraces;
+    window.renderCustomerProfileCard = renderCustomerProfileCard;
+    window.generateFreshICPReport = generateFreshICPReport;
+    window.switchProfilePeriod = switchProfilePeriod;
     window.escapeHtml = escapeHtml;
 
     // Immediate Synchronous State Hydration (Zero Latency Profile Display)
@@ -2450,16 +2461,23 @@ requests.post("${origin}/v1/analytics/capture", json={
           const lcp = document.getElementById('telemetryLcp');
           const cls = document.getElementById('telemetryCls');
 
-          if (activeNow) activeNow.innerText = data.active_visitors_now || '12';
-          if (pageviews) pageviews.innerText = Number(data.metrics_24h.pageviews).toLocaleString();
-          if (visitors) visitors.innerText = Number(data.metrics_24h.unique_visitors).toLocaleString();
+          const vitalsStatus = document.getElementById('telemetryVitalsStatus');
+
+          if (activeNow) activeNow.innerText = (data.active_visitors_now !== undefined && data.active_visitors_now !== null) ? data.active_visitors_now : '0';
+          if (pageviews) pageviews.innerText = data.metrics_24h ? Number(data.metrics_24h.pageviews || 0).toLocaleString() : '0';
+          if (visitors) visitors.innerText = data.metrics_24h ? Number(data.metrics_24h.unique_visitors || 0).toLocaleString() : '0';
           if (avgDur) {
-            const sec = data.metrics_24h.avg_session_duration_sec;
+            const sec = (data.metrics_24h && data.metrics_24h.avg_session_duration_sec) || 0;
             avgDur.innerText = Math.floor(sec / 60) + 'm ' + (sec % 60) + 's';
           }
-          if (bounce) bounce.innerText = data.metrics_24h.bounce_rate_pct + '%';
-          if (lcp) lcp.innerText = data.metrics_24h.core_web_vitals.lcp_ms + 'ms';
-          if (cls) cls.innerText = data.metrics_24h.core_web_vitals.cls;
+          if (bounce) bounce.innerText = (data.metrics_24h && data.metrics_24h.bounce_rate_pct !== undefined ? data.metrics_24h.bounce_rate_pct : '0') + '%';
+          if (lcp) lcp.innerText = ((data.metrics_24h && data.metrics_24h.core_web_vitals && data.metrics_24h.core_web_vitals.lcp_ms) || 0) + 'ms';
+          if (cls) cls.innerText = (data.metrics_24h && data.metrics_24h.core_web_vitals && data.metrics_24h.core_web_vitals.cls !== undefined) ? data.metrics_24h.core_web_vitals.cls : '0.000';
+          if (vitalsStatus) {
+            const hasTraffic = data.metrics_24h && data.metrics_24h.pageviews > 0;
+            vitalsStatus.innerText = hasTraffic ? 'GOOD' : 'PENDING';
+            vitalsStatus.className = 'font-num text-[10px] px-1.5 py-0.5 rounded ' + (hasTraffic ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-neutral-100 text-neutral-600 border border-neutral-200') + ' font-semibold';
+          }
         }
       } catch (e) {
         console.warn('Overview telemetry fetch error:', e);
@@ -2688,10 +2706,6 @@ requests.post("${origin}/v1/analytics/capture", json={
             '<span class="font-bold text-neutral-900 block mb-1 font-num">' + (idx + 1) + '. ' + escapeHtml(p.objective) + '</span>' +
             '<p class="text-[11px] text-neutral-600 leading-relaxed">' + escapeHtml(p.recommendation) + '</p>' +
           '</div>';
-        }).join('');
-      }
-      updateAllSuiteSnippets();
-    }
         }).join('');
       }
       updateAllSuiteSnippets();
