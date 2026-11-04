@@ -385,41 +385,33 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       animation-play-state: paused;
     }
 
-    .hero-3d-card {
+    .hero-3d-object {
       transform-style: preserve-3d;
-      will-change: transform;
-      transition: transform 0.12s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+      will-change: transform, filter;
+      transition: transform 0.12s cubic-bezier(0.2, 0, 0, 1), filter 0.25s ease;
+      cursor: pointer;
     }
-    .hero-3d-card.is-resetting {
-      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+    .hero-3d-object.is-resetting {
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
     }
-    .hero-3d-card .hero-3d-inner {
-      transform: translateZ(28px);
-      transform-style: preserve-3d;
-      pointer-events: none;
+    .hero-3d-object img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 22px 32px rgba(219, 39, 119, 0.35)) drop-shadow(0 10px 18px rgba(2, 132, 199, 0.25));
+      transition: filter 0.25s ease;
+      user-select: none;
+      -webkit-user-drag: none;
     }
-    .hero-3d-card .hero-3d-glare {
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      mix-blend-mode: overlay;
-      z-index: 30;
-    }
-    .hero-3d-card:hover .hero-3d-glare {
-      opacity: 1;
-    }
-    .hero-3d-card:hover {
-      box-shadow: 0 35px 65px -15px rgba(15, 23, 42, 0.22), 0 15px 30px -8px rgba(236, 72, 153, 0.18);
+    .hero-3d-object:hover img {
+      filter: drop-shadow(0 32px 48px rgba(219, 39, 119, 0.5)) drop-shadow(0 15px 24px rgba(2, 132, 199, 0.35));
     }
 
     .hero-asset-floating-left {
       position: absolute;
       top: 5rem;
-      left: calc(50% - 37rem);
-      width: 12.5rem;
+      left: calc(50% - 39rem);
+      width: 14rem;
       z-index: 25;
       pointer-events: auto;
       user-select: none;
@@ -427,8 +419,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     .hero-asset-floating-right {
       position: absolute;
       top: 6.5rem;
-      right: calc(50% - 37rem);
-      width: 12.5rem;
+      right: calc(50% - 39rem);
+      width: 14rem;
       z-index: 25;
       pointer-events: auto;
       user-select: none;
@@ -436,14 +428,14 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
     @media (max-width: 1360px) {
       .hero-asset-floating-left {
-        left: 1.25rem;
+        left: 1.5rem;
         top: 4.5rem;
-        width: 11.5rem;
+        width: 12.5rem;
       }
       .hero-asset-floating-right {
-        right: 1.25rem;
+        right: 1.5rem;
         top: 6rem;
-        width: 11.5rem;
+        width: 12.5rem;
       }
     }
 
@@ -451,12 +443,12 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       .hero-asset-floating-left {
         left: 0.75rem;
         top: 4rem;
-        width: 9.5rem;
+        width: 10.5rem;
       }
       .hero-asset-floating-right {
         right: 0.75rem;
         top: 5.5rem;
-        width: 9.5rem;
+        width: 10.5rem;
       }
     }
 
@@ -689,46 +681,20 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     <!-- Subtle background particles -->
     <div class="absolute inset-0 pointer-events-none opacity-10" style="background-image: radial-gradient(rgba(255,255,255,0.8) 1px, transparent 1px); background-size: 24px 24px;"></div>
 
-    <!-- Left Hero 3D Floating Asset: Sovereign UltraMemory Brain -->
+    <!-- Left Hero 3D Floating Asset: Sovereign 3D Brain -->
     <div class="hero-asset-floating-left hero-float-wrapper">
       <div class="hero-float-left">
-        <div class="hero-3d-card group relative p-3.5 2xl:p-4 rounded-3xl bg-white/40 hover:bg-white/55 backdrop-blur-xl border border-white/70 shadow-[0_20px_50px_rgba(2,132,199,0.2)] cursor-pointer" data-hero-3d>
-          <div class="hero-3d-glare"></div>
-          <div class="hero-3d-inner flex flex-col items-center">
-            <div class="relative w-full aspect-square flex items-center justify-center p-1">
-              <img src="data:image/webp;base64,${HERO_BRAIN_WEBP_B64}" alt="UltraMemory Sovereign 3D Brain" class="w-full h-full object-contain filter drop-shadow-[0_16px_24px_rgba(236,72,153,0.35)] transition-transform duration-200 group-hover:scale-105" loading="eager" />
-            </div>
-            <div class="mt-2.5 w-full flex items-center justify-center">
-              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/85 backdrop-blur-md border border-white shadow-xs">
-                <span class="w-1.5 h-1.5 rounded-full bg-pink-500 animate-pulse"></span>
-                <span class="text-[10px] 2xl:text-[11px] font-num font-semibold text-neutral-900 tracking-wide uppercase">UltraMemory</span>
-                <span class="text-neutral-400">·</span>
-                <span class="text-[10px] 2xl:text-[11px] font-num text-neutral-700 font-medium">&lt;15ms</span>
-              </div>
-            </div>
-          </div>
+        <div class="hero-3d-object" data-hero-3d>
+          <img src="data:image/webp;base64,${HERO_BRAIN_WEBP_B64}" alt="Sovereign 3D Brain Asset" loading="eager" />
         </div>
       </div>
     </div>
 
-    <!-- Right Hero 3D Floating Asset: Sovereign UltraSearch Lens -->
+    <!-- Right Hero 3D Floating Asset: Sovereign 3D Lens -->
     <div class="hero-asset-floating-right hero-float-wrapper">
       <div class="hero-float-right">
-        <div class="hero-3d-card group relative p-3.5 2xl:p-4 rounded-3xl bg-white/40 hover:bg-white/55 backdrop-blur-xl border border-white/70 shadow-[0_20px_50px_rgba(2,132,199,0.2)] cursor-pointer" data-hero-3d>
-          <div class="hero-3d-glare"></div>
-          <div class="hero-3d-inner flex flex-col items-center">
-            <div class="relative w-full aspect-square flex items-center justify-center p-1">
-              <img src="data:image/webp;base64,${HERO_LENS_WEBP_B64}" alt="UltraSearch Sovereign 3D Lens" class="w-full h-full object-contain filter drop-shadow-[0_16px_24px_rgba(236,72,153,0.35)] transition-transform duration-200 group-hover:scale-105" loading="eager" />
-            </div>
-            <div class="mt-2.5 w-full flex items-center justify-center">
-              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/85 backdrop-blur-md border border-white shadow-xs">
-                <span class="w-1.5 h-1.5 rounded-full bg-pink-500 animate-pulse"></span>
-                <span class="text-[10px] 2xl:text-[11px] font-num font-semibold text-neutral-900 tracking-wide uppercase">UltraSearch</span>
-                <span class="text-neutral-400">·</span>
-                <span class="text-[10px] 2xl:text-[11px] font-num text-neutral-700 font-medium">BM25 Edge</span>
-              </div>
-            </div>
-          </div>
+        <div class="hero-3d-object" data-hero-3d>
+          <img src="data:image/webp;base64,${HERO_LENS_WEBP_B64}" alt="Sovereign 3D Lens Asset" loading="eager" />
         </div>
       </div>
     </div>
@@ -3566,44 +3532,39 @@ function skipJacket(e) {
       });
     })();
 
-    // 4b. Hero 3D Floating Assets (Interactive Dynamic Corner Pop & Specular Highlight)
+    // 4b. Hero 3D Floating Assets (Interactive Dynamic Corner Pop Physics)
     (function initHero3DAssets() {
-      const heroCards = document.querySelectorAll('[data-hero-3d]');
-      heroCards.forEach(card => {
+      const heroAssets = document.querySelectorAll('[data-hero-3d]');
+      heroAssets.forEach(asset => {
         let frameId = null;
 
         function handleMove(e) {
-          const rect = card.getBoundingClientRect();
+          const rect = asset.getBoundingClientRect();
           const x = (e.clientX - rect.left) / rect.width;
           const y = (e.clientY - rect.top) / rect.height;
 
           // Corner hovering physics: corner under cursor physically lifts up toward viewer
           // x: 0 (left) -> 1 (right); y: 0 (top) -> 1 (bottom)
-          const maxTilt = 18;
+          const maxTilt = 22;
           const tiltX = (y - 0.5) * (maxTilt * 2);
           const tiltY = (0.5 - x) * (maxTilt * 2);
 
           if (frameId) cancelAnimationFrame(frameId);
           frameId = requestAnimationFrame(() => {
-            card.classList.remove('is-resetting');
-            card.style.transform = 'perspective(1000px) rotateX(' + tiltX.toFixed(2) + 'deg) rotateY(' + tiltY.toFixed(2) + 'deg) scale3d(1.08, 1.08, 1.08) translateZ(12px)';
-
-            const glare = card.querySelector('.hero-3d-glare');
-            if (glare) {
-              glare.style.background = 'radial-gradient(circle at ' + (x * 100).toFixed(1) + '% ' + (y * 100).toFixed(1) + '%, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 70%)';
-            }
+            asset.classList.remove('is-resetting');
+            asset.style.transform = 'perspective(900px) rotateX(' + tiltX.toFixed(2) + 'deg) rotateY(' + tiltY.toFixed(2) + 'deg) scale3d(1.12, 1.12, 1.12) translateZ(18px)';
           });
         }
 
         function handleLeave() {
           if (frameId) cancelAnimationFrame(frameId);
-          card.classList.add('is-resetting');
-          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1) translateZ(0px)';
+          asset.classList.add('is-resetting');
+          asset.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1) translateZ(0px)';
         }
 
-        card.addEventListener('mousemove', handleMove, { passive: true });
-        card.addEventListener('mouseenter', () => card.classList.remove('is-resetting'));
-        card.addEventListener('mouseleave', handleLeave);
+        asset.addEventListener('mousemove', handleMove, { passive: true });
+        asset.addEventListener('mouseenter', () => asset.classList.remove('is-resetting'));
+        asset.addEventListener('mouseleave', handleLeave);
       });
     })();
 
