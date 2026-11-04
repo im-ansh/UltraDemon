@@ -242,12 +242,15 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       transform: translateY(0) !important;
     }
 
-    /* Header Base (Sky Blue Hero State) */
+    /* Header Base (Sky Blue Hero State — Completely Seamless Integration with Hero) */
     #mainHeader {
-      background-color: rgba(56, 189, 248, 0.92);
+      background-color: transparent;
       color: #ffffff;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.25);
-      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      border-bottom: 1px solid transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, backdrop-filter 0.25s ease;
     }
     #mainHeader .nav-link {
       color: rgba(255, 255, 255, 0.9);
@@ -411,7 +414,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
     .hero-asset-floating-left {
       position: absolute;
-      top: 4.5rem;
+      top: 6rem;
       left: max(1.5rem, calc(50% - 47rem));
       width: 14rem;
       z-index: 25;
@@ -420,7 +423,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     }
     .hero-asset-floating-right {
       position: absolute;
-      top: 6rem;
+      top: 7.5rem;
       right: max(1.5rem, calc(50% - 47rem));
       width: 14rem;
       z-index: 25;
@@ -431,12 +434,12 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     @media (max-width: 1440px) {
       .hero-asset-floating-left {
         left: 1.25rem;
-        top: 4rem;
+        top: 5.5rem;
         width: 12.5rem;
       }
       .hero-asset-floating-right {
         right: 1.25rem;
-        top: 5.5rem;
+        top: 7rem;
         width: 12.5rem;
       }
     }
@@ -444,12 +447,12 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     @media (max-width: 1160px) {
       .hero-asset-floating-left {
         left: 0.5rem;
-        top: 3.5rem;
+        top: 5rem;
         width: 10rem;
       }
       .hero-asset-floating-right {
         right: 0.5rem;
-        top: 5rem;
+        top: 6.5rem;
         width: 10rem;
       }
     }
@@ -624,7 +627,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   </div>
 
   <!-- Top Minimalist Centered Header -->
-  <header id="mainHeader" class="sticky top-0 z-40 backdrop-blur-md">
+  <header id="mainHeader" class="sticky top-0 z-40">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
       <!-- Brand Logo with Grey Vector Spark Icon -->
       <a href="/" class="flex items-center gap-2.5 group flex-shrink-0">
@@ -678,7 +681,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   </header>
 
   <!-- Full-Width Hero Section Canvas (Light Blue Background with White Text) -->
-  <section id="heroSection" class="relative w-full text-white pt-8 pb-16 overflow-hidden" style="background: linear-gradient(180deg, #38bdf8 0%, #7dd3fc 30%, #bae6fd 60%, #e0f2fe 82%, #f0f9ff 94%, #ffffff 100%);">
+  <section id="heroSection" class="relative w-full text-white -mt-16 pt-24 pb-16 overflow-hidden" style="background: linear-gradient(180deg, #38bdf8 0%, #7dd3fc 30%, #bae6fd 60%, #e0f2fe 82%, #f0f9ff 94%, #ffffff 100%);">
     <div id="heroTopSentinel" class="absolute top-0 left-0 w-full h-8 pointer-events-none"></div>
     <!-- Subtle background particles -->
     <div class="absolute inset-0 pointer-events-none opacity-10" style="background-image: radial-gradient(rgba(255,255,255,0.8) 1px, transparent 1px); background-size: 24px 24px;"></div>
@@ -3399,15 +3402,18 @@ function skipJacket(e) {
     }
     window.rezipJacket = rezipJacket;
 
-    // 2. Dynamic Navbar Transition: Sky Blue in Hero -> Pure White with Black Text in Body
+    // 2. Dynamic Navbar Transition: Seamless Hero Integration -> Pure White with Black Text in Body
     (function initNavbarScroll() {
       const header = document.getElementById('mainHeader');
       if (!header) return;
 
       function updateNav() {
         const y = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        const hero = document.getElementById('heroSection');
+        // Transition when scrolling near the bottom of the hero section where white body begins
+        const threshold = hero ? Math.max(300, hero.offsetTop + hero.offsetHeight - 140) : 550;
         const hasHash = window.location.hash && window.location.hash !== '#overview' && window.location.hash !== '#';
-        if (y > 20 || hasHash) {
+        if (y > threshold || (hasHash && y > 150)) {
           header.classList.add('scrolled-light');
         } else {
           header.classList.remove('scrolled-light');
@@ -3440,24 +3446,6 @@ function skipJacket(e) {
 
       updateNav();
       window.updateNav = updateNav;
-
-      if ('IntersectionObserver' in window) {
-        const sentinel = document.getElementById('heroTopSentinel');
-        if (sentinel) {
-          const obs = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-              const y = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
-              const hasHash = window.location.hash && window.location.hash !== '#overview' && window.location.hash !== '#';
-              if (entry.isIntersecting && y <= 20 && !hasHash) {
-                header.classList.remove('scrolled-light');
-              } else if (y > 20 || !entry.isIntersecting || hasHash) {
-                header.classList.add('scrolled-light');
-              }
-            });
-          }, { rootMargin: '-20px 0px 0px 0px' });
-          obs.observe(sentinel);
-        }
-      }
     })();
 
     // 3. Side-Scroll Mouse Drag-to-Scroll & Card Step
