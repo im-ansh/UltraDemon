@@ -720,7 +720,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             <span class="text-white/40">/</span>
             <span class="text-white/90 font-sans">SOVEREIGN EDGE PLATFORM</span>
           </div>
-          <button onclick="rezipJacket()" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-num border border-white/30 transition cursor-pointer backdrop-blur-md shadow-sm" title="Re-seal and zip the jacket again">
+          <button type="button" onclick="rezipJacket(); return false;" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-num border border-white/30 transition cursor-pointer backdrop-blur-md shadow-sm" title="Re-seal and zip the jacket again">
             <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
             <span>Re-Zip Jacket</span>
           </button>
@@ -746,7 +746,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
         <!-- Action Row (White buttons on blue background) -->
         <div class="flex flex-wrap items-center justify-center gap-3 mb-12">
-          <button onclick="handleProvisionKeyClick()" class="px-5 py-2.5 rounded-xl bg-white text-neutral-950 hover:bg-neutral-100 text-xs font-semibold transition cursor-pointer shadow-lg flex items-center gap-2">
+          <button type="button" onclick="handleProvisionKeyClick(); return false;" class="px-5 py-2.5 rounded-xl bg-white text-neutral-950 hover:bg-neutral-100 text-xs font-semibold transition cursor-pointer shadow-lg flex items-center gap-2">
             <span>Get Started Free</span>
             <svg class="w-3.5 h-3.5 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
@@ -1018,17 +1018,17 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           </div>
           <!-- Side-scroll next/prev controls -->
           <div class="flex items-center gap-2">
-            <button onclick="scrollFeatureTrack(-1)" class="p-2 rounded-lg border border-neutral-300 hover:border-black hover:bg-neutral-100 transition cursor-pointer text-neutral-700 hover:text-black" title="Scroll Left">
+            <button type="button" id="btnFeatureScrollLeft" onclick="scrollFeatureTrack(-1); return false;" class="p-2 rounded-lg border border-neutral-300 hover:border-black hover:bg-neutral-100 transition cursor-pointer text-neutral-700 hover:text-black" title="Scroll Left">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
             </button>
-            <button onclick="scrollFeatureTrack(1)" class="p-2 rounded-lg border border-neutral-300 hover:border-black hover:bg-neutral-100 transition cursor-pointer text-neutral-700 hover:text-black" title="Scroll Right">
+            <button type="button" id="btnFeatureScrollRight" onclick="scrollFeatureTrack(1); return false;" class="p-2 rounded-lg border border-neutral-300 hover:border-black hover:bg-neutral-100 transition cursor-pointer text-neutral-700 hover:text-black" title="Scroll Right">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
             </button>
           </div>
         </div>
 
         <!-- Horizontal Scroll Track with Elevated Architectural Rail Cards (Card Design Skill) -->
-        <div id="featureScrollTrack" class="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth pb-4 snap-x snap-mandatory">
+        <div id="featureScrollTrack" class="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth pb-4 snap-x snap-proximity">
           <!-- Card 1 -->
           <div class="min-w-[300px] sm:min-w-[340px] max-w-[340px] snap-start group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-400 transition-all duration-200 overflow-hidden">
             <div>
@@ -1296,15 +1296,15 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           <!-- Quick Samples with Grey SVGs -->
           <div class="flex flex-wrap items-center gap-2 mt-3">
             <span class="text-xs text-neutral-400">Samples:</span>
-            <button onclick="fillMemorySample('preference', 'User prefers clean minimalist monochrome design, strictly zero gradients, and Michelangelus font.', 'agent_ui')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
+            <button type="button" onclick="fillMemorySample('preference', 'User prefers clean minimalist monochrome design, strictly zero gradients, and Michelangelus font.', 'agent_ui')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
               <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/></svg>
               <span>Design Rule</span>
             </button>
-            <button onclick="fillMemorySample('fact', 'Database infrastructure is deployed on Cloudflare D1 with SQLite FTS5 BM25 index.', 'backend_infra')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
+            <button type="button" onclick="fillMemorySample('fact', 'Database infrastructure is deployed on Cloudflare D1 with SQLite FTS5 BM25 index.', 'backend_infra')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
               <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/></svg>
               <span>Database Architecture</span>
             </button>
-            <button onclick="fillMemorySample('entity', 'UltraDemon: Sovereign web search and agent memory platform beating Supermemory.', 'product_core')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
+            <button type="button" onclick="fillMemorySample('entity', 'UltraDemon: Sovereign web search and agent memory platform beating Supermemory.', 'product_core')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
               <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="16" height="16" x="4" y="4" rx="2"/></svg>
               <span>Product Profile</span>
             </button>
@@ -1322,7 +1322,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
               <span class="text-[10px] font-num text-neutral-500">POST /v1/memory</span>
             </div>
 
-            <form onsubmit="handleStoreMemory(event)" class="space-y-3">
+            <form onsubmit="event.preventDefault(); handleStoreMemory(event); return false;" class="space-y-3">
               <div>
                 <label class="block text-[11px] font-medium text-neutral-600 mb-1">Content to Remember</label>
                 <textarea 
@@ -1385,7 +1385,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
               <span class="text-[10px] font-num text-neutral-500">POST /v1/memory/query</span>
             </div>
 
-            <form onsubmit="handleQueryMemory(event)" class="space-y-3">
+            <form onsubmit="event.preventDefault(); handleQueryMemory(event); return false;" class="space-y-3">
               <div class="relative">
                 <input 
                   type="text" 
@@ -1482,15 +1482,15 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
           <div class="flex flex-wrap items-center gap-2 mt-3">
             <span class="text-xs text-neutral-400">Try queries:</span>
-            <button onclick="setQuery('What is Python?')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
+            <button type="button" onclick="setQuery('What is Python?')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
               <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
               <span>What is Python?</span>
             </button>
-            <button onclick="setQuery('Cloudflare Workers AI')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
+            <button type="button" onclick="setQuery('Cloudflare Workers AI')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
               <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>
               <span>Cloudflare Workers AI</span>
             </button>
-            <button onclick="setQuery('BM25 Ranking Algorithm')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
+            <button type="button" onclick="setQuery('BM25 Ranking Algorithm')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-200 text-xs text-neutral-800 border border-neutral-200 transition cursor-pointer">
               <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
               <span>BM25 Ranking</span>
             </button>
@@ -1498,7 +1498,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
 
         <div class="card-clean p-5 sm:p-6 rounded-2xl">
-          <form id="searchForm" onsubmit="handleSearch(event)" class="space-y-3">
+          <form id="searchForm" onsubmit="event.preventDefault(); handleSearch(event); return false;" class="space-y-3">
             <div class="relative">
               <input 
                 type="text" 
@@ -1772,10 +1772,10 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <div class="card-clean p-5 sm:p-6 rounded-2xl space-y-6">
           <!-- Build Showcase Selector Tabs -->
           <div class="flex flex-wrap gap-2 border-b border-neutral-200 pb-3">
-            <button onclick="switchBuildTab('buildFinance')" id="btnBuildFinance" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-black text-white cursor-pointer transition">Financial Analyst</button>
-            <button onclick="switchBuildTab('buildCode')" id="btnBuildCode" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Eternal Coding Copilot</button>
-            <button onclick="switchBuildTab('buildSupport')" id="btnBuildSupport" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Omnichannel CRM</button>
-            <button onclick="switchBuildTab('buildResearch')" id="btnBuildResearch" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Deep Research Bot</button>
+            <button type="button" onclick="switchBuildTab('buildFinance')" id="btnBuildFinance" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-black text-white cursor-pointer transition">Financial Analyst</button>
+            <button type="button" onclick="switchBuildTab('buildCode')" id="btnBuildCode" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Eternal Coding Copilot</button>
+            <button type="button" onclick="switchBuildTab('buildSupport')" id="btnBuildSupport" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Omnichannel CRM</button>
+            <button type="button" onclick="switchBuildTab('buildResearch')" id="btnBuildResearch" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Deep Research Bot</button>
           </div>
 
           <!-- Showcase 1: Financial Filing Analyst -->
@@ -1994,7 +1994,7 @@ for r in res["results"]:
             </div>
 
             <!-- Form -->
-            <form id="createKeyForm" onsubmit="handleCreateKey(event)" class="space-y-3 hidden">
+            <form id="createKeyForm" onsubmit="event.preventDefault(); handleCreateKey(event); return false;" class="space-y-3 hidden">
               <div>
                 <label class="block text-[11px] font-medium text-neutral-600 mb-1">Account</label>
                 <div id="keyUserAccountDisplay" class="px-3 py-2 bg-neutral-100 border border-neutral-200 rounded-lg text-xs font-num font-semibold text-neutral-950 truncate"></div>
@@ -2115,7 +2115,7 @@ for r in res["results"]:
         </div>
 
         <div class="card-clean p-5 rounded-2xl">
-          <form onsubmit="handleCrawl(event)" class="space-y-3">
+          <form onsubmit="event.preventDefault(); handleCrawl(event); return false;" class="space-y-3">
             <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
               <div class="sm:col-span-3">
                 <label class="block text-[11px] font-medium text-neutral-600 mb-1">Target URL</label>
@@ -2172,14 +2172,14 @@ for r in res["results"]:
 
         <div class="card-clean p-5 rounded-2xl">
           <div class="flex flex-wrap gap-1.5 border-b border-neutral-200 pb-3 mb-4">
-            <button onclick="switchTab('tabClaude')" id="btnTabClaude" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-black text-white cursor-pointer transition">Claude Desktop</button>
-            <button onclick="switchTab('tabCursor')" id="btnTabCursor" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Cursor / Windsurf</button>
-            <button onclick="switchTab('tabVercel')" id="btnTabVercel" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Vercel AI SDK</button>
-            <button onclick="switchTab('tabLangchain')" id="btnTabLangchain" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">LangChain</button>
-            <button onclick="switchTab('tabLlama')" id="btnTabLlama" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">LlamaIndex</button>
-            <button onclick="switchTab('tabPython')" id="btnTabPython" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Python</button>
-            <button onclick="switchTab('tabNode')" id="btnTabNode" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">TypeScript</button>
-            <button onclick="switchTab('tabCurl')" id="btnTabCurl" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">cURL</button>
+            <button type="button" onclick="switchTab('tabClaude')" id="btnTabClaude" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-black text-white cursor-pointer transition">Claude Desktop</button>
+            <button type="button" onclick="switchTab('tabCursor')" id="btnTabCursor" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Cursor / Windsurf</button>
+            <button type="button" onclick="switchTab('tabVercel')" id="btnTabVercel" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Vercel AI SDK</button>
+            <button type="button" onclick="switchTab('tabLangchain')" id="btnTabLangchain" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">LangChain</button>
+            <button type="button" onclick="switchTab('tabLlama')" id="btnTabLlama" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">LlamaIndex</button>
+            <button type="button" onclick="switchTab('tabPython')" id="btnTabPython" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">Python</button>
+            <button type="button" onclick="switchTab('tabNode')" id="btnTabNode" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">TypeScript</button>
+            <button type="button" onclick="switchTab('tabCurl')" id="btnTabCurl" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black cursor-pointer transition">cURL</button>
           </div>
 
           <!-- Claude Desktop MCP -->
@@ -2427,7 +2427,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
                 </li>
               </ul>
             </div>
-            <button onclick="handleProvisionKeyClick('free')" class="w-full py-2.5 text-center text-xs font-semibold rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 transition cursor-pointer">
+            <button type="button" onclick="handleProvisionKeyClick('free')" class="w-full py-2.5 text-center text-xs font-semibold rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 transition cursor-pointer">
               Get Free Key
             </button>
           </div>
@@ -2467,7 +2467,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
                 </li>
               </ul>
             </div>
-            <button onclick="handleProvisionKeyClick('pro')" class="w-full py-2.5 text-center text-xs font-semibold rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white transition shadow-md cursor-pointer flex items-center justify-center gap-2">
+            <button type="button" onclick="handleProvisionKeyClick('pro')" class="w-full py-2.5 text-center text-xs font-semibold rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white transition shadow-md cursor-pointer flex items-center justify-center gap-2">
               <span>Choose Pro</span>
               <svg class="w-3.5 h-3.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </button>
@@ -2500,7 +2500,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
                 </li>
               </ul>
             </div>
-            <button onclick="handleProvisionKeyClick('ultra')" class="w-full py-2.5 text-center text-xs font-semibold rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 transition cursor-pointer">
+            <button type="button" onclick="handleProvisionKeyClick('ultra')" class="w-full py-2.5 text-center text-xs font-semibold rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 transition cursor-pointer">
               Choose Ultra
             </button>
           </div>
@@ -2530,7 +2530,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
   <!-- Auth Modal with Grey SVGs -->
   <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs hidden">
     <div class="bg-white p-6 rounded-2xl w-full max-w-sm shadow-2xl relative border border-neutral-300">
-      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-black transition cursor-pointer">
+      <button type="button" onclick="closeAuthModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-black transition cursor-pointer">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18M6 6l12 12"/></svg>
       </button>
       
@@ -2547,11 +2547,11 @@ curl "${origin}/v1/memory/context?q=preference" \\
       </div>
 
       <div class="grid grid-cols-2 gap-1 p-1 bg-neutral-100 rounded-lg mb-4 text-xs font-medium">
-        <button id="authTabSignIn" onclick="switchAuthMode('signin')" class="py-1.5 rounded-md font-semibold bg-black text-white transition cursor-pointer">Sign In</button>
-        <button id="authTabSignUp" onclick="switchAuthMode('signup')" class="py-1.5 rounded-md font-semibold text-neutral-600 hover:text-black transition cursor-pointer">Sign Up</button>
+        <button type="button" id="authTabSignIn" onclick="switchAuthMode('signin')" class="py-1.5 rounded-md font-semibold bg-black text-white transition cursor-pointer">Sign In</button>
+        <button type="button" id="authTabSignUp" onclick="switchAuthMode('signup')" class="py-1.5 rounded-md font-semibold text-neutral-600 hover:text-black transition cursor-pointer">Sign Up</button>
       </div>
 
-      <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-3">
+      <form id="authForm" onsubmit="event.preventDefault(); handleAuthSubmit(event); return false;" class="space-y-3">
         <div>
           <label class="block text-[11px] font-medium text-neutral-600 mb-1">Email</label>
           <input 
@@ -2614,11 +2614,18 @@ curl "${origin}/v1/memory/context?q=preference" \\
     }
 
     function openAuthModal(mode) {
-      window.location.href = mode === 'signup' ? '/signup' : '/login';
+      const modal = document.getElementById('authModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        switchAuthMode(mode || 'signin');
+      } else {
+        window.location.href = mode === 'signup' ? '/signup' : '/login';
+      }
     }
 
     function closeAuthModal() {
-      document.getElementById('authModal').classList.add('hidden');
+      const modal = document.getElementById('authModal');
+      if (modal) modal.classList.add('hidden');
     }
 
     function switchAuthMode(mode) {
@@ -2759,15 +2766,15 @@ curl "${origin}/v1/memory/context?q=preference" \\
       if (currentUser || userStr || token) {
         window.location.href = '/app' + (plan ? '?plan=' + encodeURIComponent(plan) : '');
       } else {
-        window.location.href = '/signup' + (plan ? '?plan=' + encodeURIComponent(plan) : '');
+        openAuthModal('signup');
       }
     }
 
     function scrollFeatureTrack(direction) {
       const track = document.getElementById('featureScrollTrack');
       if (track) {
-        const card = track.querySelector('div');
-        const scrollAmount = card ? (card.offsetWidth + 16) : 340;
+        const card = track.firstElementChild;
+        const scrollAmount = card ? (card.getBoundingClientRect().width + 16) : 340;
         track.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
       }
     }
@@ -3520,7 +3527,27 @@ function skipJacket(e) {
       try {
         sessionStorage.removeItem('ultrademon_jacket_unzipped');
       } catch (err) {}
-      window.location.reload();
+      var curtain = document.getElementById('jacketCurtain');
+      var btn = document.getElementById('skipJacketBtn');
+      var handle = document.getElementById('zipperHandle');
+      var flapLeft = document.getElementById('jacketLeft');
+      var flapRight = document.getElementById('jacketRight');
+      if (curtain && flapLeft && flapRight && handle) {
+        curtain.style.display = 'flex';
+        curtain.style.transition = 'opacity 0.4s ease';
+        curtain.style.opacity = '1';
+        curtain.style.pointerEvents = 'auto';
+        handle.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+        flapLeft.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+        flapRight.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+        handle.style.transform = 'translate3d(-50%, 0, 0)';
+        flapLeft.style.transform = 'translate3d(0, 0, 0)';
+        flapRight.style.transform = 'translate3d(0, 0, 0)';
+        if (btn) btn.style.display = 'flex';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        window.location.reload();
+      }
     }
     window.rezipJacket = rezipJacket;
 
@@ -3796,9 +3823,59 @@ function skipJacket(e) {
       refreshStoredMemories();
     }
 
+    // Direct event listener bindings for carousel buttons
+    function bindInteractiveButtons() {
+      const btnLeft = document.getElementById('btnFeatureScrollLeft');
+      const btnRight = document.getElementById('btnFeatureScrollRight');
+      if (btnLeft) {
+        btnLeft.addEventListener('click', (e) => {
+          e.preventDefault();
+          scrollFeatureTrack(-1);
+        });
+      }
+      if (btnRight) {
+        btnRight.addEventListener('click', (e) => {
+          e.preventDefault();
+          scrollFeatureTrack(1);
+        });
+      }
+    }
+
+    // Export all handlers to window immediately so inline attributes never fail
+    window.scrollToConsole = scrollToConsole;
+    window.openAuthModal = openAuthModal;
+    window.closeAuthModal = closeAuthModal;
+    window.switchAuthMode = switchAuthMode;
+    window.handleAuthSubmit = handleAuthSubmit;
+    window.handleSignOut = handleSignOut;
+    window.handleProvisionKeyClick = handleProvisionKeyClick;
+    window.scrollFeatureTrack = scrollFeatureTrack;
+    window.setMode = setMode;
+    window.switchTab = switchTab;
+    window.switchBuildTab = switchBuildTab;
+    window.copyToClipboard = copyToClipboard;
+    window.showToast = showToast;
+    window.fillMemorySample = fillMemorySample;
+    window.handleStoreMemory = handleStoreMemory;
+    window.handleQueryMemory = handleQueryMemory;
+    window.refreshStoredMemories = refreshStoredMemories;
+    window.handleDeleteMemory = handleDeleteMemory;
+    window.setQuery = setQuery;
+    window.handleSearch = handleSearch;
+    window.handleCreateKey = handleCreateKey;
+    window.revokeKey = revokeKey;
+    window.refreshUsage = refreshUsage;
+    window.handleCrawl = handleCrawl;
+    window.rezipJacket = rezipJacket;
+    window.skipJacket = skipJacket;
+
     if (document.readyState === 'loading') {
-      window.addEventListener('DOMContentLoaded', initAuth);
+      window.addEventListener('DOMContentLoaded', () => {
+        bindInteractiveButtons();
+        initAuth();
+      });
     } else {
+      bindInteractiveButtons();
       initAuth();
     }
   </script>

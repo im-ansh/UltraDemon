@@ -313,7 +313,7 @@ curl -X POST "${origin}/v1/memory/query" \\
       <!-- Create Key Form Card -->
       <div class="card-clean p-6 rounded-2xl space-y-4">
         <h2 class="text-sm font-bold text-neutral-950">Generate New API Key</h2>
-        <form onsubmit="handleAppCreateKey(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+        <form onsubmit="event.preventDefault(); return handleAppCreateKey(event);" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
           <div>
             <label class="block text-[11px] font-medium text-neutral-600 mb-1">Plan Tier</label>
             <select id="appKeyPlan" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 focus:outline-none focus:bg-white focus:border-black font-num">
@@ -450,7 +450,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
           <h2 class="text-sm font-bold text-neutral-950">Store Agent Memory</h2>
           <span class="text-[10px] bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded font-num text-neutral-700">D1 FTS5 Auto-Sync</span>
         </div>
-        <form onsubmit="handleAppStoreMemory(event)" class="space-y-3">
+        <form onsubmit="event.preventDefault(); return handleAppStoreMemory(event);" class="space-y-3">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label class="block text-[11px] font-medium text-neutral-600 mb-1">Memory Type</label>
@@ -487,7 +487,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
           <h2 class="text-sm font-bold text-neutral-950">Recall Memories (BM25 Match)</h2>
           <span id="appRecallTimer" class="hidden font-num text-[10px] bg-neutral-100 border border-neutral-300 text-neutral-900 px-2 py-0.5 rounded font-bold">0ms</span>
         </div>
-        <form onsubmit="handleAppQueryMemory(event)" class="flex gap-2">
+        <form onsubmit="event.preventDefault(); return handleAppQueryMemory(event);" class="flex gap-2">
           <input type="text" id="appMemQuery" placeholder="Query memories..." required class="flex-1 px-3.5 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs" />
           <button type="submit" class="px-4 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer">Recall</button>
         </form>
@@ -623,7 +623,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
       <!-- Live Search Query Studio -->
       <div class="card-clean p-6 rounded-2xl space-y-4">
         <h2 class="text-sm font-bold text-neutral-950">Test Sovereign Web Index</h2>
-        <form onsubmit="handleAppSearch(event)" class="space-y-3">
+        <form onsubmit="event.preventDefault(); return handleAppSearch(event);" class="space-y-3">
           <div class="flex gap-2">
             <input type="text" id="appSearchQuery" value="What is Python?" placeholder="Search index..." required class="flex-1 px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-xs" />
             <button type="submit" class="px-5 py-2.5 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer">Search</button>
@@ -646,7 +646,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
           <h2 class="text-sm font-bold text-neutral-950">Ingest URL into Sovereign Index</h2>
           <span class="text-[10px] bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded font-num text-neutral-700">Autonomous Edge Crawler</span>
         </div>
-        <form onsubmit="handleAppCrawl(event)" class="space-y-3">
+        <form onsubmit="event.preventDefault(); return handleAppCrawl(event);" class="space-y-3">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="sm:col-span-2">
               <label class="block text-[11px] font-medium text-neutral-600 mb-1">Target URL</label>
@@ -673,7 +673,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
     <section id="view-crawler" class="space-y-6 hidden">
       <div class="card-clean p-6 rounded-2xl space-y-4">
         <h2 class="text-sm font-bold text-neutral-950">Ingest URL into Sovereign Index</h2>
-        <form onsubmit="handleAppCrawl(event)" class="space-y-3">
+        <form onsubmit="event.preventDefault(); return handleAppCrawl(event);" class="space-y-3">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="sm:col-span-2">
               <label class="block text-[11px] font-medium text-neutral-600 mb-1">Target URL</label>
@@ -821,7 +821,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
         </div>
 
         <!-- Custom Event Emitter Strip -->
-        <form onsubmit="handleCustomSimulation(event)" class="pt-2 border-t border-neutral-100 grid grid-cols-1 sm:grid-cols-5 gap-2.5 items-end">
+        <form onsubmit="event.preventDefault(); return handleCustomSimulation(event);" class="pt-2 border-t border-neutral-100 grid grid-cols-1 sm:grid-cols-5 gap-2.5 items-end">
           <div class="sm:col-span-2">
             <label class="block text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-1">Custom Event Name</label>
             <input type="text" id="simEventName" value="feature_activated" required class="w-full px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-lg text-neutral-900 focus:outline-none focus:ring-1 focus:ring-black font-mono" />
@@ -1321,7 +1321,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
         </div>
 
         <!-- Add Watch Target Form -->
-        <form onsubmit="handleCreateVipTarget(event)" class="bg-neutral-50/70 border border-neutral-200/80 p-4 rounded-xl space-y-3">
+        <form onsubmit="event.preventDefault(); return handleCreateVipTarget(event);" class="bg-neutral-50/70 border border-neutral-200/80 p-4 rounded-xl space-y-3">
           <div class="text-xs font-bold text-neutral-800 font-num">Add Specific Client or IP Address to Watchlist</div>
           <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <div>
@@ -2347,6 +2347,15 @@ requests.post("${origin}/v1/analytics/capture", json={
     window.refreshTelemetry = refreshTelemetry;
     window.handleAppSignOut = handleAppSignOut;
     window.showAppToast = showAppToast;
+    window.quickCreateSuiteKey = quickCreateSuiteKey;
+    window.copySnippetCode = copySnippetCode;
+    window.emitSimulationEvent = emitSimulationEvent;
+    window.handleCustomSimulation = handleCustomSimulation;
+    window.loadVipWatchTargets = loadVipWatchTargets;
+    window.handleCreateVipTarget = handleCreateVipTarget;
+    window.deleteVipTarget = deleteVipTarget;
+    window.loadVipLiveTraces = loadVipLiveTraces;
+    window.escapeHtml = escapeHtml;
 
     // Immediate Synchronous State Hydration (Zero Latency Profile Display)
     function hydrateCachedState() {
