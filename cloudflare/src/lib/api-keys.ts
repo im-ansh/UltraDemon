@@ -122,9 +122,22 @@ export async function revokeApiKey(env: Env, plainKey: string): Promise<void> {
 
 // ── List Keys for User ────────────────────────────────────────────────────────
 
-export async function listUserKeys(env: Env, userId: string): Promise<ApiKeyRecord[]> {
+export async function listUserKeys(env: Env, userId: string, userEmail?: string): Promise<ApiKeyRecord[]> {
+  if (userEmail) {
+    const { results } = await env.DB
+      .prepare(`
+        SELECT key_id, user_id, plan, key_type, label, created_at, revoked 
+        FROM api_keys 
+        WHERE user_id = ? 
+           OR user_id IN (SELECT user_id FROM users WHERE email = ?)
+        ORDER BY created_at DESC
+      `)
+      .bind(userId, userEmail.trim().toLowerCase())
+      .all<Omit<ApiKeyRecord, 'hashed_key'>>();
+    return results as unknown as ApiKeyRecord[];
+  }
   const { results } = await env.DB
-    .prepare('SELECT key_id, user_id, plan, key_type, label, created_at, revoked FROM api_keys WHERE user_id = ?')
+    .prepare('SELECT key_id, user_id, plan, key_type, label, created_at, revoked FROM api_keys WHERE user_id = ? ORDER BY created_at DESC')
     .bind(userId)
     .all<Omit<ApiKeyRecord, 'hashed_key'>>();
   return results as unknown as ApiKeyRecord[];

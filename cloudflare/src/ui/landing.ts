@@ -357,28 +357,30 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.22), 0 12px 18px -6px rgba(0, 0, 0, 0.1);
     }
 
-    /* Hero Floating 3D Brand Cards */
+    /* Hero Floating 3D Brand Assets (Tilted & Away From Center) */
     @keyframes heroFloatLeft {
       0%, 100% {
-        transform: translateY(0px) rotate(-1.5deg);
+        transform: translateY(0px) rotate(-14deg) rotateY(16deg) rotateX(8deg);
       }
       50% {
-        transform: translateY(-12px) rotate(1deg);
+        transform: translateY(-16px) rotate(-10deg) rotateY(20deg) rotateX(12deg);
       }
     }
     @keyframes heroFloatRight {
       0%, 100% {
-        transform: translateY(0px) rotate(1.5deg);
+        transform: translateY(0px) rotate(22deg) rotateY(-18deg) rotateX(12deg);
       }
       50% {
-        transform: translateY(-14px) rotate(-1deg);
+        transform: translateY(-18px) rotate(26deg) rotateY(-22deg) rotateX(16deg);
       }
     }
     .hero-float-left {
-      animation: heroFloatLeft 7s ease-in-out infinite;
+      animation: heroFloatLeft 7.5s ease-in-out infinite;
+      transform-style: preserve-3d;
     }
     .hero-float-right {
-      animation: heroFloatRight 8s ease-in-out 0.8s infinite;
+      animation: heroFloatRight 8.5s ease-in-out 0.8s infinite;
+      transform-style: preserve-3d;
     }
     .hero-float-wrapper:hover .hero-float-left,
     .hero-float-wrapper:hover .hero-float-right {
@@ -388,7 +390,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     .hero-3d-object {
       transform-style: preserve-3d;
       will-change: transform, filter;
-      transition: transform 0.12s cubic-bezier(0.2, 0, 0, 1), filter 0.25s ease;
+      transition: transform 0.14s cubic-bezier(0.2, 0, 0, 1), filter 0.25s ease;
       cursor: pointer;
     }
     .hero-3d-object.is-resetting {
@@ -398,19 +400,19 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       width: 100%;
       height: auto;
       object-fit: contain;
-      filter: drop-shadow(0 22px 32px rgba(219, 39, 119, 0.35)) drop-shadow(0 10px 18px rgba(2, 132, 199, 0.25));
+      filter: drop-shadow(0 26px 36px rgba(219, 39, 119, 0.4)) drop-shadow(0 12px 20px rgba(2, 132, 199, 0.28));
       transition: filter 0.25s ease;
       user-select: none;
       -webkit-user-drag: none;
     }
     .hero-3d-object:hover img {
-      filter: drop-shadow(0 32px 48px rgba(219, 39, 119, 0.5)) drop-shadow(0 15px 24px rgba(2, 132, 199, 0.35));
+      filter: drop-shadow(0 36px 52px rgba(219, 39, 119, 0.55)) drop-shadow(0 18px 28px rgba(2, 132, 199, 0.38));
     }
 
     .hero-asset-floating-left {
       position: absolute;
-      top: 5rem;
-      left: calc(50% - 39rem);
+      top: 4.5rem;
+      left: max(1.5rem, calc(50% - 47rem));
       width: 14rem;
       z-index: 25;
       pointer-events: auto;
@@ -418,37 +420,37 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     }
     .hero-asset-floating-right {
       position: absolute;
-      top: 6.5rem;
-      right: calc(50% - 39rem);
+      top: 6rem;
+      right: max(1.5rem, calc(50% - 47rem));
       width: 14rem;
       z-index: 25;
       pointer-events: auto;
       user-select: none;
     }
 
-    @media (max-width: 1360px) {
+    @media (max-width: 1440px) {
       .hero-asset-floating-left {
-        left: 1.5rem;
-        top: 4.5rem;
+        left: 1.25rem;
+        top: 4rem;
         width: 12.5rem;
       }
       .hero-asset-floating-right {
-        right: 1.5rem;
-        top: 6rem;
+        right: 1.25rem;
+        top: 5.5rem;
         width: 12.5rem;
       }
     }
 
-    @media (max-width: 1120px) {
+    @media (max-width: 1160px) {
       .hero-asset-floating-left {
-        left: 0.75rem;
-        top: 4rem;
-        width: 10.5rem;
+        left: 0.5rem;
+        top: 3.5rem;
+        width: 10rem;
       }
       .hero-asset-floating-right {
-        right: 0.75rem;
-        top: 5.5rem;
-        width: 10.5rem;
+        right: 0.5rem;
+        top: 5rem;
+        width: 10rem;
       }
     }
 
@@ -684,7 +686,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     <!-- Left Hero 3D Floating Asset: Sovereign 3D Brain -->
     <div class="hero-asset-floating-left hero-float-wrapper">
       <div class="hero-float-left">
-        <div class="hero-3d-object" data-hero-3d>
+        <div class="hero-3d-object" data-hero-3d data-hero-side="left">
           <img src="data:image/webp;base64,${HERO_BRAIN_WEBP_B64}" alt="Sovereign 3D Brain Asset" loading="eager" />
         </div>
       </div>
@@ -693,7 +695,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     <!-- Right Hero 3D Floating Asset: Sovereign 3D Lens -->
     <div class="hero-asset-floating-right hero-float-wrapper">
       <div class="hero-float-right">
-        <div class="hero-3d-object" data-hero-3d>
+        <div class="hero-3d-object" data-hero-3d data-hero-side="right">
           <img src="data:image/webp;base64,${HERO_LENS_WEBP_B64}" alt="Sovereign 3D Lens Asset" loading="eager" />
         </div>
       </div>
@@ -1846,12 +1848,12 @@ for r in res["results"]:
             </div>
           </div>
           <div class="flex items-center gap-2">
-            <button onclick="openAuthModal('signin')" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition cursor-pointer">
+            <a href="/login" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition cursor-pointer">
               Sign In
-            </button>
-            <button onclick="openAuthModal('signup')" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg border border-neutral-300 hover:bg-neutral-100 transition cursor-pointer">
+            </a>
+            <a href="/signup" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg border border-neutral-300 hover:bg-neutral-100 transition cursor-pointer">
               Create Account
-            </button>
+            </a>
           </div>
         </div>
 
@@ -1870,7 +1872,7 @@ for r in res["results"]:
               </div>
               <div class="text-xs font-bold text-neutral-950">Login Required</div>
               <p class="text-[11px] text-neutral-500">Sign in to generate keys.</p>
-              <button onclick="openAuthModal('signin')" class="mt-2 px-3 py-1.5 text-xs font-semibold rounded-lg bg-black text-white cursor-pointer">Sign In</button>
+              <a href="/login" class="inline-block mt-2 px-3 py-1.5 text-xs font-semibold rounded-lg bg-black text-white cursor-pointer">Sign In</a>
             </div>
 
             <!-- Form -->
@@ -2491,10 +2493,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
     }
 
     function openAuthModal(mode) {
-      currentAuthMode = mode;
-      switchAuthMode(mode);
-      document.getElementById('authAlert').classList.add('hidden');
-      document.getElementById('authModal').classList.remove('hidden');
+      window.location.href = mode === 'signup' ? '/signup' : '/login';
     }
 
     function closeAuthModal() {
@@ -3532,11 +3531,15 @@ function skipJacket(e) {
       });
     })();
 
-    // 4b. Hero 3D Floating Assets (Interactive Dynamic Corner Pop Physics)
+    // 4b. Hero 3D Floating Assets (Interactive Dynamic Corner Pop Layered on Resting Tilt)
     (function initHero3DAssets() {
       const heroAssets = document.querySelectorAll('[data-hero-3d]');
       heroAssets.forEach(asset => {
         let frameId = null;
+        const side = asset.getAttribute('data-hero-side') || 'left';
+        const baseRotate = side === 'left' ? -14 : 22;
+        const baseTiltY = side === 'left' ? 16 : -18;
+        const baseTiltX = side === 'left' ? 8 : 12;
 
         function handleMove(e) {
           const rect = asset.getBoundingClientRect();
@@ -3544,22 +3547,21 @@ function skipJacket(e) {
           const y = (e.clientY - rect.top) / rect.height;
 
           // Corner hovering physics: corner under cursor physically lifts up toward viewer
-          // x: 0 (left) -> 1 (right); y: 0 (top) -> 1 (bottom)
-          const maxTilt = 22;
+          const maxTilt = 20;
           const tiltX = (y - 0.5) * (maxTilt * 2);
           const tiltY = (0.5 - x) * (maxTilt * 2);
 
           if (frameId) cancelAnimationFrame(frameId);
           frameId = requestAnimationFrame(() => {
             asset.classList.remove('is-resetting');
-            asset.style.transform = 'perspective(900px) rotateX(' + tiltX.toFixed(2) + 'deg) rotateY(' + tiltY.toFixed(2) + 'deg) scale3d(1.12, 1.12, 1.12) translateZ(18px)';
+            asset.style.transform = 'perspective(900px) rotate(' + baseRotate + 'deg) rotateX(' + (baseTiltX + tiltX).toFixed(2) + 'deg) rotateY(' + (baseTiltY + tiltY).toFixed(2) + 'deg) scale3d(1.12, 1.12, 1.12) translateZ(22px)';
           });
         }
 
         function handleLeave() {
           if (frameId) cancelAnimationFrame(frameId);
           asset.classList.add('is-resetting');
-          asset.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1) translateZ(0px)';
+          asset.style.transform = 'perspective(900px) rotate(' + baseRotate + 'deg) rotateX(' + baseTiltX + 'deg) rotateY(' + baseTiltY + 'deg) scale3d(1, 1, 1) translateZ(0px)';
         }
 
         asset.addEventListener('mousemove', handleMove, { passive: true });

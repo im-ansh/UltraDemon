@@ -68,7 +68,7 @@ keysRouter.get('/', async (c) => {
     return c.json({ keys: [] });
   }
 
-  const keys = await listUserKeys(c.env, sbUser.id);
+  const keys = await listUserKeys(c.env, sbUser.id, sbUser.email);
   return c.json({ keys });
 });
 

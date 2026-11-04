@@ -264,33 +264,48 @@ authRouter.get('/me', async (c) => {
 
   const token = authHeader.slice(7).trim();
 
-  // Edge session check
+  // Edge session check (<1ms KV recall)
   if (token.startsWith('edge_sess_')) {
     const cached = await c.env.KEY_CACHE.get<{ id: string; email: string; plan?: string }>(`sess:${token}`, 'json');
     if (cached) {
       const row = await c.env.DB.prepare('SELECT plan FROM users WHERE user_id = ?').bind(cached.id).first<{ plan: string }>();
       const plan = row?.plan || cached.plan || 'free';
-      const keys = await listUserKeys(c.env, cached.id);
+      const keys = await listUserKeys(c.env, cached.id, cached.email);
       return c.json({ user: { id: cached.id, email: cached.email, plan, keys } });
     }
     return c.json({ error: 'Session expired or invalid' }, 401);
   }
 
-  // Supabase token check
+  // Supabase token check (with Edge KV 5-min caching for fast sub-15ms verification)
   if (c.env.SUPABASE_URL && c.env.SUPABASE_ANON_KEY) {
-    try {
-      const res = await fetch(`${c.env.SUPABASE_URL}/auth/v1/user`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'apikey': c.env.SUPABASE_ANON_KEY,
-        },
-      });
-      if (res.ok) {
-        const user = await res.json<{ id: string; email?: string }>();
-        const row = await c.env.DB.prepare('SELECT plan FROM users WHERE user_id = ?').bind(user.id).first<{ plan: string }>();
-        return c.json({ user: { id: user.id, email: user.email, plan: row?.plan || 'free' } });
-      }
-    } catch { /* proceed */ }
+    const cacheKey = `sb_user:${token.slice(-32)}`;
+    let user = await c.env.KEY_CACHE.get<{ id: string; email?: string }>(cacheKey, 'json');
+
+    if (!user) {
+      try {
+        const res = await fetch(`${c.env.SUPABASE_URL}/auth/v1/user`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'apikey': c.env.SUPABASE_ANON_KEY,
+          },
+        });
+        if (res.ok) {
+          user = await res.json<{ id: string; email?: string }>();
+          if (user && user.id) {
+            await c.env.KEY_CACHE.put(cacheKey, JSON.stringify({ id: user.id, email: user.email }), {
+              expirationTtl: 300,
+            });
+          }
+        }
+      } catch { /* proceed */ }
+    }
+
+    if (user && user.id) {
+      const row = await c.env.DB.prepare('SELECT plan FROM users WHERE user_id = ?').bind(user.id).first<{ plan: string }>();
+      const plan = row?.plan || 'free';
+      const keys = await listUserKeys(c.env, user.id, user.email);
+      return c.json({ user: { id: user.id, email: user.email, plan, keys } });
+    }
   }
 
   return c.json({ error: 'Session expired or invalid' }, 401);

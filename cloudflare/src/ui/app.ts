@@ -640,6 +640,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
     }
 
     function getAuthToken() {
+      // 1. Direct Edge Session in ultrademon_auth_session
       const sess = localStorage.getItem('ultrademon_auth_session');
       if (sess) {
         try {
@@ -647,6 +648,22 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
           if (parsed && parsed.access_token) return parsed.access_token;
         } catch {}
       }
+
+      // 2. Check Supabase auth token keys (sb-*-auth-token)
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith('sb-') && key.endsWith('-auth-token')) {
+            const parsed = JSON.parse(localStorage.getItem(key) || '{}');
+            if (parsed && parsed.access_token) return parsed.access_token;
+          }
+        }
+      } catch {}
+
+      // 3. Fallback to active plain API key if available
+      const activeKey = localStorage.getItem('ultrademon_active_key');
+      if (activeKey) return activeKey;
+
       return null;
     }
 
@@ -1203,8 +1220,41 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
     window.handleAppSignOut = handleAppSignOut;
     window.showAppToast = showAppToast;
 
-    // Initialize Workspace on Page Load
-    window.addEventListener('DOMContentLoaded', async () => {
+    // Immediate Synchronous State Hydration (Zero Latency Profile Display)
+    function hydrateCachedState() {
+      const userStr = localStorage.getItem('ultrademon_user');
+      if (userStr) {
+        try {
+          currentUser = JSON.parse(userStr);
+          const emailDisplay = document.getElementById('userEmailDisplay');
+          const planBadge = document.getElementById('userPlanBadge');
+          if (emailDisplay && currentUser) emailDisplay.innerText = currentUser.email || currentUser.id || 'Active Workspace';
+          if (planBadge && currentUser) planBadge.innerText = (currentUser.plan || 'free').toUpperCase();
+        } catch {}
+      }
+
+      const activeKey = getActiveKey();
+      const topLabel = document.getElementById('topActiveKeyLabel');
+      const topCopyBtn = document.getElementById('topCopyBtn');
+      if (activeKey && topLabel) {
+        topLabel.innerText = activeKey.slice(0, 10) + '...';
+        if (topCopyBtn) topCopyBtn.classList.remove('hidden');
+      }
+
+      const storedKeysStr = localStorage.getItem(STORAGE_KEY);
+      if (storedKeysStr) {
+        try {
+          const parsed = JSON.parse(storedKeysStr);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            localKeys = parsed;
+            renderAppKeysTable();
+          }
+        } catch {}
+      }
+    }
+
+    // Initialize Workspace
+    async function initWorkspace() {
       // 1. Direct event listener bindings for sidebar buttons
       document.querySelectorAll('#sidebarNav button[data-view-target]').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -1214,60 +1264,84 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
         });
       });
 
-      // 2. Authentication and Session Handling
+      // 2. Synchronous hydration first (<1ms)
+      hydrateCachedState();
+
+      // 3. Authentication & Verification
       let token = getAuthToken();
-      if (!token) {
+      if (!token && !currentUser) {
         token = await initGuestSession();
       }
 
-      try {
-        let res = await fetch('/v1/auth/me', {
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
-        if (!res.ok) {
-          // Fallback to fresh guest session if token expired
-          token = await initGuestSession();
-          res = await fetch('/v1/auth/me', {
+      if (token) {
+        try {
+          const res = await fetch('/v1/auth/me', {
             headers: { 'Authorization': 'Bearer ' + token }
           });
-        }
-
-        if (res.ok) {
-          const data = await res.json();
-          currentUser = data.user;
-          const emailDisplay = document.getElementById('userEmailDisplay');
-          const planBadge = document.getElementById('userPlanBadge');
-          if (emailDisplay) emailDisplay.innerText = currentUser.email || currentUser.id || 'Edge Guest';
-          if (planBadge) planBadge.innerText = (currentUser.plan || 'free').toUpperCase();
-        }
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const targetPlan = (urlParams.get('plan') || urlParams.get('upgrade') || '').toLowerCase();
-        if (targetPlan && ['free', 'pro', 'ultra', 'enterprise'].includes(targetPlan)) {
-          if (currentUser && currentUser.plan !== targetPlan) {
-            await upgradeTier(targetPlan, true);
+          if (res.ok) {
+            const data = await res.json();
+            currentUser = data.user;
+            localStorage.setItem('ultrademon_user', JSON.stringify(currentUser));
+            const emailDisplay = document.getElementById('userEmailDisplay');
+            const planBadge = document.getElementById('userPlanBadge');
+            if (emailDisplay) emailDisplay.innerText = currentUser.email || currentUser.id || 'Edge Workspace';
+            if (planBadge) planBadge.innerText = (currentUser.plan || 'free').toUpperCase();
+            if (data.user && Array.isArray(data.user.keys) && data.user.keys.length > 0) {
+              const saved = JSON.parse(localStorage.getItem('ultrademon_saved_plain_keys') || '{}');
+              const activePlain = localStorage.getItem('ultrademon_active_key') || '';
+              localKeys = data.user.keys.map(k => ({
+                ...k,
+                plain_key: saved[k.key_id] || (activePlain && localKeys.length === 0 ? activePlain : '')
+              }));
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(localKeys));
+              renderAppKeysTable();
+            }
+          } else if (!currentUser) {
+            // Only fallback to guest if completely unauthenticated
+            token = await initGuestSession();
           }
+        } catch (err) {
+          console.warn('Session verification non-fatal:', err);
         }
-
-        await loadAppKeys();
-        if (localKeys.length === 0) {
-          await autoProvisionInitialKey(currentUser ? currentUser.plan : (targetPlan || 'free'));
-        }
-        loadStoredMemories();
-        refreshTelemetry();
-
-        // 3. Select target tab from URL param or hash
-        const hashTab = (window.location.hash || '').replace('#', '');
-        const targetTab = urlParams.get('tab') || hashTab;
-        if (targetTab && ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations'].includes(targetTab)) {
-          setAppView(targetTab);
-        } else {
-          setAppView('overview');
-        }
-      } catch (err) {
-        console.warn('Dashboard initialization non-fatal:', err);
       }
-    });
+
+      // If user is still showing Loading..., display currentUser or fallback
+      const emailDisplay = document.getElementById('userEmailDisplay');
+      if (emailDisplay && emailDisplay.innerText === 'Loading...') {
+        emailDisplay.innerText = (currentUser && (currentUser.email || currentUser.id)) || 'Active Workspace';
+      }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const targetPlan = (urlParams.get('plan') || urlParams.get('upgrade') || '').toLowerCase();
+      if (targetPlan && ['free', 'pro', 'ultra', 'enterprise'].includes(targetPlan)) {
+        if (currentUser && currentUser.plan !== targetPlan) {
+          await upgradeTier(targetPlan, true);
+        }
+      }
+
+      await loadAppKeys();
+      if (localKeys.length === 0) {
+        await autoProvisionInitialKey(currentUser ? currentUser.plan : (targetPlan || 'free'));
+      }
+      loadStoredMemories();
+      refreshTelemetry();
+
+      // 4. Select target tab from URL param or hash
+      const hashTab = (window.location.hash || '').replace('#', '');
+      const targetTab = urlParams.get('tab') || hashTab;
+      if (targetTab && ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations'].includes(targetTab)) {
+        setAppView(targetTab);
+      } else {
+        setAppView('overview');
+      }
+    }
+
+    // Execute immediately or on DOM ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initWorkspace);
+    } else {
+      initWorkspace();
+    }
   </script>
 </body>
 </html>`;
