@@ -933,7 +933,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
 
       <!-- Autonomous Customer Profile (ICP Engine) Card — Special Feature PostHog Doesn't Have -->
       <div class="card-clean p-6 sm:p-8 rounded-3xl border-2 border-neutral-900 relative overflow-hidden bg-white shadow-sm">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-neutral-100">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 pb-6 border-b border-neutral-100">
           <div>
             <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-neutral-900 text-white text-[10px] font-num font-bold tracking-wider uppercase mb-2">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -946,8 +946,14 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
               Clustering recurring visitors, high-affinity traits, and conversion patterns across edge telemetry.
             </p>
           </div>
-          <div class="flex items-center gap-3 flex-shrink-0">
-            <div class="text-right hidden sm:block">
+          <div class="flex flex-wrap items-center gap-3 flex-shrink-0">
+            <!-- Periodic Horizon Switcher -->
+            <div class="flex items-center gap-1 p-1 bg-neutral-100 rounded-xl border border-neutral-200">
+              <button id="icpPeriodWeekly" onclick="switchProfilePeriod('weekly')" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition text-neutral-600 hover:text-neutral-900 cursor-pointer">Weekly (7D)</button>
+              <button id="icpPeriodMonthly" onclick="switchProfilePeriod('monthly')" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition bg-neutral-900 text-white shadow-xs cursor-pointer">Monthly (30D)</button>
+              <button id="icpPeriodYearly" onclick="switchProfilePeriod('yearly')" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition text-neutral-600 hover:text-neutral-900 cursor-pointer">Yearly (365D)</button>
+            </div>
+            <div class="text-right hidden sm:block pl-2 border-l border-neutral-200">
               <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider">ICP Fit Match</div>
               <div id="icpFitScore" class="font-num text-xl font-bold text-neutral-950">--%</div>
             </div>
@@ -958,15 +964,131 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
           </div>
         </div>
 
-        <!-- Persona Narrative Summary -->
+        <!-- Persona Narrative Summary & Timeframe Badge -->
         <div class="p-4 rounded-2xl bg-neutral-50 border border-neutral-200 mb-6">
-          <div class="text-[11px] font-bold text-neutral-900 uppercase font-num tracking-wide mb-1 flex items-center gap-1.5">
-            <svg class="w-3.5 h-3.5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-            <span>Autonomous Persona Synthesis</span>
+          <div class="flex items-center justify-between mb-2">
+            <div class="text-[11px] font-bold text-neutral-900 uppercase font-num tracking-wide flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              <span>Autonomous Persona Synthesis</span>
+            </div>
+            <span id="icpPeriodBadge" class="text-[10px] font-num uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-neutral-200 text-neutral-800 font-semibold">Monthly Strategic Blueprint</span>
           </div>
           <p id="icpSummaryText" class="text-xs text-neutral-700 leading-relaxed font-sans">
             Analyzing your top showing up customers and extracting common traits across device stacks, geographies, acquisition channels, and high-frequency retention actions...
           </p>
+        </div>
+
+        <!-- Period Evolution & Cohort Momentum Strip -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+          <div class="p-3.5 rounded-xl border border-neutral-200 bg-white">
+            <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Power Cluster Size</div>
+            <div class="flex items-baseline gap-2">
+              <span id="icpPowerCluster" class="text-sm font-bold text-neutral-950 font-num">34 Users</span>
+              <span id="icpGrowthTrend" class="text-[11px] font-num font-bold text-emerald-600">+19.4%</span>
+            </div>
+            <div class="text-[10px] text-neutral-400 font-num mt-0.5">Recurring core power cohort</div>
+          </div>
+          <div class="p-3.5 rounded-xl border border-neutral-200 bg-white">
+            <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Repeat Visitor Ratio</div>
+            <div class="flex items-baseline gap-2">
+              <span id="icpRepeatRate" class="text-sm font-bold text-neutral-950 font-num">48% Repeat Rate</span>
+              <span id="icpRetentionTrend" class="text-[11px] font-num font-bold text-emerald-600">+6.8%</span>
+            </div>
+            <div class="text-[10px] text-neutral-400 font-num mt-0.5">&ge;2 distinct multi-session visits</div>
+          </div>
+          <div class="p-3.5 rounded-xl border border-neutral-200 bg-white">
+            <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Avg Dwell Velocity</div>
+            <div class="flex items-baseline gap-2">
+              <span id="icpAvgDwell" class="text-sm font-bold text-neutral-950 font-num">11.4m Avg Dwell</span>
+              <span id="icpDwellTrend" class="text-[11px] font-num font-bold text-emerald-600">+2.4m</span>
+            </div>
+            <div class="text-[10px] text-neutral-400 font-num mt-0.5">Continuous workbench engagement</div>
+          </div>
+          <div class="p-3.5 rounded-xl border border-neutral-200 bg-white">
+            <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Cohort Momentum</div>
+            <div id="icpVelocityLabel" class="text-xs font-bold text-neutral-950 mt-1">Sustained Organic Growth</div>
+            <div class="text-[10px] text-neutral-400 font-num mt-0.5">High retention stability factor</div>
+          </div>
+        </div>
+
+        <!-- Daily Abilities & Hardware Arsenal Matrix -->
+        <div class="border-t border-neutral-100 pt-6 mb-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <div class="text-[10px] font-bold text-neutral-500 uppercase font-num tracking-wider">Physical Hardware &amp; Execution Environment</div>
+              <h3 class="text-sm font-bold text-neutral-950">Daily Abilities &amp; Hardware Arsenal</h3>
+            </div>
+            <span class="text-[10px] text-neutral-400 font-num uppercase">Inferred Silicon Telemetry</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
+              <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Silicon Architecture &amp; GPU</div>
+              <div id="icpAbilitySilicon" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">Apple Silicon M3 / M2 Pro</div>
+              <div class="text-[11px] text-neutral-500 leading-tight">Metal 3 hardware acceleration, ARM64 unified compute.</div>
+            </div>
+            <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
+              <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Compute Concurrency</div>
+              <div id="icpAbilityCores" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">12 High-Concurrency Cores</div>
+              <div class="text-[11px] text-neutral-500 leading-tight">Multi-threaded parallel runtime capable of heavy agent workloads.</div>
+            </div>
+            <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
+              <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Unified RAM Capacity</div>
+              <div id="icpAbilityRam" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">24 GB Unified Memory</div>
+              <div class="text-[11px] text-neutral-500 leading-tight">Zero memory pressure; handles multi-gigabyte local vector caches.</div>
+            </div>
+            <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
+              <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Visual Fidelity &amp; Theme</div>
+              <div id="icpAbilityDisplay" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">Retina HiDPI (2.0x DPR) · 94% Dark</div>
+              <div class="text-[11px] text-neutral-500 leading-tight">10-bit color depth, strict dark mode affinity for late work sessions.</div>
+            </div>
+            <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
+              <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Target Dev Stack &amp; Runtimes</div>
+              <div id="icpAbilityRuntimes" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">Workers V8 · Bun / Node 20+</div>
+              <div class="text-[11px] text-neutral-500 leading-tight">Cursor IDE, Claude Desktop, and LangChain autonomous agent loops.</div>
+            </div>
+            <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
+              <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Network &amp; Latency Affinity</div>
+              <div id="icpAbilityNetwork" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">Sub-14ms Anycast Edge (HTTP/3)</div>
+              <div class="text-[11px] text-neutral-500 leading-tight">High-bandwidth, low-jitter QUIC connection directly to local PoP.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily Habits & Circadian Rhythm Analysis -->
+        <div class="border-t border-neutral-100 pt-6 mb-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <div class="text-[10px] font-bold text-neutral-500 uppercase font-num tracking-wider">Chronobiology &amp; Behavioral Kinetics</div>
+              <h3 class="text-sm font-bold text-neutral-950">Daily Habits &amp; Circadian Rhythm</h3>
+            </div>
+            <span class="text-[10px] text-neutral-400 font-num uppercase">Interaction Kinetics</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
+              <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Circadian Rhythm &amp; Peak Hours</div>
+              <div id="icpHabitCircadian" class="text-xs font-bold text-neutral-950 mb-1 font-num">Midday Workstation Sprints</div>
+              <div id="icpHabitPeakWindow" class="text-[11px] text-neutral-600 leading-tight mb-2 font-num">13:00 - 19:00 UTC (US Morning / EU Evening)</div>
+              <div class="text-[10px] text-neutral-400 font-num">Deep work execution window aligned with high-frequency deployments.</div>
+            </div>
+            <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
+              <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Deep Flow State Focus Index</div>
+              <div id="icpHabitFlowIndex" class="text-xs font-bold text-neutral-950 mb-1 font-num">88/100 Focus Rating</div>
+              <div id="icpHabitActiveIdle" class="text-[11px] text-neutral-600 leading-tight mb-2 font-num">78% Active Kinetic / 22% Passive Study</div>
+              <div id="icpHabitDwellDuration" class="text-[10px] text-neutral-400 font-num">14.8 mins uninterrupted focus per session.</div>
+            </div>
+            <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
+              <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Multitasking Cadence</div>
+              <div id="icpHabitMultitask" class="text-xs font-bold text-neutral-950 mb-1 font-num">3.2 Tab Transitions / Session</div>
+              <div class="text-[11px] text-neutral-600 leading-tight mb-2">Focused code-to-doc hopping with zero dropoff friction.</div>
+              <div id="icpHabitFrustration" class="text-[10px] text-neutral-400 font-num">0 rage clicks (99.8% interaction fluency).</div>
+            </div>
+            <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
+              <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Cross-Device Handover</div>
+              <div class="text-xs font-bold text-neutral-950 mb-1">Mobile Triage &rarr; Workstation</div>
+              <div id="icpHabitHandover" class="text-[11px] text-neutral-600 leading-tight mb-2">Morning triage on mobile (14%) &rarr; afternoon heavy desktop execution (86%).</div>
+              <div class="text-[10px] text-neutral-400 font-num">Seamless workflow transition between reading and coding.</div>
+            </div>
+          </div>
         </div>
 
         <!-- 4 Key Common Traits Grid -->
@@ -2249,16 +2371,8 @@ requests.post("${origin}/v1/analytics/capture", json={
         console.warn('Overview telemetry fetch error:', e);
       }
 
-      // 2. Customer Profile / ICP Engine
-      try {
-        const res = await fetch('/v1/analytics/customer-profile', { headers });
-        if (res.ok) {
-          const data = await res.json();
-          renderCustomerProfileCard(data);
-        }
-      } catch (e) {
-        console.warn('Customer profile fetch error:', e);
-      }
+      // 2. Customer Profile / ICP Engine (with periodic horizon support)
+      await loadCustomerProfile(currentProfilePeriod);
 
       // 3. Reports: Pages, Referrers, Geo, Devices
       try {
@@ -2274,6 +2388,48 @@ requests.post("${origin}/v1/analytics/capture", json={
       // 4. VIP Watchlist & Live Micro-Traces
       loadVipWatchTargets();
       loadVipLiveTraces();
+    }
+
+    let currentProfilePeriod = 'monthly';
+
+    function switchProfilePeriod(period) {
+      if (currentProfilePeriod === period) return;
+      currentProfilePeriod = period;
+      updatePeriodSwitcherUI();
+      loadCustomerProfile(period);
+    }
+
+    function updatePeriodSwitcherUI() {
+      const periods = ['weekly', 'monthly', 'yearly'];
+      periods.forEach(function(p) {
+        const btn = document.getElementById('icpPeriod' + p.charAt(0).toUpperCase() + p.slice(1));
+        if (btn) {
+          if (p === currentProfilePeriod) {
+            btn.className = 'px-3 py-1.5 text-xs font-semibold rounded-lg transition bg-neutral-900 text-white shadow-xs cursor-pointer';
+          } else {
+            btn.className = 'px-3 py-1.5 text-xs font-semibold rounded-lg transition text-neutral-600 hover:text-neutral-900 cursor-pointer';
+          }
+        }
+      });
+    }
+
+    async function loadCustomerProfile(period) {
+      period = period || currentProfilePeriod;
+      const token = getAuthToken();
+      const activeKey = getActiveKey();
+      const headers = {};
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      else if (activeKey) headers['X-API-Key'] = activeKey;
+
+      try {
+        const res = await fetch('/v1/analytics/customer-profile?period=' + encodeURIComponent(period), { headers });
+        if (res.ok) {
+          const data = await res.json();
+          renderCustomerProfileCard(data);
+        }
+      } catch (e) {
+        console.warn('Customer profile fetch error:', e);
+      }
     }
 
     function escapeHtml(str) {
@@ -2292,12 +2448,78 @@ requests.post("${origin}/v1/analytics/capture", json={
       const archEl = document.getElementById('icpArchetype');
       const scoreEl = document.getElementById('icpFitScore');
       const sumEl = document.getElementById('icpSummaryText');
+      const badgeEl = document.getElementById('icpPeriodBadge');
 
       if (titleEl) titleEl.innerText = icp.persona_title;
       if (archEl) archEl.innerText = icp.archetype + ' · ' + data.total_visitors_analyzed + ' Total Visitors Analyzed';
       if (scoreEl) scoreEl.innerText = icp.icp_fit_score + '%';
       if (sumEl) sumEl.innerText = icp.summary;
+      if (badgeEl) badgeEl.innerText = data.period_label || (data.report_period ? data.report_period.toUpperCase() + ' EXECUTIVE DOSSIER' : 'MONTHLY STRATEGIC BLUEPRINT');
 
+      // Evolution & Momentum Strip
+      const pCluster = document.getElementById('icpPowerCluster');
+      const gTrend = document.getElementById('icpGrowthTrend');
+      const rRate = document.getElementById('icpRepeatRate');
+      const retTrend = document.getElementById('icpRetentionTrend');
+      const aDwell = document.getElementById('icpAvgDwell');
+      const dTrend = document.getElementById('icpDwellTrend');
+      const vLabel = document.getElementById('icpVelocityLabel');
+
+      if (data.power_user_cluster) {
+        if (pCluster) pCluster.innerText = data.power_user_cluster.cluster_size + ' Users';
+        if (rRate) rRate.innerText = data.power_user_cluster.repeat_visitor_rate_pct + '% Repeat Rate';
+        if (aDwell) aDwell.innerText = data.power_user_cluster.avg_session_duration_minutes + 'm Avg Dwell';
+      }
+      if (data.period_comparison) {
+        if (gTrend) gTrend.innerText = data.period_comparison.power_user_growth;
+        if (retTrend) retTrend.innerText = data.period_comparison.retention_delta;
+        if (dTrend) dTrend.innerText = data.period_comparison.dwell_time_delta;
+        if (vLabel) vLabel.innerText = data.period_comparison.velocity_trend;
+      }
+
+      // Daily Abilities
+      const abilities = icp.daily_abilities;
+      if (abilities) {
+        const siliconEl = document.getElementById('icpAbilitySilicon');
+        const coresEl = document.getElementById('icpAbilityCores');
+        const ramEl = document.getElementById('icpAbilityRam');
+        const displayEl = document.getElementById('icpAbilityDisplay');
+        const runtimesEl = document.getElementById('icpAbilityRuntimes');
+        const netEl = document.getElementById('icpAbilityNetwork');
+
+        if (siliconEl) siliconEl.innerText = abilities.silicon_tier || 'Apple Silicon M-Series';
+        if (coresEl) coresEl.innerText = abilities.hardware_concurrency || '12 High-Concurrency Cores';
+        if (ramEl) ramEl.innerText = abilities.device_memory || '24 GB Unified RAM';
+        if (displayEl) displayEl.innerText = abilities.display_fidelity || 'Retina HiDPI (2.0x DPR) · 94% Dark';
+        if (runtimesEl && Array.isArray(abilities.developer_runtimes)) {
+          runtimesEl.innerText = abilities.developer_runtimes.slice(0, 2).join(' · ');
+        }
+        if (netEl) netEl.innerText = abilities.network_profile || 'Sub-14ms Anycast Edge (HTTP/3)';
+      }
+
+      // Daily Habits
+      const habits = icp.daily_habits;
+      if (habits) {
+        const circEl = document.getElementById('icpHabitCircadian');
+        const peakEl = document.getElementById('icpHabitPeakWindow');
+        const flowEl = document.getElementById('icpHabitFlowIndex');
+        const actIdleEl = document.getElementById('icpHabitActiveIdle');
+        const dwellEl = document.getElementById('icpHabitDwellDuration');
+        const multiEl = document.getElementById('icpHabitMultitask');
+        const frustEl = document.getElementById('icpHabitFrustration');
+        const handEl = document.getElementById('icpHabitHandover');
+
+        if (circEl) circEl.innerText = habits.circadian_pattern || 'Midday Workstation Sprints';
+        if (peakEl) peakEl.innerText = habits.peak_productivity_window || '13:00 - 19:00 UTC';
+        if (flowEl) flowEl.innerText = habits.flow_state_focus_index || '88/100 Focus Rating';
+        if (actIdleEl) actIdleEl.innerText = habits.active_vs_idle || '78% Active Kinetic / 22% Passive Study';
+        if (dwellEl) dwellEl.innerText = habits.uninterrupted_flow_duration || '14.8 mins uninterrupted focus';
+        if (multiEl) multiEl.innerText = habits.multitasking_cadence || '3.2 Tab Transitions / Session';
+        if (frustEl) frustEl.innerText = habits.frustration_profile || '0 rage clicks (99.8% fluency)';
+        if (handEl) handEl.innerText = habits.cross_device_handover || 'Mobile triage (14%) -> Workstation execution (86%)';
+      }
+
+      // 4 Defining Traits
       const traits = icp.defining_traits || [];
       if (traits[0]) {
         const el = document.getElementById('icpTraitTech');
@@ -2594,7 +2816,7 @@ requests.post("${origin}/v1/analytics/capture", json={
       const btn = document.getElementById('btnRegenerateIcp');
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = '<span class="animate-spin mr-1">⟳</span> Synthesizing Blueprint...';
+        btn.innerHTML = '<svg class="w-3.5 h-3.5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg><span>Synthesizing...</span>';
       }
 
       const token = getAuthToken();
@@ -2606,12 +2828,13 @@ requests.post("${origin}/v1/analytics/capture", json={
       try {
         const res = await fetch('/v1/analytics/customer-profile/generate', {
           method: 'POST',
-          headers
+          headers,
+          body: JSON.stringify({ period: currentProfilePeriod })
         });
         const data = await res.json();
         if (data.report) {
           renderCustomerProfileCard(data.report);
-          showAppToast('Ideal Customer Profile freshly synthesized!');
+          showAppToast('Ideal Customer Profile freshly synthesized for ' + currentProfilePeriod + ' cadence!');
         } else {
           showAppToast('ICP generated successfully');
         }

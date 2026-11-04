@@ -88,10 +88,16 @@ def main():
     print("\n[3] AUTHENTICATION & EDGE SESSION MANAGEMENT")
     test_user_email = f"verified_user_{int(time.time())}@ultrademon.ai"
     test_user_pw = "UltraSecure2026!Pswd"
-    auth_data = check("POST /v1/auth/signup -> Register new edge account", lambda: fetch("/v1/auth/signup", {
+    signup_res = check("POST /v1/auth/signup -> Register new edge account (Verification Required)", lambda: fetch("/v1/auth/signup", {
         "email": test_user_email,
         "password": test_user_pw,
         "plan": "pro"
+    })[1])
+    assert signup_res.get("requires_verification") is True
+
+    # Complete email verification
+    auth_data = check("POST /v1/auth/confirm-verification -> Confirm verification link activation", lambda: fetch("/v1/auth/confirm-verification", {
+        "email": test_user_email
     })[1])
 
     sess_token = auth_data["session"]["access_token"]
