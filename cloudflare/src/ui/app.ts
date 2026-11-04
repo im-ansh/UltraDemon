@@ -171,7 +171,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m15 19-7-7 7-7"/></svg>
         <span>Back to Landing Page</span>
       </a>
-      <button onclick="handleAppSignOut()" class="w-full py-1.5 px-3 text-xs text-red-600 hover:bg-red-50 rounded-lg transition flex items-center gap-2 cursor-pointer">
+      <button type="button" onclick="handleAppSignOut()" class="w-full py-1.5 px-3 text-xs text-red-600 hover:bg-red-50 rounded-lg transition flex items-center gap-2 cursor-pointer">
         <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
         <span>Sign Out</span>
       </button>
@@ -196,7 +196,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       <div class="flex items-center gap-2 bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-1.5 text-xs">
         <span class="text-[10px] text-neutral-400 uppercase font-bold">Active Key:</span>
         <span id="topActiveKeyLabel" class="font-mono text-neutral-900 font-semibold truncate max-w-[120px]">None</span>
-        <button onclick="copyActiveKey()" id="topCopyBtn" class="text-neutral-500 hover:text-black cursor-pointer hidden">
+        <button type="button" onclick="copyActiveKey()" id="topCopyBtn" class="text-neutral-500 hover:text-black cursor-pointer hidden">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
         </button>
       </div>
@@ -303,7 +303,7 @@ curl -X POST "${origin}/v1/memory/query" \\
   -H "X-API-Key: us_your_key_here" \\
   -H "Content-Type: application/json" \\
   -d '{"query": "user preferences", "container_tag": "default"}'</pre>
-          <button onclick="copyToClipboard(document.getElementById('overviewCodeSnippet').innerText)" class="absolute top-3 right-3 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+          <button type="button" onclick="copyToClipboard(document.getElementById('overviewCodeSnippet').innerText)" class="absolute top-3 right-3 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
         </div>
       </div>
     </section>
@@ -354,7 +354,7 @@ curl -X POST "${origin}/v1/memory/query" \\
           </div>
           <div class="flex items-center justify-between bg-white p-2.5 rounded-lg border border-neutral-200 font-mono text-xs text-neutral-950">
             <span id="newKeyDisplayApp" class="font-bold select-all"></span>
-            <button onclick="copyToClipboard(document.getElementById('newKeyDisplayApp').innerText)" class="px-2 py-1 bg-black text-white text-[10px] rounded hover:bg-neutral-800 cursor-pointer">Copy</button>
+            <button type="button" onclick="copyToClipboard(document.getElementById('newKeyDisplayApp').innerText)" class="px-2 py-1 bg-black text-white text-[10px] rounded hover:bg-neutral-800 cursor-pointer">Copy</button>
           </div>
         </div>
       </div>
@@ -430,7 +430,7 @@ curl -X POST "${origin}/v1/memory/query" \\
         <div class="relative">
           <div class="flex items-center justify-between text-[11px] text-neutral-400 font-num mb-1 px-1">
             <span>Agent Store &amp; Recall One-Liners (cURL / Python / Node)</span>
-            <button onclick="copyToClipboard(document.getElementById('memQuickSnippet').innerText)" class="hover:text-black cursor-pointer underline text-[10px]">Copy</button>
+            <button type="button" onclick="copyToClipboard(document.getElementById('memQuickSnippet').innerText)" class="hover:text-black cursor-pointer underline text-[10px]">Copy</button>
           </div>
           <pre id="memQuickSnippet" class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-[11px] text-neutral-100 overflow-x-auto code-scroll"># 1. Store memory from agent
 curl -X POST "${origin}/v1/memory" \\
@@ -594,7 +594,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
           <div>
             <div class="flex items-center justify-between mb-1 font-bold font-num text-neutral-700">
               <span>TypeScript / Node.js SDK</span>
-              <button onclick="copySnippetCode('searchTsSnippet')" class="text-[10px] text-neutral-500 hover:text-black underline cursor-pointer">Copy</button>
+              <button type="button" onclick="copySnippetCode('searchTsSnippet')" class="text-[10px] text-neutral-500 hover:text-black underline cursor-pointer">Copy</button>
             </div>
             <pre id="searchTsSnippet" class="p-3 bg-neutral-950 rounded-xl text-neutral-100 font-mono text-[10px] overflow-x-auto code-scroll">import { UltraSearch } from '@ultrademon/sdk';
 
@@ -608,7 +608,7 @@ const { results, latency_ms } = await search.query('LLM edge retrieval', {
           <div>
             <div class="flex items-center justify-between mb-1 font-bold font-num text-neutral-700">
               <span>Python Backend / LangChain</span>
-              <button onclick="copySnippetCode('searchPySnippet')" class="text-[10px] text-neutral-500 hover:text-black underline cursor-pointer">Copy</button>
+              <button type="button" onclick="copySnippetCode('searchPySnippet')" class="text-[10px] text-neutral-500 hover:text-black underline cursor-pointer">Copy</button>
             </div>
             <pre id="searchPySnippet" class="p-3 bg-neutral-950 rounded-xl text-neutral-100 font-mono text-[10px] overflow-x-auto code-scroll">import requests
 
@@ -715,7 +715,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
                 <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>KV Hot Cache</span></li>
               </ul>
             </div>
-            <button onclick="upgradeTier('free')" class="w-full py-2.5 text-xs font-semibold rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 transition cursor-pointer">Select Free</button>
+            <button type="button" onclick="upgradeTier('free')" class="w-full py-2.5 text-xs font-semibold rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 transition cursor-pointer">Select Free</button>
           </div>
 
           <!-- Pro -->
@@ -731,7 +731,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
                 <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Full Crawler Access</span></li>
               </ul>
             </div>
-            <button onclick="upgradeTier('pro')" class="w-full py-2.5 text-xs font-semibold rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white cursor-pointer shadow-md transition">Upgrade to Pro</button>
+            <button type="button" onclick="upgradeTier('pro')" class="w-full py-2.5 text-xs font-semibold rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white cursor-pointer shadow-md transition">Upgrade to Pro</button>
           </div>
 
           <!-- Ultra -->
@@ -746,7 +746,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
                 <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Dedicated Containers</span></li>
               </ul>
             </div>
-            <button onclick="upgradeTier('ultra')" class="w-full py-2.5 text-xs font-semibold rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 transition cursor-pointer">Upgrade to Ultra</button>
+            <button type="button" onclick="upgradeTier('ultra')" class="w-full py-2.5 text-xs font-semibold rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 transition cursor-pointer">Upgrade to Ultra</button>
           </div>
         </div>
       </div>
@@ -864,7 +864,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <span class="text-[11px] font-bold text-neutral-700 font-num">1-Line HTML &lt;script&gt; Embed Tag</span>
-            <button onclick="copySnippetCode('snippetScriptTagTop')" class="text-xs font-semibold text-neutral-900 hover:underline cursor-pointer flex items-center gap-1">
+            <button type="button" onclick="copySnippetCode('snippetScriptTagTop')" class="text-xs font-semibold text-neutral-900 hover:underline cursor-pointer flex items-center gap-1">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
               <span>Copy Embed Tag</span>
             </button>
@@ -949,15 +949,15 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
           <div class="flex flex-wrap items-center gap-3 flex-shrink-0">
             <!-- Periodic Horizon Switcher -->
             <div class="flex items-center gap-1 p-1 bg-neutral-100 rounded-xl border border-neutral-200">
-              <button id="icpPeriodWeekly" onclick="switchProfilePeriod('weekly')" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition text-neutral-600 hover:text-neutral-900 cursor-pointer">Weekly (7D)</button>
-              <button id="icpPeriodMonthly" onclick="switchProfilePeriod('monthly')" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition bg-neutral-900 text-white shadow-xs cursor-pointer">Monthly (30D)</button>
-              <button id="icpPeriodYearly" onclick="switchProfilePeriod('yearly')" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition text-neutral-600 hover:text-neutral-900 cursor-pointer">Yearly (365D)</button>
+              <button type="button" id="icpPeriodWeekly" onclick="switchProfilePeriod('weekly')" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition text-neutral-600 hover:text-neutral-900 cursor-pointer">Weekly (7D)</button>
+              <button type="button" id="icpPeriodMonthly" onclick="switchProfilePeriod('monthly')" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition bg-neutral-900 text-white shadow-xs cursor-pointer">Monthly (30D)</button>
+              <button type="button" id="icpPeriodYearly" onclick="switchProfilePeriod('yearly')" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition text-neutral-600 hover:text-neutral-900 cursor-pointer">Yearly (365D)</button>
             </div>
             <div class="text-right hidden sm:block pl-2 border-l border-neutral-200">
               <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider">ICP Fit Match</div>
               <div id="icpFitScore" class="font-num text-xl font-bold text-neutral-950">--%</div>
             </div>
-            <button onclick="generateFreshICPReport()" id="btnRegenerateIcp" class="px-4 py-2 rounded-xl bg-neutral-900 hover:bg-black text-white text-xs font-semibold transition cursor-pointer flex items-center gap-2 shadow-xs">
+            <button type="button" onclick="generateFreshICPReport()" id="btnRegenerateIcp" class="px-4 py-2 rounded-xl bg-neutral-900 hover:bg-black text-white text-xs font-semibold transition cursor-pointer flex items-center gap-2 shadow-xs">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
               <span>Regenerate Blueprint</span>
             </button>
@@ -1403,7 +1403,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <span class="text-[11px] font-bold text-neutral-700 font-num">1-Line HTML &lt;script&gt; Embed</span>
-            <button onclick="copySnippetCode('snippetScriptTag')" class="text-xs font-semibold text-neutral-900 hover:underline cursor-pointer flex items-center gap-1">
+            <button type="button" onclick="copySnippetCode('snippetScriptTag')" class="text-xs font-semibold text-neutral-900 hover:underline cursor-pointer flex items-center gap-1">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
               <span>Copy Embed Tag</span>
             </button>
@@ -2536,21 +2536,12 @@ requests.post("${origin}/v1/analytics/capture", json={
     }
 
     function renderCustomerProfileCard(data) {
-      if (!data || !data.ideal_customer_profile) return;
-      const icp = data.ideal_customer_profile;
+      if (!data) return;
       const titleEl = document.getElementById('icpPersonaTitle');
       const archEl = document.getElementById('icpArchetype');
       const scoreEl = document.getElementById('icpFitScore');
       const sumEl = document.getElementById('icpSummaryText');
       const badgeEl = document.getElementById('icpPeriodBadge');
-
-      if (titleEl) titleEl.innerText = icp.persona_title;
-      if (archEl) archEl.innerText = icp.archetype + ' · ' + data.total_visitors_analyzed + ' Total Visitors Analyzed';
-      if (scoreEl) scoreEl.innerText = icp.icp_fit_score + '%';
-      if (sumEl) sumEl.innerText = icp.summary;
-      if (badgeEl) badgeEl.innerText = data.period_label || (data.report_period ? data.report_period.toUpperCase() + ' EXECUTIVE DOSSIER' : 'MONTHLY STRATEGIC BLUEPRINT');
-
-      // Evolution & Momentum Strip
       const pCluster = document.getElementById('icpPowerCluster');
       const gTrend = document.getElementById('icpGrowthTrend');
       const rRate = document.getElementById('icpRepeatRate');
@@ -2559,6 +2550,55 @@ requests.post("${origin}/v1/analytics/capture", json={
       const dTrend = document.getElementById('icpDwellTrend');
       const vLabel = document.getElementById('icpVelocityLabel');
 
+      if (data.has_data === false || !data.total_visitors_analyzed || data.total_visitors_analyzed === 0) {
+        if (titleEl) titleEl.innerText = 'Awaiting Telemetry Data';
+        if (archEl) archEl.innerText = 'No visitor traffic recorded yet · 0 Visitors Analyzed';
+        if (scoreEl) scoreEl.innerText = '0%';
+        if (sumEl) sumEl.innerText = 'No visitor events captured yet for this timeframe. Embed the Sovereign Telemetry SDK snippet or call /v1/analytics/capture to automatically profile ideal customer traits, circadian habits, and daily abilities.';
+        if (badgeEl) badgeEl.innerText = (data.report_period ? data.report_period.toUpperCase() : 'CADENCE') + ' DOSSIER PENDING';
+
+        if (pCluster) pCluster.innerText = '0 Users';
+        if (rRate) rRate.innerText = '0% Repeat Rate';
+        if (aDwell) aDwell.innerText = '0m Avg Dwell';
+        if (gTrend) gTrend.innerText = '--';
+        if (retTrend) retTrend.innerText = '--';
+        if (dTrend) dTrend.innerText = '--';
+        if (vLabel) vLabel.innerText = 'Awaiting Traffic';
+
+        // Clear abilities
+        ['icpAbilitySilicon', 'icpAbilityCores', 'icpAbilityRam', 'icpAbilityDisplay', 'icpAbilityRuntimes', 'icpAbilityNetwork'].forEach(function(id) {
+          var el = document.getElementById(id);
+          if (el) el.innerText = '--';
+        });
+
+        // Clear habits
+        ['icpHabitCircadian', 'icpHabitPeakWindow', 'icpHabitFlowIndex', 'icpHabitActiveIdle', 'icpHabitDwellDuration', 'icpHabitMultitask', 'icpHabitFrustration', 'icpHabitHandover'].forEach(function(id) {
+          var el = document.getElementById(id);
+          if (el) el.innerText = '--';
+        });
+
+        // Clear traits
+        ['icpTraitTech', 'icpTraitTechSub', 'icpTraitGeo', 'icpTraitGeoSub', 'icpTraitOrigin', 'icpTraitOriginSub', 'icpTraitDriver', 'icpTraitDriverSub'].forEach(function(id) {
+          var el = document.getElementById(id);
+          if (el) el.innerText = '--';
+        });
+
+        const playbookGrid = document.getElementById('icpPlaybookGrid');
+        if (playbookGrid) {
+          playbookGrid.innerHTML = '<div class="p-6 rounded-xl bg-neutral-50 border border-neutral-200 text-center text-xs text-neutral-400 col-span-3">Actionable playbook recommendations will automatically synthesize once customer traffic is recorded.</div>';
+        }
+        updateAllSuiteSnippets();
+        return;
+      }
+
+      const icp = data.ideal_customer_profile || {};
+      if (titleEl) titleEl.innerText = icp.persona_title || data.persona_title || 'Identified Customer Profile';
+      if (archEl) archEl.innerText = (icp.archetype || data.persona_archetype || 'Profile') + ' · ' + data.total_visitors_analyzed + ' Total Visitors Analyzed';
+      if (scoreEl) scoreEl.innerText = (icp.icp_fit_score || data.icp_fit_score || 0) + '%';
+      if (sumEl) sumEl.innerText = icp.summary || data.summary || '';
+      if (badgeEl) badgeEl.innerText = data.period_label || (data.report_period ? data.report_period.toUpperCase() + ' EXECUTIVE DOSSIER' : 'MONTHLY STRATEGIC BLUEPRINT');
+
+      // Evolution & Momentum Strip
       if (data.power_user_cluster) {
         if (pCluster) pCluster.innerText = data.power_user_cluster.cluster_size + ' Users';
         if (rRate) rRate.innerText = data.power_user_cluster.repeat_visitor_rate_pct + '% Repeat Rate';
@@ -2581,14 +2621,14 @@ requests.post("${origin}/v1/analytics/capture", json={
         const runtimesEl = document.getElementById('icpAbilityRuntimes');
         const netEl = document.getElementById('icpAbilityNetwork');
 
-        if (siliconEl) siliconEl.innerText = abilities.silicon_tier || 'Apple Silicon M-Series';
-        if (coresEl) coresEl.innerText = abilities.hardware_concurrency || '12 High-Concurrency Cores';
-        if (ramEl) ramEl.innerText = abilities.device_memory || '24 GB Unified RAM';
-        if (displayEl) displayEl.innerText = abilities.display_fidelity || 'Retina HiDPI (2.0x DPR) · 94% Dark';
+        if (siliconEl) siliconEl.innerText = abilities.silicon_tier || '--';
+        if (coresEl) coresEl.innerText = abilities.hardware_concurrency || '--';
+        if (ramEl) ramEl.innerText = abilities.device_memory || '--';
+        if (displayEl) displayEl.innerText = abilities.display_fidelity || '--';
         if (runtimesEl && Array.isArray(abilities.developer_runtimes)) {
           runtimesEl.innerText = abilities.developer_runtimes.slice(0, 2).join(' · ');
         }
-        if (netEl) netEl.innerText = abilities.network_profile || 'Sub-14ms Anycast Edge (HTTP/3)';
+        if (netEl) netEl.innerText = abilities.network_profile || '--';
       }
 
       // Daily Habits
@@ -2603,14 +2643,14 @@ requests.post("${origin}/v1/analytics/capture", json={
         const frustEl = document.getElementById('icpHabitFrustration');
         const handEl = document.getElementById('icpHabitHandover');
 
-        if (circEl) circEl.innerText = habits.circadian_pattern || 'Midday Workstation Sprints';
-        if (peakEl) peakEl.innerText = habits.peak_productivity_window || '13:00 - 19:00 UTC';
-        if (flowEl) flowEl.innerText = habits.flow_state_focus_index || '88/100 Focus Rating';
-        if (actIdleEl) actIdleEl.innerText = habits.active_vs_idle || '78% Active Kinetic / 22% Passive Study';
-        if (dwellEl) dwellEl.innerText = habits.uninterrupted_flow_duration || '14.8 mins uninterrupted focus';
-        if (multiEl) multiEl.innerText = habits.multitasking_cadence || '3.2 Tab Transitions / Session';
-        if (frustEl) frustEl.innerText = habits.frustration_profile || '0 rage clicks (99.8% fluency)';
-        if (handEl) handEl.innerText = habits.cross_device_handover || 'Mobile triage (14%) -> Workstation execution (86%)';
+        if (circEl) circEl.innerText = habits.circadian_pattern || '--';
+        if (peakEl) peakEl.innerText = habits.peak_productivity_window || '--';
+        if (flowEl) flowEl.innerText = habits.flow_state_focus_index || '--';
+        if (actIdleEl) actIdleEl.innerText = habits.active_vs_idle || '--';
+        if (dwellEl) dwellEl.innerText = habits.uninterrupted_flow_duration || '--';
+        if (multiEl) multiEl.innerText = habits.multitasking_cadence || '--';
+        if (frustEl) frustEl.innerText = habits.frustration_profile || '--';
+        if (handEl) handEl.innerText = habits.cross_device_handover || '--';
       }
 
       // 4 Defining Traits
@@ -2648,6 +2688,10 @@ requests.post("${origin}/v1/analytics/capture", json={
             '<span class="font-bold text-neutral-900 block mb-1 font-num">' + (idx + 1) + '. ' + escapeHtml(p.objective) + '</span>' +
             '<p class="text-[11px] text-neutral-600 leading-relaxed">' + escapeHtml(p.recommendation) + '</p>' +
           '</div>';
+        }).join('');
+      }
+      updateAllSuiteSnippets();
+    }
         }).join('');
       }
       updateAllSuiteSnippets();
@@ -2723,10 +2767,10 @@ requests.post("${origin}/v1/analytics/capture", json={
         const ramEl = document.getElementById('insaneAvgRam');
         const retinaEl = document.getElementById('insaneRetinaPct');
         const darkEl = document.getElementById('insaneDarkModePct');
-        if (coresEl) coresEl.innerText = (s.avg_cpu_cores || '8') + ' Cores Avg';
-        if (ramEl) ramEl.innerText = (s.avg_ram_gb || '16') + ' GB RAM Avg';
-        if (retinaEl) retinaEl.innerText = (s.retina_display_pct || '84') + '% Retina';
-        if (darkEl) darkEl.innerText = (s.dark_mode_pct || '72') + '% Dark Mode';
+        if (coresEl) coresEl.innerText = (s.avg_cpu_cores ? s.avg_cpu_cores : '0') + ' Cores Avg';
+        if (ramEl) ramEl.innerText = (s.avg_ram_gb ? s.avg_ram_gb : '0') + ' GB RAM Avg';
+        if (retinaEl) retinaEl.innerText = (s.retina_display_pct ? s.retina_display_pct : '0') + '% Retina';
+        if (darkEl) darkEl.innerText = (s.dark_mode_pct ? s.dark_mode_pct : '0') + '% Dark Mode';
       }
 
       // Kinetic Activity Table

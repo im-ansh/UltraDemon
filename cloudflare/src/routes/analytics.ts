@@ -506,35 +506,35 @@ analyticsRouter.get('/overview', async (c) => {
 
   const bounceRate = totalSessions7d?.total_sessions
     ? Math.round(((sessionBounce?.single_event_sessions || 0) / totalSessions7d.total_sessions) * 100)
-    : 24;
+    : 0;
 
-  const avgDurationSec = Math.round((stats24h?.avg_duration_ms || 215000) / 1000);
-  const avgActiveSec = Math.round((stats24h?.avg_active_ms || 145000) / 1000);
-  const avgIdleSec = Math.round((stats24h?.avg_idle_ms || 70000) / 1000);
+  const avgDurationSec = stats24h?.avg_duration_ms ? Math.round(stats24h.avg_duration_ms / 1000) : 0;
+  const avgActiveSec = stats24h?.avg_active_ms ? Math.round(stats24h.avg_active_ms / 1000) : 0;
+  const avgIdleSec = stats24h?.avg_idle_ms ? Math.round(stats24h.avg_idle_ms / 1000) : 0;
 
   return c.json({
     project_id: projectId,
-    active_visitors_now: activeNow?.count || 14,
+    active_visitors_now: activeNow?.count || 0,
     metrics_24h: {
-      pageviews: stats24h?.total_events || 4820,
-      unique_visitors: stats24h?.unique_visitors || 1240,
-      sessions: stats24h?.total_sessions || 1610,
-      avg_session_duration_sec: avgDurationSec || 215,
+      pageviews: stats24h?.total_events || 0,
+      unique_visitors: stats24h?.unique_visitors || 0,
+      sessions: stats24h?.total_sessions || 0,
+      avg_session_duration_sec: avgDurationSec,
       kinetic_dwell: {
-        active_interaction_sec: avgActiveSec || 145,
-        idle_inactive_sec: avgIdleSec || 70,
-        idle_ratio_pct: Math.round(stats24h?.avg_idle_ratio || 32),
+        active_interaction_sec: avgActiveSec,
+        idle_inactive_sec: avgIdleSec,
+        idle_ratio_pct: Math.round(stats24h?.avg_idle_ratio || 0),
       },
       bounce_rate_pct: bounceRate,
-      avg_scroll_depth_pct: Math.round(stats24h?.avg_scroll_depth || 68),
+      avg_scroll_depth_pct: Math.round(stats24h?.avg_scroll_depth || 0),
       core_web_vitals: {
-        lcp_ms: Math.round(stats24h?.avg_lcp || 410),
-        cls: Number((stats24h?.avg_cls || 0.02).toFixed(3)),
+        lcp_ms: Math.round(stats24h?.avg_lcp || 0),
+        cls: Number((stats24h?.avg_cls || 0).toFixed(3)),
       },
     },
     all_time: {
-      total_events: allTime?.total_events_all || 38240,
-      total_visitors: allTime?.total_visitors_all || 8920,
+      total_events: allTime?.total_events_all || 0,
+      total_visitors: allTime?.total_visitors_all || 0,
     },
     retrieved_at: now,
   });
@@ -885,9 +885,67 @@ async function generateCustomerProfileReport(
     }>();
   }
 
-  const totalVisitors = totalStats?.total_visitors || (period === 'weekly' ? 28 : period === 'yearly' ? 840 : 120);
-  const repeatCount = totalStats?.repeat_customers || Math.round(totalVisitors * 0.4);
-  const powerClusterSize = totalStats?.power_customers || Math.round(totalVisitors * 0.28);
+  if (!totalStats || !totalStats.total_visitors || totalStats.total_visitors === 0) {
+    return {
+      has_data: false,
+      report_id: `icp_empty_${period}`,
+      project_id: projectId,
+      generated_at: now,
+      report_period: period,
+      timeframe_label: periodLabels[period] || 'Dossier',
+      timeframe_days: timeframeDays,
+      total_visitors_analyzed: 0,
+      repeat_customers_count: 0,
+      power_users_cluster_size: 0,
+      icp_fit_score: 0,
+      persona_title: 'Awaiting Telemetry Events',
+      persona_archetype: 'Traffic Profiling Pending',
+      summary: 'No visitor events captured yet for this timeframe. Embed the Sovereign Telemetry SDK snippet or call /v1/analytics/capture to automatically profile ideal customer traits, circadian habits, and daily abilities.',
+      ideal_customer_profile: {
+        persona_name: 'Awaiting Telemetry Events',
+        archetype: 'Traffic Profiling Pending',
+        match_confidence_pct: 0,
+        primary_platform: 'Awaiting data',
+        primary_location: 'Awaiting data',
+        primary_acquisition_channel: 'Awaiting data',
+        top_visited_path: 'None',
+        hardware_fingerprint: {
+          cpu_cores: 0,
+          ram_gb: 0,
+          gpu_renderer: 'None',
+          screen_type: 'Standard',
+          dark_mode_preference: 'Neutral'
+        },
+        behavioral_profile: {
+          kinetic_engagement_style: 'Idle Pending',
+          avg_session_depth: 0,
+          rage_click_frequency: 'None',
+          multitasking_tab_switches: 0
+        },
+        circadian_habits: {
+          peak_working_utc_hour: 0,
+          peak_time_of_day: 'No Traffic',
+          schedule_cadence: 'Awaiting data'
+        },
+        daily_habits: [
+          { habit_name: 'Awaiting Telemetry', time_slot: 'N/A', description: 'Real-time telemetry has not yet recorded visitor sessions.' }
+        ],
+        daily_abilities: [
+          { skill_category: 'Awaiting Telemetry', proficiency_level: 'Pending', description: 'Abilities and usage patterns will be dynamically indexed once traffic flows.' }
+        ],
+        key_conversion_triggers: []
+      },
+      top_geos: [],
+      top_platforms: [],
+      top_origins: [],
+      key_actions: [],
+      circadian_rhythm: []
+    };
+  }
+
+  const totalVisitors = totalStats.total_visitors;
+  const repeatCount = totalStats.repeat_customers || 0;
+  const powerClusterSize = totalStats.power_customers || 0;
 
   // 2. Geos, Platforms, Origins, Actions
   const topGeos = await env.DB.prepare(`
@@ -1276,176 +1334,9 @@ analyticsRouter.get('/events', async (c) => {
   });
 });
 
-// ── 8. Seed Demo Analytics Data for New Projects / Sandbox ────────────────────
+// ── 8. No Seed Data - Sovereign Telemetry Only ─────────────────────────────
 
-async function ensureProjectHasData(env: Env, projectId: string, isGuest: boolean) {
-  const existing = await env.DB.prepare(`
-    SELECT COUNT(event_id) as c FROM analytics_events WHERE project_id = ? LIMIT 1
-  `).bind(projectId).first<{ c: number }>();
-
-  if (existing && existing.c > 5) return;
-
-  const now = Date.now();
-  const seedStatements: D1PreparedStatement[] = [];
-
-  // 1. Seed VIP Watch Target for demonstration
-  seedStatements.push(
-    env.DB.prepare(`
-      INSERT OR IGNORE INTO vip_watch_targets (
-        target_id, project_id, target_type, target_value, label, tier, custom_api_key_id, created_at, last_traced_at, total_hits_traced, notes
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).bind(
-      'vip_target_acme', projectId, 'ip', '203.0.113.42',
-      'Acme Corp ($48k/yr Enterprise Prospect)', 'enterprise', 'us_acme_vip_key',
-      now - 7 * 86400000, now - 1800000, 14,
-      'Watching CTO key creation and pricing tier inspection.'
-    )
-  );
-
-  // 2. Seed Dedicated VIP Traces
-  seedStatements.push(
-    env.DB.prepare(`
-      INSERT OR IGNORE INTO vip_client_traces (
-        trace_id, project_id, target_id, target_label, event_id,
-        client_ip, timestamp, path, url, exact_device, gpu,
-        battery_status, active_vs_idle, full_trace_json
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).bind(
-      'trc_seed_acme_1', projectId, 'vip_target_acme', 'Acme Corp ($48k/yr Enterprise Prospect)', 'ev_seed_vip_1',
-      '203.0.113.42', now - 1800000, '/pricing', 'https://ultrademon.ai/pricing',
-      'Apple Mac (macOS 14.5 · Chrome) · 36GB RAM · 14 Cores', 'Apple M3 Max',
-      '94% (Charging)', 'Active: 4m 12s | Idle: 1m 05s (20% Idle)', '{"plan_hovered":"enterprise","cta_clicked":true}'
-    )
-  );
-
-  seedStatements.push(
-    env.DB.prepare(`
-      INSERT OR IGNORE INTO vip_client_traces (
-        trace_id, project_id, target_id, target_label, event_id,
-        client_ip, timestamp, path, url, exact_device, gpu,
-        battery_status, active_vs_idle, full_trace_json
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).bind(
-      'trc_seed_acme_2', projectId, 'vip_target_acme', 'Acme Corp ($48k/yr Enterprise Prospect)', 'ev_seed_vip_2',
-      '203.0.113.42', now - 900000, '/app', 'https://ultrademon.ai/app',
-      'Apple Mac (macOS 14.5 · Chrome) · 36GB RAM · 14 Cores', 'Apple M3 Max',
-      '92% (Charging)', 'Active: 8m 45s | Idle: 2m 10s (19% Idle)', '{"action":"create_api_key","key_scope":"unified"}'
-    )
-  );
-
-  const geos = [
-    { country: 'US', city: 'San Francisco', colo: 'SFO' },
-    { country: 'US', city: 'New York', colo: 'EWR' },
-    { country: 'US', city: 'Seattle', colo: 'SEA' },
-    { country: 'GB', city: 'London', colo: 'LHR' },
-    { country: 'DE', city: 'Frankfurt', colo: 'FRA' },
-    { country: 'SG', city: 'Singapore', colo: 'SIN' },
-    { country: 'JP', city: 'Tokyo', colo: 'NRT' },
-  ];
-
-  const devices = [
-    { os: 'macOS', browser: 'Chrome', type: 'desktop', screen: '1728x1117', gpu: 'Apple M3 Pro', ram: 18, cores: 12, retina: 2.0, touch: 0 },
-    { os: 'macOS', browser: 'Safari', type: 'desktop', screen: '1512x982', gpu: 'Apple M2', ram: 16, cores: 8, retina: 2.0, touch: 0 },
-    { os: 'Windows', browser: 'Chrome', type: 'desktop', screen: '1920x1080', gpu: 'NVIDIA GeForce RTX 4080', ram: 32, cores: 16, retina: 1.0, touch: 0 },
-    { os: 'Linux', browser: 'Firefox', type: 'desktop', screen: '2560x1440', gpu: 'NVIDIA RTX 3080', ram: 64, cores: 24, retina: 1.0, touch: 0 },
-    { os: 'iOS', browser: 'Safari', type: 'mobile', screen: '393x852', gpu: 'Apple GPU (A17 Pro)', ram: 8, cores: 6, retina: 3.0, touch: 5 },
-  ];
-
-  const referrers = [
-    'https://github.com/im-ansh/UltraDemon',
-    'https://news.ycombinator.com',
-    'https://x.com/search',
-    '',
-    'https://developers.cloudflare.com',
-  ];
-
-  const paths = [
-    '/',
-    '/app',
-    '/v1/memory',
-    '/v1/search',
-    '/pricing',
-    '/docs',
-    '/auth/callback',
-  ];
-
-  const activities = ['deep_working', 'reading_deeply', 'idle_lurking', 'navigating'];
-
-  // Seed 40 realistic visitors
-  for (let i = 1; i <= 40; i++) {
-    const isPower = i <= 15;
-    const distinctId = `usr_demo_${i}_${Math.random().toString(36).substring(2, 7)}`;
-    const geo = geos[i % geos.length];
-    const dev = devices[i % devices.length];
-    const ref = referrers[i % referrers.length];
-    const sessions = isPower ? Math.floor(Math.random() * 5) + 3 : 1;
-    const totalEvents = isPower ? sessions * 7 : Math.floor(Math.random() * 3) + 1;
-    const duration = isPower ? sessions * 420 : 65;
-
-    const firstSeen = now - (isPower ? 14 * 86400000 : 2 * 86400000);
-    const lastSeen = now - Math.floor(Math.random() * 3600000 * 12);
-
-    seedStatements.push(
-      env.DB.prepare(`
-        INSERT OR REPLACE INTO analytics_visitors (
-          project_id, distinct_id, first_seen_at, last_seen_at,
-          total_sessions, total_events, total_duration_sec,
-          primary_country, primary_city, primary_browser, primary_os, primary_device, screen_res,
-          initial_referrer, initial_utm_source, initial_utm_campaign, high_value_actions_count
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `).bind(
-        projectId, distinctId, firstSeen, lastSeen,
-        sessions, totalEvents, duration,
-        geo.country, geo.city, dev.browser, dev.os, dev.type, dev.screen,
-        ref, ref ? 'github' : '', ref ? 'developer_launch' : '', isPower ? 2 : 0
-      )
-    );
-
-    for (let s = 1; s <= Math.min(sessions, 3); s++) {
-      const sessId = `sess_${distinctId}_${s}`;
-      const path = paths[(i + s) % paths.length];
-      const evId = `ev_seed_${i}_${s}_${now}`;
-      const evTime = lastSeen - (s * 3600000);
-      const isVip = (i === 1) ? 1 : 0;
-      const vipLbl = isVip ? 'Acme Corp ($48k/yr Enterprise Prospect)' : '';
-      const actSec = isPower ? 320000 : 45000;
-      const idleSec = isPower ? 100000 : 20000;
-      const idleRatio = Math.round((idleSec / (actSec + idleSec)) * 100);
-      const primaryAct = activities[(i + s) % activities.length];
-
-      seedStatements.push(
-        env.DB.prepare(`
-          INSERT OR IGNORE INTO analytics_events (
-            event_id, project_id, distinct_id, session_id, event_name, timestamp,
-            url, path, host, referrer, referring_domain,
-            browser, os, device_type, screen_res,
-            country, city, colo, duration_ms, scroll_depth,
-            cwv_lcp, cwv_cls, cwv_fid,
-            client_ip, is_vip_traced, vip_target_label,
-            active_time_ms, idle_time_ms, idle_ratio_pct,
-            mouse_moves_count, clicks_count, rage_clicks_count, tab_switches_count, primary_activity,
-            hardware_concurrency, device_memory_gb, gpu_renderer, battery_level, battery_charging,
-            pixel_ratio, color_depth, touch_points, dark_mode
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `).bind(
-          evId, projectId, distinctId, sessId, '$pageview', evTime,
-          `https://ultrademon.ai${path}`, path, 'ultrademon.ai', ref, extractDomain(ref),
-          dev.browser, dev.os, dev.type, dev.screen,
-          geo.country, geo.city, geo.colo, isPower ? 420000 : 65000, isPower ? 85 : 35,
-          340.5, 0.015, 12.0,
-          isVip ? '203.0.113.42' : `198.51.100.${i % 250}`, isVip, vipLbl,
-          actSec, idleSec, idleRatio,
-          isPower ? 180 : 35, isPower ? 14 : 3, (i % 7 === 0) ? 2 : 0, (i % 3 === 0) ? 3 : 0, primaryAct,
-          dev.cores, dev.ram, dev.gpu, 0.88, 1,
-          dev.retina, 24, dev.touch, 1
-        )
-      );
-    }
-  }
-
-  try {
-    await env.DB.batch(seedStatements);
-  } catch (err) {
-    console.warn('Seed statement execution warning:', err);
-  }
+async function ensureProjectHasData(_env: Env, _projectId: string, _isGuest: boolean): Promise<void> {
+  // Purely sovereign telemetry. No placeholder or mock seed data is ever inserted.
+  return;
 }

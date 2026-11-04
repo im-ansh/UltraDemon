@@ -531,6 +531,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
   <!-- Top-Right Skip Intro Button (Fixed in Corner with Absolute Highest Z-Index) -->
   <button 
+    type="button"
     id="skipJacketBtn" 
     onclick="skipJacket(event); this.style.display='none'; var c=document.getElementById('jacketCurtain'); if(c){ c.style.pointerEvents='none'; c.style.opacity='0'; setTimeout(function(){ if(c.parentNode) c.parentNode.removeChild(c); }, 180); } if(window.updateNav) window.updateNav();" 
     class="fixed top-5 right-5 z-[9999999] px-4 py-2 rounded-full bg-black hover:bg-neutral-900 text-white text-xs font-num font-semibold shadow-2xl border-2 border-white flex items-center gap-1.5 transition cursor-pointer backdrop-blur-md hover:scale-105 active:scale-95"
@@ -620,7 +621,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <svg class="w-3.5 h-3.5 text-sky-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
         <span>HOLD &amp; PULL DOWN OR CLICK TO OPEN</span>
       </div>
-      <button onclick="skipJacket(event)" class="mt-2.5 px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-[11px] text-white border border-white/40 transition cursor-pointer font-num font-medium backdrop-blur-xs">
+      <button type="button" onclick="skipJacket(event)" class="mt-2.5 px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 text-[11px] text-white border border-white/40 transition cursor-pointer font-num font-medium backdrop-blur-xs">
         Enter website directly &rarr;
       </button>
     </div>
@@ -678,7 +679,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             <span>Workspace</span>
             <svg class="w-3 h-3 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
-          <button onclick="handleSignOut()" class="px-2.5 py-1.5 text-xs text-neutral-500 hover:text-black transition cursor-pointer">
+          <button type="button" onclick="handleSignOut()" class="px-2.5 py-1.5 text-xs text-neutral-500 hover:text-black transition cursor-pointer">
             Sign Out
           </button>
         </div>
@@ -1028,7 +1029,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
 
         <!-- Horizontal Scroll Track with Elevated Architectural Rail Cards (Card Design Skill) -->
-        <div id="featureScrollTrack" class="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth pb-4 snap-x snap-proximity">
+        <div id="featureScrollTrack" class="flex gap-4 overflow-x-auto no-scrollbar pb-4 snap-x snap-proximity">
           <!-- Card 1 -->
           <div class="min-w-[300px] sm:min-w-[340px] max-w-[340px] snap-start group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-400 transition-all duration-200 overflow-hidden">
             <div>
@@ -1441,7 +1442,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
               <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/></svg>
               <span class="text-xs font-bold text-neutral-950">Active Memories in Edge Storage</span>
             </div>
-            <button onclick="refreshStoredMemories()" class="flex items-center gap-1 text-xs text-neutral-500 hover:text-black transition cursor-pointer">
+            <button type="button" onclick="refreshStoredMemories()" class="flex items-center gap-1 text-xs text-neutral-500 hover:text-black transition cursor-pointer">
               <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>
               <span>Refresh</span>
             </button>
@@ -1828,7 +1829,7 @@ memory = requests.post(f"{BASE}/v1/memory/query", headers=HEADERS, json={
 }).json()
 
 print("Recalled Evidence:", memory["results"][0]["snippet"])</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button type="button" onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -1873,7 +1874,7 @@ const recallRepoRule = tool({
     return await res.json();
   }
 });</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button type="button" onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -1907,7 +1908,7 @@ const { text } = await generateText({
   system: "You are an empathetic support agent with access to user memory.",
   prompt: "User context: " + JSON.stringify(customerMemories.results) + "\\n\\nUser Question: Can I expedite my delivery?"
 });</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button type="button" onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -1938,7 +1939,7 @@ print(f"Synthesized research sources ({len(res['results'])} citations):")
 for r in res["results"]:
     print(f"- [{r['title']}]({r['url']}) (Score: {r['pagerank']})")
     print(f"  Snippet: {r['snippet']}\\n")</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button type="button" onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
         </div>
@@ -2044,7 +2045,7 @@ for r in res["results"]:
               </div>
               <div class="flex items-center justify-between gap-1 bg-white border border-neutral-200 p-1.5 rounded font-mono text-xs">
                 <span id="newKeyDisplay" class="truncate font-num"></span>
-                <button onclick="copyToClipboard(document.getElementById('newKeyDisplay').innerText)" class="text-xs text-neutral-900 font-bold underline cursor-pointer">Copy</button>
+                <button type="button" onclick="copyToClipboard(document.getElementById('newKeyDisplay').innerText)" class="text-xs text-neutral-900 font-bold underline cursor-pointer">Copy</button>
               </div>
             </div>
           </div>
@@ -2055,7 +2056,7 @@ for r in res["results"]:
             <div class="card-clean p-4 rounded-xl">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-xs font-bold text-neutral-950">Daily Quota Usage</span>
-                <button onclick="refreshUsage()" class="flex items-center gap-1 text-xs text-neutral-500 hover:text-black cursor-pointer">
+                <button type="button" onclick="refreshUsage()" class="flex items-center gap-1 text-xs text-neutral-500 hover:text-black cursor-pointer">
                   <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>
                   <span>Refresh</span>
                 </button>
@@ -2197,7 +2198,7 @@ for r in res["results"]:
     }
   }
 }</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button type="button" onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -2215,7 +2216,7 @@ for r in res["results"]:
     }
   }
 }</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button type="button" onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -2256,7 +2257,7 @@ export const recallMemory = tool({
     }).then(r => r.json());
   }
 });</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button type="button" onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -2284,7 +2285,7 @@ def sovereign_search(query: str) -> str:
         "query": query, "num_results": 5, "mode": 1
     }).json()
     return "\n".join([f"[{r['title']}]({r['url']}): {r['snippet']}" for r in res.get("results", [])])</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button type="button" onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -2307,7 +2308,7 @@ class UltraDemonRetriever:
             NodeWithScore(node=TextNode(text=r["content"]), score=r.get("bm25_score", 1.0))
             for r in res.get("results", [])
         ]</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button type="button" onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -2337,7 +2338,7 @@ search = requests.post(f"{BASE_URL}/v1/search", headers=HEADERS, json={
     "query": "What is Python?", "num_results": 5
 }).json()
 print("Search:", search["results"])</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button type="button" onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -2361,7 +2362,7 @@ const { results } = await fetch("${origin}/v1/memory/query", {
   body: JSON.stringify({ query: "fact", container_tag: "agent_1" })
 }).then(r => r.json());
 console.log(results);</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button type="button" onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
 
@@ -2381,7 +2382,7 @@ curl "${origin}/v1/memory/recall?q=preference&container_tag=agent_1" \\
 # 3. Direct LLM prompt context injection
 curl "${origin}/v1/memory/context?q=preference" \\
   -H "X-API-Key: um_your_key_here"</pre>
-              <button onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+              <button type="button" onclick="copyToClipboard(this.previousElementSibling.innerText, this)" class="absolute top-2.5 right-2.5 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
             </div>
           </div>
         </div>
@@ -2605,8 +2606,12 @@ curl "${origin}/v1/memory/context?q=preference" \\
     let currentAuthMode = 'signin';
     let currentMode = 1;
 
-    if (window.supabase) {
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    try {
+      if (window.supabase) {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
+    } catch (e) {
+      console.warn('Supabase initialization deferred:', e);
     }
 
     function scrollToConsole() {
@@ -2659,7 +2664,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
     }
 
     async function handleAuthSubmit(e) {
-      e.preventDefault();
+      if (e && e.preventDefault) e.preventDefault();
       const email = document.getElementById('authEmail').value.trim();
       const password = document.getElementById('authPassword').value;
       const alertBox = document.getElementById('authAlert');
@@ -2772,10 +2777,38 @@ curl "${origin}/v1/memory/context?q=preference" \\
 
     function scrollFeatureTrack(direction) {
       const track = document.getElementById('featureScrollTrack');
-      if (track) {
-        const card = track.firstElementChild;
-        const scrollAmount = card ? (card.getBoundingClientRect().width + 16) : 340;
-        track.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+      if (!track) return;
+      const cards = Array.from(track.children).filter(el => el.nodeType === 1);
+      if (!cards.length) return;
+
+      const trackRect = track.getBoundingClientRect();
+      let targetCard = null;
+
+      if (direction > 0) {
+        for (let i = 0; i < cards.length; i++) {
+          const r = cards[i].getBoundingClientRect();
+          if (r.left - trackRect.left > 30) {
+            targetCard = cards[i];
+            break;
+          }
+        }
+        if (!targetCard) targetCard = cards[cards.length - 1];
+      } else {
+        for (let j = cards.length - 1; j >= 0; j--) {
+          const r = cards[j].getBoundingClientRect();
+          if (r.left - trackRect.left < -30) {
+            targetCard = cards[j];
+            break;
+          }
+        }
+        if (!targetCard) targetCard = cards[0];
+      }
+
+      if (targetCard && typeof targetCard.scrollIntoView === 'function') {
+        targetCard.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+      } else {
+        const step = (cards[0] ? cards[0].offsetWidth : 320) + 16;
+        track.scrollLeft += direction * step;
       }
     }
 
@@ -2799,7 +2832,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
         if (userAccountDisplay) userAccountDisplay.innerText = user.email || user.id;
 
         if (banner) {
-          banner.innerHTML = '<div class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><div class="text-xs"><span class="font-bold text-neutral-950">Signed in:</span> <span class="text-neutral-600">' + (user.email || user.id) + '</span></div></div><div class="flex items-center gap-2"><a href="/app" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition cursor-pointer flex items-center gap-1.5 shadow-xs"><span>Open Developer Workspace</span><svg class="w-3 h-3 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a><button onclick="handleSignOut()" class="px-3 py-1.5 text-xs border border-neutral-300 rounded-lg hover:bg-neutral-100 cursor-pointer">Sign Out</button></div>';
+          banner.innerHTML = '<div class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><div class="text-xs"><span class="font-bold text-neutral-950">Signed in:</span> <span class="text-neutral-600">' + (user.email || user.id) + '</span></div></div><div class="flex items-center gap-2"><a href="/app" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-black text-white hover:bg-neutral-800 transition cursor-pointer flex items-center gap-1.5 shadow-xs"><span>Open Developer Workspace</span><svg class="w-3 h-3 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a><button type="button" onclick="handleSignOut()" class="px-3 py-1.5 text-xs border border-neutral-300 rounded-lg hover:bg-neutral-100 cursor-pointer">Sign Out</button></div>';
         }
 
         loadRemoteKeys(user.id);
@@ -2955,7 +2988,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
     }
 
     async function handleStoreMemory(e) {
-      e.preventDefault();
+      if (e && e.preventDefault) e.preventDefault();
       const content = document.getElementById('memContentInput').value.trim();
       const memoryType = document.getElementById('memTypeInput').value;
       const containerTag = document.getElementById('memContainerInput').value.trim() || 'default';
@@ -3003,7 +3036,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
     }
 
     async function handleQueryMemory(e) {
-      e.preventDefault();
+      if (e && e.preventDefault) e.preventDefault();
       const query = document.getElementById('memQueryInput').value.trim();
       const containerTag = document.getElementById('memQueryContainer').value.trim();
       const spinner = document.getElementById('queryMemSpinner');
@@ -3079,7 +3112,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
           '<td class="py-2 font-mono text-neutral-600">' + m.container_tag + '</td>' +
           '<td class="py-2"><span class="px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-800 text-[10px] uppercase font-semibold">' + m.memory_type + '</span></td>' +
           '<td class="py-2 text-neutral-900 truncate max-w-xs font-sans">' + (m.title || m.content) + '</td>' +
-          '<td class="py-2 text-right font-sans"><button data-id="' + m.memory_id + '" onclick="handleDeleteMemory(this.dataset.id)" class="text-neutral-500 hover:text-black font-semibold cursor-pointer">Delete</button></td>' +
+          '<td class="py-2 text-right font-sans"><button type="button" data-id="' + m.memory_id + '" onclick="handleDeleteMemory(this.dataset.id)" class="text-neutral-500 hover:text-black font-semibold cursor-pointer">Delete</button></td>' +
         '</tr>'
       ).join('');
     }
@@ -3153,7 +3186,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
     }
 
     async function handleCreateKey(e) {
-      e.preventDefault();
+      if (e && e.preventDefault) e.preventDefault();
       if (!currentUser) {
         openAuthModal('signin');
         return;
@@ -3239,12 +3272,12 @@ curl "${origin}/v1/memory/context?q=preference" \\
         return '<tr class=\"hover:bg-neutral-50\">' +
           '<td class=\"py-2 font-mono text-neutral-900\">' +
             '<span class=\"truncate max-w-[140px] inline-block\">' + (k.plain_key || 'Key: ' + k.key_id) + '</span>' +
-            (k.plain_key ? ' <button data-key=\"' + k.plain_key + '\" onclick=\"copyToClipboard(this.dataset.key)\" class=\"text-neutral-400 hover:text-black cursor-pointer inline-flex items-center ml-1\"><svg class=\"w-3 h-3\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\" ry=\"2\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"/></svg></button>' : '') +
+            (k.plain_key ? ' <button type=\"button\" data-key=\"' + k.plain_key + '\" onclick=\"copyToClipboard(this.dataset.key)\" class=\"text-neutral-400 hover:text-black cursor-pointer inline-flex items-center ml-1\"><svg class=\"w-3 h-3\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" stroke-width=\"2\"><rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\" ry=\"2\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"/></svg></button>' : '') +
           '</td>' +
           '<td class=\"py-2\">' + scopeBadge + '</td>' +
           '<td class=\"py-2\"><span class=\"px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-800 text-[10px] uppercase font-semibold\">' + k.plan + '</span></td>' +
           '<td class=\"py-2 text-neutral-600\">' + (k.label || 'Key') + '</td>' +
-          '<td class=\"py-2 text-right\"><button data-key=\"' + (k.plain_key || k.key_id) + '\" data-idx=\"' + idx + '\" onclick=\"revokeKey(this.dataset.key, parseInt(this.dataset.idx, 10))\" class=\"text-neutral-500 hover:text-black font-semibold cursor-pointer\">Revoke</button></td>' +
+          '<td class=\"py-2 text-right\"><button type=\"button\" data-key=\"' + (k.plain_key || k.key_id) + '\" data-idx=\"' + idx + '\" onclick=\"revokeKey(this.dataset.key, parseInt(this.dataset.idx, 10))\" class=\"text-neutral-500 hover:text-black font-semibold cursor-pointer\">Revoke</button></td>' +
         '</tr>';
       }).join('');
     }
@@ -3293,7 +3326,7 @@ curl "${origin}/v1/memory/context?q=preference" \\
     }
 
     async function handleCrawl(e) {
-      e.preventDefault();
+      if (e && e.preventDefault) e.preventDefault();
       const url = document.getElementById('crawlUrlInput').value.trim();
       const depth = parseInt(document.getElementById('crawlDepthInput').value, 10);
       const spinner = document.getElementById('crawlSpinner');
@@ -3821,6 +3854,38 @@ function skipJacket(e) {
 
       updateAuthUI(null);
       refreshStoredMemories();
+      ensureDemoKey();
+    }
+
+    async function ensureDemoKey() {
+      if (currentUser) return;
+      const active = localStorage.getItem('ultrademon_active_key');
+      if (active) return;
+      try {
+        const res = await fetch('/v1/auth/anonymous', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan: 'free' })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.initial_key) {
+            localStorage.setItem('ultrademon_active_key', data.initial_key);
+            const keys = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            if (keys.length === 0) {
+              keys.push({
+                key_id: data.user ? 'key_' + data.user.id.slice(0, 8) : 'key_guest',
+                plain_key: data.initial_key,
+                plan: 'free',
+                key_type: 'unified',
+                label: 'Sovereign Edge Key',
+                created_at: new Date().toLocaleDateString()
+              });
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(keys));
+            }
+          }
+        }
+      } catch (e) {}
     }
 
     // Direct event listener bindings for carousel buttons
