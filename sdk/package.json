@@ -5,6 +5,9 @@
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "ultrademon": "bin/cli.js"
+  },
   "exports": {
     ".": {
       "import": {
@@ -18,6 +21,7 @@
     }
   },
   "files": [
+    "bin",
     "dist",
     "README.md",
     "LICENSE"
@@ -43,7 +47,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AnshBhardwaj10/Ultrademon.git",
+    "url": "git+https://github.com/AnshBhardwaj10/Ultrademon.git",
     "directory": "sdk"
   },
   "publishConfig": {
@@ -53,4 +57,3 @@
     "node": ">=18.0.0"
   }
 }
-
