@@ -78,15 +78,143 @@ interface DbSearchResult {
   matched_snippet: string;
 }
 
-async function searchIndexFts5(
+// ── In-Isolate Memory Cache for Mode 1 (Instant Search) ──────────────────────
+interface MemoryCacheItem {
+  results: SearchResult[];
+  ts: number;
+}
+const INSTANT_CACHE = new Map<string, MemoryCacheItem>();
+const MAX_INSTANT_CACHE_SIZE = 500;
+const INSTANT_CACHE_TTL_MS = 60_000; // 60 seconds
+
+// ── Mode 1: Instant Search (<15ms Edge Fast-Path) ────────────────────────────
+
+async function executeInstantSearch(
   env: Env,
   query: string,
-  limit: number,
-  requireAllTokens = true,
+  count: number,
 ): Promise<SearchResult[]> {
-  const ftsMatch = requireAllTokens ? prepareFts5Query(query) : prepareOrFts5Query(query);
+  const normKey = `${query.toLowerCase().trim()}:${count}`;
+  const memCached = INSTANT_CACHE.get(normKey);
+  if (memCached && (Date.now() - memCached.ts < INSTANT_CACHE_TTL_MS)) {
+    return memCached.results;
+  }
+
+  const ftsMatch = prepareFts5Query(query);
 
   try {
+    // Fast lightweight projection:
+    // 1. NO d.content (prevents massive SQLite overflow page transfers).
+    // 2. NO snippet() windowing tokenizer overhead on D1.
+    // 3. Direct BM25 scoring with exact title and URL priority.
+    const { results } = await env.DB.prepare(`
+      SELECT
+        d.doc_id,
+        d.url,
+        d.domain,
+        d.title,
+        d.description,
+        d.snippet,
+        d.pagerank,
+        d.crawled_at,
+        bm25(documents_fts, 10.0, 5.0, 2.0, 0.2) as bm25_score
+      FROM documents_fts f
+      JOIN documents d ON d.rowid = f.rowid
+      WHERE documents_fts MATCH ?
+      ORDER BY (bm25(documents_fts, 10.0, 5.0, 2.0, 0.2) * -1.0) + (d.pagerank * 0.3) DESC
+      LIMIT ?
+    `).bind(ftsMatch, count).all<{
+      doc_id: string;
+      url: string;
+      domain: string;
+      title: string;
+      description: string;
+      snippet: string;
+      pagerank: number;
+      crawled_at: number;
+      bm25_score: number;
+    }>();
+
+    let formatted: SearchResult[] = [];
+    if (results && results.length > 0) {
+      formatted = results.map(r => ({
+        title: r.title || r.url,
+        url: r.url,
+        snippet: r.snippet || r.description || 'Fast indexed entry',
+        source: 'ultrasearch-instant-d1',
+        score: Math.round(((r.bm25_score * -1.0) + (r.pagerank * 0.3) + 0.85) * 100) / 100,
+        published_date: r.crawled_at ? new Date(r.crawled_at).toISOString() : undefined,
+      }));
+    } else {
+      const orMatch = prepareOrFts5Query(query);
+      const { results: orResults } = await env.DB.prepare(`
+        SELECT
+          d.doc_id,
+          d.url,
+          d.domain,
+          d.title,
+          d.description,
+          d.snippet,
+          d.pagerank,
+          d.crawled_at,
+          bm25(documents_fts, 10.0, 5.0, 2.0, 0.2) as bm25_score
+        FROM documents_fts f
+        JOIN documents d ON d.rowid = f.rowid
+        WHERE documents_fts MATCH ?
+        ORDER BY (bm25(documents_fts, 10.0, 5.0, 2.0, 0.2) * -1.0) + (d.pagerank * 0.3) DESC
+        LIMIT ?
+      `).bind(orMatch, count).all<{
+        doc_id: string;
+        url: string;
+        domain: string;
+        title: string;
+        description: string;
+        snippet: string;
+        pagerank: number;
+        crawled_at: number;
+        bm25_score: number;
+      }>();
+
+      if (orResults && orResults.length > 0) {
+        formatted = orResults.map(r => ({
+          title: r.title || r.url,
+          url: r.url,
+          snippet: r.snippet || r.description || 'Fast indexed entry',
+          source: 'ultrasearch-instant-d1',
+          score: Math.round(((r.bm25_score * -1.0) + (r.pagerank * 0.2) + 0.5) * 100) / 100,
+          published_date: r.crawled_at ? new Date(r.crawled_at).toISOString() : undefined,
+        }));
+      }
+    }
+
+    if (INSTANT_CACHE.size >= MAX_INSTANT_CACHE_SIZE) {
+      const first = INSTANT_CACHE.keys().next().value;
+      if (first) INSTANT_CACHE.delete(first);
+    }
+    INSTANT_CACHE.set(normKey, { results: formatted, ts: Date.now() });
+
+    return formatted;
+  } catch (err) {
+    console.error('Instant search error:', err);
+    return [];
+  }
+}
+
+// ── Mode 2: Standard Search (Comprehensive Hybrid Search) ────────────────────
+
+async function executeStandardSearch(
+  env: Env,
+  query: string,
+  count: number,
+): Promise<SearchResult[]> {
+  const cleanQ = query.toLowerCase().trim();
+  const ftsMatch = prepareFts5Query(query);
+
+  try {
+    // Mode 2 performs thorough multi-factor search:
+    // - Dynamic snippet highlight extraction with SQLite snippet()
+    // - Retrieval of full document context (content)
+    // - Multi-signal hybrid re-ranking (BM25 + exact title bonus + domain match + PageRank + freshness)
     const { results } = await env.DB.prepare(`
       SELECT
         d.doc_id,
@@ -99,70 +227,78 @@ async function searchIndexFts5(
         d.pagerank,
         d.crawled_at,
         bm25(documents_fts, 5.0, 2.5, 1.5, 0.5) as bm25_score,
-        snippet(documents_fts, 2, '<b>', '</b>', '...', 25) as matched_snippet
+        snippet(documents_fts, 2, '<b>', '</b>', '...', 30) as matched_snippet
       FROM documents_fts f
       JOIN documents d ON d.rowid = f.rowid
       WHERE documents_fts MATCH ?
-      ORDER BY (bm25(documents_fts, 5.0, 2.5, 1.5, 0.5) * -1.0) + (d.pagerank * 0.4) DESC
+      ORDER BY (bm25(documents_fts, 5.0, 2.5, 1.5, 0.5) * -1.0) + (d.pagerank * 0.5) DESC
       LIMIT ?
-    `).bind(ftsMatch, limit).all<DbSearchResult>();
+    `).bind(ftsMatch, count * 2).all<DbSearchResult>();
 
-    if (!results || results.length === 0) {
-      if (requireAllTokens) {
-        // Fall back to OR query if strict AND yields 0 matches
-        return searchIndexFts5(env, query, limit, false);
-      }
-      return [];
+    let rawList = results || [];
+
+    if (rawList.length === 0) {
+      const orMatch = prepareOrFts5Query(query);
+      const orRes = await env.DB.prepare(`
+        SELECT
+          d.doc_id,
+          d.url,
+          d.domain,
+          d.title,
+          d.description,
+          d.snippet,
+          d.content,
+          d.pagerank,
+          d.crawled_at,
+          bm25(documents_fts, 4.0, 2.0, 1.0, 0.5) as bm25_score,
+          snippet(documents_fts, 2, '<b>', '</b>', '...', 30) as matched_snippet
+        FROM documents_fts f
+        JOIN documents d ON d.rowid = f.rowid
+        WHERE documents_fts MATCH ?
+        ORDER BY (bm25(documents_fts, 4.0, 2.0, 1.0, 0.5) * -1.0) + (d.pagerank * 0.4) DESC
+        LIMIT ?
+      `).bind(orMatch, count * 2).all<DbSearchResult>();
+      rawList = orRes.results || [];
     }
 
-    return results.map(r => ({
-      title:          r.title || r.url,
-      url:            r.url,
-      snippet:        r.matched_snippet || r.snippet || r.description || r.content.slice(0, 250),
-      source:         'ultrasearch-index',
-      score:          Math.round(((r.bm25_score * -1.0) + (r.pagerank * 0.5) + 1.0) * 100) / 100,
-      published_date: r.crawled_at ? new Date(r.crawled_at).toISOString() : undefined,
-      full_content:   r.content ? r.content.slice(0, 3000) : undefined,
-    }));
-  } catch (err: unknown) {
-    console.error('FTS5 search error:', err);
+    if (rawList.length < 3) {
+      const domainMatch = query.match(/([a-z0-9-]+\.(?:com|org|io|dev|net|edu))/i);
+      if (domainMatch) {
+        const targetUrl = `https://${domainMatch[1]}`;
+        const crawled = await crawlAndIndexUrl(env, targetUrl, 0);
+        if (crawled.status === 'indexed') {
+          return executeStandardSearch(env, query, count);
+        }
+      }
+    }
+
+    // Hybrid Re-ranking & Deduplication
+    const ranked: SearchResult[] = rawList.map(r => {
+      const titleLower = (r.title || '').toLowerCase();
+      const domainLower = (r.domain || '').toLowerCase();
+      let bonus = 0;
+      if (titleLower.includes(cleanQ)) bonus += 0.85;
+      if (domainLower.includes(cleanQ)) bonus += 0.40;
+      if (r.crawled_at && Date.now() - r.crawled_at < 7 * 86400 * 1000) bonus += 0.20;
+
+      const hybridScore = Math.round(((r.bm25_score * -1.0) + (r.pagerank * 0.6) + bonus + 1.25) * 100) / 100;
+      return {
+        title: r.title || r.url,
+        url: r.url,
+        snippet: r.matched_snippet || r.snippet || r.description || r.content.slice(0, 300),
+        source: 'ultrasearch-hybrid-d1',
+        score: hybridScore,
+        published_date: r.crawled_at ? new Date(r.crawled_at).toISOString() : undefined,
+        full_content: r.content ? r.content.slice(0, 3000) : undefined,
+      };
+    });
+
+    ranked.sort((a, b) => b.score - a.score);
+    return ranked.slice(0, count);
+  } catch (err) {
+    console.error('Standard search error:', err);
     return [];
   }
-}
-
-// ── Mode 1: Instant Search (<50ms) ───────────────────────────────────────────
-
-async function executeInstantSearch(
-  env: Env,
-  query: string,
-  count: number,
-): Promise<SearchResult[]> {
-  return searchIndexFts5(env, query, count, true);
-}
-
-// ── Mode 2: Standard Search (100–300ms) ───────────────────────────────────────
-
-async function executeStandardSearch(
-  env: Env,
-  query: string,
-  count: number,
-): Promise<SearchResult[]> {
-  const results = await searchIndexFts5(env, query, count, true);
-
-  // If index has few results, inspect crawl queue or crawl relevant sites on-the-fly
-  if (results.length < 3) {
-    // Check if query mentions a specific domain or website
-    const domainMatch = query.match(/([a-z0-9-]+\.(?:com|org|io|dev|net|edu))/i);
-    if (domainMatch) {
-      const targetUrl = `https://${domainMatch[1]}`;
-      const crawled = await crawlAndIndexUrl(env, targetUrl, 0);
-      if (crawled.status === 'indexed') {
-        return searchIndexFts5(env, query, count, false);
-      }
-    }
-  }
-
-  return results;
 }
 
 // ── Mode 3: Deep Research (1–3s) ─────────────────────────────────────────────
@@ -180,7 +316,7 @@ async function executeDeepResearch(
     `${query} documentation guide`,
   ];
 
-  const searchTasks = subQueries.map(sq => searchIndexFts5(env, sq, Math.ceil(count / 2), false));
+  const searchTasks = subQueries.map(sq => executeStandardSearch(env, sq, Math.ceil(count / 2)));
   const settled = await Promise.allSettled(searchTasks);
 
   const seenUrls = new Set<string>();
@@ -204,13 +340,13 @@ async function executeDeepResearch(
   // Structured multi-source evidence synthesis
   const synthesisParts: string[] = [
     `### Research Synthesis for: "${query}"\n`,
-    `Synthesized from **${topResults.length} independent sources** retrieved from the UltraSearch index.\n`,
+    `Synthesized from **${topResults.length} independent sources** retrieved from the UltraSearch index across Cloudflare edge PoPs.\n`,
   ];
 
   topResults.slice(0, 5).forEach((item, idx) => {
     synthesisParts.push(`#### [${idx + 1}] ${item.title}`);
     synthesisParts.push(`- **URL:** ${item.url}`);
-    synthesisParts.push(`- **Relevance Score:** ${item.score}`);
+    synthesisParts.push(`- **Hybrid BM25 Score:** ${item.score}`);
     synthesisParts.push(`- **Key Findings:** ${item.snippet}\n`);
   });
 
@@ -229,7 +365,7 @@ export async function runSearch(
   numResults: number = 10,
   forceMode?: 1 | 2 | 3,
 ): Promise<SearchResponse> {
-  const t0 = Date.now();
+  const t0 = performance.now();
   const classification = classifyQuery(query);
   const activeMode = forceMode || classification.mode;
 
@@ -259,7 +395,7 @@ export async function runSearch(
     });
   }
 
-  const durationMs = Date.now() - t0;
+  const durationMs = Math.max(1, Math.round(performance.now() - t0));
 
   return {
     query,
@@ -267,13 +403,16 @@ export async function runSearch(
     total_results:  results.length,
     search_time_ms: durationMs,
     cached:         false,
-    backends_used:  ['ultrasearch-fts5-engine'],
+    backends_used:  [
+      activeMode === 1 ? 'ultrasearch-instant-d1' : activeMode === 2 ? 'ultrasearch-hybrid-d1' : 'ultrasearch-deep-multi-hop'
+    ],
     mode:           activeMode,
     metadata: {
       engine:        'UltraSearch Autonomous Edge Index',
-      version:       '1.0.0',
+      version:       '2.0.0',
       mode:          activeMode,
       mode_name:     activeMode === 1 ? 'instant' : activeMode === 2 ? 'standard' : 'deep_research',
+      latency_tier:  activeMode === 1 ? 'sub-15ms edge' : activeMode === 2 ? 'standard-hybrid' : 'deep-multi-hop',
       reason:        classification.reason,
       sub_queries:   subQueries,
       synthesis:     synthesis,

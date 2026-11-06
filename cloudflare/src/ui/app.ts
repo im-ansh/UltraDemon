@@ -2198,6 +2198,7 @@ requests.post("${origin}/v1/analytics/capture", json={
 
       if (!query) return;
 
+      const t0 = performance.now();
       if (resultsDiv) resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">Searching edge index...</div>';
       try {
         const res = await fetch('/v1/search', {
@@ -2206,18 +2207,41 @@ requests.post("${origin}/v1/analytics/capture", json={
           body: JSON.stringify({ query, mode, num_results: 5 })
         });
         const data = await res.json();
+        const duration = Math.round(performance.now() - t0);
+        const reportedTime = data.search_time_ms !== undefined ? data.search_time_ms : duration;
+        const modeBadgeText = mode === 1 ? 'Mode 1 (Instant <15ms)' : mode === 2 ? 'Mode 2 (Standard Hybrid)' : 'Mode 3 (Deep Research)';
+        const scorePrefix = mode === 1 ? 'Instant BM25: ' : mode === 2 ? 'Hybrid BM25: ' : 'Deep BM25: ';
+
         if (data.results && data.results.length > 0) {
           if (resultsDiv) {
-            resultsDiv.innerHTML = data.results.map(r =>
+            let synthesisHtml = '';
+            if (data.metadata?.synthesis) {
+              synthesisHtml = '<div class="p-4 rounded-xl bg-neutral-900 text-white text-xs mb-3 space-y-2">' +
+                '<div class="font-bold uppercase tracking-wider text-[10px] text-neutral-400 font-num">Deep Research Synthesis</div>' +
+                '<div class="leading-relaxed whitespace-pre-line">' + escapeHtml(data.metadata.synthesis) + '</div>' +
+              '</div>';
+            }
+
+            const headerHtml = '<div class="flex items-center justify-between text-xs font-num px-3.5 py-2 rounded-xl bg-neutral-100 border border-neutral-200 mb-3">' +
+              '<div class="flex items-center gap-2">' +
+                '<span class="w-2 h-2 rounded-full ' + (mode === 1 ? 'bg-emerald-500 animate-pulse' : 'bg-neutral-900') + '"></span>' +
+                '<span class="font-bold text-neutral-900">' + modeBadgeText + '</span>' +
+              '</div>' +
+              '<span class="font-bold text-neutral-900">' + reportedTime + 'ms Edge Latency</span>' +
+            '</div>';
+
+            const itemsHtml = data.results.map(r =>
               '<div class="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 text-xs space-y-1">' +
                 '<div class="flex items-center justify-between text-[10px] text-neutral-500 font-num">' +
                   '<span class="truncate max-w-sm">' + r.url + '</span>' +
-                  '<span class="font-bold text-neutral-900">BM25: ' + (r.score || 0.95).toFixed(2) + '</span>' +
+                  '<span class="font-bold text-neutral-900">' + scorePrefix + (r.score || 0.95).toFixed(2) + '</span>' +
                 '</div>' +
                 '<a href="' + r.url + '" target="_blank" class="font-bold text-neutral-950 hover:underline block">' + r.title + '</a>' +
                 '<p class="text-neutral-600">' + r.snippet + '</p>' +
               '</div>'
             ).join('');
+
+            resultsDiv.innerHTML = headerHtml + synthesisHtml + itemsHtml;
           }
         } else {
           if (resultsDiv) resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">No results found for query.</div>';

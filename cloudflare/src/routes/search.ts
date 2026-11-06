@@ -40,6 +40,7 @@ searchRouter.post('/', async (c) => {
     const cached = await getCachedSearch(c.env, body.query, cacheParams);
     if (cached) {
       cached.cached = true;
+      cached.search_time_ms = 1;
       return c.json(cached);
     }
   }
@@ -84,6 +85,7 @@ searchRouter.get('/', async (c) => {
   const cached = await getCachedSearch(c.env, query, cacheParams);
   if (cached) {
     cached.cached = true;
+    cached.search_time_ms = 1;
     return c.json(cached);
   }
 

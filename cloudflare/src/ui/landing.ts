@@ -3148,15 +3148,27 @@ curl "${origin}/v1/memory/context?q=preference" \\
           return;
         }
 
-        latencyBadge.innerText = (data.search_time_ms || duration) + 'ms' + (data.cached ? ' (KV Hit)' : ' (D1 BM25)');
+        const reportedTime = data.search_time_ms !== undefined ? data.search_time_ms : duration;
+        const modeLabel = data.mode === 1 ? 'Instant' : data.mode === 2 ? 'Standard' : 'Deep Research';
+        const hitTag = data.cached ? 'KV Edge Hit' : (data.mode === 1 ? 'Sub-15ms Edge' : 'Hybrid D1');
+        latencyBadge.innerText = reportedTime + 'ms (' + modeLabel + ' · ' + hitTag + ')';
         latencyBadge.classList.remove('hidden');
 
         if (data.results && data.results.length > 0) {
-          resultsDiv.innerHTML = data.results.map(r => 
+          const scoreLabel = data.mode === 1 ? 'Instant BM25: ' : data.mode === 2 ? 'Hybrid BM25: ' : 'Deep BM25: ';
+          let synthesisHtml = '';
+          if (data.metadata?.synthesis) {
+            synthesisHtml = '<div class="card-clean p-4 rounded-xl mb-3 bg-neutral-900 text-white text-xs">' +
+              '<div class="font-bold text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-2">Deep Multi-Hop Synthesis</div>' +
+              '<div class="leading-relaxed whitespace-pre-line text-neutral-200">' + (data.metadata.synthesis || '') + '</div>' +
+            '</div>';
+          }
+
+          resultsDiv.innerHTML = synthesisHtml + data.results.map(r => 
             '<div class="card-clean p-4 rounded-xl mb-2">' +
               '<div class="flex items-center justify-between text-neutral-400 text-[10px] font-num mb-1">' +
                 '<span class="truncate max-w-xs text-neutral-600 font-mono">' + (r.url || 'edge://d1/indexed') + '</span>' +
-                '<span class="font-bold text-neutral-900">BM25: ' + (r.score ? r.score.toFixed(2) : '1.00') + '</span>' +
+                '<span class="font-bold text-neutral-900 font-num">' + scoreLabel + (r.score ? r.score.toFixed(2) : '1.00') + '</span>' +
               '</div>' +
               '<h3 class="font-normal text-xs text-neutral-950 hover:underline cursor-pointer mb-1">' + (r.title || 'Indexed Document') + '</h3>' +
               '<p class="text-neutral-600 text-xs line-clamp-2 leading-relaxed">' + (r.snippet || r.content || '') + '</p>' +
