@@ -65,103 +65,141 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     }
     .card-clean {
       background: #ffffff;
-      border: 1px solid #e4e4e7;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      border: 1px solid #e5e5e5;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.02);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .card-clean:hover {
-      border-color: #a1a1aa;
+      border-color: #a3a3a3;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+    .card-elevated {
+      background: #ffffff;
+      border: 1px solid #e5e5e5;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 6px 16px -2px rgba(0,0,0,0.03);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .card-elevated:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+      border-color: #171717;
     }
     .code-scroll::-webkit-scrollbar {
-      height: 5px;
-      width: 5px;
+      height: 6px;
+      width: 6px;
     }
     .code-scroll::-webkit-scrollbar-thumb {
       background: #d4d4d8;
-      border-radius: 4px;
+      border-radius: 6px;
     }
   </style>
 </head>
-<body class="min-h-screen bg-white text-neutral-950 flex flex-col lg:flex-row antialiased selection:bg-black selection:text-white">
+<body class="min-h-screen bg-[#fafafa] text-neutral-950 flex flex-col lg:flex-row antialiased selection:bg-black selection:text-white">
 
   <!-- Left Sidebar Navigation -->
-  <aside class="w-full lg:w-64 lg:min-h-screen lg:fixed lg:top-0 lg:left-0 border-b lg:border-b-0 lg:border-r border-neutral-200 bg-white z-40 flex flex-col justify-between p-5">
+  <aside class="w-full lg:w-64 lg:min-h-screen lg:fixed lg:top-0 lg:left-0 border-b lg:border-b-0 lg:border-r border-neutral-200/80 bg-white z-40 flex flex-col justify-between p-5 shadow-[1px_0_10px_rgba(0,0,0,0.02)]">
     <div class="space-y-6">
       <!-- Brand Logo -->
       <a href="/" class="flex items-center gap-2.5 group">
-        <div class="w-7 h-7 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:bg-black group-hover:text-white group-hover:border-black transition">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="w-8 h-8 rounded-xl bg-neutral-950 text-white flex items-center justify-center group-hover:scale-105 transition shadow-xs">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
           </svg>
         </div>
-        <span class="font-normal text-base tracking-tight text-neutral-950 flex items-center gap-1">
-          ultrademon
-          <span class="font-serif text-xs font-bold italic text-neutral-500">workspace</span>
-        </span>
+        <div class="flex flex-col">
+          <span class="font-normal text-base tracking-tight text-neutral-950 flex items-center gap-1.5 leading-none">
+            <span class="font-serif font-bold italic text-neutral-950">UltraDemon</span>
+            <span class="text-[9px] font-num uppercase tracking-wider font-bold px-1.5 py-0.5 rounded-full bg-neutral-100 text-neutral-600 border border-neutral-200">OS</span>
+          </span>
+          <span class="text-[10px] text-neutral-400 font-num mt-1">Sovereign Edge Workspace</span>
+        </div>
       </a>
 
       <!-- User Profile & Plan Badge -->
-      <div class="p-3 bg-neutral-50 border border-neutral-200 rounded-xl space-y-1.5">
+      <div class="p-3.5 bg-neutral-50/80 border border-neutral-200 rounded-2xl space-y-2">
         <div class="flex items-center justify-between">
-          <div class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold">Account</div>
-          <span id="userPlanBadge" class="px-2 py-0.5 rounded text-[10px] font-bold uppercase font-num bg-neutral-200 text-neutral-800">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Account</span>
+          </div>
+          <span id="userPlanBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase font-num bg-neutral-950 text-white shadow-2xs">
             Free
           </span>
         </div>
         <div id="userEmailDisplay" class="font-num text-xs font-semibold text-neutral-900 truncate">
           Active Workspace
         </div>
+        <div class="flex items-center justify-between pt-1 border-t border-neutral-200/60 text-[10px] font-num text-neutral-500">
+          <span>Edge PoP: Active</span>
+          <span class="text-neutral-900 font-semibold">&lt;15ms</span>
+        </div>
       </div>
 
       <!-- App Navigation Links -->
-      <nav class="flex flex-col space-y-1 text-xs font-medium text-neutral-600" id="sidebarNav">
-        <button type="button" onclick="setAppView('overview')" data-view-target="overview" id="nav-overview" class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-black text-white cursor-pointer transition text-left">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
-          <span>Overview</span>
-        </button>
+      <nav class="flex flex-col space-y-4 text-xs" id="sidebarNav">
+        <!-- Group 1: Platform -->
+        <div class="space-y-1">
+          <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Platform</div>
+          <button type="button" onclick="setAppView('overview')" data-view-target="overview" id="nav-overview" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl bg-neutral-950 text-white font-semibold cursor-pointer transition text-left shadow-xs">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+            <span>Overview</span>
+          </button>
 
-        <button type="button" onclick="setAppView('keys')" data-view-target="keys" id="nav-keys" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left text-neutral-600">
-          <div class="flex items-center gap-2.5">
-            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
-            <span>API Keys</span>
-          </div>
-          <span id="keysCountBadge" class="font-num text-[10px] text-neutral-400">0</span>
-        </button>
+          <button type="button" onclick="setAppView('keys')" data-view-target="keys" id="nav-keys" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+              <span>API Keys</span>
+            </div>
+            <span id="keysCountBadge" class="font-num text-[10px] text-neutral-400">0</span>
+          </button>
+        </div>
 
-        <button type="button" onclick="setAppView('memory')" data-view-target="memory" id="nav-memory" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left text-neutral-600">
-          <div class="flex items-center gap-2.5">
-            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
-            <span>UltraMemory</span>
-          </div>
-          <span class="font-num text-[10px] bg-neutral-100 text-neutral-900 border border-neutral-200 px-1.5 rounded font-bold">&lt;15ms</span>
-        </button>
+        <!-- Group 2: Engines -->
+        <div class="space-y-1">
+          <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Engines</div>
+          <button type="button" onclick="setAppView('memory')" data-view-target="memory" id="nav-memory" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+              <span>UltraMemory</span>
+            </div>
+            <span class="font-num text-[10px] bg-purple-50 text-purple-700 border border-purple-200 px-1.5 py-0.2 rounded font-bold">&lt;15ms</span>
+          </button>
 
-        <button type="button" onclick="setAppView('search')" data-view-target="search" id="nav-search" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left text-neutral-600">
-          <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          <span>UltraSearch Studio</span>
-        </button>
+          <button type="button" onclick="setAppView('search')" data-view-target="search" id="nav-search" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span>UltraSearch Studio</span>
+            </div>
+            <span class="font-num text-[10px] bg-sky-50 text-sky-700 border border-sky-200 px-1.5 py-0.2 rounded font-bold">&lt;40ms</span>
+          </button>
 
-        <button type="button" onclick="setAppView('crawler')" data-view-target="crawler" id="nav-crawler" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left text-neutral-600">
-          <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-          <span>Web Crawler</span>
-        </button>
+          <button type="button" onclick="setAppView('crawler')" data-view-target="crawler" id="nav-crawler" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
+            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            <span>Web Crawler</span>
+          </button>
+        </div>
 
-        <button type="button" onclick="setAppView('membership')" data-view-target="membership" id="nav-membership" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left text-neutral-600">
-          <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          <span>Memberships &amp; Quotas</span>
-        </button>
+        <!-- Group 3: Observability & Protocol -->
+        <div class="space-y-1">
+          <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Analytics &amp; Protocol</div>
+          <button type="button" onclick="setAppView('analytics')" data-view-target="analytics" id="nav-analytics" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+              <span>Telemetry &amp; ICP</span>
+            </div>
+            <span class="font-num text-[9px] bg-neutral-900 text-white px-1.5 py-0.5 rounded font-semibold">vs PostHog</span>
+          </button>
 
-        <button type="button" onclick="setAppView('analytics')" data-view-target="analytics" id="nav-analytics" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left text-neutral-600">
-          <div class="flex items-center gap-2.5">
-            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-            <span>Telemetry &amp; ICP</span>
-          </div>
-          <span class="font-num text-[9px] bg-neutral-900 text-white px-1.5 py-0.5 rounded font-semibold">vs PostHog</span>
-        </button>
+          <button type="button" onclick="setAppView('membership')" data-view-target="membership" id="nav-membership" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
+            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <span>Memberships &amp; Quotas</span>
+          </button>
 
-        <button type="button" onclick="setAppView('integrations')" data-view-target="integrations" id="nav-integrations" class="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-100 hover:text-black cursor-pointer transition text-left text-neutral-600">
-          <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
-          <span>Integrations &amp; MCP</span>
-        </button>
+          <button type="button" onclick="setAppView('integrations')" data-view-target="integrations" id="nav-integrations" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
+            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+            <span>Integrations &amp; MCP</span>
+          </button>
+        </div>
       </nav>
     </div>
 
@@ -179,33 +217,40 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
   </aside>
 
   <!-- Main Content Workspace Area -->
-  <main class="flex-1 lg:ml-64 p-6 sm:p-10 lg:p-12 max-w-5xl">
+  <main class="flex-1 lg:ml-64 p-6 sm:p-10 lg:p-12 max-w-6xl w-full">
     
     <!-- Top Bar -->
-    <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b border-neutral-200">
+    <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-5 border-b border-neutral-200/80">
       <div>
-        <h1 id="viewHeaderTitle" class="text-2xl font-normal text-neutral-950 tracking-tight flex items-center gap-2">
-          Workspace Overview
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white border border-neutral-200 text-[10px] font-num text-neutral-600 font-semibold shadow-2xs">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Cloudflare Edge Anycast · 330+ Cities · &lt;15ms Edge</span>
+          </span>
+        </div>
+        <h1 id="viewHeaderTitle" class="text-2xl sm:text-3xl font-normal text-neutral-950 tracking-tight flex items-center gap-2">
+          Workspace <span class="font-serif font-bold italic text-black">Overview</span>
         </h1>
-        <p id="viewHeaderDesc" class="text-xs text-neutral-500 mt-0.5">
+        <p id="viewHeaderDesc" class="text-xs text-neutral-500 mt-1 font-sans">
           Live edge telemetry, database metrics, and active sovereign API keys.
         </p>
       </div>
 
       <!-- Quick Active Key Pill -->
-      <div class="flex items-center gap-2 bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-1.5 text-xs">
-        <span class="text-[10px] text-neutral-400 uppercase font-bold">Active Key:</span>
-        <span id="topActiveKeyLabel" class="font-mono text-neutral-900 font-semibold truncate max-w-[120px]">None</span>
-        <button type="button" onclick="copyActiveKey()" id="topCopyBtn" class="text-neutral-500 hover:text-black cursor-pointer hidden">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-        </button>
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 bg-white border border-neutral-200 rounded-xl px-3.5 py-2 text-xs shadow-2xs">
+          <span class="text-[10px] text-neutral-400 uppercase font-bold font-num">Active Key:</span>
+          <span id="topActiveKeyLabel" class="font-mono text-neutral-950 font-bold truncate max-w-[140px]">None</span>
+          <button type="button" onclick="copyActiveKey()" id="topCopyBtn" class="p-1 text-neutral-400 hover:text-black hover:bg-neutral-100 rounded transition cursor-pointer hidden" title="Copy Active Key">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          </button>
+        </div>
       </div>
     </header>
-
     <!-- Sovereign Engine Suite Switcher (Overview • Search • Memory • Metrics) -->
-    <div class="mb-8 p-1.5 bg-neutral-100/90 border border-neutral-200/90 rounded-2xl flex items-center gap-1.5 shadow-2xs">
+    <div class="mb-8 p-1.5 bg-neutral-200/60 border border-neutral-200/90 rounded-2xl flex items-center gap-1.5 shadow-inner">
       <!-- 0. Overview Suite -->
-      <button type="button" onclick="switchSuite('overview')" id="suiteBtn-overview" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer bg-white text-neutral-950 shadow-xs border border-neutral-300">
+      <button type="button" onclick="switchSuite('overview')" id="suiteBtn-overview" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer bg-white text-neutral-950 shadow-xs border border-neutral-300/80">
         <svg class="w-3.5 h-3.5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
         <span class="font-bold">Overview</span>
       </button>
@@ -214,14 +259,14 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       <button type="button" onclick="switchSuite('search')" id="suiteBtn-search" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
         <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         <span class="font-bold">Search</span>
-        <span class="text-[9px] bg-neutral-200/70 border border-neutral-300/50 px-1.5 py-0.2 rounded font-num text-neutral-700 hidden sm:inline">&lt;40ms Edge</span>
+        <span class="text-[9px] bg-neutral-100 border border-neutral-300/60 px-1.5 py-0.2 rounded font-num text-neutral-700 hidden sm:inline">&lt;40ms Edge</span>
       </button>
 
       <!-- 2. Memory Suite -->
       <button type="button" onclick="switchSuite('memory')" id="suiteBtn-memory" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
         <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
         <span class="font-bold">Memory</span>
-        <span class="text-[9px] bg-neutral-200/70 border border-neutral-300/50 px-1.5 py-0.2 rounded font-num text-neutral-700 hidden sm:inline">&lt;15ms BM25</span>
+        <span class="text-[9px] bg-neutral-100 border border-neutral-300/60 px-1.5 py-0.2 rounded font-num text-neutral-700 hidden sm:inline">&lt;15ms BM25</span>
       </button>
 
       <!-- 3. Metrics Suite -->
@@ -234,63 +279,92 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
     <!-- SECTION 1: OVERVIEW -->
     <section id="view-overview" class="space-y-6">
+      <!-- Welcome Hero Banner -->
+      <div class="relative overflow-hidden p-6 sm:p-7 rounded-3xl bg-neutral-950 text-white border border-neutral-800 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="space-y-1.5 z-10">
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/10 text-white border border-white/15 text-[10px] font-num font-bold uppercase tracking-wider">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Edge Engine Connected · Sub-15ms BM25</span>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-normal tracking-tight text-white">
+            Welcome to <span class="font-serif font-bold italic text-white">UltraDemon Workspace</span>
+          </h2>
+          <p class="text-xs text-neutral-400 max-w-xl leading-relaxed">
+            Sovereign edge search, long-term agent memory recall, and full-spectrum kinetic telemetry running on Cloudflare Workers and D1 SQLite.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2.5 z-10 flex-wrap">
+          <button type="button" onclick="switchSuite('search')" class="px-3.5 py-2 rounded-xl bg-white text-neutral-950 hover:bg-neutral-100 text-xs font-semibold transition cursor-pointer shadow-xs flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-neutral-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <span>Search Studio</span>
+          </button>
+          <button type="button" onclick="switchSuite('memory')" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 backdrop-blur-xs">
+            <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+            <span>Memory Lab</span>
+          </button>
+        </div>
+
+        <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
+      </div>
+
       <!-- 4 Top Metric Cards (Card Design Skill) -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Daily Requests -->
-        <div class="group relative bg-white rounded-2xl border border-neutral-200 p-5 flex flex-col justify-between hover:-translate-y-1 hover:shadow-lg hover:border-neutral-300 transition-all duration-200 overflow-hidden">
+        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
           <div class="flex items-center justify-between mb-3">
             <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Daily Requests</span>
-            <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
+            <div class="w-8 h-8 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white transition-all">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
             </div>
           </div>
-          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricUsed">0</div>
-          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="metricUsed">0</div>
+          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
             <span>Quota Limit</span>
             <span class="font-bold text-neutral-900" id="metricLimit">100</span>
           </div>
         </div>
 
         <!-- Active Keys -->
-        <div class="group relative bg-white rounded-2xl border border-neutral-200 p-5 flex flex-col justify-between hover:-translate-y-1 hover:shadow-lg hover:border-neutral-300 transition-all duration-200 overflow-hidden">
+        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
           <div class="flex items-center justify-between mb-3">
             <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Active Keys</span>
-            <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
+            <div class="w-8 h-8 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white transition-all">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
             </div>
           </div>
-          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricKeys">0</div>
-          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="metricKeys">0</div>
+          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
             <span>Edge Bound</span>
             <span class="font-bold text-neutral-900">D1 SQLite</span>
           </div>
         </div>
 
         <!-- Stored Memories -->
-        <div class="group relative bg-white rounded-2xl border border-neutral-200 p-5 flex flex-col justify-between hover:-translate-y-1 hover:shadow-lg hover:border-neutral-300 transition-all duration-200 overflow-hidden">
+        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
           <div class="flex items-center justify-between mb-3">
             <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Stored Memories</span>
-            <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
+            <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white transition-all">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
             </div>
           </div>
-          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricMemories">0</div>
-          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="metricMemories">0</div>
+          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
             <span>Recall Latency</span>
             <span class="font-bold text-emerald-600">&lt;15ms</span>
           </div>
         </div>
 
         <!-- Indexed Pages -->
-        <div class="group relative bg-white rounded-2xl border border-neutral-200 p-5 flex flex-col justify-between hover:-translate-y-1 hover:shadow-lg hover:border-neutral-300 transition-all duration-200 overflow-hidden">
+        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
           <div class="flex items-center justify-between mb-3">
             <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Indexed Pages</span>
-            <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-900 group-hover:text-white transition-all">
+            <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white transition-all">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
             </div>
           </div>
-          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricIndexed">0</div>
-          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="metricIndexed">0</div>
+          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
             <span>Algorithm</span>
             <span class="font-bold text-neutral-900">BM25 Edge</span>
           </div>
@@ -1838,31 +1912,31 @@ requests.post("${origin}/v1/analytics/capture", json={
         if (navBtn) {
           const svg = navBtn.querySelector('svg');
           if (id === viewId) {
-            navBtn.classList.add('bg-black', 'text-white');
-            navBtn.classList.remove('text-neutral-600', 'hover:bg-neutral-100', 'hover:text-black');
+            navBtn.classList.add('bg-neutral-950', 'text-white', 'font-semibold', 'shadow-xs');
+            navBtn.classList.remove('text-neutral-600', 'hover:bg-neutral-100', 'hover:text-black', 'font-normal');
             if (svg) svg.classList.remove('text-neutral-400');
           } else {
-            navBtn.classList.remove('bg-black', 'text-white');
-            navBtn.classList.add('text-neutral-600', 'hover:bg-neutral-100', 'hover:text-black');
+            navBtn.classList.remove('bg-neutral-950', 'text-white', 'font-semibold', 'shadow-xs');
+            navBtn.classList.add('text-neutral-600', 'hover:bg-neutral-100', 'hover:text-black', 'font-normal');
             if (svg) svg.classList.add('text-neutral-400');
           }
         }
       });
 
       const titles = {
-        overview: ['Workspace Overview', 'Live edge telemetry, database metrics, and active sovereign API keys.'],
-        keys: ['API Keys Studio', 'Create, manage, and revoke high-speed edge API keys.'],
-        memory: ['UltraMemory Lab', 'Store, query, and browse agent structured long-term memory.'],
-        search: ['UltraSearch Studio', 'Test live BM25 web search and multi-hop research queries.'],
-        crawler: ['Web Crawler Control', 'Dispatch edge crawler tasks directly into D1 SQLite FTS5.'],
-        membership: ['Memberships & Quotas', 'Manage your subscription tier and upgrade daily limits.'],
-        integrations: ['Integrations & Protocol', 'Connect UltraDemon to Claude Desktop, Cursor, and Vercel AI SDK.'],
-        analytics: ['Telemetry & ICP Engine', 'PostHog-competitive edge analytics with autonomous Ideal Customer Profile synthesis.'],
+        overview: ['Workspace <span class="font-serif font-bold italic text-neutral-950">Overview</span>', 'Live edge telemetry, database metrics, and active sovereign API keys.'],
+        keys: ['API Keys <span class="font-serif font-bold italic text-neutral-950">Studio</span>', 'Create, manage, and revoke high-speed edge API keys.'],
+        memory: ['UltraMemory <span class="font-serif font-bold italic text-neutral-950">Lab</span>', 'Store, query, and browse agent structured long-term memory.'],
+        search: ['UltraSearch <span class="font-serif font-bold italic text-neutral-950">Studio</span>', 'Test live BM25 web search and multi-hop research queries.'],
+        crawler: ['Web Crawler <span class="font-serif font-bold italic text-neutral-950">Control</span>', 'Dispatch edge crawler tasks directly into D1 SQLite FTS5.'],
+        membership: ['Memberships &amp; <span class="font-serif font-bold italic text-neutral-950">Quotas</span>', 'Manage your subscription tier and upgrade daily limits.'],
+        integrations: ['Integrations &amp; <span class="font-serif font-bold italic text-neutral-950">MCP Protocol</span>', 'Connect UltraDemon to Claude Desktop, Cursor, and Vercel AI SDK.'],
+        analytics: ['Telemetry &amp; <span class="font-serif font-bold italic text-neutral-950">ICP Engine</span>', 'PostHog-competitive edge analytics with autonomous Ideal Customer Profile synthesis.'],
       };
       if (titles[viewId]) {
         const t = document.getElementById('viewHeaderTitle');
         const d = document.getElementById('viewHeaderDesc');
-        if (t) t.innerText = titles[viewId][0];
+        if (t) t.innerHTML = titles[viewId][0];
         if (d) d.innerText = titles[viewId][1];
       }
 

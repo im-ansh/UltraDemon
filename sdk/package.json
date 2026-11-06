@@ -23,9 +23,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "npm run build:bundle && npm run build:types",
-    "build:bundle": "node build.js",
-    "build:types": "tsc --emitDeclarationOnly",
+    "build": "node build.js",
     "test": "node --test test/sdk.test.js",
     "prepublishOnly": "npm run build"
   },
@@ -47,6 +45,9 @@
     "type": "git",
     "url": "https://github.com/AnshBhardwaj10/Ultrademon.git",
     "directory": "sdk"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "engines": {
     "node": ">=18.0.0"
