@@ -3,8 +3,9 @@
 Official universal TypeScript/JavaScript SDK for UltraDemon: UltraSearch, UltraMemory, and UltraTelemetry.
 Engineered natively for Cloudflare Workers, Node.js 18+, Bun, Deno, Next.js, and modern browsers with zero external runtime dependencies.
 
-## Installation
+## Installation & CLI Usage
 
+### Install as Library
 ```bash
 npm install ultrademon
 # or
@@ -13,6 +14,24 @@ pnpm add ultrademon
 bun add ultrademon
 # or
 yarn add ultrademon
+```
+
+### Run as CLI Command (Zero Installation)
+```bash
+# Instant search
+npx ultrademon search "cloudflare workers edge" --limit 5
+
+# Memory recall
+npx ultrademon memory query "user preferences" --container fleet-alpha
+
+# Store memory
+npx ultrademon memory store "User prefers dark mode and concise responses" --container fleet-alpha
+
+# Real-time metrics
+npx ultrademon metrics
+
+# Save API key locally
+npx ultrademon config set-key us_your_key_here
 ```
 
 ## Quick Start
