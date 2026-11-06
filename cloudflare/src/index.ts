@@ -16,8 +16,8 @@ import { openapiRouter } from './routes/openapi';
 import { authRouter }    from './routes/auth';
 import { analyticsRouter } from './routes/analytics';
 import { sdkRouter }       from './routes/sdk';
-import { authMiddleware } from './lib/auth';
-import { getUsage } from './lib/api-keys';
+import { authMiddleware, getSupabaseUser } from './lib/auth';
+import { getUsage, getApiKeyMetrics, hashKey } from './lib/api-keys';
 import { renderLandingPage } from './ui/landing';
 import { renderAuthPage, renderAuthCallbackPage } from './ui/auth-pages';
 import { renderPrivacyPage, renderTermsPage } from './ui/legal-pages';
@@ -211,6 +211,25 @@ app.get('/v1/usage', authMiddleware, async (c) => {
   } catch (e: unknown) {
     return c.json({ error: (e as Error).message }, 404);
   }
+});
+app.get('/v1/usage/metrics', async (c) => {
+  const sbUser = await getSupabaseUser(c.env, c.req.header('authorization'));
+  const xApiKey = c.req.header('x-api-key');
+
+  let singleHashedKey: string | undefined;
+  if (xApiKey) {
+    try {
+      singleHashedKey = await hashKey(xApiKey, c.env.ULTRASEARCH_SECRET);
+    } catch {}
+  }
+
+  const metrics = await getApiKeyMetrics(
+    c.env,
+    sbUser?.id,
+    sbUser?.email,
+    singleHashedKey
+  );
+  return c.json(metrics);
 });
 app.route('/v1',        crawlerRouter);
 app.route('/mcp',       mcpRouter);

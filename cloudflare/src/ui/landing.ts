@@ -758,7 +758,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           <a href="/openapi.json" target="_blank" class="px-4 py-2.5 rounded-xl border border-white/30 hover:bg-white/10 text-white text-xs font-semibold transition flex items-center gap-1.5 backdrop-blur-xs">
             <span class="font-num">/openapi.json</span>
           </a>
-          <a href="#benchmarks" class="px-4 py-2.5 text-xs text-white/90 hover:text-white underline decoration-white/40 transition">
+          <a href="#benchmarks" onclick="document.getElementById('benchmarks')?.scrollIntoView({ behavior: 'smooth' }); return false;" class="px-4 py-2.5 text-xs text-white/90 hover:text-white underline decoration-white/40 transition cursor-pointer">
             View Latency Benchmark
           </a>
         </div>
@@ -777,7 +777,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left [perspective:1200px]">
             <!-- Node 1: AI Agent Fleet -->
-            <div class="card-3d-tilt group relative p-5 rounded-2xl bg-white/95 hover:bg-white text-neutral-950 shadow-md hover:shadow-xl border border-white/80 ring-2 ring-white/50 flex flex-col justify-between overflow-hidden cursor-pointer select-none transition-all duration-200">
+            <div onclick="document.getElementById('analytics')?.scrollIntoView({ behavior: 'smooth' }); return false;" class="card-3d-tilt group relative p-5 rounded-2xl bg-white/95 hover:bg-white text-neutral-950 shadow-md hover:shadow-xl border border-white/80 ring-2 ring-white/50 flex flex-col justify-between overflow-hidden cursor-pointer select-none transition-all duration-200">
               <div class="tilt-glare"></div>
               <div class="tilt-content flex flex-col justify-between h-full">
                 <div>
@@ -804,7 +804,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             </div>
 
             <!-- Node 2: Sovereign Gateway -->
-            <div class="card-3d-tilt group relative p-5 rounded-2xl bg-white/95 hover:bg-white text-neutral-950 shadow-md hover:shadow-xl border border-white/80 ring-2 ring-white/50 flex flex-col justify-between overflow-hidden cursor-pointer select-none transition-all duration-200">
+            <div onclick="document.getElementById('search')?.scrollIntoView({ behavior: 'smooth' }); setMode(1); return false;" class="card-3d-tilt group relative p-5 rounded-2xl bg-white/95 hover:bg-white text-neutral-950 shadow-md hover:shadow-xl border border-white/80 ring-2 ring-white/50 flex flex-col justify-between overflow-hidden cursor-pointer select-none transition-all duration-200">
               <div class="tilt-glare"></div>
               <div class="tilt-content flex flex-col justify-between h-full">
                 <div>
@@ -828,7 +828,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             </div>
 
             <!-- Node 3: D1 SQLite FTS5 (Hero Highlight Card) -->
-            <div class="card-3d-tilt group relative p-5 rounded-2xl bg-white text-neutral-950 shadow-xl hover:shadow-2xl border-2 border-neutral-950 ring-4 ring-neutral-950/10 flex flex-col justify-between overflow-hidden cursor-pointer select-none transition-all duration-200">
+            <div onclick="document.getElementById('memory')?.scrollIntoView({ behavior: 'smooth' }); return false;" class="card-3d-tilt group relative p-5 rounded-2xl bg-white text-neutral-950 shadow-xl hover:shadow-2xl border-2 border-neutral-950 ring-4 ring-neutral-950/10 flex flex-col justify-between overflow-hidden cursor-pointer select-none transition-all duration-200">
               <div class="tilt-glare"></div>
               <div class="tilt-content flex flex-col justify-between h-full">
                 <div>
@@ -862,7 +862,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             </div>
 
             <!-- Node 4: Autonomous Index -->
-            <div class="card-3d-tilt group relative p-5 rounded-2xl bg-white/95 hover:bg-white text-neutral-950 shadow-md hover:shadow-xl border border-white/80 ring-2 ring-white/50 flex flex-col justify-between overflow-hidden cursor-pointer select-none transition-all duration-200">
+            <div onclick="document.getElementById('crawler')?.scrollIntoView({ behavior: 'smooth' }); return false;" class="card-3d-tilt group relative p-5 rounded-2xl bg-white/95 hover:bg-white text-neutral-950 shadow-md hover:shadow-xl border border-white/80 ring-2 ring-white/50 flex flex-col justify-between overflow-hidden cursor-pointer select-none transition-all duration-200">
               <div class="tilt-glare"></div>
               <div class="tilt-content flex flex-col justify-between h-full">
                 <div>
@@ -1029,7 +1029,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
 
         <!-- Horizontal Scroll Track with Elevated Architectural Rail Cards (Card Design Skill) -->
-        <div id="featureScrollTrack" class="flex gap-4 overflow-x-auto no-scrollbar pb-4 snap-x snap-proximity">
+        <div id="featureScrollTrack" class="relative flex gap-4 overflow-x-auto no-scrollbar pb-4 snap-x snap-proximity scroll-smooth" style="-webkit-overflow-scrolling: touch; scroll-behavior: smooth;">
           <!-- Card 1 -->
           <div class="min-w-[300px] sm:min-w-[340px] max-w-[340px] snap-start group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-400 transition-all duration-200 overflow-hidden">
             <div>
@@ -2772,24 +2772,37 @@ curl "${origin}/v1/memory/context?q=preference" \\
     }
 
     function handleProvisionKeyClick(plan) {
-      const userStr = localStorage.getItem('ultrademon_user');
-      const token = getAuthToken();
-      if (currentUser || userStr || token) {
-        window.location.href = '/app' + (plan ? '?plan=' + encodeURIComponent(plan) : '');
-      } else {
-        openAuthModal('signup');
-      }
+      window.location.href = '/app' + (plan ? '?plan=' + encodeURIComponent(plan) : '');
     }
 
     function scrollFeatureTrack(direction) {
       const track = document.getElementById('featureScrollTrack');
       if (!track) return;
-      const firstCard = track.querySelector(':scope > div');
-      const cardWidth = firstCard ? (firstCard.offsetWidth + 16) : 356;
-      try {
-        track.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
-      } catch (e) {
-        track.scrollLeft += direction * cardWidth;
+      const cards = Array.from(track.querySelectorAll(':scope > div'));
+      if (!cards.length) return;
+
+      const cardStep = (cards[0].offsetWidth || 340) + 16;
+      const currentScroll = track.scrollLeft;
+
+      let activeIdx = 0;
+      let minDiff = Infinity;
+      cards.forEach((c, idx) => {
+        const diff = Math.abs(c.offsetLeft - currentScroll);
+        if (diff < minDiff) {
+          minDiff = diff;
+          activeIdx = idx;
+        }
+      });
+
+      let nextIdx = activeIdx + direction;
+      if (nextIdx < 0) nextIdx = 0;
+      if (nextIdx >= cards.length) nextIdx = cards.length - 1;
+
+      const targetLeft = cards[nextIdx].offsetLeft;
+      if (Math.abs(targetLeft - currentScroll) > 8) {
+        track.scrollTo({ left: targetLeft, behavior: 'smooth' });
+      } else {
+        track.scrollBy({ left: direction * cardStep, behavior: 'smooth' });
       }
     }
 

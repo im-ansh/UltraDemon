@@ -2,7 +2,7 @@
 
 import { Hono } from 'hono';
 import type { Env } from '../types';
-import { createApiKey, listUserKeys, revokeApiKey, getUsage } from '../lib/api-keys';
+import { createApiKey, listUserKeys, revokeApiKey, getUsage, getApiKeyMetrics, hashKey } from '../lib/api-keys';
 import { authMiddleware, getSupabaseUser } from '../lib/auth';
 
 export const keysRouter = new Hono<{ Bindings: Env }>();
@@ -91,6 +91,27 @@ keysRouter.delete('/:key', async (c) => {
   } catch (e: unknown) {
     return c.json({ error: (e as Error).message }, 404);
   }
+});
+
+// ── GET /v1/keys/metrics — real-time usage metrics per key & combined ─────────
+keysRouter.get('/metrics', async (c) => {
+  const sbUser = await getSupabaseUser(c.env, c.req.header('authorization'));
+  const xApiKey = c.req.header('x-api-key');
+
+  let singleHashedKey: string | undefined;
+  if (xApiKey) {
+    try {
+      singleHashedKey = await hashKey(xApiKey, c.env.ULTRASEARCH_SECRET);
+    } catch {}
+  }
+
+  const metrics = await getApiKeyMetrics(
+    c.env,
+    sbUser?.id,
+    sbUser?.email,
+    singleHashedKey
+  );
+  return c.json(metrics);
 });
 
 // ── GET /v1/usage — usage for current key ───────────────────────────────────

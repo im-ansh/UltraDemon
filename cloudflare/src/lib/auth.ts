@@ -106,10 +106,14 @@ export async function authMiddleware(c: Context<{ Bindings: Env }>, next: Next) 
     }, 429);
   }
 
-  // Track usage in D1 (non-blocking — fire and forget)
-  c.executionCtx.waitUntil(
-    incrementUsage(c.env, record.hashed_key)
-  );
+  // Determine service type from route path
+  let service: 'search' | 'memory' | 'metrics' | 'crawler' | 'other' = 'other';
+  if (path.startsWith('/v1/search')) service = 'search';
+  else if (path.startsWith('/v1/memory')) service = 'memory';
+  else if (path.startsWith('/v1/analytics')) service = 'metrics';
+  else if (path.startsWith('/v1/crawl') || path.startsWith('/v1/crawler')) service = 'crawler';
+
+  const startTime = Date.now();
 
   // Attach to context for downstream handlers
   c.set('keyRecord', record);
@@ -120,7 +124,22 @@ export async function authMiddleware(c: Context<{ Bindings: Env }>, next: Next) 
   c.header('X-RateLimit-Remaining', String(rateLimitResult.remaining));
   c.header('X-RateLimit-Reset',     rateLimitResult.reset_at);
 
-  return await next();
+  const response = await next();
+
+  // Track usage in D1 (non-blocking — fire and forget)
+  const latencyMs = Date.now() - startTime;
+  c.executionCtx.waitUntil(
+    incrementUsage(c.env, record.hashed_key, {
+      service,
+      keyId: record.key_id,
+      path: c.req.path,
+      method: c.req.method,
+      status: c.res.status,
+      latencyMs,
+    })
+  );
+
+  return response;
 }
 
 // ── Rate Limit via Durable Object ────────────────────────────────────────────

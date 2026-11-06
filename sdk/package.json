@@ -1,0 +1,55 @@
+{
+  "name": "ultrademon",
+  "version": "1.0.0",
+  "description": "Official TypeScript SDK for UltraDemon: UltraSearch, UltraMemory, and UltraTelemetry.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "npm run build:bundle && npm run build:types",
+    "build:bundle": "node build.js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "test": "node --test test/sdk.test.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "ultrademon",
+    "ultrasearch",
+    "ultramemory",
+    "ultratelemetry",
+    "fts5",
+    "bm25",
+    "cloudflare-workers",
+    "edge-memory",
+    "ai-agents",
+    "posthog-alternative"
+  ],
+  "author": "UltraDemon Engine <aaronvanoss@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AnshBhardwaj10/Ultrademon.git",
+    "directory": "sdk"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+

@@ -14,7 +14,7 @@ function randomB62(len: number): string {
   return Array.from(bytes, b => B62[b % 62]).join('');
 }
 
-async function hashKey(plainKey: string, secret: string): Promise<string> {
+export async function hashKey(plainKey: string, secret: string): Promise<string> {
   const data = new TextEncoder().encode(`${secret}:${plainKey}`);
   const digest = await crypto.subtle.digest('SHA-256', data);
   return Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, '0')).join('');
@@ -145,22 +145,69 @@ export async function listUserKeys(env: Env, userId: string, userEmail?: string)
 
 // ── Usage Tracking ────────────────────────────────────────────────────────────
 
-export async function incrementUsage(env: Env, hashedKey: string): Promise<void> {
+export type UsageService = 'search' | 'memory' | 'metrics' | 'crawler' | 'other';
+
+export interface UsageIncrementOptions {
+  service?: UsageService;
+  keyId?: string;
+  path?: string;
+  method?: string;
+  status?: number;
+  latencyMs?: number;
+}
+
+export async function incrementUsage(
+  env: Env,
+  hashedKey: string,
+  options?: UsageIncrementOptions
+): Promise<void> {
   const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
   const now = Date.now();
+  const service = options?.service || 'other';
+  const isSearch = service === 'search' ? 1 : 0;
+  const isMemory = service === 'memory' ? 1 : 0;
+  const isMetrics = service === 'metrics' ? 1 : 0;
+  const isCrawler = service === 'crawler' ? 1 : 0;
 
-  // Upsert daily counter in D1
-  await env.DB
-    .prepare(`
-      INSERT INTO usage (hashed_key, date, request_count, last_used_at)
-      VALUES (?, ?, 1, ?)
-      ON CONFLICT (hashed_key, date)
-      DO UPDATE SET
-        request_count = request_count + 1,
-        last_used_at  = excluded.last_used_at
-    `)
-    .bind(hashedKey, today, now)
-    .run();
+  try {
+    // 1. Upsert daily counter in D1
+    await env.DB
+      .prepare(`
+        INSERT INTO usage (hashed_key, date, request_count, search_count, memory_count, metrics_count, crawler_count, last_used_at)
+        VALUES (?, ?, 1, ?, ?, ?, ?, ?)
+        ON CONFLICT (hashed_key, date)
+        DO UPDATE SET
+          request_count = request_count + 1,
+          search_count  = search_count + excluded.search_count,
+          memory_count  = memory_count + excluded.memory_count,
+          metrics_count = metrics_count + excluded.metrics_count,
+          crawler_count = crawler_count + excluded.crawler_count,
+          last_used_at  = excluded.last_used_at
+      `)
+      .bind(hashedKey, today, isSearch, isMemory, isMetrics, isCrawler, now)
+      .run();
+
+    // 2. Log real-time micro-event
+    await env.DB
+      .prepare(`
+        INSERT INTO api_key_usage_events (hashed_key, key_id, service, path, method, status, latency_ms, timestamp, date)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `)
+      .bind(
+        hashedKey,
+        options?.keyId || null,
+        service,
+        options?.path || '/',
+        options?.method || 'GET',
+        options?.status || 200,
+        options?.latencyMs || 0,
+        now,
+        today
+      )
+      .run();
+  } catch (err) {
+    console.warn('Non-fatal usage increment error:', err);
+  }
 }
 
 export async function getUsage(
@@ -172,7 +219,7 @@ export async function getUsage(
 
   const [keyRow, usageRow] = await Promise.all([
     env.DB.prepare('SELECT plan, label, created_at FROM api_keys WHERE hashed_key = ?').bind(hashedKey).first<{ plan: string; label: string; created_at: number }>(),
-    env.DB.prepare('SELECT request_count, last_used_at FROM usage WHERE hashed_key = ? AND date = ?').bind(hashedKey, today).first<{ request_count: number; last_used_at: number }>(),
+    env.DB.prepare('SELECT request_count, search_count, memory_count, metrics_count, crawler_count, last_used_at FROM usage WHERE hashed_key = ? AND date = ?').bind(hashedKey, today).first<{ request_count: number; search_count: number; memory_count: number; metrics_count: number; crawler_count: number; last_used_at: number }>(),
   ]);
 
   if (!keyRow) {
@@ -181,6 +228,10 @@ export async function getUsage(
       label:          'Edge Sandbox',
       daily_limit:    100,
       requests_today: usageRow?.request_count ?? 0,
+      search_today:   usageRow?.search_count ?? 0,
+      memory_today:   usageRow?.memory_count ?? 0,
+      metrics_today:  usageRow?.metrics_count ?? 0,
+      crawler_today:  usageRow?.crawler_count ?? 0,
       remaining:      Math.max(0, 100 - (usageRow?.request_count ?? 0)),
       last_used_at:   usageRow?.last_used_at ? new Date(usageRow.last_used_at).toISOString() : null,
       reset_at:       `${today}T00:00:00Z (next day)`,
@@ -200,9 +251,300 @@ export async function getUsage(
     label:          keyRow.label,
     daily_limit:    dailyLimit === -1 ? 'unlimited' : dailyLimit,
     requests_today: used,
+    search_today:   usageRow?.search_count ?? 0,
+    memory_today:   usageRow?.memory_count ?? 0,
+    metrics_today:  usageRow?.metrics_count ?? 0,
+    crawler_today:  usageRow?.crawler_count ?? 0,
     remaining:      dailyLimit === -1 ? 'unlimited' : Math.max(0, dailyLimit - used),
     last_used_at:   usageRow?.last_used_at ? new Date(usageRow.last_used_at).toISOString() : null,
     reset_at:       `${today}T00:00:00Z (next day)`,
   };
 }
+
+export interface KeyMetricItem {
+  key_id: string;
+  label: string;
+  plan: string;
+  key_type: string;
+  created_at: number;
+  today_total: number;
+  today_search: number;
+  today_memory: number;
+  today_metrics: number;
+  today_crawler: number;
+  daily_limit: number | string;
+  percent_used: number;
+  last_used_at: string | null;
+  history_7d: Array<{
+    date: string;
+    total: number;
+    search: number;
+    memory: number;
+    metrics: number;
+    crawler: number;
+  }>;
+}
+
+export interface UsageMetricsReport {
+  date: string;
+  timestamp: number;
+  combined_today: {
+    total: number;
+    search: number;
+    memory: number;
+    metrics: number;
+    crawler: number;
+  };
+  combined_history_7d: Array<{
+    date: string;
+    total: number;
+    search: number;
+    memory: number;
+    metrics: number;
+    crawler: number;
+  }>;
+  keys: KeyMetricItem[];
+  recent_live_events: Array<{
+    event_id: number;
+    key_id: string | null;
+    label: string | null;
+    service: string;
+    path: string;
+    method: string;
+    status: number;
+    latency_ms: number;
+    timestamp: number;
+  }>;
+}
+
+export async function getApiKeyMetrics(
+  env: Env,
+  userId?: string,
+  userEmail?: string,
+  singleHashedKey?: string
+): Promise<UsageMetricsReport> {
+  const now = Date.now();
+  const today = new Date().toISOString().slice(0, 10);
+
+  // Generate 7-day date window (oldest to newest)
+  const last7Days: string[] = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now - i * 86400000);
+    last7Days.push(d.toISOString().slice(0, 10));
+  }
+  const oldestDate = last7Days[0];
+
+  // 1. Resolve keys to report on
+  interface DbKeyRow {
+    hashed_key: string;
+    key_id: string;
+    label: string;
+    plan: string;
+    key_type: string;
+    created_at: number;
+  }
+
+  let keyRows: DbKeyRow[] = [];
+
+  if (userId) {
+    const { results } = await env.DB
+      .prepare('SELECT hashed_key, key_id, label, plan, key_type, created_at FROM api_keys WHERE user_id = ? AND revoked = 0 ORDER BY created_at DESC')
+      .bind(userId)
+      .all<DbKeyRow>();
+    if (results && results.length > 0) {
+      keyRows = results;
+    }
+  }
+
+  if (keyRows.length === 0 && singleHashedKey) {
+    const single = await env.DB
+      .prepare('SELECT hashed_key, key_id, label, plan, key_type, created_at FROM api_keys WHERE hashed_key = ?')
+      .bind(singleHashedKey)
+      .first<DbKeyRow>();
+    if (single) {
+      keyRows = [single];
+    }
+  }
+
+  // Fallback: If no custom key found, include sandbox key so dashboard is never empty
+  if (keyRows.length === 0) {
+    keyRows = [{
+      hashed_key: 'sandbox_public_guest_hash',
+      key_id: 'key_public_sandbox',
+      label: 'Edge Public Sandbox',
+      plan: 'free',
+      key_type: 'unified',
+      created_at: now,
+    }];
+  }
+
+  // 2. Fetch plan limits
+  const { results: planRows } = await env.DB
+    .prepare('SELECT plan_id, daily_limit FROM plans')
+    .all<{ plan_id: string; daily_limit: number }>();
+  const planLimits: Record<string, number> = {};
+  if (planRows) {
+    for (const p of planRows) {
+      planLimits[p.plan_id] = p.daily_limit;
+    }
+  }
+
+  // 3. For each key, query usage for the 7-day window
+  const keyMetricItems: KeyMetricItem[] = [];
+  const keyLabelsMap: Record<string, string> = {};
+
+  // Aggregation buckets for combined 7 days
+  const combinedHistoryBuckets: Record<string, { total: number; search: number; memory: number; metrics: number; crawler: number }> = {};
+  for (const d of last7Days) {
+    combinedHistoryBuckets[d] = { total: 0, search: 0, memory: 0, metrics: 0, crawler: 0 };
+  }
+
+  for (const k of keyRows) {
+    keyLabelsMap[k.key_id] = k.label || k.key_id;
+
+    interface UsageDbRow {
+      date: string;
+      request_count: number;
+      search_count: number;
+      memory_count: number;
+      metrics_count: number;
+      crawler_count: number;
+      last_used_at: number;
+    }
+
+    const { results: usageRows } = await env.DB
+      .prepare(`
+        SELECT date, request_count, search_count, memory_count, metrics_count, crawler_count, last_used_at
+        FROM usage
+        WHERE hashed_key = ? AND date >= ?
+        ORDER BY date ASC
+      `)
+      .bind(k.hashed_key, oldestDate)
+      .all<UsageDbRow>();
+
+    const usageByDate: Record<string, UsageDbRow> = {};
+    let latestUsedAt: number | null = null;
+
+    if (usageRows) {
+      for (const row of usageRows) {
+        usageByDate[row.date] = row;
+        if (row.last_used_at && (!latestUsedAt || row.last_used_at > latestUsedAt)) {
+          latestUsedAt = row.last_used_at;
+        }
+      }
+    }
+
+    const todayUsage = usageByDate[today];
+    const todayTotal = todayUsage?.request_count ?? 0;
+    const todaySearch = todayUsage?.search_count ?? 0;
+    const todayMemory = todayUsage?.memory_count ?? 0;
+    const todayMetrics = todayUsage?.metrics_count ?? 0;
+    const todayCrawler = todayUsage?.crawler_count ?? 0;
+
+    const limit = planLimits[k.plan] ?? 100;
+    const percentUsed = limit === -1 ? 0 : Math.min(100, Math.round((todayTotal / limit) * 100));
+
+    // Construct 7-day history for this key
+    const history7d = last7Days.map(dateStr => {
+      const u = usageByDate[dateStr];
+      const tot = u?.request_count ?? 0;
+      const srch = u?.search_count ?? 0;
+      const mem = u?.memory_count ?? 0;
+      const met = u?.metrics_count ?? 0;
+      const crw = u?.crawler_count ?? 0;
+
+      // Add to combined buckets
+      combinedHistoryBuckets[dateStr].total += tot;
+      combinedHistoryBuckets[dateStr].search += srch;
+      combinedHistoryBuckets[dateStr].memory += mem;
+      combinedHistoryBuckets[dateStr].metrics += met;
+      combinedHistoryBuckets[dateStr].crawler += crw;
+
+      return {
+        date: dateStr,
+        total: tot,
+        search: srch,
+        memory: mem,
+        metrics: met,
+        crawler: crw,
+      };
+    });
+
+    keyMetricItems.push({
+      key_id: k.key_id,
+      label: k.label || 'API Key',
+      plan: k.plan,
+      key_type: k.key_type || 'unified',
+      created_at: k.created_at,
+      today_total: todayTotal,
+      today_search: todaySearch,
+      today_memory: todayMemory,
+      today_metrics: todayMetrics,
+      today_crawler: todayCrawler,
+      daily_limit: limit === -1 ? 'Unlimited' : limit,
+      percent_used: percentUsed,
+      last_used_at: latestUsedAt ? new Date(latestUsedAt).toISOString() : null,
+      history_7d: history7d,
+    });
+  }
+
+  // 4. Combined totals today
+  const combinedToday = {
+    total: keyMetricItems.reduce((acc, k) => acc + k.today_total, 0),
+    search: keyMetricItems.reduce((acc, k) => acc + k.today_search, 0),
+    memory: keyMetricItems.reduce((acc, k) => acc + k.today_memory, 0),
+    metrics: keyMetricItems.reduce((acc, k) => acc + k.today_metrics, 0),
+    crawler: keyMetricItems.reduce((acc, k) => acc + k.today_crawler, 0),
+  };
+
+  const combinedHistory7d = last7Days.map(dateStr => ({
+    date: dateStr,
+    ...combinedHistoryBuckets[dateStr],
+  }));
+
+  // 5. Query recent live events (top 30)
+  const hashedKeys = keyRows.map(k => k.hashed_key);
+  const placeholders = hashedKeys.map(() => '?').join(',');
+
+  interface EventDbRow {
+    event_id: number;
+    key_id: string | null;
+    service: string;
+    path: string;
+    method: string;
+    status: number;
+    latency_ms: number;
+    timestamp: number;
+  }
+
+  let recentEvents: EventDbRow[] = [];
+  try {
+    const { results } = await env.DB
+      .prepare(`
+        SELECT event_id, key_id, service, path, method, status, latency_ms, timestamp
+        FROM api_key_usage_events
+        WHERE hashed_key IN (${placeholders})
+        ORDER BY timestamp DESC
+        LIMIT 30
+      `)
+      .bind(...hashedKeys)
+      .all<EventDbRow>();
+    if (results) recentEvents = results;
+  } catch (err) {
+    console.warn('Recent events fetch non-fatal:', err);
+  }
+
+  return {
+    date: today,
+    timestamp: now,
+    combined_today: combinedToday,
+    combined_history_7d: combinedHistory7d,
+    keys: keyMetricItems,
+    recent_live_events: recentEvents.map(e => ({
+      ...e,
+      label: (e.key_id && keyLabelsMap[e.key_id]) || (e.key_id ? e.key_id.slice(0, 12) : 'Key'),
+    })),
+  };
+}
+
 

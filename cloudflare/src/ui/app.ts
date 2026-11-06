@@ -202,8 +202,14 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       </div>
     </header>
 
-    <!-- Sovereign Engine Suite Switcher (Search • Memory • Metrics) -->
+    <!-- Sovereign Engine Suite Switcher (Overview • Search • Memory • Metrics) -->
     <div class="mb-8 p-1.5 bg-neutral-100/90 border border-neutral-200/90 rounded-2xl flex items-center gap-1.5 shadow-2xs">
+      <!-- 0. Overview Suite -->
+      <button type="button" onclick="switchSuite('overview')" id="suiteBtn-overview" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer bg-white text-neutral-950 shadow-xs border border-neutral-300">
+        <svg class="w-3.5 h-3.5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+        <span class="font-bold">Overview</span>
+      </button>
+
       <!-- 1. Search Suite -->
       <button type="button" onclick="switchSuite('search')" id="suiteBtn-search" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
         <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -291,6 +297,171 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </div>
       </div>
 
+      <!-- Real-Time Request & Daily Call Telemetry Dashboard -->
+      <div class="card-clean p-6 sm:p-8 rounded-3xl border-2 border-neutral-900 bg-white space-y-6 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-100 pb-5">
+          <div>
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-neutral-900 text-white text-[10px] font-num font-bold tracking-wider uppercase mb-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Real-Time Edge Monitor · Sub-Millisecond</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-normal tracking-tight text-neutral-950">
+              API Key Daily Calls &amp; <span class="font-serif font-bold italic">Real-Time Telemetry</span>
+            </h2>
+            <p class="text-xs text-neutral-500 mt-1 font-num">
+              Track requests made per day for each individual API key, separated across UltraSearch, UltraMemory, and UltraMetrics, plus combined total.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2.5">
+            <!-- Auto-Refresh Toggle -->
+            <label class="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-neutral-200 bg-neutral-50 text-xs font-semibold text-neutral-700 cursor-pointer select-none">
+              <input type="checkbox" id="realtimeAutoRefreshCheck" checked onchange="toggleRealtimeAutoRefresh(this.checked)" class="accent-black rounded cursor-pointer" />
+              <span class="font-num text-[11px]">Live (3s)</span>
+            </label>
+
+            <!-- Manual Refresh Button -->
+            <button type="button" onclick="loadRealtimeKeyMetrics(true)" id="btnRefreshKeyMetrics" class="px-3.5 py-1.5 rounded-xl border border-neutral-200 hover:bg-neutral-100 text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
+              <svg id="refreshKeyMetricsSpinner" class="w-3.5 h-3.5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <span>Refresh</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Top Real-Time KPI Cards (Combined & Service Breakdown) -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Card 1: Combined Calls Today -->
+          <div class="p-4 rounded-2xl bg-neutral-950 text-white flex flex-col justify-between shadow-md relative overflow-hidden">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-400 font-num">Combined Calls Today</span>
+              <span class="px-2 py-0.5 rounded-full bg-white/10 text-emerald-400 text-[10px] font-num font-bold">ALL KEYS</span>
+            </div>
+            <div class="text-3xl font-normal font-num tracking-tight" id="rtCombinedTotal">0</div>
+            <div class="mt-3 pt-2 border-t border-white/10 text-[11px] font-num text-neutral-400 flex items-center justify-between">
+              <span>Quota Used Today</span>
+              <span id="rtCombinedQuotaPct" class="text-white font-bold font-num">0%</span>
+            </div>
+          </div>
+
+          <!-- Card 2: UltraSearch Calls -->
+          <div class="p-4 rounded-2xl bg-neutral-50 border border-neutral-200 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-500 font-num">UltraSearch Calls</span>
+              <span class="px-2 py-0.5 rounded-full bg-neutral-200 text-neutral-800 text-[10px] font-num font-semibold">&lt;40ms</span>
+            </div>
+            <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="rtCombinedSearch">0</div>
+            <div class="mt-3 pt-2 border-t border-neutral-200 text-[11px] font-num text-neutral-500 flex items-center justify-between">
+              <span>Share of Today</span>
+              <span id="rtSearchShare" class="text-neutral-950 font-bold font-num">0%</span>
+            </div>
+          </div>
+
+          <!-- Card 3: UltraMemory Calls -->
+          <div class="p-4 rounded-2xl bg-neutral-50 border border-neutral-200 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-500 font-num">UltraMemory Calls</span>
+              <span class="px-2 py-0.5 rounded-full bg-neutral-200 text-neutral-800 text-[10px] font-num font-semibold">&lt;15ms</span>
+            </div>
+            <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="rtCombinedMemory">0</div>
+            <div class="mt-3 pt-2 border-t border-neutral-200 text-[11px] font-num text-neutral-500 flex items-center justify-between">
+              <span>Share of Today</span>
+              <span id="rtMemoryShare" class="text-neutral-950 font-bold font-num">0%</span>
+            </div>
+          </div>
+
+          <!-- Card 4: UltraMetrics Calls -->
+          <div class="p-4 rounded-2xl bg-neutral-50 border border-neutral-200 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-500 font-num">UltraMetrics Calls</span>
+              <span class="px-2 py-0.5 rounded-full bg-neutral-200 text-neutral-800 text-[10px] font-num font-semibold">Sub-5ms</span>
+            </div>
+            <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="rtCombinedMetrics">0</div>
+            <div class="mt-3 pt-2 border-t border-neutral-200 text-[11px] font-num text-neutral-500 flex items-center justify-between">
+              <span>Share of Today</span>
+              <span id="rtMetricsShare" class="text-neutral-950 font-bold font-num">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive 1-Click Test Request Bar (Simulate & Verify Live Ingestion) -->
+        <div class="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="font-bold text-neutral-900 font-num">Interactive Edge Tester:</span>
+            <span class="text-neutral-500">Emit live requests to verify real-time counter increment</span>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button type="button" onclick="testLiveRequest('search')" class="px-2.5 py-1 rounded-lg bg-white border border-neutral-300 hover:border-black text-[11px] font-semibold text-neutral-800 hover:text-black transition cursor-pointer font-num shadow-2xs">
+              +1 Search Call
+            </button>
+            <button type="button" onclick="testLiveRequest('memory')" class="px-2.5 py-1 rounded-lg bg-white border border-neutral-300 hover:border-black text-[11px] font-semibold text-neutral-800 hover:text-black transition cursor-pointer font-num shadow-2xs">
+              +1 Memory Call
+            </button>
+            <button type="button" onclick="testLiveRequest('metrics')" class="px-2.5 py-1 rounded-lg bg-white border border-neutral-300 hover:border-black text-[11px] font-semibold text-neutral-800 hover:text-black transition cursor-pointer font-num shadow-2xs">
+              +1 Metrics Call
+            </button>
+          </div>
+        </div>
+
+        <!-- Per-API Key Granular Daily Calls Matrix Table -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <h3 class="text-sm font-bold text-neutral-950">Per-API Key Request Matrix (Today's Calls Breakdown)</h3>
+              <span class="text-[10px] font-num bg-neutral-100 text-neutral-700 border border-neutral-200 px-2 py-0.5 rounded font-semibold">Separate &amp; Combined</span>
+            </div>
+            <span class="text-[10px] text-neutral-400 font-num uppercase" id="rtLastUpdatedTime">Last sync: Just now</span>
+          </div>
+
+          <div class="overflow-x-auto border border-neutral-200 rounded-2xl bg-white shadow-2xs">
+            <table class="w-full text-xs text-left">
+              <thead>
+                <tr class="bg-neutral-50/70 border-b border-neutral-200 text-neutral-500 font-num text-[11px]">
+                  <th class="p-3 font-medium">API Key &amp; Label</th>
+                  <th class="p-3 font-medium">Scope</th>
+                  <th class="p-3 font-medium">Plan</th>
+                  <th class="p-3 font-medium text-right bg-neutral-100/60 font-bold text-neutral-950">Combined Today</th>
+                  <th class="p-3 font-medium text-right">Search Calls</th>
+                  <th class="p-3 font-medium text-right">Memory Calls</th>
+                  <th class="p-3 font-medium text-right">Metrics Calls</th>
+                  <th class="p-3 font-medium text-right">Daily Limit</th>
+                  <th class="p-3 font-medium text-right">Last Used</th>
+                </tr>
+              </thead>
+              <tbody id="rtApiKeyTableBody" class="divide-y divide-neutral-100 font-num">
+                <tr><td colspan="9" class="p-6 text-center text-neutral-400">Loading real-time API key metrics...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 7-Day Daily Calls History & Service Proportions -->
+        <div class="space-y-3 pt-2">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-neutral-950">7-Day Daily Call History (Combined &amp; Per Service)</h3>
+            <span class="text-[10px] text-neutral-400 font-num uppercase">Past 7 Days UTC</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5" id="rtHistoryStripContainer">
+            <!-- 7 daily cards rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Real-Time Incoming Request Micro-Trace Stream -->
+        <div class="space-y-3 pt-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-neutral-950 font-num">Real-Time Edge Request Micro-Stream</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            </div>
+            <span class="text-[10px] text-neutral-400 font-num uppercase">Rolling Live Feed (Last 25)</span>
+          </div>
+          <div id="rtRecentEventsContainer" class="space-y-2 max-h-[260px] overflow-y-auto pr-1">
+            <div class="p-4 text-center text-xs text-neutral-400 bg-neutral-50 rounded-xl">No requests recorded yet today. Click an interactive test button above to emit live edge calls.</div>
+          </div>
+        </div>
+      </div>
+
       <!-- Quick Start Snippet Card -->
       <div class="card-clean p-6 rounded-2xl space-y-4">
         <div class="flex items-center justify-between">
@@ -310,10 +481,11 @@ curl -X POST "${origin}/v1/memory/query" \\
 
     <!-- SECTION 2: API KEYS STUDIO -->
     <section id="view-keys" class="space-y-6 hidden">
+
       <!-- Create Key Form Card -->
       <div class="card-clean p-6 rounded-2xl space-y-4">
         <h2 class="text-sm font-bold text-neutral-950">Generate New API Key</h2>
-        <form onsubmit="event.preventDefault(); return handleAppCreateKey(event);" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+        <form onsubmit="event.preventDefault(); handleAppCreateKey(event); return false;" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
           <div>
             <label class="block text-[11px] font-medium text-neutral-600 mb-1">Plan Tier</label>
             <select id="appKeyPlan" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 focus:outline-none focus:bg-white focus:border-black font-num">
@@ -375,7 +547,7 @@ curl -X POST "${origin}/v1/memory/query" \\
               </tr>
             </thead>
             <tbody id="appKeysTableBody" class="divide-y divide-neutral-100 font-num">
-              <tr><td colspan="6" class="py-4 text-center text-neutral-400">Loading keys...</td></tr>
+              <tr><td colspan="6" class="py-4 text-center text-neutral-400">No API keys generated yet.</td></tr>
             </tbody>
           </table>
         </div>
@@ -450,7 +622,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
           <h2 class="text-sm font-bold text-neutral-950">Store Agent Memory</h2>
           <span class="text-[10px] bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded font-num text-neutral-700">D1 FTS5 Auto-Sync</span>
         </div>
-        <form onsubmit="event.preventDefault(); return handleAppStoreMemory(event);" class="space-y-3">
+        <form onsubmit="event.preventDefault(); handleAppStoreMemory(event); return false;" class="space-y-3">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label class="block text-[11px] font-medium text-neutral-600 mb-1">Memory Type</label>
@@ -487,7 +659,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
           <h2 class="text-sm font-bold text-neutral-950">Recall Memories (BM25 Match)</h2>
           <span id="appRecallTimer" class="hidden font-num text-[10px] bg-neutral-100 border border-neutral-300 text-neutral-900 px-2 py-0.5 rounded font-bold">0ms</span>
         </div>
-        <form onsubmit="event.preventDefault(); return handleAppQueryMemory(event);" class="flex gap-2">
+        <form onsubmit="event.preventDefault(); handleAppQueryMemory(event); return false;" class="flex gap-2">
           <input type="text" id="appMemQuery" placeholder="Query memories..." required class="flex-1 px-3.5 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs" />
           <button type="button" onclick="handleAppQueryMemory(event); return false;" class="px-4 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer">Recall</button>
         </form>
@@ -511,7 +683,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
               </tr>
             </thead>
             <tbody id="appMemoriesTableBody" class="divide-y divide-neutral-100 font-num">
-              <tr><td colspan="5" class="py-4 text-center text-neutral-400">Loading stored memories...</td></tr>
+              <tr><td colspan="5" class="py-4 text-center text-neutral-400">No stored memories yet.</td></tr>
             </tbody>
           </table>
         </div>
@@ -623,7 +795,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
       <!-- Live Search Query Studio -->
       <div class="card-clean p-6 rounded-2xl space-y-4">
         <h2 class="text-sm font-bold text-neutral-950">Test Sovereign Web Index</h2>
-        <form onsubmit="event.preventDefault(); return handleAppSearch(event);" class="space-y-3">
+        <form onsubmit="event.preventDefault(); handleAppSearch(event); return false;" class="space-y-3">
           <div class="flex gap-2">
             <input type="text" id="appSearchQuery" value="What is Python?" placeholder="Search index..." required class="flex-1 px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-xs" />
             <button type="button" onclick="handleAppSearch(event); return false;" class="px-5 py-2.5 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer">Search</button>
@@ -646,7 +818,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
           <h2 class="text-sm font-bold text-neutral-950">Ingest URL into Sovereign Index</h2>
           <span class="text-[10px] bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded font-num text-neutral-700">Autonomous Edge Crawler</span>
         </div>
-        <form onsubmit="event.preventDefault(); return handleAppCrawl(event);" class="space-y-3">
+        <form onsubmit="event.preventDefault(); handleAppCrawl(event); return false;" class="space-y-3">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="sm:col-span-2">
               <label class="block text-[11px] font-medium text-neutral-600 mb-1">Target URL</label>
@@ -673,7 +845,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
     <section id="view-crawler" class="space-y-6 hidden">
       <div class="card-clean p-6 rounded-2xl space-y-4">
         <h2 class="text-sm font-bold text-neutral-950">Ingest URL into Sovereign Index</h2>
-        <form onsubmit="event.preventDefault(); return handleAppCrawl(event);" class="space-y-3">
+        <form onsubmit="event.preventDefault(); handleAppCrawl(event); return false;" class="space-y-3">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="sm:col-span-2">
               <label class="block text-[11px] font-medium text-neutral-600 mb-1">Target URL</label>
@@ -821,7 +993,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
         </div>
 
         <!-- Custom Event Emitter Strip -->
-        <form onsubmit="event.preventDefault(); return handleCustomSimulation(event);" class="pt-2 border-t border-neutral-100 grid grid-cols-1 sm:grid-cols-5 gap-2.5 items-end">
+        <form onsubmit="event.preventDefault(); handleCustomSimulation(event); return false;" class="pt-2 border-t border-neutral-100 grid grid-cols-1 sm:grid-cols-5 gap-2.5 items-end">
           <div class="sm:col-span-2">
             <label class="block text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-1">Custom Event Name</label>
             <input type="text" id="simEventName" value="feature_activated" required class="w-full px-3 py-1.5 text-xs bg-white border border-neutral-200 rounded-lg text-neutral-900 focus:outline-none focus:ring-1 focus:ring-black font-mono" />
@@ -971,10 +1143,10 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
               <svg class="w-3.5 h-3.5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
               <span>Autonomous Persona Synthesis</span>
             </div>
-            <span id="icpPeriodBadge" class="text-[10px] font-num uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-neutral-200 text-neutral-800 font-semibold">Monthly Strategic Blueprint</span>
+            <span id="icpPeriodBadge" class="text-[10px] font-num uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-neutral-200 text-neutral-800 font-semibold">Dossier Pending</span>
           </div>
           <p id="icpSummaryText" class="text-xs text-neutral-700 leading-relaxed font-sans">
-            Analyzing your top showing up customers and extracting common traits across device stacks, geographies, acquisition channels, and high-frequency retention actions...
+            Awaiting visitor telemetry data. Embed the Sovereign Telemetry SDK snippet or emit events to /v1/analytics/capture to automatically synthesize ideal customer traits, circadian habits, and daily hardware abilities.
           </p>
         </div>
 
@@ -983,30 +1155,30 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
           <div class="p-3.5 rounded-xl border border-neutral-200 bg-white">
             <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Power Cluster Size</div>
             <div class="flex items-baseline gap-2">
-              <span id="icpPowerCluster" class="text-sm font-bold text-neutral-950 font-num">34 Users</span>
-              <span id="icpGrowthTrend" class="text-[11px] font-num font-bold text-emerald-600">+19.4%</span>
+              <span id="icpPowerCluster" class="text-sm font-bold text-neutral-950 font-num">0 Users</span>
+              <span id="icpGrowthTrend" class="text-[11px] font-num font-bold text-neutral-400">--</span>
             </div>
             <div class="text-[10px] text-neutral-400 font-num mt-0.5">Recurring core power cohort</div>
           </div>
           <div class="p-3.5 rounded-xl border border-neutral-200 bg-white">
             <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Repeat Visitor Ratio</div>
             <div class="flex items-baseline gap-2">
-              <span id="icpRepeatRate" class="text-sm font-bold text-neutral-950 font-num">48% Repeat Rate</span>
-              <span id="icpRetentionTrend" class="text-[11px] font-num font-bold text-emerald-600">+6.8%</span>
+              <span id="icpRepeatRate" class="text-sm font-bold text-neutral-950 font-num">0% Repeat Rate</span>
+              <span id="icpRetentionTrend" class="text-[11px] font-num font-bold text-neutral-400">--</span>
             </div>
             <div class="text-[10px] text-neutral-400 font-num mt-0.5">&ge;2 distinct multi-session visits</div>
           </div>
           <div class="p-3.5 rounded-xl border border-neutral-200 bg-white">
             <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Avg Dwell Velocity</div>
             <div class="flex items-baseline gap-2">
-              <span id="icpAvgDwell" class="text-sm font-bold text-neutral-950 font-num">11.4m Avg Dwell</span>
-              <span id="icpDwellTrend" class="text-[11px] font-num font-bold text-emerald-600">+2.4m</span>
+              <span id="icpAvgDwell" class="text-sm font-bold text-neutral-950 font-num">0m Avg Dwell</span>
+              <span id="icpDwellTrend" class="text-[11px] font-num font-bold text-neutral-400">--</span>
             </div>
             <div class="text-[10px] text-neutral-400 font-num mt-0.5">Continuous workbench engagement</div>
           </div>
           <div class="p-3.5 rounded-xl border border-neutral-200 bg-white">
             <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Cohort Momentum</div>
-            <div id="icpVelocityLabel" class="text-xs font-bold text-neutral-950 mt-1">Sustained Organic Growth</div>
+            <div id="icpVelocityLabel" class="text-xs font-bold text-neutral-950 mt-1">Awaiting Traffic</div>
             <div class="text-[10px] text-neutral-400 font-num mt-0.5">High retention stability factor</div>
           </div>
         </div>
@@ -1023,33 +1195,33 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
               <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Silicon Architecture &amp; GPU</div>
-              <div id="icpAbilitySilicon" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">Apple Silicon M3 / M2 Pro</div>
-              <div class="text-[11px] text-neutral-500 leading-tight">Metal 3 hardware acceleration, ARM64 unified compute.</div>
+              <div id="icpAbilitySilicon" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">--</div>
+              <div class="text-[11px] text-neutral-500 leading-tight">Hardware acceleration, compute silicon tier.</div>
             </div>
             <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
               <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Compute Concurrency</div>
-              <div id="icpAbilityCores" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">12 High-Concurrency Cores</div>
-              <div class="text-[11px] text-neutral-500 leading-tight">Multi-threaded parallel runtime capable of heavy agent workloads.</div>
+              <div id="icpAbilityCores" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">--</div>
+              <div class="text-[11px] text-neutral-500 leading-tight">Hardware execution concurrency and physical CPU cores.</div>
             </div>
             <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
               <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Unified RAM Capacity</div>
-              <div id="icpAbilityRam" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">24 GB Unified Memory</div>
-              <div class="text-[11px] text-neutral-500 leading-tight">Zero memory pressure; handles multi-gigabyte local vector caches.</div>
+              <div id="icpAbilityRam" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">--</div>
+              <div class="text-[11px] text-neutral-500 leading-tight">Device RAM capacity and memory pressure ceiling.</div>
             </div>
             <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
               <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Visual Fidelity &amp; Theme</div>
-              <div id="icpAbilityDisplay" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">Retina HiDPI (2.0x DPR) · 94% Dark</div>
-              <div class="text-[11px] text-neutral-500 leading-tight">10-bit color depth, strict dark mode affinity for late work sessions.</div>
+              <div id="icpAbilityDisplay" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">--</div>
+              <div class="text-[11px] text-neutral-500 leading-tight">Device pixel ratio, screen density, and dark/light preference.</div>
             </div>
             <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
               <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Target Dev Stack &amp; Runtimes</div>
-              <div id="icpAbilityRuntimes" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">Workers V8 · Bun / Node 20+</div>
-              <div class="text-[11px] text-neutral-500 leading-tight">Cursor IDE, Claude Desktop, and LangChain autonomous agent loops.</div>
+              <div id="icpAbilityRuntimes" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">--</div>
+              <div class="text-[11px] text-neutral-500 leading-tight">Browser engines, IDE user agents, and client runtimes.</div>
             </div>
             <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
               <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Network &amp; Latency Affinity</div>
-              <div id="icpAbilityNetwork" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">Sub-14ms Anycast Edge (HTTP/3)</div>
-              <div class="text-[11px] text-neutral-500 leading-tight">High-bandwidth, low-jitter QUIC connection directly to local PoP.</div>
+              <div id="icpAbilityNetwork" class="text-xs font-bold text-neutral-950 mb-0.5 font-num">--</div>
+              <div class="text-[11px] text-neutral-500 leading-tight">Connection latency, protocol version, and Anycast edge hop.</div>
             </div>
           </div>
         </div>
@@ -1066,27 +1238,27 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
               <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Circadian Rhythm &amp; Peak Hours</div>
-              <div id="icpHabitCircadian" class="text-xs font-bold text-neutral-950 mb-1 font-num">Midday Workstation Sprints</div>
-              <div id="icpHabitPeakWindow" class="text-[11px] text-neutral-600 leading-tight mb-2 font-num">13:00 - 19:00 UTC (US Morning / EU Evening)</div>
+              <div id="icpHabitCircadian" class="text-xs font-bold text-neutral-950 mb-1 font-num">--</div>
+              <div id="icpHabitPeakWindow" class="text-[11px] text-neutral-600 leading-tight mb-2 font-num">Awaiting data</div>
               <div class="text-[10px] text-neutral-400 font-num">Deep work execution window aligned with high-frequency deployments.</div>
             </div>
             <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
               <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Deep Flow State Focus Index</div>
-              <div id="icpHabitFlowIndex" class="text-xs font-bold text-neutral-950 mb-1 font-num">88/100 Focus Rating</div>
-              <div id="icpHabitActiveIdle" class="text-[11px] text-neutral-600 leading-tight mb-2 font-num">78% Active Kinetic / 22% Passive Study</div>
-              <div id="icpHabitDwellDuration" class="text-[10px] text-neutral-400 font-num">14.8 mins uninterrupted focus per session.</div>
+              <div id="icpHabitFlowIndex" class="text-xs font-bold text-neutral-950 mb-1 font-num">--</div>
+              <div id="icpHabitActiveIdle" class="text-[11px] text-neutral-600 leading-tight mb-2 font-num">Awaiting data</div>
+              <div id="icpHabitDwellDuration" class="text-[10px] text-neutral-400 font-num">Uninterrupted focus duration per session.</div>
             </div>
             <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
               <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Multitasking Cadence</div>
-              <div id="icpHabitMultitask" class="text-xs font-bold text-neutral-950 mb-1 font-num">3.2 Tab Transitions / Session</div>
-              <div class="text-[11px] text-neutral-600 leading-tight mb-2">Focused code-to-doc hopping with zero dropoff friction.</div>
-              <div id="icpHabitFrustration" class="text-[10px] text-neutral-400 font-num">0 rage clicks (99.8% interaction fluency).</div>
+              <div id="icpHabitMultitask" class="text-xs font-bold text-neutral-950 mb-1 font-num">--</div>
+              <div class="text-[11px] text-neutral-600 leading-tight mb-2">Tab switches and cross-window transitions.</div>
+              <div id="icpHabitFrustration" class="text-[10px] text-neutral-400 font-num">Rage click and fluency detection.</div>
             </div>
             <div class="p-3.5 rounded-xl border border-neutral-200 bg-neutral-50/50">
               <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">Cross-Device Handover</div>
-              <div class="text-xs font-bold text-neutral-950 mb-1">Mobile Triage &rarr; Workstation</div>
-              <div id="icpHabitHandover" class="text-[11px] text-neutral-600 leading-tight mb-2">Morning triage on mobile (14%) &rarr; afternoon heavy desktop execution (86%).</div>
-              <div class="text-[10px] text-neutral-400 font-num">Seamless workflow transition between reading and coding.</div>
+              <div class="text-xs font-bold text-neutral-950 mb-1">--</div>
+              <div id="icpHabitHandover" class="text-[11px] text-neutral-600 leading-tight mb-2">Cross-platform workflow transitions.</div>
+              <div class="text-[10px] text-neutral-400 font-num">Mobile vs desktop triage handover pattern.</div>
             </div>
           </div>
         </div>
@@ -1095,23 +1267,23 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-6" id="icpTraitsGrid">
           <div class="p-4 rounded-xl border border-neutral-200 bg-white">
             <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">1. Technical Stack</div>
-            <div id="icpTraitTech" class="text-xs font-bold text-neutral-950 mb-1">macOS · Chrome</div>
-            <div id="icpTraitTechSub" class="text-[11px] text-neutral-500 leading-tight">High affinity for desktop developers and large screens (&gt;1440px).</div>
+            <div id="icpTraitTech" class="text-xs font-bold text-neutral-950 mb-1">--</div>
+            <div id="icpTraitTechSub" class="text-[11px] text-neutral-500 leading-tight">High affinity platforms and developer tools.</div>
           </div>
           <div class="p-4 rounded-xl border border-neutral-200 bg-white">
             <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">2. Geographic Density</div>
-            <div id="icpTraitGeo" class="text-xs font-bold text-neutral-950 mb-1">San Francisco, US</div>
-            <div id="icpTraitGeoSub" class="text-[11px] text-neutral-500 leading-tight">Concentrated in major tech hubs, peak activity 14:00-19:00 UTC.</div>
+            <div id="icpTraitGeo" class="text-xs font-bold text-neutral-950 mb-1">--</div>
+            <div id="icpTraitGeoSub" class="text-[11px] text-neutral-500 leading-tight">Concentrated tech hubs and edge colocation density.</div>
           </div>
           <div class="p-4 rounded-xl border border-neutral-200 bg-white">
             <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">3. Discovery Catalyst</div>
-            <div id="icpTraitOrigin" class="text-xs font-bold text-neutral-950 mb-1">GitHub / Tech Docs</div>
-            <div id="icpTraitOriginSub" class="text-[11px] text-neutral-500 leading-tight">High-intent organic discovery converting 4.2x faster than paid ads.</div>
+            <div id="icpTraitOrigin" class="text-xs font-bold text-neutral-950 mb-1">--</div>
+            <div id="icpTraitOriginSub" class="text-[11px] text-neutral-500 leading-tight">Top referrers and organic acquisition channels.</div>
           </div>
           <div class="p-4 rounded-xl border border-neutral-200 bg-white">
             <div class="text-[10px] text-neutral-400 font-num uppercase tracking-wider mb-1">4. Stickiness Driver</div>
-            <div id="icpTraitDriver" class="text-xs font-bold text-neutral-950 mb-1">API Key &amp; Memory Test</div>
-            <div id="icpTraitDriverSub" class="text-[11px] text-neutral-500 leading-tight">Users who run an edge query within 3 mins retain at 84% over 30 days.</div>
+            <div id="icpTraitDriver" class="text-xs font-bold text-neutral-950 mb-1">--</div>
+            <div id="icpTraitDriverSub" class="text-[11px] text-neutral-500 leading-tight">Key activation actions that correlate with long-term retention.</div>
           </div>
         </div>
 
@@ -1122,17 +1294,8 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
             <span>Actionable Growth Playbook to Acquire 10x More Ideal Customers</span>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3" id="icpPlaybookGrid">
-            <div class="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 text-xs">
-              <span class="font-bold text-neutral-900 block mb-1">1. Scale Acquisition</span>
-              <p class="text-[11px] text-neutral-600 leading-relaxed">Focus on developer references and GitHub integrations. Ideal customers convert 4.2x faster through engineering channels.</p>
-            </div>
-            <div class="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 text-xs">
-              <span class="font-bold text-neutral-900 block mb-1">2. Accelerate Value</span>
-              <p class="text-[11px] text-neutral-600 leading-relaxed">Pre-populate interactive terminal commands in onboarding to trigger memory/search habit loop within the first 60 seconds.</p>
-            </div>
-            <div class="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 text-xs">
-              <span class="font-bold text-neutral-900 block mb-1">3. Expansion &amp; SLA</span>
-              <p class="text-[11px] text-neutral-600 leading-relaxed">Offer programmatic webhooks and unified telemetry alerts to upgrade high-frequency tech hub clusters into Ultra tiers.</p>
+            <div class="p-6 rounded-xl bg-neutral-50 border border-neutral-200 text-center text-xs text-neutral-400 col-span-1 md:col-span-3">
+              Actionable playbook recommendations will automatically synthesize once customer traffic is recorded.
             </div>
           </div>
         </div>
@@ -1157,7 +1320,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
                 </tr>
               </thead>
               <tbody id="telemetryPagesTableBody" class="divide-y divide-neutral-100 font-num">
-                <tr><td colspan="4" class="py-4 text-center text-neutral-400">Loading pages telemetry...</td></tr>
+                <tr><td colspan="4" class="py-4 text-center text-neutral-400">No page views recorded yet.</td></tr>
               </tbody>
             </table>
           </div>
@@ -1179,7 +1342,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
                 </tr>
               </thead>
               <tbody id="telemetryReferrersTableBody" class="divide-y divide-neutral-100 font-num">
-                <tr><td colspan="3" class="py-4 text-center text-neutral-400">Loading referrer telemetry...</td></tr>
+                <tr><td colspan="3" class="py-4 text-center text-neutral-400">No referrers recorded yet.</td></tr>
               </tbody>
             </table>
           </div>
@@ -1205,7 +1368,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
                 </tr>
               </thead>
               <tbody id="telemetryGeoTableBody" class="divide-y divide-neutral-100 font-num">
-                <tr><td colspan="4" class="py-4 text-center text-neutral-400">Loading geo telemetry...</td></tr>
+                <tr><td colspan="4" class="py-4 text-center text-neutral-400">No geo telemetry recorded yet.</td></tr>
               </tbody>
             </table>
           </div>
@@ -1228,7 +1391,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
                 </tr>
               </thead>
               <tbody id="telemetryDevicesTableBody" class="divide-y divide-neutral-100 font-num">
-                <tr><td colspan="4" class="py-4 text-center text-neutral-400">Loading device telemetry...</td></tr>
+                <tr><td colspan="4" class="py-4 text-center text-neutral-400">No devices recorded yet.</td></tr>
               </tbody>
             </table>
           </div>
@@ -1272,7 +1435,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
                   </tr>
                 </thead>
                 <tbody id="insaneActivityTableBody" class="divide-y divide-neutral-100 font-num">
-                  <tr><td colspan="5" class="py-4 text-center text-neutral-400">Loading kinetic activity data...</td></tr>
+                  <tr><td colspan="5" class="py-4 text-center text-neutral-400">No kinetic activity recorded yet.</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1294,7 +1457,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
                   </tr>
                 </thead>
                 <tbody id="insaneGpuTableBody" class="divide-y divide-neutral-100 font-num">
-                  <tr><td colspan="3" class="py-4 text-center text-neutral-400">Loading GPU fleet telemetry...</td></tr>
+                  <tr><td colspan="3" class="py-4 text-center text-neutral-400">No GPU telemetry recorded yet.</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1321,7 +1484,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
         </div>
 
         <!-- Add Watch Target Form -->
-        <form onsubmit="event.preventDefault(); return handleCreateVipTarget(event);" class="bg-neutral-50/70 border border-neutral-200/80 p-4 rounded-xl space-y-3">
+        <form onsubmit="event.preventDefault(); handleCreateVipTarget(event); return false;" class="bg-neutral-50/70 border border-neutral-200/80 p-4 rounded-xl space-y-3">
           <div class="text-xs font-bold text-neutral-800 font-num">Add Specific Client or IP Address to Watchlist</div>
           <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <div>
@@ -1368,7 +1531,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
                   </tr>
                 </thead>
                 <tbody id="vipTargetsTableBody" class="divide-y divide-neutral-100 font-num">
-                  <tr><td colspan="4" class="p-4 text-center text-neutral-400">Loading watched clients...</td></tr>
+                  <tr><td colspan="4" class="p-4 text-center text-neutral-400">No watched VIP clients registered.</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1384,7 +1547,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
               <span class="text-[10px] text-neutral-400 font-num uppercase">Sub-5ms Edge Ingest</span>
             </div>
             <div id="vipLiveTracesContainer" class="space-y-2.5 max-h-[320px] overflow-y-auto pr-1">
-              <div class="p-4 text-center text-xs text-neutral-400 bg-neutral-50 rounded-xl">Loading live VIP trace telemetry...</div>
+              <div class="p-4 text-center text-xs text-neutral-400 bg-neutral-50 rounded-xl">No live traces recorded yet. Active VIP events will appear here in real time.</div>
             </div>
           </div>
         </div>
@@ -1445,6 +1608,50 @@ requests.post("${origin}/v1/analytics/capture", json={
     let currentSessionToken = null;
     let currentUser = null;
     let localKeys = [];
+
+    // Immediate synchronous hydration from local storage (<0.5ms)
+    try {
+      let userCached = JSON.parse(localStorage.getItem('ultrademon_user') || 'null');
+      if (!userCached || !userCached.email) {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && (k.startsWith('sb-') || k.includes('supabase')) && k.endsWith('-auth-token')) {
+            try {
+              const sbData = JSON.parse(localStorage.getItem(k) || '{}');
+              const sbUser = sbData.user || sbData.currentSession?.user || sbData.session?.user;
+              if (sbUser && (sbUser.email || sbUser.id)) {
+                userCached = {
+                  id: sbUser.id,
+                  email: sbUser.email || sbUser.id,
+                  plan: 'free'
+                };
+                localStorage.setItem('ultrademon_user', JSON.stringify(userCached));
+                break;
+              }
+            } catch {}
+          }
+        }
+      }
+      if (userCached) {
+        currentUser = userCached;
+        const emailEl = document.getElementById('userEmailDisplay');
+        const planEl = document.getElementById('userPlanBadge');
+        if (emailEl) emailEl.innerText = userCached.email || userCached.id || 'Active Workspace';
+        if (planEl && userCached.plan) planEl.innerText = (userCached.plan || 'free').toUpperCase();
+      }
+    } catch {}
+
+    // Immediate synchronous hydration from local storage (<0.5ms)
+    try {
+      const userCached = JSON.parse(localStorage.getItem('ultrademon_user') || 'null');
+      if (userCached) {
+        currentUser = userCached;
+        const emailEl = document.getElementById('userEmailDisplay');
+        const planEl = document.getElementById('userPlanBadge');
+        if (emailEl) emailEl.innerText = userCached.email || userCached.id || 'Active Workspace';
+        if (planEl && userCached.plan) planEl.innerText = userCached.plan.toUpperCase();
+      }
+    } catch {}
 
     // Sleek, non-blocking notification toast
     function showAppToast(msg, isError = false) {
@@ -1534,6 +1741,10 @@ requests.post("${origin}/v1/analytics/capture", json={
             localStorage.setItem('ultrademon_saved_plain_keys', JSON.stringify(saved));
           }
           currentUser = data.user;
+          const emailDisplay = document.getElementById('userEmailDisplay');
+          const planBadge = document.getElementById('userPlanBadge');
+          if (emailDisplay) emailDisplay.innerText = data.user.email || data.user.id || 'Active Workspace';
+          if (planBadge) planBadge.innerText = (data.user.plan || 'free').toUpperCase();
           return data.session.access_token;
         }
       } catch (err) {
@@ -1586,13 +1797,14 @@ requests.post("${origin}/v1/analytics/capture", json={
     }
 
     function switchSuite(suite) {
-      if (suite === 'search') setAppView('search');
+      if (suite === 'overview') setAppView('overview');
+      else if (suite === 'search') setAppView('search');
       else if (suite === 'memory') setAppView('memory');
       else if (suite === 'metrics') setAppView('analytics');
     }
 
     function updateSuiteSwitcher(suite) {
-      const suites = ['search', 'memory', 'metrics'];
+      const suites = ['overview', 'search', 'memory', 'metrics'];
       suites.forEach(s => {
         const btn = document.getElementById('suiteBtn-' + s);
         if (!btn) return;
@@ -1654,7 +1866,9 @@ requests.post("${origin}/v1/analytics/capture", json={
         if (d) d.innerText = titles[viewId][1];
       }
 
-      if (viewId === 'search' || viewId === 'crawler') {
+      if (viewId === 'overview') {
+        updateSuiteSwitcher('overview');
+      } else if (viewId === 'search' || viewId === 'crawler') {
         updateSuiteSwitcher('search');
       } else if (viewId === 'memory') {
         updateSuiteSwitcher('memory');
@@ -1672,6 +1886,8 @@ requests.post("${origin}/v1/analytics/capture", json={
 
       if (viewId === 'analytics') {
         loadAnalyticsDashboard();
+      } else if (viewId === 'keys' || viewId === 'overview') {
+        loadRealtimeKeyMetrics(false);
       }
 
       updateAllSuiteSnippets();
@@ -2064,9 +2280,261 @@ requests.post("${origin}/v1/analytics/capture", json={
           localStorage.removeItem('ultrademon_active_key');
         }
         await loadAppKeys();
+        await loadRealtimeKeyMetrics(true);
       } catch (err) {
         showAppToast('Revoke failed: ' + err.message, true);
       }
+    }
+
+    // ── Real-Time API Key Usage & Daily Calls Telemetry Logic ─────────────────
+    let realtimeTimer = null;
+    let isRealtimeAutoRefresh = true;
+
+    async function loadRealtimeKeyMetrics(manual = false) {
+      const spinner = document.getElementById('refreshKeyMetricsSpinner');
+      if (manual && spinner) spinner.classList.add('animate-spin');
+
+      try {
+        const token = getAuthToken();
+        const activeKey = getActiveKey();
+        const headers = {};
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+        if (activeKey) headers['X-API-Key'] = activeKey;
+
+        const res = await fetch('/v1/keys/metrics', { headers });
+        if (res.ok) {
+          const data = await res.json();
+          renderRealtimeMetrics(data);
+        }
+      } catch (err) {
+        console.warn('Realtime key metrics fetch error:', err);
+      } finally {
+        if (manual && spinner) {
+          setTimeout(() => spinner.classList.remove('animate-spin'), 300);
+        }
+      }
+    }
+
+    function renderRealtimeMetrics(data) {
+      if (!data) return;
+
+      const combined = data.combined_today || { total: 0, search: 0, memory: 0, metrics: 0, crawler: 0 };
+      const totalCalls = combined.total || 0;
+      const searchCalls = combined.search || 0;
+      const memoryCalls = combined.memory || 0;
+      const metricsCalls = combined.metrics || 0;
+
+      // 1. Top KPI Cards
+      const elTotal = document.getElementById('rtCombinedTotal');
+      const elQuota = document.getElementById('rtCombinedQuotaPct');
+      const elSearch = document.getElementById('rtCombinedSearch');
+      const elSearchShare = document.getElementById('rtSearchShare');
+      const elMemory = document.getElementById('rtCombinedMemory');
+      const elMemoryShare = document.getElementById('rtMemoryShare');
+      const elMetrics = document.getElementById('rtCombinedMetrics');
+      const elMetricsShare = document.getElementById('rtMetricsShare');
+      const elOverviewDaily = document.getElementById('metricUsed');
+
+      if (elTotal) elTotal.innerText = totalCalls.toLocaleString();
+      if (elSearch) elSearch.innerText = searchCalls.toLocaleString();
+      if (elMemory) elMemory.innerText = memoryCalls.toLocaleString();
+      if (elMetrics) elMetrics.innerText = metricsCalls.toLocaleString();
+      if (elOverviewDaily) elOverviewDaily.innerText = totalCalls.toLocaleString();
+
+      const searchSharePct = totalCalls > 0 ? Math.round((searchCalls / totalCalls) * 100) : 0;
+      const memorySharePct = totalCalls > 0 ? Math.round((memoryCalls / totalCalls) * 100) : 0;
+      const metricsSharePct = totalCalls > 0 ? Math.round((metricsCalls / totalCalls) * 100) : 0;
+
+      if (elSearchShare) elSearchShare.innerText = searchSharePct + '%';
+      if (elMemoryShare) elMemoryShare.innerText = memorySharePct + '%';
+      if (elMetricsShare) elMetricsShare.innerText = metricsSharePct + '%';
+
+      // Estimate quota percentage across keys
+      let totalDailyQuota = 0;
+      if (Array.isArray(data.keys)) {
+        for (const k of data.keys) {
+          if (typeof k.daily_limit === 'number' && k.daily_limit > 0) {
+            totalDailyQuota += k.daily_limit;
+          }
+        }
+      }
+      if (totalDailyQuota > 0 && elQuota) {
+        const pct = Math.min(100, Math.round((totalCalls / totalDailyQuota) * 100));
+        elQuota.innerText = pct + '% (' + totalCalls + ' / ' + totalDailyQuota + ')';
+      } else if (elQuota) {
+        elQuota.innerText = totalCalls > 0 ? totalCalls + ' calls today' : '0%';
+      }
+
+      const syncTimeEl = document.getElementById('rtLastUpdatedTime');
+      if (syncTimeEl) {
+        syncTimeEl.innerText = 'Last sync: ' + new Date().toLocaleTimeString();
+      }
+
+      // 2. Per-API Key Granular Table
+      const keyTableBody = document.getElementById('rtApiKeyTableBody');
+      if (keyTableBody && Array.isArray(data.keys)) {
+        if (data.keys.length === 0) {
+          keyTableBody.innerHTML = '<tr><td colspan="9" class="p-6 text-center text-neutral-400">No active keys recorded. Generate one below!</td></tr>';
+        } else {
+          keyTableBody.innerHTML = data.keys.map(k => {
+            const scopeBadge = k.key_type === 'memory'
+              ? '<span class="px-2 py-0.5 rounded bg-black text-white text-[10px] font-bold uppercase font-num">Memory</span>'
+              : (k.key_type === 'search'
+                ? '<span class="px-2 py-0.5 rounded bg-neutral-200 text-neutral-800 text-[10px] font-bold uppercase font-num">Search</span>'
+                : (k.key_type === 'telemetry'
+                  ? '<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-bold uppercase font-num">Metrics</span>'
+                  : '<span class="px-2 py-0.5 rounded bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase font-num">Unified</span>'));
+
+            const lastActiveStr = k.last_used_at 
+              ? formatRelativeTime(new Date(k.last_used_at).getTime()) 
+              : '<span class="text-neutral-400">Inactive</span>';
+
+            const limitDisplay = typeof k.daily_limit === 'number' ? k.daily_limit.toLocaleString() : k.daily_limit;
+            const pctUsed = k.percent_used || 0;
+
+            return '<tr class="hover:bg-neutral-50 transition-colors">' +
+              '<td class="p-3 font-sans">' +
+                '<div class="font-bold text-neutral-900 text-xs">' + escapeHtml(k.label || 'API Key') + '</div>' +
+                '<div class="font-mono text-[10px] text-neutral-400 truncate max-w-[130px]">' + escapeHtml(k.key_id) + '</div>' +
+              '</td>' +
+              '<td class="p-3">' + scopeBadge + '</td>' +
+              '<td class="p-3"><span class="px-2 py-0.5 rounded bg-neutral-100 text-neutral-900 text-[10px] font-bold uppercase font-num">' + escapeHtml(k.plan) + '</span></td>' +
+              '<td class="p-3 text-right bg-neutral-50/50">' +
+                '<span class="font-bold text-neutral-950 font-num text-xs">' + (k.today_total || 0).toLocaleString() + '</span>' +
+                (typeof k.daily_limit === 'number' ? '<div class="w-full bg-neutral-200 h-1 rounded-full mt-1 overflow-hidden"><div class="bg-black h-1 rounded-full" style="width: ' + pctUsed + '%"></div></div>' : '') +
+              '</td>' +
+              '<td class="p-3 text-right font-num text-xs">' +
+                '<span class="px-2 py-0.5 rounded bg-neutral-100 font-semibold text-neutral-800">' + (k.today_search || 0).toLocaleString() + '</span>' +
+              '</td>' +
+              '<td class="p-3 text-right font-num text-xs">' +
+                '<span class="px-2 py-0.5 rounded bg-neutral-100 font-semibold text-neutral-800">' + (k.today_memory || 0).toLocaleString() + '</span>' +
+              '</td>' +
+              '<td class="p-3 text-right font-num text-xs">' +
+                '<span class="px-2 py-0.5 rounded bg-neutral-100 font-semibold text-neutral-800">' + (k.today_metrics || 0).toLocaleString() + '</span>' +
+              '</td>' +
+              '<td class="p-3 text-right font-num text-neutral-600 text-xs">' + limitDisplay + '</td>' +
+              '<td class="p-3 text-right font-num text-neutral-600 text-[11px] whitespace-nowrap">' + lastActiveStr + '</td>' +
+            '</tr>';
+          }).join('');
+        }
+      }
+
+      // 3. 7-Day Daily Call History Strip
+      const historyContainer = document.getElementById('rtHistoryStripContainer');
+      if (historyContainer && Array.isArray(data.combined_history_7d)) {
+        historyContainer.innerHTML = data.combined_history_7d.map((day, idx) => {
+          const isToday = idx === data.combined_history_7d.length - 1;
+          const dayLabel = isToday ? 'Today' : day.date.slice(5);
+          return '<div class="p-3 rounded-xl border ' + (isToday ? 'border-neutral-950 bg-neutral-950 text-white shadow-xs' : 'border-neutral-200 bg-white') + ' flex flex-col justify-between text-xs font-num">' +
+            '<div class="flex items-center justify-between text-[10px] ' + (isToday ? 'text-neutral-400' : 'text-neutral-500') + ' uppercase font-bold">' +
+              '<span>' + dayLabel + '</span>' +
+              (isToday ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>' : '') +
+            '</div>' +
+            '<div class="text-xl font-normal my-1.5 tracking-tight ' + (isToday ? 'text-white' : 'text-neutral-950') + '">' + day.total.toLocaleString() + '</div>' +
+            '<div class="space-y-0.5 text-[9px] border-t ' + (isToday ? 'border-neutral-800 text-neutral-300' : 'border-neutral-100 text-neutral-500') + ' pt-1">' +
+              '<div class="flex justify-between"><span>Search</span><span class="font-semibold">' + day.search + '</span></div>' +
+              '<div class="flex justify-between"><span>Memory</span><span class="font-semibold">' + day.memory + '</span></div>' +
+              '<div class="flex justify-between"><span>Metrics</span><span class="font-semibold">' + day.metrics + '</span></div>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
+
+      // 4. Real-Time Micro-Stream
+      const eventsContainer = document.getElementById('rtRecentEventsContainer');
+      if (eventsContainer && Array.isArray(data.recent_live_events)) {
+        if (data.recent_live_events.length === 0) {
+          eventsContainer.innerHTML = '<div class="p-4 text-center text-xs text-neutral-400 bg-neutral-50 rounded-xl">No requests recorded yet today. Click an interactive test button above to emit live edge calls.</div>';
+        } else {
+          eventsContainer.innerHTML = data.recent_live_events.map(ev => {
+            const sBadge = ev.service === 'search'
+              ? 'bg-blue-50 text-blue-800 border-blue-200'
+              : (ev.service === 'memory'
+                ? 'bg-purple-50 text-purple-800 border-purple-200'
+                : (ev.service === 'metrics'
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                  : 'bg-neutral-100 text-neutral-800 border-neutral-200'));
+
+            const timeStr = new Date(ev.timestamp).toLocaleTimeString();
+            return '<div class="p-2.5 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50/70 transition flex items-center justify-between text-xs font-num gap-3">' +
+              '<div class="flex items-center gap-2 min-w-0">' +
+                '<span class="px-1.5 py-0.5 rounded text-[9px] font-bold border uppercase font-mono ' + sBadge + '">' + escapeHtml(ev.service) + '</span>' +
+                '<span class="font-mono font-bold text-neutral-900 text-[11px] truncate">' + escapeHtml(ev.method) + ' ' + escapeHtml(ev.path) + '</span>' +
+                '<span class="text-[10px] text-neutral-400 font-sans hidden sm:inline truncate">(' + escapeHtml(ev.label || 'Key') + ')</span>' +
+              '</div>' +
+              '<div class="flex items-center gap-3 flex-shrink-0">' +
+                '<span class="text-[10px] text-emerald-600 font-bold">' + ev.latency_ms + 'ms</span>' +
+                '<span class="px-1.5 py-0.2 rounded text-[10px] font-bold ' + (ev.status < 400 ? 'bg-neutral-100 text-neutral-800' : 'bg-red-50 text-red-700') + '">' + ev.status + '</span>' +
+                '<span class="text-[10px] text-neutral-400">' + timeStr + '</span>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+        }
+      }
+    }
+
+    function toggleRealtimeAutoRefresh(enabled) {
+      isRealtimeAutoRefresh = enabled;
+      if (realtimeTimer) {
+        clearInterval(realtimeTimer);
+        realtimeTimer = null;
+      }
+      if (enabled) {
+        realtimeTimer = setInterval(() => {
+          if (!document.hidden) {
+            loadRealtimeKeyMetrics(false);
+          }
+        }, 3000);
+      }
+    }
+
+    async function testLiveRequest(service) {
+      const activeKey = getActiveKey();
+      const headers = { 'Content-Type': 'application/json' };
+      if (activeKey) headers['X-API-Key'] = activeKey;
+      else {
+        const token = getAuthToken();
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+      }
+
+      try {
+        if (service === 'search') {
+          await fetch('/v1/search', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ query: 'Realtime Edge Benchmark', mode: 1, num_results: 3 })
+          });
+          showAppToast('Simulated +1 UltraSearch Request (<15ms Edge Recall)');
+        } else if (service === 'memory') {
+          await fetch('/v1/memory/query', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ query: 'agent prompt context', container_tag: 'default', limit: 2 })
+          });
+          showAppToast('Simulated +1 UltraMemory Request (BM25 Edge Recall)');
+        } else if (service === 'metrics') {
+          await fetch('/v1/analytics/capture', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ eventName: 'ping_realtime_test', distinctId: 'tester_live', properties: { test: true } })
+          });
+          showAppToast('Simulated +1 UltraMetrics Telemetry Ingest (Sub-5ms)');
+        }
+        await loadRealtimeKeyMetrics(true);
+      } catch (err) {
+        showAppToast('Test request failed: ' + err.message, true);
+      }
+    }
+
+    function formatRelativeTime(timestamp) {
+      const diffSec = Math.floor((Date.now() - timestamp) / 1000);
+      if (diffSec < 10) return 'Just now';
+      if (diffSec < 60) return diffSec + 's ago';
+      const diffMin = Math.floor(diffSec / 60);
+      if (diffMin < 60) return diffMin + 'm ago';
+      const diffHour = Math.floor(diffMin / 60);
+      if (diffHour < 24) return diffHour + 'h ago';
+      return Math.floor(diffHour / 24) + 'd ago';
     }
 
     async function handleAppStoreMemory(e) {
@@ -2391,6 +2859,9 @@ requests.post("${origin}/v1/analytics/capture", json={
     window.generateFreshICPReport = generateFreshICPReport;
     window.switchProfilePeriod = switchProfilePeriod;
     window.escapeHtml = escapeHtml;
+    window.loadRealtimeKeyMetrics = loadRealtimeKeyMetrics;
+    window.toggleRealtimeAutoRefresh = toggleRealtimeAutoRefresh;
+    window.testLiveRequest = testLiveRequest;
 
     // Immediate Synchronous State Hydration (Zero Latency Profile Display)
     function hydrateCachedState() {
@@ -2407,12 +2878,13 @@ requests.post("${origin}/v1/analytics/capture", json={
         try {
           for (let i = 0; i < localStorage.length; i++) {
             const k = localStorage.key(i);
-            if (k && k.startsWith('sb-') && k.endsWith('-auth-token')) {
+            if (k && (k.startsWith('sb-') || k.includes('supabase')) && k.endsWith('-auth-token')) {
               const sbData = JSON.parse(localStorage.getItem(k) || '{}');
-              if (sbData && sbData.user && sbData.user.email) {
+              const sbUser = sbData.user || sbData.currentSession?.user || sbData.session?.user;
+              if (sbUser && (sbUser.email || sbUser.id)) {
                 currentUser = currentUser || {};
-                currentUser.id = currentUser.id || sbData.user.id;
-                currentUser.email = sbData.user.email;
+                currentUser.id = currentUser.id || sbUser.id;
+                currentUser.email = sbUser.email || currentUser.email;
                 currentUser.plan = currentUser.plan || 'free';
                 localStorage.setItem('ultrademon_user', JSON.stringify(currentUser));
                 break;
@@ -3034,13 +3506,23 @@ requests.post("${origin}/v1/analytics/capture", json={
 
     // Initialize Workspace
     async function initWorkspace() {
-      // 1. Direct event listener bindings for sidebar buttons (synchronous)
+      // 1. Direct event listener bindings for sidebar and switcher buttons (synchronous)
       document.querySelectorAll('#sidebarNav button[data-view-target]').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.preventDefault();
           const target = btn.getAttribute('data-view-target');
           if (target) setAppView(target);
         });
+      });
+
+      ['overview', 'search', 'memory', 'metrics'].forEach(s => {
+        const btn = document.getElementById('suiteBtn-' + s);
+        if (btn) {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchSuite(s);
+          });
+        }
       });
 
       // 2. Synchronous hydration first (<1ms) - instantaneous local state render
@@ -3099,10 +3581,13 @@ requests.post("${origin}/v1/analytics/capture", json={
         }
       }
 
-      // If user is still showing Loading..., display currentUser or fallback
       const emailDisplay = document.getElementById('userEmailDisplay');
-      if (emailDisplay && emailDisplay.innerText === 'Loading...') {
-        emailDisplay.innerText = (currentUser && (currentUser.email || currentUser.id)) || 'Active Workspace';
+      if (emailDisplay) {
+        if (currentUser && (currentUser.email || currentUser.id)) {
+          emailDisplay.innerText = currentUser.email || currentUser.id;
+        } else if (!emailDisplay.innerText || emailDisplay.innerText === 'Loading...') {
+          emailDisplay.innerText = 'Active Workspace';
+        }
       }
 
       const targetPlan = (urlParams.get('plan') || urlParams.get('upgrade') || '').toLowerCase();
@@ -3118,6 +3603,8 @@ requests.post("${origin}/v1/analytics/capture", json={
       }
       loadStoredMemories();
       refreshTelemetry();
+      loadRealtimeKeyMetrics(false);
+      toggleRealtimeAutoRefresh(true);
       updateAllSuiteSnippets();
     }
 

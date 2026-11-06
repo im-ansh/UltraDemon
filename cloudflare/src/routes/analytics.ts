@@ -5,7 +5,7 @@
 import { Hono } from 'hono';
 import type { Context } from 'hono';
 import type { Env, ApiKeyRecord } from '../types';
-import { validateApiKey } from '../lib/api-keys';
+import { validateApiKey, incrementUsage } from '../lib/api-keys';
 
 export const analyticsRouter = new Hono<{ Bindings: Env }>();
 
@@ -212,7 +212,7 @@ async function handleCapture(c: Context<{ Bindings: Env }>) {
   }
 
   const payloadKey = (rawBody as { api_key?: string }).api_key;
-  const { projectId } = await resolveProjectId(c, payloadKey);
+  const { projectId, keyRecord } = await resolveProjectId(c, payloadKey);
 
   const eventsList: CaptureEventPayload[] = Array.isArray((rawBody as CaptureBatchPayload).events)
     ? (rawBody as CaptureBatchPayload).events!
@@ -424,6 +424,19 @@ async function handleCapture(c: Context<{ Bindings: Env }>) {
       return c.json({ error: 'Failed to record events to edge D1 database' }, 500);
     }
   }
+
+  // Real-time API key metrics counter increment
+  const hashedKey = keyRecord ? keyRecord.hashed_key : 'sandbox_public_guest_hash';
+  c.executionCtx.waitUntil(
+    incrementUsage(c.env, hashedKey, {
+      service: 'metrics',
+      keyId: keyRecord?.key_id,
+      path: c.req.path,
+      method: c.req.method,
+      status: 201,
+      latencyMs: Math.max(1, Date.now() - now),
+    })
+  );
 
   return c.json({
     status: 'recorded',
