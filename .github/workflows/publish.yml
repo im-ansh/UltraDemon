@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish:
-    name: Build & Publish to npm
+    name: Build & Publish to npm via OIDC
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -21,7 +21,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          registry-url: 'https://registry.npmjs.org'
+
+      - name: Ensure latest npm with native OIDC support
+        run: npm install -g npm@latest
 
       - name: Install SDK dependencies
         working-directory: ./sdk
@@ -35,8 +37,6 @@ jobs:
         working-directory: ./sdk
         run: npm test
 
-      - name: Publish to npm
+      - name: Publish to npm using OIDC Trusted Publishing
         working-directory: ./sdk
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public --provenance
+        run: npm publish --access public
