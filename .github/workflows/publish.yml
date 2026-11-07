@@ -1,0 +1,42 @@
+name: Publish UltraDemon to npm
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    name: Build & Publish to npm
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # Required for npm OIDC Trusted Publishing & Provenance
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install SDK dependencies
+        working-directory: ./sdk
+        run: npm install
+
+      - name: Build dual ESM/CJS bundles & types
+        working-directory: ./sdk
+        run: npm run build
+
+      - name: Run verification test suite
+        working-directory: ./sdk
+        run: npm test
+
+      - name: Publish to npm
+        working-directory: ./sdk
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public --provenance
