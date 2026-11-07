@@ -4155,7 +4155,7 @@ requests.post("${origin}/v1/analytics/capture", json={
 
       let curlCmd = 'curl -X ' + method + ' "' + ORIGIN + (endpoint.startsWith('/') ? endpoint : '/' + endpoint) + '" \\\n  ' + authHeaderStr + '-H "Content-Type: application/json"';
       if (method !== 'GET' && bodyText) {
-        curlCmd += ' \\\n  -d \'' + bodyText.replace(/'/g, "'\\''") + '\'';
+        curlCmd += ' \\\n  -d ' + JSON.stringify(bodyText);
       }
       lastTesterCurlCommand = curlCmd;
 
@@ -4211,7 +4211,7 @@ requests.post("${origin}/v1/analytics/capture", json={
         }
       } catch (err) {
         const duration = Math.round(performance.now() - tStart);
-        if (resPre) resPre.innerText = 'Request Failed:\n' + err.message;
+        if (resPre) resPre.innerText = 'Request Failed: ' + err.message;
         if (statusBadge) {
           statusBadge.classList.remove('hidden');
           statusBadge.innerText = 'Network Error';
