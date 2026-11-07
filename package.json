@@ -1,0 +1,19 @@
+{
+  "name": "ultrademon",
+  "version": "1.0.0",
+  "description": "UltraDemon: Sovereign Edge Search, Agent Long-Term Memory, and Kinetic Telemetry Engine",
+  "bin": {
+    "ultrademon": "sdk/bin/cli.js"
+  },
+  "main": "sdk/dist/index.js",
+  "module": "sdk/dist/index.mjs",
+  "types": "sdk/dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/im-ansh/UltraDemon.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
