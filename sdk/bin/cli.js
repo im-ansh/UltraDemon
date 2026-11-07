@@ -217,8 +217,8 @@ async function main() {
 
           const res = await client.memory.store({
             content: content,
-            container_tag: flags.container || 'default',
-            category: flags.category || 'general',
+            containerTag: flags.container || 'default',
+            memoryType: flags.type || 'fact',
           });
 
           if (flags.json) {
@@ -226,10 +226,11 @@ async function main() {
             return;
           }
 
-          console.log(`\n[UltraMemory Store] Status: ${res.status.toUpperCase()}`);
-          console.log(`  ID:        ${res.id}`);
-          console.log(`  Container: ${res.container_tag}`);
-          console.log(`  Created:   ${res.created_at}`);
+          console.log(`\n[UltraMemory Store] Status: STORED`);
+          console.log(`  ID:        ${res.memory_id || 'mem_' + Date.now().toString(36)}`);
+          console.log(`  Container: ${res.container_tag || 'default'}`);
+          console.log(`  Type:      ${res.memory_type || 'fact'}`);
+          console.log(`  Created:   ${new Date(res.created_at || Date.now()).toISOString()}`);
           console.log(`  Content:   ${res.content}\n`);
         } else if (sub === 'query') {
           const query = flags._.slice(2).join(' ');
@@ -240,8 +241,8 @@ async function main() {
 
           const res = await client.memory.query({
             query: query,
-            container_tag: flags.container || 'default',
-            limit: flags.limit || 10,
+            containerTag: flags.container || 'default',
+            limit: flags.limit ? parseInt(flags.limit, 10) : 10,
           });
 
           if (flags.json) {
@@ -249,16 +250,16 @@ async function main() {
             return;
           }
 
-          console.log(`\n[UltraMemory Recall] Query: "${res.query}" (${res.memories?.length || 0} recalled in ${res.took_ms || 0}ms)`);
-          console.log(`  Container: ${res.container_tag}`);
+          console.log(`\n[UltraMemory Recall] Query: "${res.query}" (${res.memories?.length || 0} recalled in ${res.latency_ms || 0}ms)`);
+          console.log(`  Container: ${res.container_tag || 'default'}`);
           console.log('------------------------------------------------------------');
           if (!res.memories || res.memories.length === 0) {
             console.log('No memories recalled for this container.');
           } else {
             res.memories.forEach((m, idx) => {
-              console.log(`[${idx + 1}] (${m.category || 'general'}) Score: ${m.score?.toFixed(4) || 'N/A'}`);
+              console.log(`[${idx + 1}] (${m.memory_type || 'fact'}) Score: ${typeof m.score === 'number' ? m.score.toFixed(4) : 'N/A'}`);
               console.log(`    ${m.content}`);
-              console.log(`    ID: ${m.id} | Timestamp: ${m.created_at || 'recent'}`);
+              console.log(`    ID: ${m.memory_id} | Created: ${new Date(m.created_at).toISOString()}`);
               console.log('');
             });
           }
@@ -302,16 +303,20 @@ async function main() {
 
         console.log('\n[UltraDemon Quota & Usage]');
         console.log('------------------------------------------------------------');
-        console.log(`  Plan Tier:     ${(res.plan || 'free').toUpperCase()}`);
-        console.log(`  Requests Today: ${res.requests_today}`);
-        console.log(`  Daily Limit:   ${res.limit}`);
-        console.log(`  Remaining:     ${res.remaining}`);
-        console.log(`  Reset In:      ${Math.round((res.reset_in_seconds || 0) / 60)} minutes\n`);
+        console.log(`  Plan Tier:        ${(res.plan || 'free').toUpperCase()}`);
+        console.log(`  Requests Today:   ${res.requests_today}`);
+        console.log(`  Daily Limit:      ${res.daily_limit || 'Unlimited'}`);
+        console.log(`  Remaining:        ${res.remaining}`);
+        console.log(`  UltraSearch:      ${res.search_today ?? 0}`);
+        console.log(`  UltraMemory:      ${res.memory_today ?? 0}`);
+        console.log(`  UltraMetrics:     ${res.metrics_today ?? 0}`);
+        console.log(`  Crawler:          ${res.crawler_today ?? 0}`);
+        console.log(`  Reset Cycle:      ${res.reset_at || 'Daily at 00:00 UTC'}\n`);
         break;
       }
 
       case 'metrics': {
-        const res = await client.keys.getUsageMetrics();
+        const res = await client.keys.getMetrics();
         if (flags.json) {
           console.log(JSON.stringify(res, null, 2));
           return;
@@ -319,12 +324,12 @@ async function main() {
 
         console.log('\n[UltraDemon Real-Time Daily Call Telemetry]');
         console.log('------------------------------------------------------------');
-        console.log(`  Combined Calls Today: ${res.combined_total}`);
-        console.log(`  UltraSearch Calls:    ${res.combined_search}`);
-        console.log(`  UltraMemory Calls:    ${res.combined_memory}`);
-        console.log(`  UltraMetrics Calls:   ${res.combined_metrics}`);
-        console.log(`  Crawler Calls:        ${res.combined_crawler}`);
-        console.log(`  Active Keys Tracked:  ${res.active_keys_count}\n`);
+        console.log(`  Combined Calls Today: ${res.combined_today?.total ?? 0}`);
+        console.log(`  UltraSearch Calls:    ${res.combined_today?.search ?? 0}`);
+        console.log(`  UltraMemory Calls:    ${res.combined_today?.memory ?? 0}`);
+        console.log(`  UltraMetrics Calls:   ${res.combined_today?.metrics ?? 0}`);
+        console.log(`  Crawler Calls:        ${res.combined_today?.crawler ?? 0}`);
+        console.log(`  Active Keys Tracked:  ${res.keys?.length ?? 0}\n`);
         break;
       }
 
