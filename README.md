@@ -27,6 +27,40 @@ Explore the interactive live platform deployed on Cloudflare Workers edge:
 
 ---
 
+## 🚀 Zero-Install CLI via NPX
+
+Run UltraDemon directly anywhere without installing or configuring npm registries:
+
+```bash
+# Verify edge connectivity & status
+npx github:im-ansh/UltraDemon status
+
+# Search indexed web documents (sub-15ms BM25 Edge)
+npx github:im-ansh/UltraDemon search "autonomous AI workflows" --limit 5
+
+# Store knowledge into agent long-term memory
+npx github:im-ansh/UltraDemon memory store "User prefers strict dark mode" --container fleet-alpha
+
+# Recall memories with relevance ranking
+npx github:im-ansh/UltraDemon memory query "dark mode" --container fleet-alpha
+
+# Check real-time per-API quota & usage
+npx github:im-ansh/UltraDemon usage
+npx github:im-ansh/UltraDemon metrics
+
+# Store your sovereign API key locally
+npx github:im-ansh/UltraDemon config set-key us_your_api_key_here
+```
+
+On this machine (locally linked):
+```bash
+ultrademon search "ai agents"
+# or
+npx ultrademon status
+```
+
+---
+
 ## 🚀 Key Architectural Advantages
 
 Unlike traditional search API aggregators that wrap Google or Brave, **UltraSearch is 100% self-hosted and autonomous**:
