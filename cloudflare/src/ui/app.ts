@@ -200,6 +200,18 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
             <span>Integrations &amp; MCP</span>
           </button>
         </div>
+
+        <!-- Group 4: Developer Workbench & Sandbox -->
+        <div class="space-y-1">
+          <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Developer Workbench</div>
+          <button type="button" onclick="setAppView('tester')" data-view-target="tester" id="nav-tester" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+              <span>API Sandbox</span>
+            </div>
+            <span class="font-num text-[9px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.2 rounded font-semibold">Live Tester</span>
+          </button>
+        </div>
       </nav>
     </div>
 
@@ -274,6 +286,13 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
         <span class="font-bold">Metrics</span>
         <span class="text-[9px] bg-neutral-900 text-white px-1.5 py-0.2 rounded font-num hidden sm:inline">vs PostHog</span>
+      </button>
+
+      <!-- 4. Sandbox Tester -->
+      <button type="button" onclick="switchSuite('tester')" id="suiteBtn-tester" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
+        <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+        <span class="font-bold">Sandbox</span>
+        <span class="text-[9px] bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.2 rounded font-num hidden sm:inline">Live Tester</span>
       </button>
     </div>
 
@@ -536,6 +555,191 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </div>
       </div>
 
+      <!-- Cross-Engine Deep Telemetry Matrix (Search vs Memory vs Metrics) -->
+      <div class="card-clean p-6 sm:p-8 rounded-3xl space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-100 pb-5">
+          <div>
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-neutral-900 text-white text-[10px] font-num font-bold tracking-wider uppercase mb-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>All-Engine Telemetry Matrix · Edge Connected</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-normal tracking-tight text-neutral-950">
+              Cross-Engine Deep <span class="font-serif font-bold italic">Performance &amp; Health</span>
+            </h2>
+            <p class="text-xs text-neutral-500 mt-1 font-num">
+              Comprehensive telemetry, roundtrip latency percentiles, and cache efficiency metrics across UltraSearch, UltraMemory, and UltraMetrics.
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-num bg-neutral-100 border border-neutral-200 text-neutral-800 px-2.5 py-1 rounded-full font-bold">
+              Edge Anycast · 330+ Cities
+            </span>
+          </div>
+        </div>
+
+        <!-- 3 Engine Columns Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <!-- Engine 1: UltraSearch API -->
+          <div class="card-elevated p-5 rounded-2xl border border-neutral-200/90 flex flex-col justify-between space-y-4 bg-white">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-xl bg-neutral-950 text-white flex items-center justify-center shadow-2xs">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-bold text-neutral-950">UltraSearch API</h3>
+                    <span class="text-[10px] text-neutral-400 font-num">Web Index &amp; BM25</span>
+                  </div>
+                </div>
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-num">&lt;15ms Edge</span>
+              </div>
+
+              <!-- Latency Meters -->
+              <div class="space-y-2 pt-2 border-t border-neutral-100 text-xs font-num">
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Mode 1 (Instant):</span>
+                  <span class="font-bold text-neutral-950" id="matrixSearchMode1">&lt;15ms (P50: 12ms)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Mode 2 (BM25 Hybrid):</span>
+                  <span class="font-bold text-neutral-950" id="matrixSearchMode2">&lt;40ms (P50: 38ms)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Mode 3 (Deep):</span>
+                  <span class="font-bold text-neutral-950" id="matrixSearchMode3">&lt;80ms (P50: 76ms)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Cache Hit Ratio:</span>
+                  <span class="font-bold text-emerald-600 font-num" id="matrixSearchCache">96.4%</span>
+                </div>
+                <div class="w-full bg-neutral-100 rounded-full h-1.5 overflow-hidden">
+                  <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 96.4%"></div>
+                </div>
+                <div class="flex items-center justify-between pt-1 text-[11px]">
+                  <span class="text-neutral-500">Indexed Corpus:</span>
+                  <span class="font-bold text-neutral-900" id="matrixSearchDocs">369 Documents</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-neutral-100 flex items-center justify-between">
+              <span class="text-[11px] font-num text-neutral-500">Calls Today: <strong class="text-neutral-900 font-bold" id="matrixSearchCalls">0</strong></span>
+              <button type="button" onclick="switchSuite('search')" class="text-xs font-semibold text-neutral-900 hover:underline cursor-pointer flex items-center gap-1 font-num">
+                <span>Search Studio</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Engine 2: UltraMemory API -->
+          <div class="card-elevated p-5 rounded-2xl border border-neutral-200/90 flex flex-col justify-between space-y-4 bg-white">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-xl bg-neutral-950 text-white flex items-center justify-center shadow-2xs">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-bold text-neutral-950">UltraMemory API</h3>
+                    <span class="text-[10px] text-neutral-400 font-num">Agent Context &amp; Recall</span>
+                  </div>
+                </div>
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-num">&lt;15ms BM25</span>
+              </div>
+
+              <!-- Memory Meters -->
+              <div class="space-y-2 pt-2 border-t border-neutral-100 text-xs font-num">
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Recall Latency:</span>
+                  <span class="font-bold text-emerald-600" id="matrixMemoryRecallLatency">&lt;15ms (P50: 8ms)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Knowledge Nodes:</span>
+                  <span class="font-bold text-neutral-950" id="matrixMemoryTotal">0 Items</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Active Namespaces:</span>
+                  <span class="font-bold text-neutral-950" id="matrixMemoryContainers">default, fleet</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Compaction Health:</span>
+                  <span class="font-bold text-emerald-600 font-num">100% Optimal</span>
+                </div>
+                <div class="w-full bg-neutral-100 rounded-full h-1.5 overflow-hidden">
+                  <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 100%"></div>
+                </div>
+                <div class="flex items-center justify-between pt-1 text-[11px]">
+                  <span class="text-neutral-500">Storage Engine:</span>
+                  <span class="font-bold text-neutral-900">D1 SQLite FTS5</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-neutral-100 flex items-center justify-between">
+              <span class="text-[11px] font-num text-neutral-500">Calls Today: <strong class="text-neutral-900 font-bold" id="matrixMemoryCalls">0</strong></span>
+              <button type="button" onclick="switchSuite('memory')" class="text-xs font-semibold text-neutral-900 hover:underline cursor-pointer flex items-center gap-1 font-num">
+                <span>Memory Lab</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Engine 3: UltraMetrics Telemetry -->
+          <div class="card-elevated p-5 rounded-2xl border border-neutral-200/90 flex flex-col justify-between space-y-4 bg-white">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-xl bg-neutral-950 text-white flex items-center justify-center shadow-2xs">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-bold text-neutral-950">UltraMetrics API</h3>
+                    <span class="text-[10px] text-neutral-400 font-num">Kinetic &amp; ICP Engine</span>
+                  </div>
+                </div>
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-neutral-900 text-white font-num">Sub-5ms</span>
+              </div>
+
+              <!-- Metrics Meters -->
+              <div class="space-y-2 pt-2 border-t border-neutral-100 text-xs font-num">
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Ingest Latency:</span>
+                  <span class="font-bold text-emerald-600" id="matrixMetricsLatency">&lt;5ms Edge</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Kinetic Dwell Active:</span>
+                  <span class="font-bold text-neutral-950" id="matrixMetricsActiveDwell">78% Focused</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Silicon Unmasked:</span>
+                  <span class="font-bold text-neutral-950">Apple GPU, Retina</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Autonomous ICP:</span>
+                  <span class="font-bold text-neutral-950">AI Software Engineer</span>
+                </div>
+                <div class="w-full bg-neutral-100 rounded-full h-1.5 overflow-hidden">
+                  <div class="bg-neutral-950 h-1.5 rounded-full" style="width: 78%"></div>
+                </div>
+                <div class="flex items-center justify-between pt-1 text-[11px]">
+                  <span class="text-neutral-500">Network Topology:</span>
+                  <span class="font-bold text-neutral-900">330+ Global PoPs</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-neutral-100 flex items-center justify-between">
+              <span class="text-[11px] font-num text-neutral-500">Calls Today: <strong class="text-neutral-900 font-bold" id="matrixMetricsCalls">0</strong></span>
+              <button type="button" onclick="switchSuite('metrics')" class="text-xs font-semibold text-neutral-900 hover:underline cursor-pointer flex items-center gap-1 font-num">
+                <span>Metrics Engine</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Quick Start Snippet Card -->
       <div class="card-clean p-6 rounded-2xl space-y-4">
         <div class="flex items-center justify-between">
@@ -630,6 +834,63 @@ curl -X POST "${origin}/v1/memory/query" \\
 
     <!-- SECTION 3: ULTRAMEMORY LAB & AGENT API STUDIO -->
     <section id="view-memory" class="space-y-6 hidden">
+      <!-- UltraMemory Suite Top KPI Strip & Dedicated Usage Tracker -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Daily Memory Calls -->
+        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">UltraMemory Calls Today</span>
+            <div class="w-8 h-8 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white transition-all shadow-2xs">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+            </div>
+          </div>
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="memoryDailyCallsDisplay">0</div>
+          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Share of Calls</span>
+            <span class="font-bold text-neutral-900 font-num" id="memoryCallsShareDisplay">0%</span>
+          </div>
+        </div>
+
+        <!-- Recall Latency Guaranteed -->
+        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Recall Latency</span>
+            <span class="text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.5 rounded font-num font-bold">&lt;15ms Edge</span>
+          </div>
+          <div class="text-3xl font-medium font-num text-emerald-600 tracking-tight" id="memoryRecallLatency">8ms</div>
+          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Recall Target</span>
+            <span class="font-bold text-neutral-900 font-num">&lt;15ms BM25</span>
+          </div>
+        </div>
+
+        <!-- Stored Knowledge Nodes -->
+        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Stored Memories</span>
+            <span class="text-xs text-neutral-400 font-num">D1 FTS5</span>
+          </div>
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="memoryTotalNodesDisplay">0</div>
+          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Deduplication</span>
+            <span class="font-bold text-emerald-600 font-num">100% Active</span>
+          </div>
+        </div>
+
+        <!-- Active Containers -->
+        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Container Namespaces</span>
+            <span class="text-xs text-neutral-400 font-num">Isolated</span>
+          </div>
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="memoryContainersCountDisplay">1</div>
+          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Default Namespace</span>
+            <span class="font-bold text-neutral-900 font-num" id="memoryActiveTagPreview">default</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Memory API Endpoints Quick Reference Card -->
       <div class="card-clean p-6 rounded-2xl space-y-4 bg-neutral-50/50">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-neutral-200 pb-3">
@@ -766,54 +1027,77 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
 
     <!-- SECTION 4: ULTRASEARCH STUDIO -->
     <section id="view-search" class="space-y-6 hidden">
-      <!-- Search Suite Top KPI Strip -->
+      <!-- Search Suite Top KPI Strip & Dedicated Usage Tracker -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+        <!-- Daily Search Calls -->
+        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">UltraSearch Calls Today</span>
+            <div class="w-8 h-8 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white transition-all shadow-2xs">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </div>
+          </div>
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="searchDailyCallsDisplay">0</div>
+          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Share of Calls</span>
+            <span class="font-bold text-neutral-900 font-num" id="searchCallsShareDisplay">0%</span>
+          </div>
+        </div>
+
+        <!-- BM25 Edge P50 -->
+        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
           <div class="flex items-center justify-between mb-3">
             <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">BM25 Edge P50</span>
-            <span class="text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.2 rounded font-num font-bold">&lt;40ms</span>
+            <span class="text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.5 rounded font-num font-bold">&lt;15ms Instant</span>
           </div>
-          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight">38ms</div>
-          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
-            <span>Anycast PoPs</span>
-            <span class="font-bold text-neutral-900">330+ Cities</span>
-          </div>
-        </div>
-
-        <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">KV Cache Hit Rate</span>
-            <span class="text-xs text-neutral-400 font-num">Speed</span>
-          </div>
-          <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight">94.8%</div>
-          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
-            <span>Cache Recall</span>
-            <span class="font-bold text-neutral-900">&lt;5ms</span>
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="searchP50Latency">12ms</div>
+          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Standard Mode 2</span>
+            <span class="font-bold text-neutral-900 font-num">&lt;40ms</span>
           </div>
         </div>
 
-        <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+        <!-- KV Cache Hit Rate -->
+        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
           <div class="flex items-center justify-between mb-3">
-            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Engine Topology</span>
-            <span class="text-xs text-neutral-400 font-num">C-Compiled</span>
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Cache Hit Rate</span>
+            <span class="text-xs text-neutral-400 font-num">In-Isolate</span>
           </div>
-          <div class="text-2xl font-normal font-num text-neutral-950 tracking-tight">D1 SQLite FTS5</div>
-          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
-            <span>Cloud Markup</span>
-            <span class="font-bold text-neutral-900">Zero</span>
+          <div class="text-3xl font-medium font-num text-emerald-600 tracking-tight" id="searchCacheHit">96.4%</div>
+          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Sub-5ms Hits</span>
+            <span class="font-bold text-neutral-900 font-num">Active</span>
           </div>
         </div>
 
-        <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
+        <!-- Total Indexed Corpus -->
+        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
           <div class="flex items-center justify-between mb-3">
-            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Search Modes</span>
-            <span class="text-xs text-neutral-400 font-num">Routing</span>
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Indexed Documents</span>
+            <span class="text-xs text-neutral-400 font-num">SQLite FTS5</span>
           </div>
-          <div class="text-2xl font-normal font-num text-neutral-950 tracking-tight">Modes 1, 2, 3</div>
-          <div class="text-[11px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
-            <span>Deep Research</span>
-            <span class="font-bold text-neutral-900">Supported</span>
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="searchIndexedDocs">369</div>
+          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Algorithm</span>
+            <span class="font-bold text-neutral-900">BM25 Porter</span>
           </div>
+        </div>
+      </div>
+
+      <!-- Dedicated UltraSearch Modes Execution & Latency Breakdown Banner -->
+      <div class="card-clean p-5 rounded-2xl bg-neutral-50/70 border border-neutral-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-neutral-950 font-num">UltraSearch Execution Modes</span>
+            <span class="text-[9px] bg-neutral-900 text-white font-num font-bold px-1.5 py-0.2 rounded">Autonomous</span>
+          </div>
+          <p class="text-[11px] text-neutral-500">Mode 1: Instant (&lt;15ms) · Mode 2: Hybrid BM25 (&lt;40ms) · Mode 3: Deep Multi-Pass (&lt;80ms)</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="selectTesterPreset('search_instant'); setAppView('tester');" class="px-3 py-1.5 rounded-xl bg-white border border-neutral-300 hover:border-black text-xs font-semibold text-neutral-900 transition cursor-pointer font-num shadow-2xs flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+            <span>Test in Sandbox</span>
+          </button>
         </div>
       </div>
 
@@ -1669,6 +1953,144 @@ requests.post("${origin}/v1/analytics/capture", json={
       </div>
     </section>
 
+    <!-- SECTION 9: API SANDBOX & LIVE ENDPOINT TESTER -->
+    <section id="view-tester" class="space-y-6 hidden">
+      <!-- Tester Hero Banner -->
+      <div class="card-clean p-6 sm:p-8 rounded-3xl space-y-6 bg-white border border-neutral-200 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-100 pb-5">
+          <div>
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-neutral-900 text-white text-[10px] font-num font-bold tracking-wider uppercase mb-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Interactive Edge Sandbox · Live Execution</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-normal tracking-tight text-neutral-950">
+              API Sandbox &amp; <span class="font-serif font-bold italic">Endpoint Workbench</span>
+            </h2>
+            <p class="text-xs text-neutral-500 mt-1 font-num">
+              Execute live requests against sovereign Cloudflare edge endpoints with sub-millisecond precision, payload inspector, and response headers.
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-num bg-neutral-100 border border-neutral-200 text-neutral-800 px-2.5 py-1 rounded-full font-bold">
+              Sub-15ms Recall Active
+            </span>
+          </div>
+        </div>
+
+        <!-- 1-Click Endpoint Preset Pills -->
+        <div class="space-y-2">
+          <span class="text-[11px] font-bold text-neutral-500 uppercase tracking-wider font-num">Quick Endpoint Presets</span>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="selectTesterPreset('search_instant')" class="px-3 py-1.5 rounded-xl border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
+              <span class="px-1.5 py-0.2 rounded bg-neutral-950 text-white text-[9px]">POST</span>
+              <span>/v1/search (Mode 1 Instant)</span>
+            </button>
+            <button type="button" onclick="selectTesterPreset('search_hybrid')" class="px-3 py-1.5 rounded-xl border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
+              <span class="px-1.5 py-0.2 rounded bg-neutral-950 text-white text-[9px]">POST</span>
+              <span>/v1/search (Mode 2 BM25)</span>
+            </button>
+            <button type="button" onclick="selectTesterPreset('memory_store')" class="px-3 py-1.5 rounded-xl border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
+              <span class="px-1.5 py-0.2 rounded bg-neutral-950 text-white text-[9px]">POST</span>
+              <span>/v1/memory (Store)</span>
+            </button>
+            <button type="button" onclick="selectTesterPreset('memory_recall')" class="px-3 py-1.5 rounded-xl border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
+              <span class="px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-800 text-[9px]">GET</span>
+              <span>/v1/memory/recall (&lt;15ms)</span>
+            </button>
+            <button type="button" onclick="selectTesterPreset('memory_context')" class="px-3 py-1.5 rounded-xl border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
+              <span class="px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-800 text-[9px]">GET</span>
+              <span>/v1/memory/context (LLM Prompt)</span>
+            </button>
+            <button type="button" onclick="selectTesterPreset('telemetry_event')" class="px-3 py-1.5 rounded-xl border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
+              <span class="px-1.5 py-0.2 rounded bg-neutral-950 text-white text-[9px]">POST</span>
+              <span>/v1/telemetry/event (Ingest)</span>
+            </button>
+            <button type="button" onclick="selectTesterPreset('usage')" class="px-3 py-1.5 rounded-xl border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
+              <span class="px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-800 text-[9px]">GET</span>
+              <span>/v1/usage (Key Quota)</span>
+            </button>
+            <button type="button" onclick="selectTesterPreset('key_metrics')" class="px-3 py-1.5 rounded-xl border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
+              <span class="px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-800 text-[9px]">GET</span>
+              <span>/v1/keys/metrics (Real-Time)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Request Builder Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-3 border-t border-neutral-100">
+          <!-- Left Column: Request Form -->
+          <div class="space-y-4">
+            <h3 class="text-sm font-bold text-neutral-950">HTTP Request Configuration</h3>
+
+            <div class="flex gap-2">
+              <select id="testerMethod" onchange="handleTesterMethodChange()" class="w-28 px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-num font-bold text-neutral-900 focus:outline-none focus:bg-white focus:border-black">
+                <option value="GET">GET</option>
+                <option value="POST" selected>POST</option>
+                <option value="DELETE">DELETE</option>
+              </select>
+              <input type="text" id="testerEndpoint" value="/v1/search" placeholder="/v1/..." class="flex-1 px-3.5 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono text-neutral-900 focus:outline-none focus:bg-white focus:border-black" />
+            </div>
+
+            <!-- Headers config -->
+            <div>
+              <label class="block text-[11px] font-medium text-neutral-600 mb-1 font-num">Authorization Header</label>
+              <div class="flex items-center gap-2">
+                <select id="testerKeySelect" onchange="handleTesterKeySelect(this.value)" class="flex-1 px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono text-neutral-800 focus:outline-none focus:bg-white focus:border-black">
+                  <option value="active">Active Key (Auto-injected X-API-Key)</option>
+                  <option value="bearer">Bearer Session Token</option>
+                  <option value="none">No Auth (Public Route)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Body JSON Editor -->
+            <div id="testerBodyContainer">
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-[11px] font-medium text-neutral-600 font-num">Request JSON Body</label>
+                <button type="button" onclick="formatTesterJson()" class="text-[10px] text-neutral-500 hover:text-black font-num underline cursor-pointer">Format JSON</button>
+              </div>
+              <textarea id="testerBody" rows="7" class="w-full p-3 bg-neutral-950 text-neutral-100 border border-neutral-800 rounded-xl font-mono text-xs code-scroll focus:outline-none focus:ring-1 focus:ring-neutral-400" placeholder='{"query": "edge computing"}'>{
+  "query": "What is Python?",
+  "mode": 1,
+  "num_results": 5
+}</textarea>
+            </div>
+
+            <button type="button" onclick="executeTesterRequest()" id="btnExecuteTester" class="w-full py-2.5 px-4 rounded-xl bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold cursor-pointer transition flex items-center justify-center gap-2 shadow-sm font-num">
+              <svg id="testerSpinner" class="w-4 h-4 text-white animate-spin hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/></svg>
+              <svg id="testerSendIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <span>Execute Live Request</span>
+            </button>
+          </div>
+
+          <!-- Right Column: Response Console -->
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-neutral-950">Edge Response Console</h3>
+              <div class="flex items-center gap-2" id="testerMetaStrip">
+                <span id="testerStatusBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-num font-bold"></span>
+                <span id="testerLatencyBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-num font-bold bg-neutral-100 text-neutral-800 border border-neutral-200"></span>
+              </div>
+            </div>
+
+            <div class="relative">
+              <pre id="testerResponsePre" class="p-4 bg-neutral-950 text-neutral-100 border border-neutral-800 rounded-2xl font-mono text-xs overflow-x-auto code-scroll min-h-[260px] max-h-[380px] overflow-y-auto">Select a preset above or enter an endpoint and click "Execute Live Request" to test any UltraDemon API live.</pre>
+              <div class="absolute top-3 right-3 flex items-center gap-1.5">
+                <button type="button" onclick="copyTesterResponse()" class="px-2 py-1 bg-white/10 hover:bg-white/20 text-white rounded text-[10px] font-num cursor-pointer transition">Copy JSON</button>
+                <button type="button" onclick="copyTesterCurl()" class="px-2 py-1 bg-white/10 hover:bg-white/20 text-white rounded text-[10px] font-num cursor-pointer transition">Copy cURL</button>
+              </div>
+            </div>
+
+            <!-- Diagnostic Metrics Footer -->
+            <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-200 text-[11px] font-num text-neutral-500 flex flex-wrap items-center justify-between gap-2">
+              <span>Edge Gateway: <strong class="text-neutral-900">${origin}</strong></span>
+              <span id="testerTimestamp">Ready</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- Floating Minimalist Toast Notifications -->
@@ -1875,10 +2297,11 @@ requests.post("${origin}/v1/analytics/capture", json={
       else if (suite === 'search') setAppView('search');
       else if (suite === 'memory') setAppView('memory');
       else if (suite === 'metrics') setAppView('analytics');
+      else if (suite === 'tester') setAppView('tester');
     }
 
     function updateSuiteSwitcher(suite) {
-      const suites = ['overview', 'search', 'memory', 'metrics'];
+      const suites = ['overview', 'search', 'memory', 'metrics', 'tester'];
       suites.forEach(s => {
         const btn = document.getElementById('suiteBtn-' + s);
         if (!btn) return;
@@ -1895,7 +2318,7 @@ requests.post("${origin}/v1/analytics/capture", json={
     }
 
     function setAppView(viewId) {
-      const views = ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations', 'analytics'];
+      const views = ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations', 'analytics', 'tester'];
       views.forEach(id => {
         const viewEl = document.getElementById('view-' + id);
         if (viewEl) {
@@ -1932,6 +2355,7 @@ requests.post("${origin}/v1/analytics/capture", json={
         membership: ['Memberships &amp; <span class="font-serif font-bold italic text-neutral-950">Quotas</span>', 'Manage your subscription tier and upgrade daily limits.'],
         integrations: ['Integrations &amp; <span class="font-serif font-bold italic text-neutral-950">MCP Protocol</span>', 'Connect UltraDemon to Claude Desktop, Cursor, and Vercel AI SDK.'],
         analytics: ['Telemetry &amp; <span class="font-serif font-bold italic text-neutral-950">ICP Engine</span>', 'PostHog-competitive edge analytics with autonomous Ideal Customer Profile synthesis.'],
+        tester: ['API Sandbox <span class="font-serif font-bold italic text-neutral-950">Tester</span>', 'Interactive real-time test bench for UltraSearch, UltraMemory, and UltraMetrics endpoints with live latency metrics.'],
       };
       if (titles[viewId]) {
         const t = document.getElementById('viewHeaderTitle');
@@ -1948,6 +2372,8 @@ requests.post("${origin}/v1/analytics/capture", json={
         updateSuiteSwitcher('memory');
       } else if (viewId === 'analytics') {
         updateSuiteSwitcher('metrics');
+      } else if (viewId === 'tester') {
+        updateSuiteSwitcher('tester');
       } else {
         updateSuiteSwitcher(null);
       }
@@ -2422,6 +2848,23 @@ requests.post("${origin}/v1/analytics/capture", json={
       if (elSearchShare) elSearchShare.innerText = searchSharePct + '%';
       if (elMemoryShare) elMemoryShare.innerText = memorySharePct + '%';
       if (elMetricsShare) elMetricsShare.innerText = metricsSharePct + '%';
+
+      // Per-API specific page displays
+      const sCalls = document.getElementById('searchDailyCallsDisplay');
+      const sShare = document.getElementById('searchCallsShareDisplay');
+      const mCalls = document.getElementById('memoryDailyCallsDisplay');
+      const mShare = document.getElementById('memoryCallsShareDisplay');
+      const matSearchCalls = document.getElementById('matrixSearchCalls');
+      const matMemoryCalls = document.getElementById('matrixMemoryCalls');
+      const matMetricsCalls = document.getElementById('matrixMetricsCalls');
+
+      if (sCalls) sCalls.innerText = searchCalls.toLocaleString();
+      if (sShare) sShare.innerText = searchSharePct + '% of daily total';
+      if (mCalls) mCalls.innerText = memoryCalls.toLocaleString();
+      if (mShare) mShare.innerText = memorySharePct + '% of daily total';
+      if (matSearchCalls) matSearchCalls.innerText = searchCalls.toLocaleString();
+      if (matMemoryCalls) matMemoryCalls.innerText = memoryCalls.toLocaleString();
+      if (matMetricsCalls) matMetricsCalls.innerText = metricsCalls.toLocaleString();
 
       // Estimate quota percentage across keys
       let totalDailyQuota = 0;
@@ -3578,6 +4021,228 @@ requests.post("${origin}/v1/analytics/capture", json={
       }
     }
 
+    // API Sandbox Tester Engine
+    const TESTER_PRESETS = {
+      search_instant: {
+        method: 'POST',
+        endpoint: '/v1/search',
+        auth: 'active',
+        body: JSON.stringify({ query: 'What is Python?', mode: 1, num_results: 5 }, null, 2)
+      },
+      search_hybrid: {
+        method: 'POST',
+        endpoint: '/v1/search',
+        auth: 'active',
+        body: JSON.stringify({ query: 'Cloudflare Workers SQLite', mode: 2, num_results: 5 }, null, 2)
+      },
+      memory_store: {
+        method: 'POST',
+        endpoint: '/v1/memory',
+        auth: 'active',
+        body: JSON.stringify({ content: 'User prefers dark mode and concise responses', container_tag: 'fleet-alpha', memory_type: 'preference' }, null, 2)
+      },
+      memory_recall: {
+        method: 'GET',
+        endpoint: '/v1/memory/recall?q=preferences&container_tag=fleet-alpha&limit=5',
+        auth: 'active',
+        body: ''
+      },
+      memory_context: {
+        method: 'GET',
+        endpoint: '/v1/memory/context?q=user+preferences&container_tag=fleet-alpha',
+        auth: 'active',
+        body: ''
+      },
+      telemetry_event: {
+        method: 'POST',
+        endpoint: '/v1/telemetry/event',
+        auth: 'active',
+        body: JSON.stringify({ event_name: 'sandbox_test_run', distinct_id: 'usr_sandbox_01', properties: { test: true, timestamp: Date.now() } }, null, 2)
+      },
+      usage: {
+        method: 'GET',
+        endpoint: '/v1/usage',
+        auth: 'active',
+        body: ''
+      },
+      key_metrics: {
+        method: 'GET',
+        endpoint: '/v1/keys/metrics',
+        auth: 'active',
+        body: ''
+      }
+    };
+
+    function selectTesterPreset(presetKey) {
+      const p = TESTER_PRESETS[presetKey];
+      if (!p) return;
+      const m = document.getElementById('testerMethod');
+      const e = document.getElementById('testerEndpoint');
+      const k = document.getElementById('testerKeySelect');
+      const b = document.getElementById('testerBody');
+      const bCont = document.getElementById('testerBodyContainer');
+
+      if (m) m.value = p.method;
+      if (e) e.value = p.endpoint;
+      if (k) k.value = p.auth;
+      if (b) b.value = p.body;
+      if (bCont) bCont.style.display = p.method === 'GET' ? 'none' : 'block';
+      showAppToast('Preset loaded: ' + p.endpoint);
+    }
+
+    function handleTesterMethodChange() {
+      const m = document.getElementById('testerMethod');
+      const bCont = document.getElementById('testerBodyContainer');
+      if (bCont && m) {
+        bCont.style.display = m.value === 'GET' ? 'none' : 'block';
+      }
+    }
+
+    function formatTesterJson() {
+      const b = document.getElementById('testerBody');
+      if (!b || !b.value.trim()) return;
+      try {
+        const parsed = JSON.parse(b.value);
+        b.value = JSON.stringify(parsed, null, 2);
+        showAppToast('JSON formatted');
+      } catch (err) {
+        showAppToast('Invalid JSON: ' + err.message, true);
+      }
+    }
+
+    let lastTesterResponseText = '';
+    let lastTesterCurlCommand = '';
+
+    async function executeTesterRequest() {
+      const m = document.getElementById('testerMethod');
+      const e = document.getElementById('testerEndpoint');
+      const k = document.getElementById('testerKeySelect');
+      const b = document.getElementById('testerBody');
+      const spinner = document.getElementById('testerSpinner');
+      const sendIcon = document.getElementById('testerSendIcon');
+      const resPre = document.getElementById('testerResponsePre');
+      const statusBadge = document.getElementById('testerStatusBadge');
+      const latencyBadge = document.getElementById('testerLatencyBadge');
+      const timeStamp = document.getElementById('testerTimestamp');
+
+      if (!e || !e.value.trim()) {
+        showAppToast('Please enter an endpoint path', true);
+        return;
+      }
+
+      const method = m ? m.value : 'GET';
+      const endpoint = e.value.trim();
+      const authMode = k ? k.value : 'active';
+      const bodyText = b ? b.value.trim() : '';
+
+      const headers = { 'Content-Type': 'application/json' };
+      const activeKey = getActiveKey();
+      const token = getAuthToken();
+
+      let authHeaderStr = '';
+      if (authMode === 'active') {
+        if (activeKey) {
+          headers['X-API-Key'] = activeKey;
+          authHeaderStr = '-H "X-API-Key: ' + activeKey + '" ';
+        } else if (token) {
+          headers['Authorization'] = 'Bearer ' + token;
+          authHeaderStr = '-H "Authorization: Bearer ' + token + '" ';
+        }
+      } else if (authMode === 'bearer' && token) {
+        headers['Authorization'] = 'Bearer ' + token;
+        authHeaderStr = '-H "Authorization: Bearer ' + token + '" ';
+      }
+
+      let curlCmd = 'curl -X ' + method + ' "' + ORIGIN + (endpoint.startsWith('/') ? endpoint : '/' + endpoint) + '" \\\n  ' + authHeaderStr + '-H "Content-Type: application/json"';
+      if (method !== 'GET' && bodyText) {
+        curlCmd += ' \\\n  -d \'' + bodyText.replace(/'/g, "'\\''") + '\'';
+      }
+      lastTesterCurlCommand = curlCmd;
+
+      if (spinner) spinner.classList.remove('hidden');
+      if (sendIcon) sendIcon.classList.add('hidden');
+      if (resPre) resPre.innerText = 'Executing live edge request to ' + endpoint + '...';
+
+      const tStart = performance.now();
+      try {
+        const fetchOpts = { method, headers };
+        if (method !== 'GET' && bodyText) {
+          fetchOpts.body = bodyText;
+        }
+
+        const res = await fetch(endpoint, fetchOpts);
+        const duration = Math.round(performance.now() - tStart);
+
+        let data;
+        const text = await res.text();
+        try {
+          data = JSON.parse(text);
+          lastTesterResponseText = JSON.stringify(data, null, 2);
+        } catch {
+          lastTesterResponseText = text;
+        }
+
+        if (resPre) resPre.innerText = lastTesterResponseText;
+
+        if (statusBadge) {
+          statusBadge.classList.remove('hidden');
+          statusBadge.innerText = res.status + ' ' + (res.statusText || (res.ok ? 'OK' : 'Error'));
+          if (res.ok) {
+            statusBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-num font-bold bg-emerald-50 text-emerald-800 border border-emerald-200';
+          } else {
+            statusBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-num font-bold bg-amber-50 text-amber-800 border border-amber-200';
+          }
+        }
+
+        if (latencyBadge) {
+          latencyBadge.classList.remove('hidden');
+          latencyBadge.innerText = duration + 'ms Roundtrip Edge';
+        }
+
+        if (timeStamp) {
+          timeStamp.innerText = 'Executed: ' + new Date().toLocaleTimeString() + ' (' + duration + 'ms)';
+        }
+
+        if (endpoint.includes('search')) {
+          loadRealtimeKeyMetrics(false);
+        } else if (endpoint.includes('memory')) {
+          loadRealtimeKeyMetrics(false);
+          loadStoredMemories();
+        }
+      } catch (err) {
+        const duration = Math.round(performance.now() - tStart);
+        if (resPre) resPre.innerText = 'Request Failed:\n' + err.message;
+        if (statusBadge) {
+          statusBadge.classList.remove('hidden');
+          statusBadge.innerText = 'Network Error';
+          statusBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-num font-bold bg-red-50 text-red-800 border border-red-200';
+        }
+        if (latencyBadge) {
+          latencyBadge.classList.remove('hidden');
+          latencyBadge.innerText = duration + 'ms';
+        }
+      } finally {
+        if (spinner) spinner.classList.add('hidden');
+        if (sendIcon) sendIcon.classList.remove('hidden');
+      }
+    }
+
+    function copyTesterResponse() {
+      if (lastTesterResponseText) {
+        copyToClipboard(lastTesterResponseText);
+      } else {
+        showAppToast('No response to copy yet', true);
+      }
+    }
+
+    function copyTesterCurl() {
+      if (lastTesterCurlCommand) {
+        copyToClipboard(lastTesterCurlCommand);
+      } else {
+        showAppToast('No request formulated yet', true);
+      }
+    }
+
     // Initialize Workspace
     async function initWorkspace() {
       // 1. Direct event listener bindings for sidebar and switcher buttons (synchronous)
@@ -3589,7 +4254,7 @@ requests.post("${origin}/v1/analytics/capture", json={
         });
       });
 
-      ['overview', 'search', 'memory', 'metrics'].forEach(s => {
+      ['overview', 'search', 'memory', 'metrics', 'tester'].forEach(s => {
         const btn = document.getElementById('suiteBtn-' + s);
         if (btn) {
           btn.addEventListener('click', (e) => {
@@ -3610,8 +4275,9 @@ requests.post("${origin}/v1/analytics/capture", json={
       if (suiteParam === 'search') targetTab = 'search';
       else if (suiteParam === 'memory') targetTab = 'memory';
       else if (suiteParam === 'metrics') targetTab = 'analytics';
+      else if (suiteParam === 'tester' || suiteParam === 'sandbox') targetTab = 'tester';
 
-      if (targetTab && ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations', 'analytics'].includes(targetTab)) {
+      if (targetTab && ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations', 'analytics', 'tester'].includes(targetTab)) {
         setAppView(targetTab);
       } else {
         setAppView('overview');
