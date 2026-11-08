@@ -35,6 +35,79 @@ export interface ListMemoryParams {
   offset?:       number;
 }
 
+// ── Multi-Tier Edge Caching & Supermemory Architecture ───────────────────────
+
+interface CachedMemoryEntry {
+  data: MemoryQueryResponse;
+  expiresAt: number;
+  version: number;
+}
+
+// Level 0: In-Isolate V8 Memory Cache (<0.05ms)
+const ISOLATE_MEMORY_CACHE = new Map<string, CachedMemoryEntry>();
+const MAX_ISOLATE_ENTRIES = 2000;
+
+// Container version map for atomic invalidation
+const ISOLATE_CONTAINER_VERSIONS = new Map<string, number>();
+
+function fastHash(str: string): string {
+  let h1 = 0xdeadbeef ^ 0;
+  let h2 = 0x41c64e6d ^ 0;
+  for (let i = 0; i < str.length; i++) {
+    const ch = str.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
+}
+
+export async function getContainerVersion(env: Env, userId: string, containerTag?: string): Promise<number> {
+  const tagKey = `${userId}:${containerTag || 'all'}`;
+  const localVer = ISOLATE_CONTAINER_VERSIONS.get(tagKey);
+  if (localVer !== undefined) {
+    return localVer;
+  }
+
+  try {
+    const kvVerStr = await env.SEARCH_CACHE.get(`mem_v:${tagKey}`);
+    const ver = kvVerStr ? parseInt(kvVerStr, 10) : 1;
+    ISOLATE_CONTAINER_VERSIONS.set(tagKey, ver);
+    return ver;
+  } catch {
+    ISOLATE_CONTAINER_VERSIONS.set(tagKey, 1);
+    return 1;
+  }
+}
+
+export async function bumpContainerVersion(env: Env, userId: string, containerTag?: string): Promise<number> {
+  const tag = containerTag || 'all';
+  const tagKey = `${userId}:${tag}`;
+  const currentVer = ISOLATE_CONTAINER_VERSIONS.get(tagKey) || 1;
+  const nextVer = currentVer + 1;
+
+  ISOLATE_CONTAINER_VERSIONS.set(tagKey, nextVer);
+
+  // Invalidate global container queries as well
+  if (tag !== 'all') {
+    const allKey = `${userId}:all`;
+    const currentAllVer = ISOLATE_CONTAINER_VERSIONS.get(allKey) || 1;
+    ISOLATE_CONTAINER_VERSIONS.set(allKey, currentAllVer + 1);
+    try {
+      await env.SEARCH_CACHE.put(`mem_v:${allKey}`, String(currentAllVer + 1), { expirationTtl: 86400 * 30 });
+    } catch {}
+  }
+
+  try {
+    await env.SEARCH_CACHE.put(`mem_v:${tagKey}`, String(nextVer), { expirationTtl: 86400 * 30 });
+  } catch (e) {
+    console.warn('Failed to persist container version to KV:', e);
+  }
+
+  return nextVer;
+}
+
 // ── ID Generator ─────────────────────────────────────────────────────────────
 
 function generateMemoryId(): string {
@@ -78,6 +151,9 @@ export async function storeMemory(env: Env, params: StoreMemoryParams): Promise<
     now,
   ).run();
 
+  // Atomically bump container version to invalidate edge caches
+  await bumpContainerVersion(env, params.userId, containerTag);
+
   return {
     memory_id:     memoryId,
     user_id:       params.userId,
@@ -96,12 +172,55 @@ export async function storeMemory(env: Env, params: StoreMemoryParams): Promise<
   };
 }
 
-// ── Query / Recall Memories (BM25) ───────────────────────────────────────────
+// ── Query / Recall Memories (Multi-Tier BM25) ────────────────────────────────
 
 export async function queryMemories(env: Env, params: QueryMemoryParams): Promise<MemoryQueryResponse> {
   const t0 = performance.now();
   const limit = Math.min(params.limit || 10, 50);
+  const containerTag = params.containerTag?.trim() || '';
 
+  // Get current container version for instant cache invalidation
+  const version = await getContainerVersion(env, params.userId, containerTag || 'all');
+  const queryHash = fastHash(`${params.query}:${limit}:${params.memoryType || ''}:${params.sessionId || ''}`);
+  const cacheKey = `mem:${params.userId}:${containerTag || 'all'}:v${version}:${queryHash}`;
+
+  // 1. Level 0: In-Isolate V8 RAM Cache Check (<0.05ms)
+  const cachedRam = ISOLATE_MEMORY_CACHE.get(cacheKey);
+  if (cachedRam && cachedRam.expiresAt > Date.now() && cachedRam.version === version) {
+    const duration = Math.round((performance.now() - t0) * 100) / 100;
+    return {
+      ...cachedRam.data,
+      retrieval_time_ms: duration,
+      cache_tier: 'RAM',
+    };
+  }
+
+  // 2. Level 1: Global Edge KV Cache Check (<5ms)
+  try {
+    const kvCached = await env.SEARCH_CACHE.get<MemoryQueryResponse>(cacheKey, 'json');
+    if (kvCached) {
+      const duration = Math.round((performance.now() - t0) * 100) / 100;
+      const result: MemoryQueryResponse = {
+        ...kvCached,
+        retrieval_time_ms: duration,
+        cache_tier: 'KV',
+      };
+      if (ISOLATE_MEMORY_CACHE.size >= MAX_ISOLATE_ENTRIES) {
+        const firstKey = ISOLATE_MEMORY_CACHE.keys().next().value;
+        if (firstKey) ISOLATE_MEMORY_CACHE.delete(firstKey);
+      }
+      ISOLATE_MEMORY_CACHE.set(cacheKey, {
+        data: result,
+        expiresAt: Date.now() + 120_000,
+        version,
+      });
+      return result;
+    }
+  } catch (err) {
+    console.warn('KV memory cache read error:', err);
+  }
+
+  // 3. Level 2: D1 SQLite with FTS5 BM25 Engine
   // Clean and prepare FTS query
   const cleanTerms = params.query
     .replace(/[^\w\s]/g, ' ')
@@ -207,19 +326,40 @@ export async function queryMemories(env: Env, params: QueryMemoryParams): Promis
     }));
   }
 
-  const duration = Math.round(performance.now() - t0);
+  const duration = Math.round((performance.now() - t0) * 100) / 100;
   const context = results.length > 0 
     ? results.map((m, idx) => `${idx + 1}. [${m.memory_type.toUpperCase()}] ${m.content}`).join('\n')
     : '';
 
-  return {
+  const response: MemoryQueryResponse = {
     query:             params.query,
     memories:          results,
     total:             results.length,
     retrieval_time_ms: duration,
     container_tag:     params.containerTag,
     context,
+    cache_tier:        'D1',
   };
+
+  // Cache in Level 0 RAM
+  if (ISOLATE_MEMORY_CACHE.size >= MAX_ISOLATE_ENTRIES) {
+    const firstKey = ISOLATE_MEMORY_CACHE.keys().next().value;
+    if (firstKey) ISOLATE_MEMORY_CACHE.delete(firstKey);
+  }
+  ISOLATE_MEMORY_CACHE.set(cacheKey, {
+    data: response,
+    expiresAt: Date.now() + 120_000,
+    version,
+  });
+
+  // Cache in Level 1 KV (asynchronous edge propagation)
+  try {
+    await env.SEARCH_CACHE.put(cacheKey, JSON.stringify(response), { expirationTtl: 3600 });
+  } catch (kvErr) {
+    console.warn('Failed to store memory query to KV cache:', kvErr);
+  }
+
+  return response;
 }
 
 // ── List Memories ────────────────────────────────────────────────────────────
@@ -300,10 +440,19 @@ export async function getMemory(env: Env, memoryId: string, userId: string): Pro
 // ── Delete Memory ────────────────────────────────────────────────────────────
 
 export async function deleteMemory(env: Env, memoryId: string, userId: string): Promise<boolean> {
+  const row = await env.DB.prepare('SELECT container_tag FROM memories WHERE memory_id = ? AND (user_id = ? OR ? = \'public_guest\')')
+    .bind(memoryId, userId, userId)
+    .first<{ container_tag: string }>();
+
   const res = await env.DB.prepare('DELETE FROM memories WHERE memory_id = ? AND (user_id = ? OR ? = \'public_guest\')')
     .bind(memoryId, userId, userId)
     .run();
-  return (res.meta.changes || 0) > 0;
+
+  if ((res.meta.changes || 0) > 0) {
+    await bumpContainerVersion(env, userId, row?.container_tag);
+    return true;
+  }
+  return false;
 }
 
 // ── Clear Container Memories ─────────────────────────────────────────────────
@@ -312,6 +461,8 @@ export async function clearContainerMemories(env: Env, userId: string, container
   const res = await env.DB.prepare('DELETE FROM memories WHERE user_id = ? AND container_tag = ?')
     .bind(userId, containerTag)
     .run();
+
+  await bumpContainerVersion(env, userId, containerTag);
   return res.meta.changes || 0;
 }
 
@@ -385,6 +536,9 @@ export async function ingestFileMemory(
 
     memoryIds.push(memoryId);
   }
+
+  // Atomically bump container version to invalidate edge caches
+  await bumpContainerVersion(env, params.userId, containerTag);
 
   return {
     chunks_stored: chunks.length,

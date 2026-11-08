@@ -193,6 +193,13 @@ async function handleQueryMemory(c: any) {
       limit:        isNaN(limit) ? 10 : limit,
     });
 
+    const cacheTier = response.cache_tier || 'D1';
+    const cacheStatus = cacheTier === 'RAM' ? 'HIT-RAM' : cacheTier === 'KV' ? 'HIT-KV' : 'MISS';
+    c.header('X-Cache-Status', cacheStatus);
+    c.header('X-Memory-Latency-Ms', String(response.retrieval_time_ms));
+    c.header('Server-Timing', `memory;dur=${response.retrieval_time_ms};desc="${cacheTier}"`);
+    c.header('Cache-Control', 'private, max-age=60');
+
     if (format === 'text') {
       return c.text(response.context || 'No relevant memories found.');
     }
@@ -240,11 +247,19 @@ async function handleContextMemory(c: any) {
     limit: isNaN(limit) ? 5 : limit,
   });
 
+  const cacheTier = response.cache_tier || 'D1';
+  const cacheStatus = cacheTier === 'RAM' ? 'HIT-RAM' : cacheTier === 'KV' ? 'HIT-KV' : 'MISS';
+  c.header('X-Cache-Status', cacheStatus);
+  c.header('X-Memory-Latency-Ms', String(response.retrieval_time_ms));
+  c.header('Server-Timing', `memory;dur=${response.retrieval_time_ms};desc="${cacheTier}"`);
+  c.header('Cache-Control', 'private, max-age=60');
+
   return c.json({
     query,
     context: response.context || '',
     count: response.memories.length,
     retrieval_time_ms: response.retrieval_time_ms,
+    cache_tier: response.cache_tier,
     container_tag: containerTag || 'default',
   });
 }

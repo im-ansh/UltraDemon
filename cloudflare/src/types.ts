@@ -113,4 +113,5 @@ export interface MemoryQueryResponse {
   retrieval_time_ms: number;
   container_tag?: string;
   context?: string;
+  cache_tier?: 'RAM' | 'KV' | 'D1';
 }
