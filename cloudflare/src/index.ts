@@ -39,7 +39,11 @@ app.use('*', cors({
   origin:  '*',
   allowMethods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
   allowHeaders: ['Content-Type', 'X-API-Key', 'Authorization'],
-  exposeHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset'],
+  exposeHeaders: [
+    'X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset',
+    'X-RateLimit-Tier', 'X-RateLimit-Max-QPS', 'X-Auth-Latency-Us',
+    'X-Engine-Latency-Ms', 'X-Cache-Status', 'X-Edge-PoP', 'Server-Timing'
+  ],
 }));
 
 app.use('*', logger());

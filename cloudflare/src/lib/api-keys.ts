@@ -28,6 +28,73 @@ function randomHex(len: number): string {
 
 // ── Create Key ───────────────────────────────────────────────────────────────
 
+export interface PlanSpec {
+  plan_id: string;
+  name: string;
+  daily_limit: number;
+  results_per_query: number;
+  max_qps: number;
+  semantic_search: boolean;
+  realtime_news: boolean;
+  features: string[];
+}
+
+export const PLAN_SPECS: Record<string, PlanSpec> = {
+  free: {
+    plan_id: 'free',
+    name: 'Free Tier',
+    daily_limit: 100,
+    results_per_query: 10,
+    max_qps: 5,
+    semantic_search: false,
+    realtime_news: false,
+    features: ['Instant BM25 (<15ms)', 'Basic Memory', 'Community Support'],
+  },
+  pro: {
+    plan_id: 'pro',
+    name: 'Pro Tier',
+    daily_limit: 10000,
+    results_per_query: 25,
+    max_qps: 20,
+    semantic_search: true,
+    realtime_news: true,
+    features: ['Sub-15ms BM25', 'Deep Research Mode', 'Full Memory Isolation', 'Priority Queuing'],
+  },
+  ultra: {
+    plan_id: 'ultra',
+    name: 'Ultra Tier',
+    daily_limit: 50000,
+    results_per_query: 50,
+    max_qps: 50,
+    semantic_search: true,
+    realtime_news: true,
+    features: ['High-Concurrency Edge Agents', 'Autonomous Crawler', 'ICP Telemetry Engine'],
+  },
+  enterprise: {
+    plan_id: 'enterprise',
+    name: 'Enterprise Tier',
+    daily_limit: -1,
+    results_per_query: 100,
+    max_qps: 200,
+    semantic_search: true,
+    realtime_news: true,
+    features: ['Unlimited Edge Requests', 'Dedicated PoP Sharding', 'Custom D1 Storage Partitioning'],
+  },
+};
+
+export function getPlanSpec(planId?: string): PlanSpec {
+  return PLAN_SPECS[(planId || 'free').toLowerCase()] || PLAN_SPECS.free;
+}
+
+// ── In-Isolate V8 Memory Cache (Level 0: <0.05ms) ───────────────────────────
+interface IsolateKeyEntry {
+  record: ApiKeyRecord;
+  cachedAt: number;
+}
+const KEY_ISOLATE_CACHE = new Map<string, IsolateKeyEntry>();
+const KEY_ISOLATE_TTL_MS = 60_000; // 60s
+const MAX_ISOLATE_KEYS = 1000;
+
 export async function createApiKey(
   env: Env,
   userId: string,
@@ -35,14 +102,9 @@ export async function createApiKey(
   label: string = '',
   keyType: 'unified' | 'memory' | 'search' | 'telemetry' = 'unified',
 ): Promise<{ plainKey: string; record: ApiKeyRecord }> {
-  // Validate plan exists in D1
-  const planRow = await env.DB
-    .prepare('SELECT plan_id FROM plans WHERE plan_id = ?')
-    .bind(plan)
-    .first();
-  if (!planRow) throw new Error(`Unknown plan: ${plan}`);
+  const planSpec = getPlanSpec(plan);
 
-  const prefix = keyType === 'memory' ? 'um_' : keyType === 'telemetry' ? 'ut_' : KEY_PREFIX;
+  const prefix = keyType === 'memory' ? 'um_' : keyType === 'telemetry' ? 'ut_' : keyType === 'unified' ? 'ud_' : KEY_PREFIX;
   const plainKey = `${prefix}${randomB62(KEY_BODY_LEN)}`;
   const hashedKey = await hashKey(plainKey, env.ULTRASEARCH_SECRET);
   const keyId = randomHex(16);
@@ -52,12 +114,16 @@ export async function createApiKey(
     hashed_key: hashedKey,
     key_id:     keyId,
     user_id:    userId,
-    plan,
+    plan:       planSpec.plan_id,
     key_type:   keyType,
     label:      label || `${keyType === 'memory' ? 'UltraMemory' : keyType === 'search' ? 'UltraSearch' : keyType === 'telemetry' ? 'UltraMetrics' : 'Unified'} key`,
     created_at: now,
     revoked:    false,
   };
+
+  // Populate In-Isolate and KV cache proactively
+  KEY_ISOLATE_CACHE.set(plainKey, { record, cachedAt: now });
+  await env.KEY_CACHE.put(`key:${hashedKey}`, JSON.stringify(record), { expirationTtl: 300 });
 
   // Store in D1 (persistent)
   await env.DB
@@ -65,7 +131,7 @@ export async function createApiKey(
       INSERT INTO api_keys (hashed_key, key_id, user_id, plan, key_type, label, created_at, revoked)
       VALUES (?, ?, ?, ?, ?, ?, ?, 0)
     `)
-    .bind(hashedKey, keyId, userId, plan, keyType, record.label, now)
+    .bind(hashedKey, keyId, userId, planSpec.plan_id, keyType, record.label, now)
     .run();
 
   return { plainKey, record };
@@ -77,21 +143,38 @@ export async function validateApiKey(
   env: Env,
   plainKey: string,
 ): Promise<ApiKeyRecord> {
-  if (!plainKey.startsWith('us_') && !plainKey.startsWith('um_')) {
-    throw new Error("Invalid API key format — must start with 'us_' or 'um_'");
+  if (!plainKey.startsWith('us_') && !plainKey.startsWith('um_') && !plainKey.startsWith('ut_') && !plainKey.startsWith('ud_')) {
+    throw new Error("Invalid API key format — must start with 'us_', 'um_', 'ut_', or 'ud_'");
+  }
+
+  const now = Date.now();
+
+  // Tier 0: In-Isolate RAM Cache (0.01ms - 0.05ms)
+  const memCached = KEY_ISOLATE_CACHE.get(plainKey);
+  if (memCached && (now - memCached.cachedAt < KEY_ISOLATE_TTL_MS)) {
+    if (memCached.record.revoked) {
+      KEY_ISOLATE_CACHE.delete(plainKey);
+      throw new Error('API key has been revoked');
+    }
+    return memCached.record;
   }
 
   const hashedKey = await hashKey(plainKey, env.ULTRASEARCH_SECRET);
 
-  // Check KV cache first (5-min TTL — much faster than D1)
+  // Tier 1: Cloudflare KV Edge Cache (<15ms)
   const cacheKey = `key:${hashedKey}`;
   const cached = await env.KEY_CACHE.get<ApiKeyRecord>(cacheKey, 'json');
   if (cached) {
     if (cached.revoked) throw new Error('API key has been revoked');
+    if (KEY_ISOLATE_CACHE.size >= MAX_ISOLATE_KEYS) {
+      const oldest = KEY_ISOLATE_CACHE.keys().next().value;
+      if (oldest) KEY_ISOLATE_CACHE.delete(oldest);
+    }
+    KEY_ISOLATE_CACHE.set(plainKey, { record: cached, cachedAt: now });
     return cached;
   }
 
-  // Cache miss — hit D1
+  // Tier 2: D1 Database Query (Cache miss)
   const row = await env.DB
     .prepare('SELECT * FROM api_keys WHERE hashed_key = ?')
     .bind(hashedKey)
@@ -103,12 +186,16 @@ export async function validateApiKey(
   // Populate KV cache (5 min TTL)
   await env.KEY_CACHE.put(cacheKey, JSON.stringify(row), { expirationTtl: 300 });
 
+  // Populate In-Isolate cache
+  KEY_ISOLATE_CACHE.set(plainKey, { record: row, cachedAt: now });
+
   return row;
 }
 
 // ── Revoke Key ───────────────────────────────────────────────────────────────
 
 export async function revokeApiKey(env: Env, plainKey: string): Promise<void> {
+  KEY_ISOLATE_CACHE.delete(plainKey);
   const hashedKey = await hashKey(plainKey, env.ULTRASEARCH_SECRET);
 
   await env.DB

@@ -1,10 +1,19 @@
-// UltraSearch — KV Cache Layer
-// Wraps Cloudflare KV for search result caching.
-// Cache hit = sub-millisecond response globally.
+// UltraSearch — High-Performance Multi-Tier Edge Cache Layer
+// Tier 0: In-Isolate V8 Memory (<0.05ms RAM)
+// Tier 1: Cloudflare KV Global Cache (<15ms Anycast)
 
 import type { Env, SearchResponse } from '../types';
 
-const CACHE_TTL_SECONDS = 60;   // 1 min for search results
+const KV_CACHE_TTL_SECONDS = 120; // 2 min for search results in KV
+const ISOLATE_CACHE_TTL_MS = 60_000; // 60s in local isolate RAM
+const MAX_ISOLATE_ENTRIES = 500;
+
+interface IsolateSearchEntry {
+  response: SearchResponse;
+  ts: number;
+}
+
+const ISOLATE_SEARCH_CACHE = new Map<string, IsolateSearchEntry>();
 
 function buildCacheKey(query: string, params: Record<string, unknown>): string {
   const normalized = query.toLowerCase().trim();
@@ -19,9 +28,39 @@ export async function getCachedSearch(
   env: Env,
   query: string,
   params: Record<string, unknown>,
-): Promise<SearchResponse | null> {
+): Promise<{ response: SearchResponse; cacheTier: 'RAM' | 'KV' } | null> {
   const key = buildCacheKey(query, params);
-  return env.SEARCH_CACHE.get<SearchResponse>(key, 'json');
+
+  // 1. Tier 0: In-Isolate Memory Cache (0.01ms - 0.05ms)
+  const now = Date.now();
+  const ramCached = ISOLATE_SEARCH_CACHE.get(key);
+  if (ramCached && (now - ramCached.ts < ISOLATE_CACHE_TTL_MS)) {
+    return {
+      response: { ...ramCached.response },
+      cacheTier: 'RAM',
+    };
+  }
+
+  // 2. Tier 1: Cloudflare Anycast KV Cache (<15ms)
+  try {
+    const kvCached = await env.SEARCH_CACHE.get<SearchResponse>(key, 'json');
+    if (kvCached) {
+      // Warm up isolate cache for subsequent requests
+      if (ISOLATE_SEARCH_CACHE.size >= MAX_ISOLATE_ENTRIES) {
+        const oldest = ISOLATE_SEARCH_CACHE.keys().next().value;
+        if (oldest) ISOLATE_SEARCH_CACHE.delete(oldest);
+      }
+      ISOLATE_SEARCH_CACHE.set(key, { response: kvCached, ts: now });
+      return {
+        response: kvCached,
+        cacheTier: 'KV',
+      };
+    }
+  } catch (err) {
+    console.warn('KV search cache read non-fatal:', err);
+  }
+
+  return null;
 }
 
 export async function setCachedSearch(
@@ -31,8 +70,25 @@ export async function setCachedSearch(
   response: SearchResponse,
 ): Promise<void> {
   const key = buildCacheKey(query, params);
-  await env.SEARCH_CACHE.put(key, JSON.stringify(response), {
-    expirationTtl: CACHE_TTL_SECONDS,
-  });
+  const now = Date.now();
+
+  // Populate Tier 0 (RAM)
+  if (ISOLATE_SEARCH_CACHE.size >= MAX_ISOLATE_ENTRIES) {
+    const oldest = ISOLATE_SEARCH_CACHE.keys().next().value;
+    if (oldest) ISOLATE_SEARCH_CACHE.delete(oldest);
+  }
+  ISOLATE_SEARCH_CACHE.set(key, { response, ts: now });
+
+  // Populate Tier 1 (KV)
+  try {
+    await env.SEARCH_CACHE.put(key, JSON.stringify(response), {
+      expirationTtl: KV_CACHE_TTL_SECONDS,
+    });
+  } catch (err) {
+    console.warn('KV search cache write non-fatal:', err);
+  }
 }
 
+export function clearIsolateSearchCache(): void {
+  ISOLATE_SEARCH_CACHE.clear();
+}
