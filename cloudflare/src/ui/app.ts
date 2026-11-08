@@ -92,6 +92,158 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       background: #d4d4d8;
       border-radius: 6px;
     }
+
+    /* ── Harry Potter Ethereal Spellcast & Flow Transitions ── */
+    .magic-flow-out {
+      animation: magicPageFlowOut 0.22s cubic-bezier(0.4, 0, 0.9, 1) forwards !important;
+      pointer-events: none !important;
+      transform-origin: center 20%;
+      will-change: transform, opacity, filter;
+    }
+
+    @keyframes magicPageFlowOut {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1) perspective(1000px) rotateX(0deg);
+        filter: blur(0px) drop-shadow(0 0 0 rgba(212, 175, 55, 0));
+      }
+      30% {
+        opacity: 0.9;
+        filter: blur(3px) drop-shadow(0 -4px 18px rgba(212, 175, 55, 0.5));
+        transform: translateY(-6px) scale(0.99) perspective(1000px) rotateX(2deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-28px) scale(0.96) perspective(1000px) rotateX(6deg) rotateZ(-0.5deg);
+        filter: blur(14px) drop-shadow(0 -10px 30px rgba(212, 175, 55, 0));
+      }
+    }
+
+    .magic-flow-in {
+      animation: magicPageFlowIn 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+      transform-origin: center 20%;
+      will-change: transform, opacity, filter;
+    }
+
+    @keyframes magicPageFlowIn {
+      0% {
+        opacity: 0;
+        transform: translateY(32px) scale(0.96) perspective(1000px) rotateX(-6deg) rotateZ(0.5deg);
+        filter: blur(16px) drop-shadow(0 8px 25px rgba(212, 175, 55, 0.45));
+      }
+      45% {
+        opacity: 0.85;
+        filter: blur(4px) drop-shadow(0 4px 14px rgba(212, 175, 55, 0.25));
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1) perspective(1000px) rotateX(0deg) rotateZ(0deg);
+        filter: blur(0px) drop-shadow(0 0 0 rgba(0,0,0,0));
+      }
+    }
+
+    .magic-text-flow-out {
+      animation: magicTextFlowOut 0.2s cubic-bezier(0.4, 0, 1, 1) forwards !important;
+      will-change: transform, opacity, filter, letter-spacing;
+    }
+
+    @keyframes magicTextFlowOut {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0px);
+        letter-spacing: normal;
+      }
+      35% {
+        color: #d4af37 !important;
+        text-shadow: 0 0 12px rgba(212, 175, 55, 0.7);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-18px) scale(1.02);
+        filter: blur(10px);
+        letter-spacing: 2px;
+        color: #d4af37 !important;
+      }
+    }
+
+    .magic-text-flow-in {
+      animation: magicTextFlowIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+      will-change: transform, opacity, filter, letter-spacing;
+    }
+
+    @keyframes magicTextFlowIn {
+      0% {
+        opacity: 0;
+        transform: translateY(18px) scale(0.97);
+        filter: blur(12px);
+        letter-spacing: 3px;
+        color: #d4af37 !important;
+        text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+      }
+      50% {
+        opacity: 0.9;
+        filter: blur(2px);
+        letter-spacing: 0.5px;
+        color: #171717;
+        text-shadow: 0 0 10px rgba(212, 175, 55, 0.35);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0px);
+        letter-spacing: normal;
+        color: inherit;
+        text-shadow: none;
+      }
+    }
+
+    .magic-card-cascade {
+      animation: magicCardFlow 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: calc(var(--magic-idx, 0) * 45ms);
+      will-change: transform, opacity, filter;
+    }
+
+    @keyframes magicCardFlow {
+      0% {
+        opacity: 0;
+        transform: translateY(22px) scale(0.975);
+        filter: blur(10px);
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+      }
+      60% {
+        filter: blur(1px);
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0px);
+        box-shadow: none;
+      }
+    }
+
+    .magic-rune-pulse {
+      animation: magicRuneAura 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes magicRuneAura {
+      0% {
+        box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.8), 0 0 12px 2px rgba(212, 175, 55, 0.4);
+        border-color: #d4af37;
+        transform: scale(0.96);
+      }
+      40% {
+        box-shadow: 0 0 22px 6px rgba(212, 175, 55, 0.5), 0 0 28px 4px rgba(245, 158, 11, 0.3);
+        border-color: #f59e0b;
+        transform: scale(1.04);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+        border-color: #e5e5e5;
+        transform: scale(1);
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen bg-[#fafafa] text-neutral-950 flex flex-col lg:flex-row antialiased selection:bg-black selection:text-white">
@@ -140,12 +292,12 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         <!-- Group 1: Platform -->
         <div class="space-y-1">
           <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Platform</div>
-          <button type="button" onclick="setAppView('overview')" data-view-target="overview" id="nav-overview" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl bg-neutral-950 text-white font-semibold cursor-pointer transition text-left shadow-xs">
+          <button type="button" onclick="setAppView('overview', event)" data-view-target="overview" id="nav-overview" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl bg-neutral-950 text-white font-semibold cursor-pointer transition text-left shadow-xs">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
             <span>Overview</span>
           </button>
 
-          <button type="button" onclick="setAppView('keys')" data-view-target="keys" id="nav-keys" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
+          <button type="button" onclick="setAppView('keys', event)" data-view-target="keys" id="nav-keys" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
             <div class="flex items-center gap-2.5">
               <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
               <span>API Keys</span>
@@ -157,7 +309,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         <!-- Group 2: Engines -->
         <div class="space-y-1">
           <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Engines</div>
-          <button type="button" onclick="setAppView('memory')" data-view-target="memory" id="nav-memory" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
+          <button type="button" onclick="setAppView('memory', event)" data-view-target="memory" id="nav-memory" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
             <div class="flex items-center gap-2.5">
               <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
               <span>UltraMemory</span>
@@ -165,7 +317,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
             <span class="font-num text-[10px] bg-purple-50 text-purple-700 border border-purple-200 px-1.5 py-0.2 rounded font-bold">&lt;15ms</span>
           </button>
 
-          <button type="button" onclick="setAppView('search')" data-view-target="search" id="nav-search" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
+          <button type="button" onclick="setAppView('search', event)" data-view-target="search" id="nav-search" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
             <div class="flex items-center gap-2.5">
               <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
               <span>UltraSearch Studio</span>
@@ -173,7 +325,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
             <span class="font-num text-[10px] bg-sky-50 text-sky-700 border border-sky-200 px-1.5 py-0.2 rounded font-bold">&lt;40ms</span>
           </button>
 
-          <button type="button" onclick="setAppView('crawler')" data-view-target="crawler" id="nav-crawler" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
+          <button type="button" onclick="setAppView('crawler', event)" data-view-target="crawler" id="nav-crawler" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
             <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
             <span>Web Crawler</span>
           </button>
@@ -182,7 +334,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         <!-- Group 3: Observability & Protocol -->
         <div class="space-y-1">
           <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Analytics &amp; Protocol</div>
-          <button type="button" onclick="setAppView('analytics')" data-view-target="analytics" id="nav-analytics" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
+          <button type="button" onclick="setAppView('analytics', event)" data-view-target="analytics" id="nav-analytics" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
             <div class="flex items-center gap-2.5">
               <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
               <span>Telemetry &amp; ICP</span>
@@ -190,12 +342,12 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
             <span class="font-num text-[9px] bg-neutral-900 text-white px-1.5 py-0.5 rounded font-semibold">vs PostHog</span>
           </button>
 
-          <button type="button" onclick="setAppView('membership')" data-view-target="membership" id="nav-membership" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
+          <button type="button" onclick="setAppView('membership', event)" data-view-target="membership" id="nav-membership" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
             <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             <span>Memberships &amp; Quotas</span>
           </button>
 
-          <button type="button" onclick="setAppView('integrations')" data-view-target="integrations" id="nav-integrations" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
+          <button type="button" onclick="setAppView('integrations', event)" data-view-target="integrations" id="nav-integrations" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
             <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
             <span>Integrations &amp; MCP</span>
           </button>
@@ -204,7 +356,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         <!-- Group 4: Developer Workbench & Sandbox -->
         <div class="space-y-1">
           <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Developer Workbench</div>
-          <button type="button" onclick="setAppView('tester')" data-view-target="tester" id="nav-tester" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
+          <button type="button" onclick="setAppView('tester', event)" data-view-target="tester" id="nav-tester" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
             <div class="flex items-center gap-2.5">
               <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
               <span>API Sandbox</span>
@@ -240,56 +392,71 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
             <span>Cloudflare Edge Anycast · 330+ Cities · &lt;15ms Edge</span>
           </span>
         </div>
-        <h1 id="viewHeaderTitle" class="text-2xl sm:text-3xl font-normal text-neutral-950 tracking-tight flex items-center gap-2">
+        <h1 id="viewHeaderTitle" class="text-2xl sm:text-3xl font-normal text-neutral-950 tracking-tight flex items-center gap-2 transition-all">
           Workspace <span class="font-serif font-bold italic text-black">Overview</span>
         </h1>
-        <p id="viewHeaderDesc" class="text-xs text-neutral-500 mt-1 font-sans">
+        <p id="viewHeaderDesc" class="text-xs text-neutral-500 mt-1 font-sans transition-all">
           Live edge telemetry, database metrics, and active sovereign API keys.
         </p>
       </div>
 
-      <!-- Quick Active Key Pill -->
-      <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2 bg-white border border-neutral-200 rounded-xl px-3.5 py-2 text-xs shadow-2xs">
+      <!-- Quick Active Key Pill & Magical Suite Switcher -->
+      <div class="relative flex items-center gap-2">
+        <div id="quickActiveKeyContainer" class="flex items-center gap-2 bg-white border border-neutral-200/90 rounded-xl px-3.5 py-2 text-xs shadow-2xs transition-all">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           <span class="text-[10px] text-neutral-400 uppercase font-bold font-num">Active Key:</span>
-          <span id="topActiveKeyLabel" class="font-mono text-neutral-950 font-bold truncate max-w-[140px]">None</span>
+          <button type="button" onclick="toggleActiveKeyMenu(event)" id="activeKeyDropdownBtn" class="font-mono text-neutral-950 font-bold hover:text-amber-800 flex items-center gap-1.5 cursor-pointer max-w-[160px]" title="Click to Switch API Key">
+            <span id="topActiveKeyLabel" class="truncate">None</span>
+            <svg class="w-3 h-3 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
           <button type="button" onclick="copyActiveKey()" id="topCopyBtn" class="p-1 text-neutral-400 hover:text-black hover:bg-neutral-100 rounded transition cursor-pointer hidden" title="Copy Active Key">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
           </button>
+        </div>
+
+        <!-- Fast Key Switching Magical Popover -->
+        <div id="topKeyMenuPopover" class="hidden absolute right-0 top-full mt-2 w-72 bg-white border border-neutral-200/90 rounded-2xl shadow-2xl p-2 z-50">
+          <div class="px-3 py-1.5 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider border-b border-neutral-100 flex items-center justify-between">
+            <span>Switch Sovereign API Key</span>
+            <span class="text-[9px] text-amber-600 font-serif italic">Magic Cast</span>
+          </div>
+          <div id="topKeyMenuList" class="max-h-56 overflow-y-auto py-1 divide-y divide-neutral-100/60">
+            <!-- Populated dynamically with available keys -->
+          </div>
         </div>
       </div>
     </header>
     <!-- Sovereign Engine Suite Switcher (Overview • Search • Memory • Metrics) -->
     <div class="mb-8 p-1.5 bg-neutral-200/60 border border-neutral-200/90 rounded-2xl flex items-center gap-1.5 shadow-inner">
       <!-- 0. Overview Suite -->
-      <button type="button" onclick="switchSuite('overview')" id="suiteBtn-overview" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer bg-white text-neutral-950 shadow-xs border border-neutral-300/80">
+      <button type="button" onclick="switchSuite('overview', event)" id="suiteBtn-overview" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer bg-white text-neutral-950 shadow-xs border border-neutral-300/80">
         <svg class="w-3.5 h-3.5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
         <span class="font-bold">Overview</span>
       </button>
 
       <!-- 1. Search Suite -->
-      <button type="button" onclick="switchSuite('search')" id="suiteBtn-search" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
+      <button type="button" onclick="switchSuite('search', event)" id="suiteBtn-search" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
         <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         <span class="font-bold">Search</span>
         <span class="text-[9px] bg-neutral-100 border border-neutral-300/60 px-1.5 py-0.2 rounded font-num text-neutral-700 hidden sm:inline">&lt;40ms Edge</span>
       </button>
 
       <!-- 2. Memory Suite -->
-      <button type="button" onclick="switchSuite('memory')" id="suiteBtn-memory" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
+      <button type="button" onclick="switchSuite('memory', event)" id="suiteBtn-memory" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
         <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
         <span class="font-bold">Memory</span>
         <span class="text-[9px] bg-neutral-100 border border-neutral-300/60 px-1.5 py-0.2 rounded font-num text-neutral-700 hidden sm:inline">&lt;15ms BM25</span>
       </button>
 
       <!-- 3. Metrics Suite -->
-      <button type="button" onclick="switchSuite('metrics')" id="suiteBtn-metrics" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
+      <button type="button" onclick="switchSuite('metrics', event)" id="suiteBtn-metrics" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
         <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
         <span class="font-bold">Metrics</span>
         <span class="text-[9px] bg-neutral-900 text-white px-1.5 py-0.2 rounded font-num hidden sm:inline">vs PostHog</span>
       </button>
 
       <!-- 4. Sandbox Tester -->
-      <button type="button" onclick="switchSuite('tester')" id="suiteBtn-tester" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
+      <button type="button" onclick="switchSuite('tester', event)" id="suiteBtn-tester" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
         <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
         <span class="font-bold">Sandbox</span>
         <span class="text-[9px] bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.2 rounded font-num hidden sm:inline">Live Tester</span>
@@ -2315,12 +2482,151 @@ requests.post("${origin}/v1/analytics/capture", json={
       }
     }
 
-    function switchSuite(suite) {
-      if (suite === 'overview') setAppView('overview');
-      else if (suite === 'search') setAppView('search');
-      else if (suite === 'memory') setAppView('memory');
-      else if (suite === 'metrics') setAppView('analytics');
-      else if (suite === 'tester') setAppView('tester');
+    // ── Harry Potter Wand Sparks Particle Engine ──────────────────────────
+    let sparkCanvas = null;
+    let sparkCtx = null;
+    let sparkParticles = [];
+    let sparkAnimId = null;
+
+    function initSparkCanvas() {
+      if (sparkCanvas) return;
+      sparkCanvas = document.getElementById('magicWandCanvas');
+      if (!sparkCanvas) {
+        sparkCanvas = document.createElement('canvas');
+        sparkCanvas.id = 'magicWandCanvas';
+        sparkCanvas.className = 'fixed inset-0 pointer-events-none z-50 w-full h-full';
+        sparkCanvas.style.display = 'none';
+        document.body.appendChild(sparkCanvas);
+      }
+      sparkCtx = sparkCanvas.getContext('2d');
+      resizeSparkCanvas();
+      window.addEventListener('resize', resizeSparkCanvas);
+    }
+
+    function resizeSparkCanvas() {
+      if (!sparkCanvas) return;
+      sparkCanvas.width = window.innerWidth;
+      sparkCanvas.height = window.innerHeight;
+    }
+
+    function triggerMagicWandSparks(originX, originY) {
+      try {
+        initSparkCanvas();
+        if (!sparkCanvas || !sparkCtx) return;
+
+        sparkCanvas.style.display = 'block';
+        const x = typeof originX === 'number' && originX > 0 ? originX : (window.innerWidth / 2);
+        const y = typeof originY === 'number' && originY > 0 ? originY : Math.min(220, window.innerHeight * 0.3);
+
+        const colors = [
+          '#fef08a', // starlight yellow
+          '#d4af37', // metallic gold
+          '#f59e0b', // amber wand spark
+          '#ffffff', // bright glint
+          '#93c5fd', // ethereal silver-blue
+          '#fde047'  // enchanted gold
+        ];
+
+        const count = 38;
+        for (let i = 0; i < count; i++) {
+          const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.6;
+          const speed = 2.2 + Math.random() * 4.5;
+          sparkParticles.push({
+            x: x + (Math.random() - 0.5) * 20,
+            y: y + (Math.random() - 0.5) * 16,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed * 0.65 - 1.2, // upward drift like rising wand embers
+            size: 1.8 + Math.random() * 2.6,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            alpha: 1.0,
+            decay: 0.02 + Math.random() * 0.025,
+            wobble: Math.random() * Math.PI * 2,
+            wobbleSpeed: 0.15 + Math.random() * 0.1,
+          });
+        }
+
+        if (!sparkAnimId) {
+          sparkAnimId = requestAnimationFrame(renderSparks);
+        }
+      } catch (err) {
+        console.warn('Sparks non-fatal:', err);
+      }
+    }
+
+    function renderSparks() {
+      if (!sparkCtx || !sparkCanvas) {
+        sparkAnimId = null;
+        return;
+      }
+
+      sparkCtx.clearRect(0, 0, sparkCanvas.width, sparkCanvas.height);
+
+      for (let i = sparkParticles.length - 1; i >= 0; i--) {
+        const p = sparkParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.wobble += p.wobbleSpeed;
+        p.vx += Math.sin(p.wobble) * 0.12;
+        p.vy += 0.04;
+        p.alpha -= p.decay;
+
+        if (p.alpha <= 0) {
+          sparkParticles.splice(i, 1);
+          continue;
+        }
+
+        sparkCtx.save();
+        sparkCtx.globalAlpha = Math.max(0, p.alpha);
+        sparkCtx.shadowBlur = p.size * 3.5;
+        sparkCtx.shadowColor = p.color;
+        sparkCtx.fillStyle = p.color;
+
+        sparkCtx.beginPath();
+        sparkCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        sparkCtx.fill();
+
+        if (p.size > 2.8 && p.alpha > 0.4) {
+          sparkCtx.strokeStyle = '#ffffff';
+          sparkCtx.lineWidth = 0.8;
+          sparkCtx.beginPath();
+          sparkCtx.moveTo(p.x - p.size * 1.8, p.y);
+          sparkCtx.lineTo(p.x + p.size * 1.8, p.y);
+          sparkCtx.moveTo(p.x, p.y - p.size * 1.8);
+          sparkCtx.lineTo(p.x, p.y + p.size * 1.8);
+          sparkCtx.stroke();
+        }
+        sparkCtx.restore();
+      }
+
+      if (sparkParticles.length > 0) {
+        sparkAnimId = requestAnimationFrame(renderSparks);
+      } else {
+        sparkAnimId = null;
+        sparkCtx.clearRect(0, 0, sparkCanvas.width, sparkCanvas.height);
+        sparkCanvas.style.display = 'none';
+      }
+    }
+
+    function applyMagicCardCascade(container) {
+      if (!container) return;
+      const cards = container.querySelectorAll('.card-elevated, .card-clean, .relative.overflow-hidden, section > div');
+      cards.forEach((card, idx) => {
+        card.style.setProperty('--magic-idx', Math.min(idx, 8));
+        card.classList.remove('magic-card-cascade');
+        void card.offsetWidth;
+        card.classList.add('magic-card-cascade');
+      });
+    }
+
+    let currentAppViewId = 'overview';
+    let isViewTransitioning = null;
+
+    function switchSuite(suite, event) {
+      if (suite === 'overview') setAppView('overview', event);
+      else if (suite === 'search') setAppView('search', event);
+      else if (suite === 'memory') setAppView('memory', event);
+      else if (suite === 'metrics') setAppView('analytics', event);
+      else if (suite === 'tester') setAppView('tester', event);
     }
 
     function updateSuiteSwitcher(suite) {
@@ -2340,20 +2646,37 @@ requests.post("${origin}/v1/analytics/capture", json={
       });
     }
 
-    function setAppView(viewId) {
+    function setAppView(viewId, triggerEvent = null) {
       const views = ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations', 'analytics', 'tester'];
-      views.forEach(id => {
-        const viewEl = document.getElementById('view-' + id);
-        if (viewEl) {
-          if (id === viewId) {
-            viewEl.classList.remove('hidden');
-            viewEl.style.display = 'block';
-          } else {
-            viewEl.classList.add('hidden');
-            viewEl.style.display = 'none';
-          }
-        }
+      if (!views.includes(viewId)) return;
 
+      const isForced = triggerEvent && triggerEvent.isForced;
+      if (viewId === currentAppViewId && !isForced) {
+        return;
+      }
+
+      if (isViewTransitioning) {
+        clearTimeout(isViewTransitioning);
+        isViewTransitioning = null;
+      }
+
+      // Spark source coordinates
+      let sparkX = window.innerWidth / 2;
+      let sparkY = 180;
+      if (triggerEvent && typeof triggerEvent.clientX === 'number') {
+        sparkX = triggerEvent.clientX;
+        sparkY = triggerEvent.clientY;
+      }
+      triggerMagicWandSparks(sparkX, sparkY);
+
+      const prevViewId = currentAppViewId;
+      const prevViewEl = document.getElementById('view-' + prevViewId);
+      const nextViewEl = document.getElementById('view-' + viewId);
+      const titleEl = document.getElementById('viewHeaderTitle');
+      const descEl = document.getElementById('viewHeaderDesc');
+
+      // Update Nav Buttons immediately for snappy feedback
+      views.forEach(id => {
         const navBtn = document.getElementById('nav-' + id);
         if (navBtn) {
           const svg = navBtn.querySelector('svg');
@@ -2369,6 +2692,101 @@ requests.post("${origin}/v1/analytics/capture", json={
         }
       });
 
+      // Update suite switcher buttons immediately
+      if (viewId === 'overview') updateSuiteSwitcher('overview');
+      else if (viewId === 'search' || viewId === 'crawler') updateSuiteSwitcher('search');
+      else if (viewId === 'memory') updateSuiteSwitcher('memory');
+      else if (viewId === 'analytics') updateSuiteSwitcher('metrics');
+      else if (viewId === 'tester') updateSuiteSwitcher('tester');
+      else updateSuiteSwitcher(null);
+
+      // Fast fallback if element not ready or initial view setup
+      if (!prevViewEl || prevViewId === viewId) {
+        currentAppViewId = viewId;
+        views.forEach(id => {
+          const v = document.getElementById('view-' + id);
+          if (v) {
+            if (id === viewId) {
+              v.classList.remove('hidden');
+              v.style.display = 'block';
+              applyMagicCardCascade(v);
+            } else {
+              v.classList.add('hidden');
+              v.style.display = 'none';
+            }
+          }
+        });
+        updateHeaderTitles(viewId);
+        return;
+      }
+
+      // ── PHASE 1: Flow Away Outgoing Page Text and Cards (Ethereal Dissolve) ──
+      prevViewEl.classList.remove('magic-flow-in');
+      prevViewEl.classList.add('magic-flow-out');
+      if (titleEl) {
+        titleEl.classList.remove('magic-text-flow-in');
+        titleEl.classList.add('magic-text-flow-out');
+      }
+      if (descEl) {
+        descEl.classList.remove('magic-text-flow-in');
+        descEl.classList.add('magic-text-flow-out');
+      }
+
+      isViewTransitioning = setTimeout(() => {
+        // ── PHASE 2: Reconstitute & Flow In Next Page Text and Cards ──
+        prevViewEl.classList.add('hidden');
+        prevViewEl.style.display = 'none';
+        prevViewEl.classList.remove('magic-flow-out');
+
+        currentAppViewId = viewId;
+        updateHeaderTitles(viewId);
+
+        if (nextViewEl) {
+          nextViewEl.classList.remove('hidden');
+          nextViewEl.style.display = 'block';
+          nextViewEl.classList.remove('magic-flow-out');
+          nextViewEl.classList.add('magic-flow-in');
+          applyMagicCardCascade(nextViewEl);
+        }
+
+        if (titleEl) {
+          titleEl.classList.remove('magic-text-flow-out');
+          titleEl.classList.add('magic-text-flow-in');
+        }
+        if (descEl) {
+          descEl.classList.remove('magic-text-flow-out');
+          descEl.classList.add('magic-text-flow-in');
+        }
+
+        try {
+          const u = new URL(window.location.href);
+          u.searchParams.set('tab', viewId);
+          window.history.replaceState(null, '', u.toString());
+        } catch {}
+
+        if (viewId === 'analytics') {
+          loadAnalyticsDashboard();
+        } else if (viewId === 'keys' || viewId === 'overview') {
+          loadRealtimeKeyMetrics(false);
+        }
+
+        updateAllSuiteSnippets();
+
+        if (window.innerWidth < 1024) {
+          document.querySelector('main')?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        setTimeout(() => {
+          if (nextViewEl) nextViewEl.classList.remove('magic-flow-in');
+          if (titleEl) titleEl.classList.remove('magic-text-flow-in');
+          if (descEl) descEl.classList.remove('magic-text-flow-in');
+          isViewTransitioning = null;
+        }, 480);
+
+      }, 190);
+    }
+
+    function updateHeaderTitles(viewId) {
       const titles = {
         overview: ['Workspace <span class="font-serif font-bold italic text-neutral-950">Overview</span>', 'Live edge telemetry, database metrics, and active sovereign API keys.'],
         keys: ['API Keys <span class="font-serif font-bold italic text-neutral-950">Studio</span>', 'Create, manage, and revoke high-speed edge API keys.'],
@@ -2386,38 +2804,107 @@ requests.post("${origin}/v1/analytics/capture", json={
         if (t) t.innerHTML = titles[viewId][0];
         if (d) d.innerText = titles[viewId][1];
       }
+    }
 
-      if (viewId === 'overview') {
-        updateSuiteSwitcher('overview');
-      } else if (viewId === 'search' || viewId === 'crawler') {
-        updateSuiteSwitcher('search');
-      } else if (viewId === 'memory') {
-        updateSuiteSwitcher('memory');
-      } else if (viewId === 'analytics') {
-        updateSuiteSwitcher('metrics');
-      } else if (viewId === 'tester') {
-        updateSuiteSwitcher('tester');
-      } else {
-        updateSuiteSwitcher(null);
+    // ── Dedicated Magical Active Key Switcher ──────────────────────────────
+    function selectActiveAppKey(keyString, keyType = '', event = null) {
+      if (!keyString) return;
+
+      localStorage.setItem('ultrademon_active_key', keyString);
+
+      const topLabel = document.getElementById('topActiveKeyLabel');
+      if (topLabel) {
+        topLabel.innerText = keyString.slice(0, 10) + '...';
       }
 
-      try {
-        const u = new URL(window.location.href);
-        u.searchParams.set('tab', viewId);
-        window.history.replaceState(null, '', u.toString());
-      } catch {}
-
-      if (viewId === 'analytics') {
-        loadAnalyticsDashboard();
-      } else if (viewId === 'keys' || viewId === 'overview') {
-        loadRealtimeKeyMetrics(false);
+      // Enchanted rune pulse on Quick Active Key container
+      const pill = document.getElementById('quickActiveKeyContainer');
+      if (pill) {
+        pill.classList.remove('magic-rune-pulse');
+        void pill.offsetWidth;
+        pill.classList.add('magic-rune-pulse');
       }
 
+      // Trigger wand sparks from click location
+      const sparkX = event?.clientX || (pill ? pill.getBoundingClientRect().left + 40 : window.innerWidth / 2);
+      const sparkY = event?.clientY || (pill ? pill.getBoundingClientRect().top + 15 : 120);
+      triggerMagicWandSparks(sparkX, sparkY);
+
+      renderAppKeysTable();
       updateAllSuiteSnippets();
 
-      if (window.innerWidth < 1024) {
-        document.querySelector('main')?.scrollIntoView({ behavior: 'smooth' });
+      // Determine corresponding suite for seamless flow
+      let targetSuite = 'overview';
+      let suiteName = 'Unified Engine';
+      if (keyType === 'search' || keyString.startsWith('us_')) {
+        targetSuite = 'search';
+        suiteName = 'UltraSearch Studio (<40ms Edge)';
+      } else if (keyType === 'memory' || keyString.startsWith('um_')) {
+        targetSuite = 'memory';
+        suiteName = 'UltraMemory Lab (<15ms BM25)';
+      } else if (keyType === 'telemetry' || keyString.startsWith('ut_')) {
+        targetSuite = 'analytics';
+        suiteName = 'UltraMetrics Telemetry';
+      } else {
+        targetSuite = 'overview';
+        suiteName = 'Unified Sovereign Engine';
       }
+
+      // Run magical transition to target suite
+      setAppView(targetSuite, { clientX: sparkX, clientY: sparkY, isForced: true });
+      showAppToast('Active Key switched to ' + suiteName + ': ' + keyString.slice(0, 12) + '...');
+    }
+
+    function toggleActiveKeyMenu(event) {
+      if (event) event.stopPropagation();
+      const popover = document.getElementById('topKeyMenuPopover');
+      if (!popover) return;
+      const isHidden = popover.classList.contains('hidden');
+      if (isHidden) {
+        renderActiveKeyMenu();
+        popover.classList.remove('hidden');
+        setTimeout(() => {
+          window.addEventListener('click', closeActiveKeyMenu, { once: true });
+        }, 10);
+      } else {
+        popover.classList.add('hidden');
+      }
+    }
+
+    function closeActiveKeyMenu() {
+      const popover = document.getElementById('topKeyMenuPopover');
+      if (popover) popover.classList.add('hidden');
+    }
+
+    function renderActiveKeyMenu() {
+      const listEl = document.getElementById('topKeyMenuList');
+      if (!listEl) return;
+      const savedActive = localStorage.getItem('ultrademon_active_key') || '';
+
+      if (localKeys.length === 0) {
+        listEl.innerHTML = '<div class="px-3 py-2 text-xs text-neutral-400 text-center">No keys created yet.</div>';
+        return;
+      }
+
+      listEl.innerHTML = localKeys.map(k => {
+        const isCur = (k.plain_key && k.plain_key === savedActive) || k.key_id === savedActive;
+        const keyVal = k.plain_key || k.key_id;
+        const typeLabel = k.key_type === 'memory' ? 'Memory' : k.key_type === 'search' ? 'Search' : k.key_type === 'telemetry' ? 'Telemetry' : 'Unified';
+        const typeBadge = k.key_type === 'memory'
+          ? 'bg-black text-white'
+          : (k.key_type === 'search' ? 'bg-neutral-800 text-white' : 'bg-neutral-100 text-neutral-800 border border-neutral-200');
+
+        return '<button type="button" onclick="selectActiveAppKey(&apos;' + keyVal + '&apos;, &apos;' + (k.key_type || 'unified') + '&apos;, event); closeActiveKeyMenu();" class="w-full text-left px-3 py-2 rounded-xl hover:bg-neutral-50 flex items-center justify-between transition cursor-pointer group ' + (isCur ? 'bg-neutral-50' : '') + '">' +
+          '<div class="flex flex-col min-w-0 pr-2">' +
+            '<div class="flex items-center gap-1.5">' +
+              '<span class="font-mono text-xs font-semibold text-neutral-900 truncate max-w-[130px]">' + keyVal + '</span>' +
+              (isCur ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>' : '') +
+            '</div>' +
+            '<span class="text-[10px] text-neutral-400 truncate">' + (k.label || 'Default API Key') + '</span>' +
+          '</div>' +
+          '<span class="px-1.5 py-0.5 rounded text-[9px] font-bold font-num uppercase tracking-wider ' + typeBadge + '">' + typeLabel + '</span>' +
+        '</button>';
+      }).join('');
     }
 
     async function quickCreateSuiteKey(suiteType) {
@@ -2442,7 +2929,6 @@ requests.post("${origin}/v1/analytics/capture", json={
           const saved = JSON.parse(localStorage.getItem('ultrademon_saved_plain_keys') || '{}');
           saved[data.key_id] = data.plain_key;
           localStorage.setItem('ultrademon_saved_plain_keys', JSON.stringify(saved));
-          localStorage.setItem('ultrademon_active_key', data.plain_key);
 
           localKeys.unshift({
             key_id: data.key_id,
@@ -2453,9 +2939,7 @@ requests.post("${origin}/v1/analytics/capture", json={
             created_at: Date.now()
           });
 
-          renderAppKeysTable();
-          updateAllSuiteSnippets();
-          showAppToast('Created ' + label + ': ' + data.plain_key.slice(0, 14) + '...');
+          selectActiveAppKey(data.plain_key, data.key_type || keyType);
         } else {
           showAppToast('Error: ' + (data.error || 'Failed to create key'), true);
         }
@@ -2700,10 +3184,9 @@ requests.post("${origin}/v1/analytics/capture", json={
             created_at: Date.now()
           });
 
-          renderAppKeysTable();
           refreshTelemetry();
           if (labelInput) labelInput.value = '';
-          showAppToast('API Key created: ' + data.plain_key.slice(0, 12) + '...');
+          selectActiveAppKey(data.plain_key, data.key_type || keyType);
         } else {
           showAppToast('Error: ' + (data.error || 'Failed to create key'), true);
         }
@@ -2744,23 +3227,36 @@ requests.post("${origin}/v1/analytics/capture", json={
       if (countBadge) countBadge.innerText = localKeys.length;
       if (metric) metric.innerText = localKeys.length;
 
+      const savedActive = localStorage.getItem('ultrademon_active_key') || '';
+      const topLabel = document.getElementById('topActiveKeyLabel');
+
       if (localKeys.length === 0) {
         if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="py-4 text-center text-neutral-400">No API keys found. Generate one above!</td></tr>';
-        const topLabel = document.getElementById('topActiveKeyLabel');
         if (topLabel) topLabel.innerText = 'None';
         document.getElementById('topCopyBtn')?.classList.add('hidden');
+        renderActiveKeyMenu();
         return;
       }
 
-      const active = localKeys[0];
-      const topLabel = document.getElementById('topActiveKeyLabel');
-      if (topLabel) topLabel.innerText = active.plain_key ? (active.plain_key.slice(0, 10) + '...') : active.key_id;
+      let activeKeyObj = localKeys.find(k => (k.plain_key && k.plain_key === savedActive) || k.key_id === savedActive);
+      if (!activeKeyObj) {
+        activeKeyObj = localKeys[0];
+        if (activeKeyObj.plain_key) {
+          localStorage.setItem('ultrademon_active_key', activeKeyObj.plain_key);
+        }
+      }
+
+      const activePlain = activeKeyObj.plain_key || savedActive || '';
+      if (topLabel) topLabel.innerText = activePlain ? (activePlain.slice(0, 10) + '...') : activeKeyObj.key_id;
       document.getElementById('topCopyBtn')?.classList.remove('hidden');
 
       if (tbody) {
-        tbody.innerHTML = localKeys.map(k => {
+        tbody.innerHTML = localKeys.map((k, idx) => {
           const displayKey = k.plain_key || ('key_' + k.key_id);
           const isPlain = !!k.plain_key;
+          const isCurrentActive = (k.plain_key && k.plain_key === activePlain) || (!activePlain && idx === 0) || (k.key_id === activePlain);
+          const keyVal = k.plain_key || k.key_id;
+
           const scopeBadge = k.key_type === 'memory'
             ? '<span class="px-2 py-0.5 rounded bg-black text-white text-[10px] font-bold uppercase font-num">Memory API</span>'
             : (k.key_type === 'search'
@@ -2769,19 +3265,29 @@ requests.post("${origin}/v1/analytics/capture", json={
                 ? '<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-bold uppercase font-num">Telemetry</span>'
                 : '<span class="px-2 py-0.5 rounded bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase font-num">Unified API</span>'));
 
-          return '<tr class="hover:bg-neutral-50">' +
+          const statusBtn = isCurrentActive
+            ? '<span class="px-2 py-0.5 rounded-full bg-neutral-950 text-white text-[10px] font-bold uppercase tracking-wider inline-flex items-center gap-1 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>Active</span>'
+            : '<button type="button" onclick="selectActiveAppKey(&apos;' + keyVal + '&apos;, &apos;' + (k.key_type || 'unified') + '&apos;, event)" class="px-2.5 py-0.5 rounded-full bg-white hover:bg-neutral-100 border border-neutral-300 hover:border-black text-neutral-800 text-[10px] font-bold uppercase tracking-wider transition cursor-pointer shadow-2xs">Activate</button>';
+
+          return '<tr class="hover:bg-neutral-50/80 transition-colors group ' + (isCurrentActive ? 'bg-neutral-50/60' : '') + '">' +
             '<td class="py-3 font-mono text-neutral-900">' +
-              '<span class="truncate max-w-[160px] inline-block align-middle">' + displayKey + '</span>' +
+              '<span class="truncate max-w-[160px] inline-block align-middle font-semibold">' + displayKey + '</span>' +
               (isPlain ? ' <button type="button" onclick="copyToClipboard(&apos;' + k.plain_key + '&apos;)" class="text-neutral-400 hover:text-black cursor-pointer inline-flex items-center ml-1.5 p-1 rounded hover:bg-neutral-100" title="Copy Full Key"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>' : '') +
             '</td>' +
             '<td class="py-3">' + scopeBadge + '</td>' +
             '<td class="py-3"><span class="px-2 py-0.5 rounded bg-neutral-100 text-neutral-900 text-[10px] font-bold uppercase font-num">' + (k.plan || 'free') + '</span></td>' +
             '<td class="py-3 text-neutral-600 font-sans">' + (k.label || 'Default') + '</td>' +
             '<td class="py-3 text-neutral-400 font-num">' + new Date(k.created_at || Date.now()).toLocaleDateString() + '</td>' +
-            '<td class="py-3 text-right"><button type="button" onclick="revokeAppKey(&apos;' + (k.plain_key || k.key_id) + '&apos;)" class="text-neutral-400 hover:text-red-600 font-semibold cursor-pointer">Revoke</button></td>' +
+            '<td class="py-3 text-right">' +
+              '<div class="flex items-center justify-end gap-2">' +
+                statusBtn +
+                '<button type="button" onclick="revokeAppKey(&apos;' + keyVal + '&apos;)" class="text-neutral-400 hover:text-red-600 text-xs font-semibold cursor-pointer ml-1">Revoke</button>' +
+              '</div>' +
+            '</td>' +
           '</tr>';
         }).join('');
       }
+      renderActiveKeyMenu();
       updateAllSuiteSnippets();
     }
 
@@ -4302,7 +4808,7 @@ requests.post("${origin}/v1/analytics/capture", json={
         btn.addEventListener('click', (e) => {
           e.preventDefault();
           const target = btn.getAttribute('data-view-target');
-          if (target) setAppView(target);
+          if (target) setAppView(target, e);
         });
       });
 
@@ -4311,7 +4817,7 @@ requests.post("${origin}/v1/analytics/capture", json={
         if (btn) {
           btn.addEventListener('click', (e) => {
             e.preventDefault();
-            switchSuite(s);
+            switchSuite(s, e);
           });
         }
       });
