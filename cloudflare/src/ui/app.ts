@@ -402,6 +402,13 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
       <!-- Quick Active Key Pill & Magical Suite Switcher -->
       <div class="relative flex items-center gap-2">
+        <!-- Help Bot Header Trigger -->
+        <button type="button" onclick="toggleHelpBotDrawer()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-neutral-50 border border-neutral-200/90 text-xs font-semibold text-neutral-800 hover:text-black shadow-2xs transition cursor-pointer" title="Open Sovereign Help Assistant">
+          <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          <span class="hidden sm:inline">Help Bot</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        </button>
+
         <div id="quickActiveKeyContainer" class="flex items-center gap-2 bg-white border border-neutral-200/90 rounded-xl px-3.5 py-2 text-xs shadow-2xs transition-all">
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           <span class="text-[10px] text-neutral-400 uppercase font-bold font-num">Active Key:</span>
@@ -2260,8 +2267,87 @@ requests.post("${origin}/v1/analytics/capture", json={
 
   </main>
 
-  <!-- Floating Minimalist Toast Notifications -->
-  <div id="appToastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+  <!-- Help Bot Backdrop Overlay -->
+  <div id="helpBotBackdrop" onclick="closeHelpBotDrawer()" class="fixed inset-0 bg-neutral-900/40 backdrop-blur-xs z-40 hidden transition-opacity"></div>
+
+  <!-- Collapsible Sovereign Help Bot Drawer -->
+  <aside id="helpBotDrawer" class="fixed top-0 right-0 h-screen w-full sm:w-[440px] bg-white border-l border-neutral-200 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col font-sans">
+    
+    <!-- Drawer Header -->
+    <div class="p-4 sm:p-5 border-b border-neutral-200/90 flex items-start justify-between bg-neutral-50/50">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-neutral-950 text-white flex items-center justify-center font-bold font-num text-xs shadow-xs">
+          S
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-sm font-bold text-neutral-950 font-serif">Sovereign Help Assistant</h2>
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[9px] font-semibold font-num">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              Verified Presets
+            </span>
+          </div>
+          <p class="text-[11px] text-neutral-500 font-sans mt-0.5">Instant guided assistance for API keys, memory, and edge search.</p>
+        </div>
+      </div>
+      <button type="button" onclick="closeHelpBotDrawer()" class="p-1.5 text-neutral-400 hover:text-black hover:bg-neutral-200/60 rounded-lg transition cursor-pointer" title="Close Help Assistant">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Category Filter Tabs -->
+    <div class="px-4 py-2.5 border-b border-neutral-200/80 bg-white flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+      <button type="button" id="helpCatBtn-all" onclick="filterHelpPresets('all')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-neutral-900 text-white shrink-0 cursor-pointer shadow-xs transition">All Topics</button>
+      <button type="button" id="helpCatBtn-keys" onclick="filterHelpPresets('keys')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-neutral-100 hover:bg-neutral-200 text-neutral-600 shrink-0 cursor-pointer transition">Keys & Scopes</button>
+      <button type="button" id="helpCatBtn-memory" onclick="filterHelpPresets('memory')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-neutral-100 hover:bg-neutral-200 text-neutral-600 shrink-0 cursor-pointer transition">UltraMemory</button>
+      <button type="button" id="helpCatBtn-search" onclick="filterHelpPresets('search')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-neutral-100 hover:bg-neutral-200 text-neutral-600 shrink-0 cursor-pointer transition">UltraSearch</button>
+      <button type="button" id="helpCatBtn-errors" onclick="filterHelpPresets('errors')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-neutral-100 hover:bg-neutral-200 text-neutral-600 shrink-0 cursor-pointer transition">Errors & Fixes</button>
+      <button type="button" id="helpCatBtn-mcp" onclick="filterHelpPresets('mcp')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-neutral-100 hover:bg-neutral-200 text-neutral-600 shrink-0 cursor-pointer transition">Cursor / MCP</button>
+    </div>
+
+    <!-- Chat Messages Stream Area -->
+    <div id="helpChatMessages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-white">
+      <!-- Greeting Message -->
+      <div class="flex items-start gap-2.5">
+        <div class="w-6 h-6 rounded-full bg-neutral-900 text-white flex items-center justify-center text-[10px] font-bold font-num shrink-0 mt-0.5">S</div>
+        <div class="bg-neutral-50 border border-neutral-200/90 rounded-2xl rounded-tl-xs p-3.5 text-xs text-neutral-800 max-w-[90%] shadow-2xs leading-relaxed">
+          <p class="font-medium text-neutral-950 mb-1">Welcome to Sovereign Edge Assistant.</p>
+          <p class="text-neutral-600 mb-2.5">I am pre-trained on all sovereign API key scopes, sub-15ms memory architecture, and edge troubleshooting. Freeform text input is disabled to guarantee zero hallucinations.</p>
+          <p class="text-neutral-500 text-[11px]">Select any preset question below to view immediate verified solutions and execute dashboard shortcuts.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preset Questions Selector Container -->
+    <div class="p-3 bg-neutral-50/80 border-t border-neutral-200/90">
+      <div class="flex items-center justify-between mb-2 px-1">
+        <span class="text-[10px] font-bold font-num uppercase tracking-wider text-neutral-400">Verified Preset Questions</span>
+        <span class="text-[10px] font-num text-neutral-400">Click to ask</span>
+      </div>
+      <div id="helpPresetQuestionsContainer" class="max-h-48 overflow-y-auto space-y-1.5 pr-0.5">
+        <!-- Rendered dynamically by renderHelpPresetQuestions() -->
+      </div>
+    </div>
+
+    <!-- Locked Custom Input Notice -->
+    <div class="p-3 bg-white border-t border-neutral-200 flex items-center justify-center gap-2 text-center">
+      <svg class="w-3.5 h-3.5 text-neutral-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span class="text-[11px] text-neutral-400 font-sans">Custom input disabled · Strictly preset verified knowledge</span>
+    </div>
+
+  </aside>
+
+  <!-- Floating Help Launcher Button -->
+  <button id="helpBotToggleBtn" type="button" onclick="toggleHelpBotDrawer()" class="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-3 rounded-full bg-neutral-950 hover:bg-neutral-800 text-white shadow-xl hover:shadow-2xl transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer border border-neutral-800 group" title="Open Sovereign Help Assistant">
+    <div class="relative">
+      <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+      <span class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-neutral-950 animate-pulse"></span>
+    </div>
+    <span class="text-xs font-semibold font-sans tracking-wide">Help Bot</span>
+  </button>
+
+  <!-- Floating Minimalist Toast Notifications (Offset above launcher) -->
+  <div id="appToastContainer" class="fixed bottom-20 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <!-- Client-side Workspace Script -->
   <script>
@@ -4803,6 +4889,231 @@ requests.post("${origin}/v1/analytics/capture", json={
       }
     }
 
+    // =========================================================================
+    // SOVEREIGN HELP BOT (PRESET-ONLY GUIDED ASSISTANT)
+    // =========================================================================
+    const HELP_PRESETS = [
+      {
+        id: 'scope_error',
+        category: 'errors',
+        tag: 'Scope Error',
+        question: 'Why do I see "This API key is scoped to UltraMemory API only"?',
+        answer: 'This error occurs when you use an UltraMemory-scoped key (prefix um_...) to perform web searches or scraping.\n\nKey Scopes Breakdown:\n1. um_... (UltraMemory): Restricted strictly to /v1/memory/* endpoints.\n2. us_... (UltraSearch): Restricted to /v1/search web search and web scraping.\n3. ud_... (Unified): Full master access to both UltraMemory and UltraSearch.\n\nResolution:\nSwitch your active key to a us_... or ud_... key in the top bar, or generate a new Unified key in the API Keys tab.',
+        actionView: 'keys',
+        actionLabel: 'Manage API Keys'
+      },
+      {
+        id: 'sub15ms_engine',
+        category: 'memory',
+        tag: 'Architecture',
+        question: 'How does UltraMemory achieve sub-15ms edge latency?',
+        answer: 'UltraMemory leverages a 3-tier sovereign edge caching architecture:\n\n1. Tier 1 (Cloudflare Edge RAM): In-worker memory LRU cache serving warm lookups in <1ms.\n2. Tier 2 (Global Edge KV): Anycast key-value cache distributed across 330+ edge locations serving in <10ms.\n3. Tier 3 (Cloudflare D1 SQLite): FTS5 BM25 Full-Text Search indexing with epoch-based container cache invalidation.\n\nWhen you query memories, Tier 1 is checked first, falling back to KV, then D1, guaranteeing instantaneous recall.',
+        actionView: 'memory',
+        actionLabel: 'Open UltraMemory Suite'
+      },
+      {
+        id: 'switch_keys_magic',
+        category: 'keys',
+        tag: 'Key Switching',
+        question: 'How do I switch active API keys and trigger the spellcast transition?',
+        answer: 'Click the "Active Key" pill located in the top-right header.\n\nA dropdown menu will appear listing all your provisioned keys along with their scopes (Memory, Search, or Unified).\n\nSelecting any key automatically sets it as your active workspace credential and triggers our enchanted Harry Potter spellcast dissolve: the current page elements smoothly dissolve and flow away while the new state flows in with fluid cubic-bezier curves.',
+        actionView: 'keys',
+        actionLabel: 'View Active Keys'
+      },
+      {
+        id: 'search_zero_results',
+        category: 'search',
+        tag: 'Troubleshooting',
+        question: 'Why does web search return zero results or take >150ms on the first query?',
+        answer: '1. First-Query Edge Cold Handshake: The very first web search to an edge POP performs an upstream TLS handshake and upstream fetch (~150-190ms). Subsequent queries are cached at the edge and serve in sub-25ms.\n\n2. Key Scope Verification: Verify your key is a us_... or ud_... key.\n\n3. Cascading Fallback Engine: If an upstream provider rate limits, our engine automatically cascades across Google, DuckDuckGo, and direct sovereign scrapers to return valid results.',
+        actionView: 'search',
+        actionLabel: 'Open UltraSearch Suite'
+      },
+      {
+        id: 'ingest_memories',
+        category: 'memory',
+        tag: 'Memory Ingestion',
+        question: 'How do I ingest documents and context into agent memory?',
+        answer: 'You can ingest documents, code, or context using the /v1/memory/add or /v1/memory/file endpoints.\n\nExample cURL:\ncurl -X POST https://ultrasearch-api.aaronvanoss.workers.dev/v1/memory/add \\\n  -H "Authorization: Bearer um_your_key" \\\n  -H "Content-Type: application/json" \\\n  -d \'{"content": "Preferred language: TypeScript. Architecture: Edge workers.", "container_tag": "dev-agent"}\'',
+        actionView: 'memory',
+        actionLabel: 'Go to Memory Ingestion'
+      },
+      {
+        id: 'cursor_mcp',
+        category: 'mcp',
+        tag: 'Integrations',
+        question: 'How do I connect UltraSearch and UltraMemory to Cursor and Claude Desktop?',
+        answer: 'Our Cloudflare edge worker provides a native Model Context Protocol (MCP) server at /v1/mcp.\n\nIn your Cursor or Claude Desktop settings (claude_desktop_config.json):\n{\n  "mcpServers": {\n    "ultrademon": {\n      "command": "npx",\n      "args": ["-y", "mcp-remote", "https://ultrasearch-api.aaronvanoss.workers.dev/v1/mcp", "--header", "Authorization: Bearer ud_your_key"]\n    }\n  }\n}',
+        actionView: 'integrations',
+        actionLabel: 'View Integrations'
+      },
+      {
+        id: 'rate_limits_429',
+        category: 'errors',
+        tag: 'Rate Limits',
+        question: 'What are the tier rate limits and how do I resolve 429 errors?',
+        answer: 'Edge rate limits are enforced per API key tier:\n\n- Free Tier: 60 requests/minute, 5,000 requests/month.\n- Pro Tier: 300 requests/minute, 50,000 requests/month.\n- Ultra Tier: 1,200 requests/minute, 500,000 requests/month.\n\nIf you receive HTTP 429 Too Many Requests, inspect your X-RateLimit-Reset header or upgrade your tier in the Membership tab.',
+        actionView: 'membership',
+        actionLabel: 'Explore Membership Tiers'
+      },
+      {
+        id: 'container_tags',
+        category: 'memory',
+        tag: 'Namespaces',
+        question: 'How do container tags isolate memory across different AI agents?',
+        answer: 'Container tags (container_tag) provide cryptographic-grade namespace isolation in Cloudflare D1 and KV.\n\nFor example, setting container_tag: "coding-agent" ensures that only requests with container_tag=coding-agent can query or read those memories. Different agents in a swarm will never leak context to each other.',
+        actionView: 'memory',
+        actionLabel: 'Explore Container Namespaces'
+      },
+      {
+        id: 'realtime_telemetry',
+        category: 'all',
+        tag: 'Telemetry',
+        question: 'Where can I inspect live edge latency, cache hits, and token usage?',
+        answer: 'Switch to the Analytics tab or Overview Suite.\n\nThe real-time telemetry engine polls edge metrics every 5 seconds, displaying:\n- Edge P95 latency (sub-15ms for memory, sub-30ms for cached search)\n- Cache hit ratios across RAM, KV, and D1\n- Monthly token usage and quota breakdown per API key.',
+        actionView: 'analytics',
+        actionLabel: 'Open Live Analytics'
+      },
+      {
+        id: 'spellcast_mechanics',
+        category: 'all',
+        tag: 'Animations',
+        question: 'How does the Harry Potter spellcast page transition work?',
+        answer: 'When switching suites or API keys, the UI applies our custom Harry Potter spellcast sequence:\n\n1. Evaporation Phase (220ms): Outgoing elements gain a soft blur, translate slightly downward, and dissolve gracefully.\n2. Apparition Phase (480ms): Incoming elements flow into view with a smooth cubic-bezier curve cubic-bezier(0.18, 0.9, 0.28, 1), translating smoothly upward into pristine focus.',
+        actionView: 'overview',
+        actionLabel: 'View Overview'
+      }
+    ];
+
+    let currentHelpCategory = 'all';
+
+    function openHelpBotDrawer() {
+      const drawer = document.getElementById('helpBotDrawer');
+      const backdrop = document.getElementById('helpBotBackdrop');
+      if (drawer) {
+        drawer.classList.remove('translate-x-full');
+        drawer.classList.add('translate-x-0');
+      }
+      if (backdrop) backdrop.classList.remove('hidden');
+    }
+
+    function closeHelpBotDrawer() {
+      const drawer = document.getElementById('helpBotDrawer');
+      const backdrop = document.getElementById('helpBotBackdrop');
+      if (drawer) {
+        drawer.classList.add('translate-x-full');
+        drawer.classList.remove('translate-x-0');
+      }
+      if (backdrop) backdrop.classList.add('hidden');
+    }
+
+    function toggleHelpBotDrawer() {
+      const drawer = document.getElementById('helpBotDrawer');
+      if (drawer && drawer.classList.contains('translate-x-0')) {
+        closeHelpBotDrawer();
+      } else {
+        openHelpBotDrawer();
+      }
+    }
+
+    function filterHelpPresets(cat) {
+      currentHelpCategory = cat;
+      const cats = ['all', 'keys', 'memory', 'search', 'errors', 'mcp'];
+      cats.forEach(c => {
+        const btn = document.getElementById('helpCatBtn-' + c);
+        if (btn) {
+          if (c === cat) {
+            btn.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold bg-neutral-900 text-white shrink-0 cursor-pointer shadow-xs transition';
+          } else {
+            btn.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold bg-neutral-100 hover:bg-neutral-200 text-neutral-600 shrink-0 cursor-pointer transition';
+          }
+        }
+      });
+      renderHelpPresetQuestions();
+    }
+
+    function renderHelpPresetQuestions() {
+      const container = document.getElementById('helpPresetQuestionsContainer');
+      if (!container) return;
+
+      const filtered = currentHelpCategory === 'all'
+        ? HELP_PRESETS
+        : HELP_PRESETS.filter(p => p.category === currentHelpCategory);
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="text-xs text-neutral-400 p-2 text-center">No preset questions found in this category.</div>';
+        return;
+      }
+
+      let html = '';
+      filtered.forEach(p => {
+        html += '<button type="button" onclick="askPresetQuestion(&apos;' + p.id + '&apos;)" class="w-full text-left p-2.5 rounded-xl bg-white hover:bg-neutral-100 border border-neutral-200/80 shadow-2xs transition group flex items-start justify-between gap-2 cursor-pointer">' +
+          '<div class="flex-1">' +
+            '<div class="flex items-center gap-1.5 mb-1">' +
+              '<span class="text-[9px] font-bold font-num uppercase px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-600 border border-neutral-200">' + escapeHtml(p.tag) + '</span>' +
+            '</div>' +
+            '<p class="text-xs font-medium text-neutral-800 group-hover:text-black leading-snug">' + escapeHtml(p.question) + '</p>' +
+          '</div>' +
+          '<svg class="w-3.5 h-3.5 text-neutral-400 group-hover:text-black shrink-0 mt-1 transition transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>' +
+        '</button>';
+      });
+
+      container.innerHTML = html;
+    }
+
+    function askPresetQuestion(id) {
+      const preset = HELP_PRESETS.find(p => p.id === id);
+      if (!preset) return;
+
+      const chatContainer = document.getElementById('helpChatMessages');
+      if (!chatContainer) return;
+
+      // Append user bubble
+      const userBubble = document.createElement('div');
+      userBubble.className = 'flex justify-end mb-3';
+      userBubble.innerHTML = '<div class="bg-neutral-900 text-white rounded-2xl rounded-tr-xs px-3.5 py-2 text-xs max-w-[85%] shadow-xs font-medium">' + escapeHtml(preset.question) + '</div>';
+      chatContainer.appendChild(userBubble);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      // Typing indicator
+      const typingIndicator = document.createElement('div');
+      typingIndicator.id = 'helpBotTyping';
+      typingIndicator.className = 'flex items-center gap-2 mb-3 text-neutral-400 text-xs';
+      typingIndicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-neutral-400 animate-bounce"></span><span class="w-1.5 h-1.5 rounded-full bg-neutral-400 animate-bounce [animation-delay:0.2s]"></span><span class="w-1.5 h-1.5 rounded-full bg-neutral-400 animate-bounce [animation-delay:0.4s]"></span><span class="text-[11px] font-num">Retrieving verified knowledge...</span>';
+      chatContainer.appendChild(typingIndicator);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      setTimeout(() => {
+        const typing = document.getElementById('helpBotTyping');
+        if (typing) typing.remove();
+
+        const botBubble = document.createElement('div');
+        botBubble.className = 'flex flex-col gap-2 mb-4';
+
+        let actionBtnHtml = '';
+        if (preset.actionView && preset.actionLabel) {
+          actionBtnHtml = '<div class="mt-2.5 pt-2.5 border-t border-neutral-100 flex items-center justify-between">' +
+            '<button type="button" onclick="setAppView(&apos;' + preset.actionView + '&apos;); closeHelpBotDrawer();" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-neutral-950 hover:bg-neutral-800 text-white text-[11px] font-semibold transition cursor-pointer">' +
+              '<span>' + preset.actionLabel + '</span>' +
+              '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>' +
+            '</button>' +
+            '<span class="text-[10px] text-neutral-400 font-num">Shortcut</span>' +
+          '</div>';
+        }
+
+        botBubble.innerHTML = '<div class="flex items-start gap-2">' +
+          '<div class="w-6 h-6 rounded-full bg-neutral-900 text-white flex items-center justify-center text-[10px] font-bold font-num shrink-0 mt-0.5">S</div>' +
+          '<div class="bg-neutral-50 border border-neutral-200/90 rounded-2xl rounded-tl-xs p-3.5 text-xs text-neutral-800 max-w-[90%] shadow-2xs leading-relaxed">' +
+            '<p class="whitespace-pre-line">' + escapeHtml(preset.answer) + '</p>' +
+            actionBtnHtml +
+          '</div>' +
+        '</div>';
+
+        chatContainer.appendChild(botBubble);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }, 250);
+    }
+
     // Initialize Workspace
     async function initWorkspace() {
       // 1. Direct event listener bindings for sidebar and switcher buttons (synchronous)
@@ -4906,6 +5217,7 @@ requests.post("${origin}/v1/analytics/capture", json={
       loadRealtimeKeyMetrics(false);
       toggleRealtimeAutoRefresh(true);
       updateAllSuiteSnippets();
+      renderHelpPresetQuestions();
     }
 
     // Execute immediately or on DOM ready
