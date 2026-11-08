@@ -4898,7 +4898,17 @@ requests.post("${origin}/v1/analytics/capture", json={
         category: 'errors',
         tag: 'Scope Error',
         question: 'Why do I see "This API key is scoped to UltraMemory API only"?',
-        answer: 'This error occurs when you use an UltraMemory-scoped key (prefix um_...) to perform web searches or scraping.\n\nKey Scopes Breakdown:\n1. um_... (UltraMemory): Restricted strictly to /v1/memory/* endpoints.\n2. us_... (UltraSearch): Restricted to /v1/search web search and web scraping.\n3. ud_... (Unified): Full master access to both UltraMemory and UltraSearch.\n\nResolution:\nSwitch your active key to a us_... or ud_... key in the top bar, or generate a new Unified key in the API Keys tab.',
+        answer: [
+          'This error occurs when you use an UltraMemory-scoped key (prefix um_...) to perform web searches or scraping.',
+          '',
+          'Key Scopes Breakdown:',
+          '1. um_... (UltraMemory): Restricted strictly to /v1/memory/* endpoints.',
+          '2. us_... (UltraSearch): Restricted to /v1/search web search and web scraping.',
+          '3. ud_... (Unified): Full master access to both UltraMemory and UltraSearch.',
+          '',
+          'Resolution:',
+          'Switch your active key to a us_... or ud_... key in the top bar, or generate a new Unified key in the API Keys tab.'
+        ].join('\\n'),
         actionView: 'keys',
         actionLabel: 'Manage API Keys'
       },
@@ -4907,7 +4917,15 @@ requests.post("${origin}/v1/analytics/capture", json={
         category: 'memory',
         tag: 'Architecture',
         question: 'How does UltraMemory achieve sub-15ms edge latency?',
-        answer: 'UltraMemory leverages a 3-tier sovereign edge caching architecture:\n\n1. Tier 1 (Cloudflare Edge RAM): In-worker memory LRU cache serving warm lookups in <1ms.\n2. Tier 2 (Global Edge KV): Anycast key-value cache distributed across 330+ edge locations serving in <10ms.\n3. Tier 3 (Cloudflare D1 SQLite): FTS5 BM25 Full-Text Search indexing with epoch-based container cache invalidation.\n\nWhen you query memories, Tier 1 is checked first, falling back to KV, then D1, guaranteeing instantaneous recall.',
+        answer: [
+          'UltraMemory leverages a 3-tier sovereign edge caching architecture:',
+          '',
+          '1. Tier 1 (Cloudflare Edge RAM): In-worker memory LRU cache serving warm lookups in <1ms.',
+          '2. Tier 2 (Global Edge KV): Anycast key-value cache distributed across 330+ edge locations serving in <10ms.',
+          '3. Tier 3 (Cloudflare D1 SQLite): FTS5 BM25 Full-Text Search indexing with epoch-based container cache invalidation.',
+          '',
+          'When you query memories, Tier 1 is checked first, falling back to KV, then D1, guaranteeing instantaneous recall.'
+        ].join('\\n'),
         actionView: 'memory',
         actionLabel: 'Open UltraMemory Suite'
       },
@@ -4916,7 +4934,13 @@ requests.post("${origin}/v1/analytics/capture", json={
         category: 'keys',
         tag: 'Key Switching',
         question: 'How do I switch active API keys and trigger the spellcast transition?',
-        answer: 'Click the "Active Key" pill located in the top-right header.\n\nA dropdown menu will appear listing all your provisioned keys along with their scopes (Memory, Search, or Unified).\n\nSelecting any key automatically sets it as your active workspace credential and triggers our enchanted Harry Potter spellcast dissolve: the current page elements smoothly dissolve and flow away while the new state flows in with fluid cubic-bezier curves.',
+        answer: [
+          'Click the "Active Key" pill located in the top-right header.',
+          '',
+          'A dropdown menu will appear listing all your provisioned keys along with their scopes (Memory, Search, or Unified).',
+          '',
+          'Selecting any key automatically sets it as your active workspace credential and triggers our enchanted Harry Potter spellcast dissolve: the current page elements smoothly dissolve and flow away while the new state flows in with fluid cubic-bezier curves.'
+        ].join('\\n'),
         actionView: 'keys',
         actionLabel: 'View Active Keys'
       },
@@ -4925,7 +4949,13 @@ requests.post("${origin}/v1/analytics/capture", json={
         category: 'search',
         tag: 'Troubleshooting',
         question: 'Why does web search return zero results or take >150ms on the first query?',
-        answer: '1. First-Query Edge Cold Handshake: The very first web search to an edge POP performs an upstream TLS handshake and upstream fetch (~150-190ms). Subsequent queries are cached at the edge and serve in sub-25ms.\n\n2. Key Scope Verification: Verify your key is a us_... or ud_... key.\n\n3. Cascading Fallback Engine: If an upstream provider rate limits, our engine automatically cascades across Google, DuckDuckGo, and direct sovereign scrapers to return valid results.',
+        answer: [
+          '1. First-Query Edge Cold Handshake: The very first web search to an edge POP performs an upstream TLS handshake and upstream fetch (~150-190ms). Subsequent queries are cached at the edge and serve in sub-25ms.',
+          '',
+          '2. Key Scope Verification: Verify your key is a us_... or ud_... key.',
+          '',
+          '3. Cascading Fallback Engine: If an upstream provider rate limits, our engine automatically cascades across Google, DuckDuckGo, and direct sovereign scrapers to return valid results.'
+        ].join('\\n'),
         actionView: 'search',
         actionLabel: 'Open UltraSearch Suite'
       },
@@ -4934,7 +4964,15 @@ requests.post("${origin}/v1/analytics/capture", json={
         category: 'memory',
         tag: 'Memory Ingestion',
         question: 'How do I ingest documents and context into agent memory?',
-        answer: 'You can ingest documents, code, or context using the /v1/memory/add or /v1/memory/file endpoints.\n\nExample cURL:\ncurl -X POST https://ultrasearch-api.aaronvanoss.workers.dev/v1/memory/add \\\n  -H "Authorization: Bearer um_your_key" \\\n  -H "Content-Type: application/json" \\\n  -d \'{"content": "Preferred language: TypeScript. Architecture: Edge workers.", "container_tag": "dev-agent"}\'',
+        answer: [
+          'You can ingest documents, code, or context using the /v1/memory/add or /v1/memory/file endpoints.',
+          '',
+          'Example cURL:',
+          'curl -X POST https://ultrasearch-api.aaronvanoss.workers.dev/v1/memory/add \\\\',
+          '  -H "Authorization: Bearer um_your_key" \\\\',
+          '  -H "Content-Type: application/json" \\\\',
+          '  -d "{\\"content\\": \\"Preferred language: TypeScript\\", \\"container_tag\\": \\"dev-agent\\"}"'
+        ].join('\\n'),
         actionView: 'memory',
         actionLabel: 'Go to Memory Ingestion'
       },
@@ -4943,7 +4981,19 @@ requests.post("${origin}/v1/analytics/capture", json={
         category: 'mcp',
         tag: 'Integrations',
         question: 'How do I connect UltraSearch and UltraMemory to Cursor and Claude Desktop?',
-        answer: 'Our Cloudflare edge worker provides a native Model Context Protocol (MCP) server at /v1/mcp.\n\nIn your Cursor or Claude Desktop settings (claude_desktop_config.json):\n{\n  "mcpServers": {\n    "ultrademon": {\n      "command": "npx",\n      "args": ["-y", "mcp-remote", "https://ultrasearch-api.aaronvanoss.workers.dev/v1/mcp", "--header", "Authorization: Bearer ud_your_key"]\n    }\n  }\n}',
+        answer: [
+          'Our Cloudflare edge worker provides a native Model Context Protocol (MCP) server at /v1/mcp.',
+          '',
+          'In your Cursor or Claude Desktop settings (claude_desktop_config.json):',
+          '{',
+          '  "mcpServers": {',
+          '    "ultrademon": {',
+          '      "command": "npx",',
+          '      "args": ["-y", "mcp-remote", "https://ultrasearch-api.aaronvanoss.workers.dev/v1/mcp", "--header", "Authorization: Bearer ud_your_key"]',
+          '    }',
+          '  }',
+          '}'
+        ].join('\\n'),
         actionView: 'integrations',
         actionLabel: 'View Integrations'
       },
@@ -4952,7 +5002,15 @@ requests.post("${origin}/v1/analytics/capture", json={
         category: 'errors',
         tag: 'Rate Limits',
         question: 'What are the tier rate limits and how do I resolve 429 errors?',
-        answer: 'Edge rate limits are enforced per API key tier:\n\n- Free Tier: 60 requests/minute, 5,000 requests/month.\n- Pro Tier: 300 requests/minute, 50,000 requests/month.\n- Ultra Tier: 1,200 requests/minute, 500,000 requests/month.\n\nIf you receive HTTP 429 Too Many Requests, inspect your X-RateLimit-Reset header or upgrade your tier in the Membership tab.',
+        answer: [
+          'Edge rate limits are enforced per API key tier:',
+          '',
+          '- Free Tier: 60 requests/minute, 5,000 requests/month.',
+          '- Pro Tier: 300 requests/minute, 50,000 requests/month.',
+          '- Ultra Tier: 1,200 requests/minute, 500,000 requests/month.',
+          '',
+          'If you receive HTTP 429 Too Many Requests, inspect your X-RateLimit-Reset header or upgrade your tier in the Membership tab.'
+        ].join('\\n'),
         actionView: 'membership',
         actionLabel: 'Explore Membership Tiers'
       },
@@ -4961,7 +5019,11 @@ requests.post("${origin}/v1/analytics/capture", json={
         category: 'memory',
         tag: 'Namespaces',
         question: 'How do container tags isolate memory across different AI agents?',
-        answer: 'Container tags (container_tag) provide cryptographic-grade namespace isolation in Cloudflare D1 and KV.\n\nFor example, setting container_tag: "coding-agent" ensures that only requests with container_tag=coding-agent can query or read those memories. Different agents in a swarm will never leak context to each other.',
+        answer: [
+          'Container tags (container_tag) provide cryptographic-grade namespace isolation in Cloudflare D1 and KV.',
+          '',
+          'For example, setting container_tag: "coding-agent" ensures that only requests with container_tag=coding-agent can query or read those memories. Different agents in a swarm will never leak context to each other.'
+        ].join('\\n'),
         actionView: 'memory',
         actionLabel: 'Explore Container Namespaces'
       },
@@ -4970,7 +5032,14 @@ requests.post("${origin}/v1/analytics/capture", json={
         category: 'all',
         tag: 'Telemetry',
         question: 'Where can I inspect live edge latency, cache hits, and token usage?',
-        answer: 'Switch to the Analytics tab or Overview Suite.\n\nThe real-time telemetry engine polls edge metrics every 5 seconds, displaying:\n- Edge P95 latency (sub-15ms for memory, sub-30ms for cached search)\n- Cache hit ratios across RAM, KV, and D1\n- Monthly token usage and quota breakdown per API key.',
+        answer: [
+          'Switch to the Analytics tab or Overview Suite.',
+          '',
+          'The real-time telemetry engine polls edge metrics every 5 seconds, displaying:',
+          '- Edge P95 latency (sub-15ms for memory, sub-30ms for cached search)',
+          '- Cache hit ratios across RAM, KV, and D1',
+          '- Monthly token usage and quota breakdown per API key.'
+        ].join('\\n'),
         actionView: 'analytics',
         actionLabel: 'Open Live Analytics'
       },
@@ -4979,7 +5048,12 @@ requests.post("${origin}/v1/analytics/capture", json={
         category: 'all',
         tag: 'Animations',
         question: 'How does the Harry Potter spellcast page transition work?',
-        answer: 'When switching suites or API keys, the UI applies our custom Harry Potter spellcast sequence:\n\n1. Evaporation Phase (220ms): Outgoing elements gain a soft blur, translate slightly downward, and dissolve gracefully.\n2. Apparition Phase (480ms): Incoming elements flow into view with a smooth cubic-bezier curve cubic-bezier(0.18, 0.9, 0.28, 1), translating smoothly upward into pristine focus.',
+        answer: [
+          'When switching suites or API keys, the UI applies our custom Harry Potter spellcast sequence:',
+          '',
+          '1. Evaporation Phase (220ms): Outgoing elements gain a soft blur, translate slightly downward, and dissolve gracefully.',
+          '2. Apparition Phase (480ms): Incoming elements flow into view with a smooth cubic-bezier curve cubic-bezier(0.18, 0.9, 0.28, 1), translating smoothly upward into pristine focus.'
+        ].join('\\n'),
         actionView: 'overview',
         actionLabel: 'View Overview'
       }
