@@ -95,55 +95,50 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
     /* ── Harry Potter Ethereal Spellcast & Flow Transitions ── */
     .magic-flow-out {
-      animation: magicPageFlowOut 0.22s cubic-bezier(0.4, 0, 0.9, 1) forwards !important;
+      animation: magicPageFlowOut 0.14s cubic-bezier(0.3, 0, 0.8, 0.15) forwards !important;
       pointer-events: none !important;
-      transform-origin: center 20%;
+      transform-origin: center 25%;
       will-change: transform, opacity, filter;
     }
 
     @keyframes magicPageFlowOut {
       0% {
         opacity: 1;
-        transform: translateY(0) scale(1) perspective(1000px) rotateX(0deg);
-        filter: blur(0px) drop-shadow(0 0 0 rgba(212, 175, 55, 0));
-      }
-      30% {
-        opacity: 0.9;
-        filter: blur(3px) drop-shadow(0 -4px 18px rgba(212, 175, 55, 0.5));
-        transform: translateY(-6px) scale(0.99) perspective(1000px) rotateX(2deg);
+        transform: translateY(0) scale(1) perspective(1200px) rotateX(0deg);
+        filter: blur(0px);
       }
       100% {
         opacity: 0;
-        transform: translateY(-28px) scale(0.96) perspective(1000px) rotateX(6deg) rotateZ(-0.5deg);
-        filter: blur(14px) drop-shadow(0 -10px 30px rgba(212, 175, 55, 0));
+        transform: translateY(-14px) scale(0.985) perspective(1200px) rotateX(2.5deg);
+        filter: blur(8px) drop-shadow(0 -4px 16px rgba(212, 175, 55, 0.35));
       }
     }
 
     .magic-flow-in {
-      animation: magicPageFlowIn 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
-      transform-origin: center 20%;
+      animation: magicPageFlowIn 0.34s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+      transform-origin: center 25%;
       will-change: transform, opacity, filter;
     }
 
     @keyframes magicPageFlowIn {
       0% {
         opacity: 0;
-        transform: translateY(32px) scale(0.96) perspective(1000px) rotateX(-6deg) rotateZ(0.5deg);
-        filter: blur(16px) drop-shadow(0 8px 25px rgba(212, 175, 55, 0.45));
+        transform: translateY(18px) scale(0.985) perspective(1200px) rotateX(-2.5deg);
+        filter: blur(10px) drop-shadow(0 4px 14px rgba(212, 175, 55, 0.3));
       }
-      45% {
-        opacity: 0.85;
-        filter: blur(4px) drop-shadow(0 4px 14px rgba(212, 175, 55, 0.25));
+      50% {
+        opacity: 0.92;
+        filter: blur(2px) drop-shadow(0 2px 8px rgba(212, 175, 55, 0.15));
       }
       100% {
         opacity: 1;
-        transform: translateY(0) scale(1) perspective(1000px) rotateX(0deg) rotateZ(0deg);
-        filter: blur(0px) drop-shadow(0 0 0 rgba(0,0,0,0));
+        transform: translateY(0) scale(1) perspective(1200px) rotateX(0deg);
+        filter: blur(0px);
       }
     }
 
     .magic-text-flow-out {
-      animation: magicTextFlowOut 0.2s cubic-bezier(0.4, 0, 1, 1) forwards !important;
+      animation: magicTextFlowOut 0.13s cubic-bezier(0.3, 0, 0.8, 0.15) forwards !important;
       will-change: transform, opacity, filter, letter-spacing;
     }
 
@@ -154,43 +149,39 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         filter: blur(0px);
         letter-spacing: normal;
       }
-      35% {
-        color: #d4af37 !important;
-        text-shadow: 0 0 12px rgba(212, 175, 55, 0.7);
-      }
       100% {
         opacity: 0;
-        transform: translateY(-18px) scale(1.02);
-        filter: blur(10px);
-        letter-spacing: 2px;
+        transform: translateY(-10px);
+        filter: blur(6px);
+        letter-spacing: 1px;
         color: #d4af37 !important;
       }
     }
 
     .magic-text-flow-in {
-      animation: magicTextFlowIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+      animation: magicTextFlowIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
       will-change: transform, opacity, filter, letter-spacing;
     }
 
     @keyframes magicTextFlowIn {
       0% {
         opacity: 0;
-        transform: translateY(18px) scale(0.97);
-        filter: blur(12px);
-        letter-spacing: 3px;
+        transform: translateY(12px);
+        filter: blur(8px);
+        letter-spacing: 1.5px;
         color: #d4af37 !important;
-        text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+        text-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
       }
-      50% {
-        opacity: 0.9;
-        filter: blur(2px);
-        letter-spacing: 0.5px;
+      60% {
+        opacity: 0.95;
+        filter: blur(1px);
+        letter-spacing: 0.3px;
         color: #171717;
-        text-shadow: 0 0 10px rgba(212, 175, 55, 0.35);
+        text-shadow: 0 0 6px rgba(212, 175, 55, 0.2);
       }
       100% {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
         filter: blur(0px);
         letter-spacing: normal;
         color: inherit;
@@ -199,44 +190,41 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     }
 
     .magic-card-cascade {
-      animation: magicCardFlow 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-      animation-delay: calc(var(--magic-idx, 0) * 45ms);
+      animation: magicCardFlow 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: calc(var(--magic-idx, 0) * 25ms);
       will-change: transform, opacity, filter;
     }
 
     @keyframes magicCardFlow {
       0% {
         opacity: 0;
-        transform: translateY(22px) scale(0.975);
-        filter: blur(10px);
-        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        transform: translateY(14px) scale(0.988);
+        filter: blur(6px);
       }
-      60% {
-        filter: blur(1px);
-        box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+      70% {
+        filter: blur(0.5px);
       }
       100% {
         opacity: 1;
         transform: translateY(0) scale(1);
         filter: blur(0px);
-        box-shadow: none;
       }
     }
 
     .magic-rune-pulse {
-      animation: magicRuneAura 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: magicRuneAura 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
 
     @keyframes magicRuneAura {
       0% {
-        box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.8), 0 0 12px 2px rgba(212, 175, 55, 0.4);
+        box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7), 0 0 8px 1px rgba(212, 175, 55, 0.3);
         border-color: #d4af37;
-        transform: scale(0.96);
+        transform: scale(0.98);
       }
       40% {
-        box-shadow: 0 0 22px 6px rgba(212, 175, 55, 0.5), 0 0 28px 4px rgba(245, 158, 11, 0.3);
+        box-shadow: 0 0 16px 4px rgba(212, 175, 55, 0.4), 0 0 20px 3px rgba(245, 158, 11, 0.25);
         border-color: #f59e0b;
-        transform: scale(1.04);
+        transform: scale(1.02);
       }
       100% {
         box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
@@ -2527,21 +2515,21 @@ requests.post("${origin}/v1/analytics/capture", json={
           '#fde047'  // enchanted gold
         ];
 
-        const count = 38;
+        const count = 28;
         for (let i = 0; i < count; i++) {
-          const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.6;
-          const speed = 2.2 + Math.random() * 4.5;
+          const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
+          const speed = 1.6 + Math.random() * 3.2;
           sparkParticles.push({
-            x: x + (Math.random() - 0.5) * 20,
-            y: y + (Math.random() - 0.5) * 16,
+            x: x + (Math.random() - 0.5) * 16,
+            y: y + (Math.random() - 0.5) * 12,
             vx: Math.cos(angle) * speed,
-            vy: Math.sin(angle) * speed * 0.65 - 1.2, // upward drift like rising wand embers
-            size: 1.8 + Math.random() * 2.6,
+            vy: Math.sin(angle) * speed * 0.6 - 1.0, // upward drift like rising wand embers
+            size: 1.5 + Math.random() * 2.2,
             color: colors[Math.floor(Math.random() * colors.length)],
             alpha: 1.0,
-            decay: 0.02 + Math.random() * 0.025,
+            decay: 0.032 + Math.random() * 0.03, // smooth rapid fade
             wobble: Math.random() * Math.PI * 2,
-            wobbleSpeed: 0.15 + Math.random() * 0.1,
+            wobbleSpeed: 0.16 + Math.random() * 0.1,
           });
         }
 
@@ -2563,11 +2551,13 @@ requests.post("${origin}/v1/analytics/capture", json={
 
       for (let i = sparkParticles.length - 1; i >= 0; i--) {
         const p = sparkParticles[i];
+        p.vx *= 0.96; // silky aerodynamic drag
+        p.vy *= 0.96;
         p.x += p.vx;
         p.y += p.vy;
         p.wobble += p.wobbleSpeed;
-        p.vx += Math.sin(p.wobble) * 0.12;
-        p.vy += 0.04;
+        p.vx += Math.sin(p.wobble) * 0.08;
+        p.vy += 0.025;
         p.alpha -= p.decay;
 
         if (p.alpha <= 0) {
@@ -2781,9 +2771,9 @@ requests.post("${origin}/v1/analytics/capture", json={
           if (titleEl) titleEl.classList.remove('magic-text-flow-in');
           if (descEl) descEl.classList.remove('magic-text-flow-in');
           isViewTransitioning = null;
-        }, 480);
+        }, 340);
 
-      }, 190);
+      }, 125);
     }
 
     function updateHeaderTitles(viewId) {
