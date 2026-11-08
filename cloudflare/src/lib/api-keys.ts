@@ -87,13 +87,13 @@ export function getPlanSpec(planId?: string): PlanSpec {
 }
 
 // ── In-Isolate V8 Memory Cache (Level 0: <0.05ms) ───────────────────────────
-interface IsolateKeyEntry {
+export interface IsolateKeyEntry {
   record: ApiKeyRecord;
   cachedAt: number;
 }
-const KEY_ISOLATE_CACHE = new Map<string, IsolateKeyEntry>();
-const KEY_ISOLATE_TTL_MS = 60_000; // 60s
-const MAX_ISOLATE_KEYS = 1000;
+export const KEY_ISOLATE_CACHE = new Map<string, IsolateKeyEntry>();
+export const KEY_ISOLATE_TTL_MS = 60_000; // 60s
+export const MAX_ISOLATE_KEYS = 1000;
 
 export async function createApiKey(
   env: Env,

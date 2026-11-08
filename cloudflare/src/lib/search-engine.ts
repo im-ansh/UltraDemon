@@ -283,11 +283,11 @@ async function executeInstantSearch(
         d.snippet,
         d.pagerank,
         d.crawled_at,
-        bm25(documents_fts, 10.0, 5.0, 2.0, 0.2) as bm25_score
+        f.rank as bm25_score
       FROM documents_fts f
       JOIN documents d ON d.rowid = f.rowid
       WHERE documents_fts MATCH ?
-      ORDER BY (bm25(documents_fts, 10.0, 5.0, 2.0, 0.2) * -1.0) + (d.pagerank * 0.3) DESC
+      ORDER BY rank
       LIMIT ?
     `).bind(ftsMatch, count).all<{
       doc_id: string;
@@ -341,11 +341,11 @@ async function executeInstantSearch(
             d.snippet,
             d.pagerank,
             d.crawled_at,
-            bm25(documents_fts, 10.0, 5.0, 2.0, 0.2) as bm25_score
+            f.rank as bm25_score
           FROM documents_fts f
           JOIN documents d ON d.rowid = f.rowid
           WHERE documents_fts MATCH ?
-          ORDER BY (bm25(documents_fts, 10.0, 5.0, 2.0, 0.2) * -1.0) + (d.pagerank * 0.3) DESC
+          ORDER BY rank
           LIMIT ?
         `).bind(orMatch, count).all<{
           doc_id: string;
@@ -411,12 +411,12 @@ async function executeStandardSearch(
         d.content,
         d.pagerank,
         d.crawled_at,
-        bm25(documents_fts, 5.0, 2.5, 1.5, 0.5) as bm25_score,
+        f.rank as bm25_score,
         snippet(documents_fts, 2, '<b>', '</b>', '...', 30) as matched_snippet
       FROM documents_fts f
       JOIN documents d ON d.rowid = f.rowid
       WHERE documents_fts MATCH ?
-      ORDER BY (bm25(documents_fts, 5.0, 2.5, 1.5, 0.5) * -1.0) + (d.pagerank * 0.5) DESC
+      ORDER BY rank
       LIMIT ?
     `).bind(ftsMatch, count * 2).all<DbSearchResult>();
 
@@ -440,12 +440,12 @@ async function executeStandardSearch(
           d.content,
           d.pagerank,
           d.crawled_at,
-          bm25(documents_fts, 4.0, 2.0, 1.0, 0.5) as bm25_score,
+          f.rank as bm25_score,
           snippet(documents_fts, 2, '<b>', '</b>', '...', 30) as matched_snippet
         FROM documents_fts f
         JOIN documents d ON d.rowid = f.rowid
         WHERE documents_fts MATCH ?
-        ORDER BY (bm25(documents_fts, 4.0, 2.0, 1.0, 0.5) * -1.0) + (d.pagerank * 0.4) DESC
+        ORDER BY rank
         LIMIT ?
       `).bind(orMatch, count * 2).all<DbSearchResult>();
       rawList = orRes.results || [];

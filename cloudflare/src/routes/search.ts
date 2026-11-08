@@ -62,6 +62,7 @@ searchRouter.post('/', async (c) => {
   c.header('X-Cache-Status', 'MISS');
   c.header('X-Engine-Latency-Ms', String(tookMs));
   c.header('Server-Timing', `engine;dur=${tookMs};desc="D1 FTS5 BM25"`);
+  c.header('Cache-Control', 'public, max-age=180, s-maxage=300, stale-while-revalidate=600');
 
   // Cache the result (non-blocking)
   if (useCache) {
@@ -138,6 +139,7 @@ searchRouter.get('/', async (c) => {
   c.header('X-Cache-Status', 'MISS');
   c.header('X-Engine-Latency-Ms', String(tookMs));
   c.header('Server-Timing', `engine;dur=${tookMs};desc="D1 FTS5 BM25"`);
+  c.header('Cache-Control', 'public, max-age=180, s-maxage=300, stale-while-revalidate=600');
 
   c.executionCtx.waitUntil(setCachedSearch(c.env, query, cacheParams, result));
 

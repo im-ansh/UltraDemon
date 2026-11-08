@@ -4,7 +4,7 @@
 
 import type { Context, Next } from 'hono';
 import type { Env, ApiKeyRecord } from '../types';
-import { validateApiKey, incrementUsage, createApiKey, getPlanSpec } from './api-keys';
+import { validateApiKey, incrementUsage, getPlanSpec, KEY_ISOLATE_CACHE, KEY_ISOLATE_TTL_MS } from './api-keys';
 
 // Attach validated key record to context
 declare module 'hono' {
@@ -56,33 +56,27 @@ export async function authMiddleware(c: Context<{ Bindings: Env }>, next: Next) 
       }, 401);
     }
   } else if (plainKey.startsWith('edge_sess_')) {
-    // Case 2: Authenticated edge session token from web UI
-    const session = await c.env.KEY_CACHE.get<{ id: string; email?: string; plan?: string }>(`sess:${plainKey}`, 'json');
-    if (session && session.id) {
-      let targetKeyType = 'unified';
-      if (path.startsWith('/v1/search') || path.startsWith('/v1/crawl')) targetKeyType = 'search';
-      else if (path.startsWith('/v1/memory')) targetKeyType = 'memory';
-      else if (path.startsWith('/v1/analytics')) targetKeyType = 'telemetry';
-
-      let keyRow = await c.env.DB.prepare(
-        "SELECT * FROM api_keys WHERE user_id = ? AND revoked = 0 AND (key_type = 'unified' OR key_type = ?) ORDER BY created_at DESC LIMIT 1"
-      ).bind(session.id, targetKeyType).first<ApiKeyRecord>();
-
-      if (!keyRow) {
-        keyRow = await c.env.DB.prepare(
-          'SELECT * FROM api_keys WHERE user_id = ? AND revoked = 0 ORDER BY created_at DESC LIMIT 1'
-        ).bind(session.id).first<ApiKeyRecord>();
-      }
-
-      if (keyRow) {
-        // Authenticated edge sessions have full console permissions across demo apps
-        record = { ...keyRow, key_type: 'unified' };
-      } else {
-        const newKey = await createApiKey(c.env, session.id, session.plan || 'free', 'Primary Workspace Key', 'unified');
-        record = newKey.record;
-      }
+    // Case 2: Authenticated edge session token from web UI (<0.05ms V8 RAM path)
+    const cachedIsolate = KEY_ISOLATE_CACHE.get(plainKey);
+    if (cachedIsolate && (Date.now() - cachedIsolate.cachedAt < KEY_ISOLATE_TTL_MS)) {
+      record = cachedIsolate.record;
     } else {
-      return c.json({ error: 'Session expired or invalid. Please sign in again.' }, 401);
+      const session = await c.env.KEY_CACHE.get<{ id: string; email?: string; plan?: string }>(`sess:${plainKey}`, 'json');
+      if (session && session.id) {
+        record = {
+          hashed_key: `sess_hash_${session.id}`,
+          key_id: `key_${session.id.slice(0, 12)}`,
+          user_id: session.id,
+          plan: session.plan || 'free',
+          key_type: 'unified',
+          label: 'Session Workspace Key',
+          created_at: 1730000000000,
+          revoked: false,
+        };
+        KEY_ISOLATE_CACHE.set(plainKey, { record, cachedAt: Date.now() });
+      } else {
+        return c.json({ error: 'Session expired or invalid. Please sign in again.' }, 401);
+      }
     }
   } else {
     // Case 3: Standard API key validation
