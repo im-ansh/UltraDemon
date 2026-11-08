@@ -4,7 +4,7 @@
 import { Hono } from 'hono';
 import type { Env } from '../types';
 import { authMiddleware } from '../lib/auth';
-import { runSearch } from '../lib/search-engine';
+import { runSearch, asyncIngestSearchResults } from '../lib/search-engine';
 import { getCachedSearch, setCachedSearch } from '../lib/cache';
 import { getPlanSpec } from '../lib/api-keys';
 
@@ -68,6 +68,12 @@ searchRouter.post('/', async (c) => {
     c.executionCtx.waitUntil(
       setCachedSearch(c.env, body.query, cacheParams, result)
     );
+  }
+
+  // Background ingest live results into D1 index
+  const liveItems = result.results.filter(r => r.source === 'ultrasearch-live-web');
+  if (liveItems.length > 0) {
+    c.executionCtx.waitUntil(asyncIngestSearchResults(c.env, liveItems));
   }
 
   return c.json(result);
@@ -134,5 +140,10 @@ searchRouter.get('/', async (c) => {
   c.header('Server-Timing', `engine;dur=${tookMs};desc="D1 FTS5 BM25"`);
 
   c.executionCtx.waitUntil(setCachedSearch(c.env, query, cacheParams, result));
+
+  const liveItems = result.results.filter(r => r.source === 'ultrasearch-live-web');
+  if (liveItems.length > 0) {
+    c.executionCtx.waitUntil(asyncIngestSearchResults(c.env, liveItems));
+  }
   return c.json(result);
 });

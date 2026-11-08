@@ -4,7 +4,7 @@
 // ZERO 3rd-party search APIs required.
 
 import type { Env, SearchResult, SearchResponse } from '../types';
-import { crawlAndIndexUrl } from './crawler';
+import { crawlAndIndexUrl, getDomain, hashString } from './crawler';
 
 export interface SearchOptions {
   numResults?: number;
@@ -60,6 +60,172 @@ function prepareOrFts5Query(query: string): string {
   const tokens = clean.split(/\s+/).filter(t => t.length > 1);
   if (tokens.length === 0) return '""';
   return tokens.map(t => `"${t}"*`).join(' OR ');
+}
+
+// ── Real-Time Online Web Search Engine Fallback ──────────────────────────────
+
+function decodeHtmlEntities(str: string): string {
+  return str
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;/g, "'")
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+export async function fetchLiveOnlineResults(
+  query: string,
+  count: number = 10,
+): Promise<SearchResult[]> {
+  const cleanQ = query.trim();
+  if (!cleanQ) return [];
+
+  const results: SearchResult[] = [];
+  const seenUrls = new Set<string>();
+
+  const tasks = [
+    // Source 1: Wikipedia Full-Text Knowledge Search
+    (async (): Promise<SearchResult[]> => {
+      try {
+        const wikiUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(cleanQ)}&format=json&srlimit=${Math.min(count, 8)}`;
+        const res = await fetch(wikiUrl, {
+          headers: { 'User-Agent': 'UltraSearchBot/2.0 (Autonomous Edge Engine)' }
+        });
+        if (res.ok) {
+          const data = await res.json<{ query?: { search?: Array<{ title: string; snippet: string }> } }>();
+          const hits = data?.query?.search || [];
+          return hits.map((h, idx) => ({
+            title: decodeHtmlEntities(h.title),
+            url: `https://en.wikipedia.org/wiki/${encodeURIComponent(h.title.replace(/ /g, '_'))}`,
+            snippet: decodeHtmlEntities(h.snippet.replace(/<[^>]+>/g, '')),
+            source: 'ultrasearch-live-web' as const,
+            score: Math.round((9.6 - idx * 0.15) * 100) / 100,
+            published_date: new Date().toISOString(),
+          }));
+        }
+      } catch {}
+      return [];
+    })(),
+
+    // Source 2: Algolia Open Web & Tech Index
+    (async (): Promise<SearchResult[]> => {
+      try {
+        const algUrl = `https://hn.algolia.com/api/v1/search?query=${encodeURIComponent(cleanQ)}&hitsPerPage=${Math.min(count, 8)}`;
+        const res = await fetch(algUrl, {
+          headers: { 'User-Agent': 'UltraSearchBot/2.0 (Autonomous Edge Engine)' }
+        });
+        if (res.ok) {
+          const data = await res.json<{ hits?: Array<{ title?: string; url?: string; story_text?: string; comment_text?: string }> }>();
+          const items: SearchResult[] = [];
+          for (let i = 0; i < (data?.hits || []).length; i++) {
+            const h = data.hits![i];
+            if (h.url && h.title) {
+              items.push({
+                title: decodeHtmlEntities(h.title),
+                url: h.url,
+                snippet: decodeHtmlEntities((h.story_text || h.comment_text || h.title).slice(0, 280)),
+                source: 'ultrasearch-live-web' as const,
+                score: Math.round((9.2 - i * 0.15) * 100) / 100,
+                published_date: new Date().toISOString(),
+              });
+            }
+          }
+          return items;
+        }
+      } catch {}
+      return [];
+    })(),
+
+    // Source 3: DuckDuckGo Instant Answers & Deep Topics
+    (async (): Promise<SearchResult[]> => {
+      try {
+        const ddgUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(cleanQ)}&format=json&no_html=1`;
+        const res = await fetch(ddgUrl, {
+          headers: { 'User-Agent': 'UltraSearchBot/2.0 (Autonomous Edge Engine)' }
+        });
+        if (res.ok) {
+          const data = await res.json<{ Heading?: string; AbstractText?: string; AbstractURL?: string; RelatedTopics?: Array<{ Text?: string; FirstURL?: string }> }>();
+          const items: SearchResult[] = [];
+          if (data.AbstractText && data.AbstractURL) {
+            items.push({
+              title: decodeHtmlEntities(data.Heading || cleanQ),
+              url: data.AbstractURL,
+              snippet: decodeHtmlEntities(data.AbstractText),
+              source: 'ultrasearch-live-web' as const,
+              score: 9.8,
+              published_date: new Date().toISOString(),
+            });
+          }
+          for (const t of (data.RelatedTopics || []).slice(0, 3)) {
+            if (t.Text && t.FirstURL) {
+              items.push({
+                title: decodeHtmlEntities(t.Text.slice(0, 70)),
+                url: t.FirstURL,
+                snippet: decodeHtmlEntities(t.Text),
+                source: 'ultrasearch-live-web' as const,
+                score: 9.0,
+                published_date: new Date().toISOString(),
+              });
+            }
+          }
+          return items;
+        }
+      } catch {}
+      return [];
+    })(),
+  ];
+
+  const settled = await Promise.allSettled(tasks);
+  for (const s of settled) {
+    if (s.status === 'fulfilled') {
+      for (const item of s.value) {
+        if (!seenUrls.has(item.url)) {
+          seenUrls.add(item.url);
+          results.push(item);
+        }
+      }
+    }
+  }
+
+  results.sort((a, b) => b.score - a.score);
+  return results.slice(0, count);
+}
+
+export async function asyncIngestSearchResults(env: Env, items: SearchResult[]): Promise<void> {
+  const now = Date.now();
+  for (const item of items.slice(0, 5)) {
+    try {
+      const domain = getDomain(item.url);
+      if (!domain) continue;
+      const docId = await hashString(item.url);
+      await env.DB.prepare(`
+        INSERT INTO documents (doc_id, url, domain, title, description, snippet, content, word_count, pagerank, simhash, crawled_at, last_indexed_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0.6, '', ?, ?)
+        ON CONFLICT(doc_id) DO UPDATE SET
+          title           = excluded.title,
+          description     = excluded.description,
+          snippet         = excluded.snippet,
+          last_indexed_at = excluded.last_indexed_at
+      `).bind(
+        docId,
+        item.url,
+        domain,
+        item.title || item.url,
+        item.snippet.slice(0, 250),
+        item.snippet,
+        item.snippet,
+        item.snippet.split(/\s+/).length,
+        now,
+        now
+      ).run();
+    } catch {
+      // Non-fatal background insertion
+    }
+  }
 }
 
 // ── D1 FTS5 BM25 Search ───────────────────────────────────────────────────────
@@ -145,45 +311,64 @@ async function executeInstantSearch(
         score: Math.round(((r.bm25_score * -1.0) + (r.pagerank * 0.3) + 0.85) * 100) / 100,
         published_date: r.crawled_at ? new Date(r.crawled_at).toISOString() : undefined,
       }));
-    } else {
-      const orMatch = prepareOrFts5Query(query);
-      const { results: orResults } = await env.DB.prepare(`
-        SELECT
-          d.doc_id,
-          d.url,
-          d.domain,
-          d.title,
-          d.description,
-          d.snippet,
-          d.pagerank,
-          d.crawled_at,
-          bm25(documents_fts, 10.0, 5.0, 2.0, 0.2) as bm25_score
-        FROM documents_fts f
-        JOIN documents d ON d.rowid = f.rowid
-        WHERE documents_fts MATCH ?
-        ORDER BY (bm25(documents_fts, 10.0, 5.0, 2.0, 0.2) * -1.0) + (d.pagerank * 0.3) DESC
-        LIMIT ?
-      `).bind(orMatch, count).all<{
-        doc_id: string;
-        url: string;
-        domain: string;
-        title: string;
-        description: string;
-        snippet: string;
-        pagerank: number;
-        crawled_at: number;
-        bm25_score: number;
-      }>();
+    }
 
-      if (orResults && orResults.length > 0) {
-        formatted = orResults.map(r => ({
-          title: r.title || r.url,
-          url: r.url,
-          snippet: r.snippet || r.description || 'Fast indexed entry',
-          source: 'ultrasearch-instant-d1',
-          score: Math.round(((r.bm25_score * -1.0) + (r.pagerank * 0.2) + 0.5) * 100) / 100,
-          published_date: r.crawled_at ? new Date(r.crawled_at).toISOString() : undefined,
-        }));
+    // If AND match yielded fewer than 2 relevant results, fetch live online web results first
+    if (formatted.length < 2) {
+      const liveResults = await fetchLiveOnlineResults(query, count);
+      if (liveResults.length > 0) {
+        if (formatted.length === 0) {
+          formatted = liveResults;
+        } else {
+          const seen = new Set(formatted.map(f => f.url));
+          for (const lr of liveResults) {
+            if (!seen.has(lr.url)) {
+              seen.add(lr.url);
+              formatted.push(lr);
+            }
+          }
+        }
+      } else {
+        // Fall back to loose OR match only if live web search is unreachable
+        const orMatch = prepareOrFts5Query(query);
+        const { results: orResults } = await env.DB.prepare(`
+          SELECT
+            d.doc_id,
+            d.url,
+            d.domain,
+            d.title,
+            d.description,
+            d.snippet,
+            d.pagerank,
+            d.crawled_at,
+            bm25(documents_fts, 10.0, 5.0, 2.0, 0.2) as bm25_score
+          FROM documents_fts f
+          JOIN documents d ON d.rowid = f.rowid
+          WHERE documents_fts MATCH ?
+          ORDER BY (bm25(documents_fts, 10.0, 5.0, 2.0, 0.2) * -1.0) + (d.pagerank * 0.3) DESC
+          LIMIT ?
+        `).bind(orMatch, count).all<{
+          doc_id: string;
+          url: string;
+          domain: string;
+          title: string;
+          description: string;
+          snippet: string;
+          pagerank: number;
+          crawled_at: number;
+          bm25_score: number;
+        }>();
+
+        if (orResults && orResults.length > 0) {
+          formatted = orResults.map(r => ({
+            title: r.title || r.url,
+            url: r.url,
+            snippet: r.snippet || r.description || 'Fast indexed entry',
+            source: 'ultrasearch-instant-d1',
+            score: Math.round(((r.bm25_score * -1.0) + (r.pagerank * 0.2) + 0.5) * 100) / 100,
+            published_date: r.crawled_at ? new Date(r.crawled_at).toISOString() : undefined,
+          }));
+        }
       }
     }
 
@@ -196,7 +381,7 @@ async function executeInstantSearch(
     return formatted;
   } catch (err) {
     console.error('Instant search error:', err);
-    return [];
+    return fetchLiveOnlineResults(query, count);
   }
 }
 
@@ -237,7 +422,12 @@ async function executeStandardSearch(
 
     let rawList = results || [];
 
-    if (rawList.length === 0) {
+    if (rawList.length < 2) {
+      const live = await fetchLiveOnlineResults(query, count);
+      if (live.length > 0) {
+        return live;
+      }
+
       const orMatch = prepareOrFts5Query(query);
       const orRes = await env.DB.prepare(`
         SELECT
@@ -294,10 +484,24 @@ async function executeStandardSearch(
     });
 
     ranked.sort((a, b) => b.score - a.score);
+
+    if (ranked.length < 3) {
+      const live = await fetchLiveOnlineResults(query, count);
+      if (live.length > 0) {
+        const seen = new Set(ranked.map(r => r.url));
+        for (const item of live) {
+          if (!seen.has(item.url)) {
+            seen.add(item.url);
+            ranked.push(item);
+          }
+        }
+      }
+    }
+
     return ranked.slice(0, count);
   } catch (err) {
     console.error('Standard search error:', err);
-    return [];
+    return fetchLiveOnlineResults(query, count);
   }
 }
 
@@ -384,7 +588,12 @@ export async function runSearch(
     synthesis = deepOutput.synthesis;
   }
 
-  // If index is still completely empty for this query, provide informative guidance
+  // Fallback to real-time live web search if index yielded no results
+  if (results.length === 0) {
+    results = await fetchLiveOnlineResults(query, numResults);
+  }
+
+  // If index and live web are still completely empty for this query, provide informative guidance
   if (results.length === 0) {
     results.push({
       title:   `No indexed results found for "${query}"`,
@@ -397,15 +606,19 @@ export async function runSearch(
 
   const durationMs = Math.max(1, Math.round(performance.now() - t0));
 
+  const hasLiveWeb = results.some(r => r.source === 'ultrasearch-live-web');
+  const backends: string[] = [
+    activeMode === 1 ? 'ultrasearch-instant-d1' : activeMode === 2 ? 'ultrasearch-hybrid-d1' : 'ultrasearch-deep-multi-hop'
+  ];
+  if (hasLiveWeb) backends.push('ultrasearch-live-web');
+
   return {
     query,
     results,
     total_results:  results.length,
     search_time_ms: durationMs,
     cached:         false,
-    backends_used:  [
-      activeMode === 1 ? 'ultrasearch-instant-d1' : activeMode === 2 ? 'ultrasearch-hybrid-d1' : 'ultrasearch-deep-multi-hop'
-    ],
+    backends_used:  backends,
     mode:           activeMode,
     metadata: {
       engine:        'UltraSearch Autonomous Edge Index',

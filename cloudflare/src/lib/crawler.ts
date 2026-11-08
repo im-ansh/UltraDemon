@@ -127,7 +127,7 @@ export async function parseHtml(htmlResponse: Response, pageUrl: string): Promis
 
 // ── Hash for deduplication ───────────────────────────────────────────────────
 
-async function hashString(str: string): Promise<string> {
+export async function hashString(str: string): Promise<string> {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf))
     .slice(0, 16)

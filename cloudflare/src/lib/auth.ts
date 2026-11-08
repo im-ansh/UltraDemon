@@ -59,12 +59,24 @@ export async function authMiddleware(c: Context<{ Bindings: Env }>, next: Next) 
     // Case 2: Authenticated edge session token from web UI
     const session = await c.env.KEY_CACHE.get<{ id: string; email?: string; plan?: string }>(`sess:${plainKey}`, 'json');
     if (session && session.id) {
-      const keyRow = await c.env.DB.prepare(
-        'SELECT * FROM api_keys WHERE user_id = ? AND revoked = 0 ORDER BY created_at DESC LIMIT 1'
-      ).bind(session.id).first<ApiKeyRecord>();
+      let targetKeyType = 'unified';
+      if (path.startsWith('/v1/search') || path.startsWith('/v1/crawl')) targetKeyType = 'search';
+      else if (path.startsWith('/v1/memory')) targetKeyType = 'memory';
+      else if (path.startsWith('/v1/analytics')) targetKeyType = 'telemetry';
+
+      let keyRow = await c.env.DB.prepare(
+        "SELECT * FROM api_keys WHERE user_id = ? AND revoked = 0 AND (key_type = 'unified' OR key_type = ?) ORDER BY created_at DESC LIMIT 1"
+      ).bind(session.id, targetKeyType).first<ApiKeyRecord>();
+
+      if (!keyRow) {
+        keyRow = await c.env.DB.prepare(
+          'SELECT * FROM api_keys WHERE user_id = ? AND revoked = 0 ORDER BY created_at DESC LIMIT 1'
+        ).bind(session.id).first<ApiKeyRecord>();
+      }
 
       if (keyRow) {
-        record = keyRow;
+        // Authenticated edge sessions have full console permissions across demo apps
+        record = { ...keyRow, key_type: 'unified' };
       } else {
         const newKey = await createApiKey(c.env, session.id, session.plan || 'free', 'Primary Workspace Key', 'unified');
         record = newKey.record;

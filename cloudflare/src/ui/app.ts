@@ -2249,7 +2249,30 @@ requests.post("${origin}/v1/analytics/capture", json={
       return null;
     }
 
-    function getActiveKey() {
+    function getActiveKey(suite = 'any') {
+      const saved = JSON.parse(localStorage.getItem('ultrademon_saved_plain_keys') || '{}');
+
+      // If a specific suite is requested, find a scope-compatible key
+      if (suite === 'search') {
+        const direct = localStorage.getItem('ultrademon_active_key') || '';
+        if (direct && (direct.startsWith('us_') || direct.startsWith('ud_'))) return direct;
+        const matching = localKeys.find(k => (k.key_type === 'search' || k.key_type === 'unified') && (k.plain_key || saved[k.key_id]));
+        if (matching) return matching.plain_key || saved[matching.key_id];
+        // If direct is a memory key, never inject it into search routes
+        if (direct && direct.startsWith('um_')) return '';
+      } else if (suite === 'memory') {
+        const direct = localStorage.getItem('ultrademon_active_key') || '';
+        if (direct && (direct.startsWith('um_') || direct.startsWith('ud_'))) return direct;
+        const matching = localKeys.find(k => (k.key_type === 'memory' || k.key_type === 'unified') && (k.plain_key || saved[k.key_id]));
+        if (matching) return matching.plain_key || saved[matching.key_id];
+        if (direct && direct.startsWith('us_')) return '';
+      } else if (suite === 'telemetry') {
+        const direct = localStorage.getItem('ultrademon_active_key') || '';
+        if (direct && (direct.startsWith('ut_') || direct.startsWith('ud_'))) return direct;
+        const matching = localKeys.find(k => (k.key_type === 'telemetry' || k.key_type === 'unified') && (k.plain_key || saved[k.key_id]));
+        if (matching) return matching.plain_key || saved[matching.key_id];
+      }
+
       const direct = localStorage.getItem('ultrademon_active_key');
       if (direct) return direct;
 
@@ -2264,9 +2287,9 @@ requests.post("${origin}/v1/analytics/capture", json={
       return '';
     }
 
-    function getAppAuthHeaders() {
+    function getAppAuthHeaders(suite = 'any') {
       const headers = { 'Content-Type': 'application/json' };
-      const apiKey = getActiveKey();
+      const apiKey = getActiveKey(suite);
       if (apiKey) {
         headers['X-API-Key'] = apiKey;
       }
@@ -3184,11 +3207,11 @@ requests.post("${origin}/v1/analytics/capture", json={
       if (!query) return;
 
       const t0 = performance.now();
-      if (resultsDiv) resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">Searching edge index...</div>';
+      if (resultsDiv) resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">Searching edge index & live web...</div>';
       try {
         const res = await fetch('/v1/search', {
           method: 'POST',
-          headers: getAppAuthHeaders(),
+          headers: getAppAuthHeaders('search'),
           body: JSON.stringify({ query, mode, num_results: 5 })
         });
         const data = await res.json();
@@ -3196,6 +3219,17 @@ requests.post("${origin}/v1/analytics/capture", json={
         const reportedTime = data.search_time_ms !== undefined ? data.search_time_ms : duration;
         const modeBadgeText = mode === 1 ? 'Mode 1 (Instant <15ms)' : mode === 2 ? 'Mode 2 (Standard Hybrid)' : 'Mode 3 (Deep Research)';
         const scorePrefix = mode === 1 ? 'Instant BM25: ' : mode === 2 ? 'Hybrid BM25: ' : 'Deep BM25: ';
+
+        if (!res.ok || data.error) {
+          if (resultsDiv) {
+            resultsDiv.innerHTML = '<div class="p-4 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 space-y-1 font-num">' +
+              '<div class="font-bold">Search Error (' + (res.status || 400) + ')</div>' +
+              '<div>' + escapeHtml(data.error || 'Request failed') + '</div>' +
+              (data.scope_restricted ? '<div class="text-[11px] text-red-600 mt-1 font-sans">Active key was restricted to UltraMemory. Switched to session/search scope.</div>' : '') +
+            '</div>';
+          }
+          return;
+        }
 
         if (data.results && data.results.length > 0) {
           if (resultsDiv) {
@@ -3219,7 +3253,9 @@ requests.post("${origin}/v1/analytics/capture", json={
               '<div class="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 text-xs space-y-1">' +
                 '<div class="flex items-center justify-between text-[10px] text-neutral-500 font-num">' +
                   '<span class="truncate max-w-sm">' + r.url + '</span>' +
-                  '<span class="font-bold text-neutral-900">' + scorePrefix + (r.score || 0.95).toFixed(2) + '</span>' +
+                  (r.source === 'ultrasearch-live-web'
+                    ? '<span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">Live Web Index</span>'
+                    : '<span class="font-bold text-neutral-900">' + scorePrefix + (r.score || 0.95).toFixed(2) + '</span>') +
                 '</div>' +
                 '<a href="' + r.url + '" target="_blank" class="font-bold text-neutral-950 hover:underline block">' + r.title + '</a>' +
                 '<p class="text-neutral-600">' + r.snippet + '</p>' +
@@ -3379,6 +3415,17 @@ requests.post("${origin}/v1/analytics/capture", json={
     window.loadRealtimeKeyMetrics = loadRealtimeKeyMetrics;
     window.toggleRealtimeAutoRefresh = toggleRealtimeAutoRefresh;
     window.testLiveRequest = testLiveRequest;
+
+    function handleTesterKeySelect(val) {
+      const activeKey = getActiveKey();
+      if (val === 'active' && activeKey && activeKey.startsWith('um_')) {
+        showAppToast('Active key is scoped to UltraMemory. Search endpoints will auto-route to Unified/Session scope.', false);
+      }
+    }
+    window.handleTesterKeySelect = handleTesterKeySelect;
+    window.executeTesterRequest = executeTesterRequest;
+    window.copyTesterResponse = copyTesterResponse;
+    window.copyTesterCurl = copyTesterCurl;
 
     // Immediate Synchronous State Hydration (Zero Latency Profile Display)
     function hydrateCachedState() {
@@ -4136,7 +4183,12 @@ requests.post("${origin}/v1/analytics/capture", json={
       const bodyText = b ? b.value.trim() : '';
 
       const headers = { 'Content-Type': 'application/json' };
-      const activeKey = getActiveKey();
+      let suiteReq = 'any';
+      if (endpoint.startsWith('/v1/search') || endpoint.startsWith('/v1/crawl')) suiteReq = 'search';
+      else if (endpoint.startsWith('/v1/memory')) suiteReq = 'memory';
+      else if (endpoint.startsWith('/v1/analytics')) suiteReq = 'telemetry';
+
+      const activeKey = getActiveKey(suiteReq);
       const token = getAuthToken();
 
       let authHeaderStr = '';
