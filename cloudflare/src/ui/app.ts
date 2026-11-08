@@ -380,8 +380,8 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     </div>
   </aside>
 
-  <!-- Main Content Workspace Area -->
-  <main class="flex-1 lg:ml-64 p-6 sm:p-10 lg:p-12 max-w-6xl w-full">
+  <!-- Main Content Workspace Area (Spacious & Minimalist) -->
+  <main class="flex-1 lg:ml-64 p-6 sm:p-10 lg:p-14 max-w-6xl w-full">
     
     <!-- Top Bar -->
     <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-5 border-b border-neutral-200/80">
@@ -401,7 +401,23 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       </div>
 
       <!-- Quick Active Key Pill & Magical Suite Switcher -->
-      <div class="relative flex items-center gap-2">
+      <div class="relative flex items-center gap-2 flex-wrap sm:flex-nowrap">
+        <!-- Quick Suite Jump Dropdown Menu -->
+        <div class="relative hidden md:block">
+          <select onchange="if(this.value) { setAppView(this.value); this.value=''; }" class="px-3 py-2 rounded-xl bg-white hover:bg-neutral-50 border border-neutral-200/90 text-xs font-semibold text-neutral-800 cursor-pointer shadow-2xs appearance-none pr-7 transition">
+            <option value="" disabled selected>Quick Jump...</option>
+            <option value="overview">Overview Suite</option>
+            <option value="search">UltraSearch Studio</option>
+            <option value="memory">UltraMemory Lab</option>
+            <option value="keys">API Key Management</option>
+            <option value="analytics">Real-Time Metrics</option>
+            <option value="tester">Interactive Sandbox</option>
+            <option value="integrations">Cursor &amp; MCP</option>
+            <option value="membership">Membership Tiers</option>
+          </select>
+          <svg class="w-3 h-3 text-neutral-400 absolute right-2.5 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+
         <!-- Help Bot Header Trigger -->
         <button type="button" onclick="toggleHelpBotDrawer()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-neutral-50 border border-neutral-200/90 text-xs font-semibold text-neutral-800 hover:text-black shadow-2xs transition cursor-pointer" title="Open Sovereign Help Assistant">
           <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
@@ -1332,11 +1348,16 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
             <input type="text" id="appSearchQuery" value="What is Python?" placeholder="Search index..." required class="flex-1 px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-xs" />
             <button type="button" onclick="handleAppSearch(event); return false;" class="px-5 py-2.5 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer">Search</button>
           </div>
-          <div class="flex items-center gap-3 text-xs text-neutral-600 font-num">
-            <span>Mode:</span>
-            <label><input type="radio" name="appSearchMode" value="1" checked /> Mode 1 (Instant &lt;50ms)</label>
-            <label><input type="radio" name="appSearchMode" value="2" /> Mode 2 (Standard)</label>
-            <label><input type="radio" name="appSearchMode" value="3" /> Mode 3 (Deep Research)</label>
+          <div class="flex items-center gap-3 pt-1">
+            <span class="text-xs font-semibold text-neutral-500 font-num">Execution Mode:</span>
+            <div class="relative min-w-[240px]">
+              <select id="appSearchModeSelect" class="w-full px-3 py-1.5 bg-neutral-50 hover:bg-white border border-neutral-200/90 rounded-xl text-xs font-semibold text-neutral-800 cursor-pointer shadow-2xs appearance-none pr-8 focus:outline-none focus:border-black transition font-num">
+                <option value="1" selected>Mode 1: Instant Edge (&lt;50ms)</option>
+                <option value="2">Mode 2: Standard BM25 (&lt;40ms)</option>
+                <option value="3">Mode 3: Deep Research (&lt;80ms)</option>
+              </select>
+              <svg class="w-3.5 h-3.5 text-neutral-400 absolute right-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
           </div>
         </form>
         <div id="appSearchResults" class="space-y-3 pt-4 border-t border-neutral-100">
@@ -2151,42 +2172,25 @@ requests.post("${origin}/v1/analytics/capture", json={
           </div>
         </div>
 
-        <!-- 1-Click Endpoint Preset Pills -->
-        <div class="space-y-2">
-          <span class="text-[11px] font-bold text-neutral-500 uppercase tracking-wider font-num">Quick Endpoint Presets</span>
-          <div class="flex flex-wrap gap-2">
-            <button type="button" onclick="selectTesterPreset('search_instant')" class="px-3 py-1.5 rounded-xl border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
-              <span class="px-1.5 py-0.2 rounded bg-neutral-950 text-white text-[9px]">POST</span>
-              <span>/v1/search (Mode 1 Instant)</span>
-            </button>
-            <button type="button" onclick="selectTesterPreset('search_hybrid')" class="px-3 py-1.5 rounded-xl border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
-              <span class="px-1.5 py-0.2 rounded bg-neutral-950 text-white text-[9px]">POST</span>
-              <span>/v1/search (Mode 2 BM25)</span>
-            </button>
-            <button type="button" onclick="selectTesterPreset('memory_store')" class="px-3 py-1.5 rounded-xl border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
-              <span class="px-1.5 py-0.2 rounded bg-neutral-950 text-white text-[9px]">POST</span>
-              <span>/v1/memory (Store)</span>
-            </button>
-            <button type="button" onclick="selectTesterPreset('memory_recall')" class="px-3 py-1.5 rounded-xl border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
-              <span class="px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-800 text-[9px]">GET</span>
-              <span>/v1/memory/recall (&lt;15ms)</span>
-            </button>
-            <button type="button" onclick="selectTesterPreset('memory_context')" class="px-3 py-1.5 rounded-xl border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
-              <span class="px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-800 text-[9px]">GET</span>
-              <span>/v1/memory/context (LLM Prompt)</span>
-            </button>
-            <button type="button" onclick="selectTesterPreset('telemetry_event')" class="px-3 py-1.5 rounded-xl border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
-              <span class="px-1.5 py-0.2 rounded bg-neutral-950 text-white text-[9px]">POST</span>
-              <span>/v1/telemetry/event (Ingest)</span>
-            </button>
-            <button type="button" onclick="selectTesterPreset('usage')" class="px-3 py-1.5 rounded-xl border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
-              <span class="px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-800 text-[9px]">GET</span>
-              <span>/v1/usage (Key Quota)</span>
-            </button>
-            <button type="button" onclick="selectTesterPreset('key_metrics')" class="px-3 py-1.5 rounded-xl border border-neutral-200 hover:border-black bg-neutral-50 hover:bg-white text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
-              <span class="px-1.5 py-0.2 rounded bg-neutral-200 text-neutral-800 text-[9px]">GET</span>
-              <span>/v1/keys/metrics (Real-Time)</span>
-            </button>
+        <!-- Minimalist Endpoint Preset Dropdown Selector -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-neutral-50/70 rounded-2xl border border-neutral-200/80">
+          <div>
+            <span class="text-xs font-bold text-neutral-950 font-num">Endpoint Preset</span>
+            <p class="text-[11px] text-neutral-500 mt-0.5">Quickly configure method, headers, and test payloads</p>
+          </div>
+          <div class="relative min-w-[300px]">
+            <select id="testerPresetSelect" onchange="selectTesterPreset(this.value)" class="w-full px-3.5 py-2.5 bg-white border border-neutral-200/90 rounded-xl text-xs font-semibold text-neutral-900 cursor-pointer shadow-2xs appearance-none pr-8 focus:outline-none focus:border-black transition font-num">
+              <option value="" disabled selected>Load an API Endpoint Preset...</option>
+              <option value="search_instant">POST /v1/search (Mode 1 Instant &lt;15ms)</option>
+              <option value="search_hybrid">POST /v1/search (Mode 2 BM25 &lt;40ms)</option>
+              <option value="memory_store">POST /v1/memory (Store Agent Memory)</option>
+              <option value="memory_recall">GET /v1/memory/recall (&lt;15ms SQLite FTS5)</option>
+              <option value="memory_context">GET /v1/memory/context (LLM Prompt Block)</option>
+              <option value="telemetry_event">POST /v1/telemetry/event (Edge Telemetry)</option>
+              <option value="usage">GET /v1/usage (Key Quota &amp; Rate Limits)</option>
+              <option value="key_metrics">GET /v1/keys/metrics (Real-Time)</option>
+            </select>
+            <svg class="w-3.5 h-3.5 text-neutral-400 absolute right-3 top-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
           </div>
         </div>
 
@@ -2268,71 +2272,96 @@ requests.post("${origin}/v1/analytics/capture", json={
   </main>
 
   <!-- Help Bot Backdrop Overlay -->
-  <div id="helpBotBackdrop" onclick="closeHelpBotDrawer()" class="fixed inset-0 bg-neutral-900/40 backdrop-blur-xs z-40 hidden transition-opacity"></div>
+  <div id="helpBotBackdrop" onclick="closeHelpBotDrawer()" class="fixed inset-0 bg-neutral-900/30 backdrop-blur-xs z-40 hidden transition-opacity"></div>
 
-  <!-- Collapsible Sovereign Help Bot Drawer -->
-  <aside id="helpBotDrawer" class="fixed top-0 right-0 h-screen w-full sm:w-[440px] bg-white border-l border-neutral-200 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col font-sans">
+  <!-- Collapsible Sovereign Help Bot Drawer (Whitespace & Minimalist Dropdown Design) -->
+  <aside id="helpBotDrawer" class="fixed top-0 right-0 h-screen w-full sm:w-[480px] lg:w-[500px] bg-white border-l border-neutral-200/80 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col font-sans">
     
-    <!-- Drawer Header -->
-    <div class="p-4 sm:p-5 border-b border-neutral-200/90 flex items-start justify-between bg-neutral-50/50">
-      <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-xl bg-neutral-950 text-white flex items-center justify-center font-bold font-num text-xs shadow-xs">
+    <!-- Drawer Header with Generous Whitespace -->
+    <div class="p-6 border-b border-neutral-100 flex items-center justify-between bg-white">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-2xl bg-neutral-950 text-white flex items-center justify-center font-bold font-num text-xs shadow-sm">
           S
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <h2 class="text-sm font-bold text-neutral-950 font-serif">Sovereign Help Assistant</h2>
-            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[9px] font-semibold font-num">
+            <h2 class="text-sm font-bold text-neutral-950 font-serif tracking-tight">Sovereign Assistant</h2>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[9px] font-semibold font-num border border-emerald-200/60">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
               Verified Presets
             </span>
           </div>
-          <p class="text-[11px] text-neutral-500 font-sans mt-0.5">Instant guided assistance for API keys, memory, and edge search.</p>
+          <p class="text-[11px] text-neutral-400 font-sans mt-0.5">Edge search, memory recall, and error resolution.</p>
         </div>
       </div>
-      <button type="button" onclick="closeHelpBotDrawer()" class="p-1.5 text-neutral-400 hover:text-black hover:bg-neutral-200/60 rounded-lg transition cursor-pointer" title="Close Help Assistant">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      </button>
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="clearHelpChat()" class="px-2.5 py-1.5 text-neutral-400 hover:text-black hover:bg-neutral-100 rounded-lg transition text-[11px] font-medium cursor-pointer" title="Clear Conversation">
+          Clear
+        </button>
+        <button type="button" onclick="closeHelpBotDrawer()" class="p-2 text-neutral-400 hover:text-black hover:bg-neutral-100 rounded-xl transition cursor-pointer" title="Close Assistant">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
     </div>
 
-    <!-- Category Filter Tabs -->
-    <div class="px-4 py-2.5 border-b border-neutral-200/80 bg-white flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-      <button type="button" id="helpCatBtn-all" onclick="filterHelpPresets('all')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-neutral-900 text-white shrink-0 cursor-pointer shadow-xs transition">All Topics</button>
-      <button type="button" id="helpCatBtn-keys" onclick="filterHelpPresets('keys')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-neutral-100 hover:bg-neutral-200 text-neutral-600 shrink-0 cursor-pointer transition">Keys & Scopes</button>
-      <button type="button" id="helpCatBtn-memory" onclick="filterHelpPresets('memory')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-neutral-100 hover:bg-neutral-200 text-neutral-600 shrink-0 cursor-pointer transition">UltraMemory</button>
-      <button type="button" id="helpCatBtn-search" onclick="filterHelpPresets('search')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-neutral-100 hover:bg-neutral-200 text-neutral-600 shrink-0 cursor-pointer transition">UltraSearch</button>
-      <button type="button" id="helpCatBtn-errors" onclick="filterHelpPresets('errors')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-neutral-100 hover:bg-neutral-200 text-neutral-600 shrink-0 cursor-pointer transition">Errors & Fixes</button>
-      <button type="button" id="helpCatBtn-mcp" onclick="filterHelpPresets('mcp')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-neutral-100 hover:bg-neutral-200 text-neutral-600 shrink-0 cursor-pointer transition">Cursor / MCP</button>
+    <!-- Minimalist Topic Selector Dropdown Menu -->
+    <div class="px-6 py-3.5 border-b border-neutral-100 bg-neutral-50/40 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <span class="text-[10px] font-bold font-num uppercase tracking-wider text-neutral-400">Knowledge Scope</span>
+      </div>
+      <div class="relative flex-1 max-w-[220px]">
+        <select id="helpTopicSelect" onchange="filterHelpPresets(this.value)" class="w-full text-xs font-semibold bg-white border border-neutral-200/90 rounded-xl px-3 py-1.5 text-neutral-800 cursor-pointer focus:outline-none focus:border-black transition appearance-none pr-7 shadow-2xs font-sans">
+          <option value="all">All Topics (10 Presets)</option>
+          <option value="keys">API Keys &amp; Scopes</option>
+          <option value="memory">UltraMemory (Sub-15ms)</option>
+          <option value="search">UltraSearch Engine</option>
+          <option value="errors">Errors &amp; Resolution</option>
+          <option value="mcp">Cursor &amp; MCP Protocol</option>
+        </select>
+        <svg class="w-3.5 h-3.5 text-neutral-400 absolute right-2.5 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
     </div>
 
-    <!-- Chat Messages Stream Area -->
-    <div id="helpChatMessages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-white">
+    <!-- Chat Messages Stream Area with Whitespace and Minimalist Cards -->
+    <div id="helpChatMessages" class="flex-1 overflow-y-auto p-6 space-y-5 bg-white">
       <!-- Greeting Message -->
-      <div class="flex items-start gap-2.5">
-        <div class="w-6 h-6 rounded-full bg-neutral-900 text-white flex items-center justify-center text-[10px] font-bold font-num shrink-0 mt-0.5">S</div>
-        <div class="bg-neutral-50 border border-neutral-200/90 rounded-2xl rounded-tl-xs p-3.5 text-xs text-neutral-800 max-w-[90%] shadow-2xs leading-relaxed">
-          <p class="font-medium text-neutral-950 mb-1">Welcome to Sovereign Edge Assistant.</p>
-          <p class="text-neutral-600 mb-2.5">I am pre-trained on all sovereign API key scopes, sub-15ms memory architecture, and edge troubleshooting. Freeform text input is disabled to guarantee zero hallucinations.</p>
-          <p class="text-neutral-500 text-[11px]">Select any preset question below to view immediate verified solutions and execute dashboard shortcuts.</p>
+      <div class="flex items-start gap-3">
+        <div class="w-7 h-7 rounded-xl bg-neutral-950 text-white flex items-center justify-center text-[10px] font-bold font-num shrink-0 mt-0.5">S</div>
+        <div class="bg-neutral-50/70 border border-neutral-200/70 rounded-2xl rounded-tl-xs p-5 text-xs text-neutral-800 max-w-[92%] shadow-2xs leading-relaxed space-y-2.5">
+          <p class="font-bold text-neutral-950">Welcome to Sovereign Edge Assistant.</p>
+          <p class="text-neutral-600">I am trained on verified specifications for API key scopes, sub-15ms memory architecture, and edge error resolution. Freeform manual input is disabled to guarantee zero hallucinations.</p>
+          <p class="text-neutral-400 text-[11px] pt-1 border-t border-neutral-200/60">Choose a question from the dropdown below to receive instant answers and direct dashboard shortcuts.</p>
         </div>
       </div>
     </div>
 
-    <!-- Preset Questions Selector Container -->
-    <div class="p-3 bg-neutral-50/80 border-t border-neutral-200/90">
-      <div class="flex items-center justify-between mb-2 px-1">
-        <span class="text-[10px] font-bold font-num uppercase tracking-wider text-neutral-400">Verified Preset Questions</span>
-        <span class="text-[10px] font-num text-neutral-400">Click to ask</span>
+    <!-- Minimalist Question Selection Dropdown Area -->
+    <div class="p-6 bg-neutral-50/50 border-t border-neutral-100 space-y-3.5">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-bold font-num uppercase tracking-wider text-neutral-400">Ask Verified Preset</span>
+        <span id="helpPresetCount" class="text-[10px] font-num text-neutral-400">10 Presets</span>
       </div>
-      <div id="helpPresetQuestionsContainer" class="max-h-48 overflow-y-auto space-y-1.5 pr-0.5">
-        <!-- Rendered dynamically by renderHelpPresetQuestions() -->
+      <div class="flex items-center gap-2">
+        <div class="relative flex-1">
+          <select id="helpPresetSelect" onchange="onPresetDropdownSelected(this.value)" class="w-full text-xs font-medium bg-white border border-neutral-200/90 rounded-xl px-3.5 py-2.5 text-neutral-900 cursor-pointer focus:outline-none focus:border-black transition pr-8 truncate shadow-2xs appearance-none">
+            <option value="" disabled selected>Select a question to ask...</option>
+            <!-- Populated dynamically -->
+          </select>
+          <svg class="w-3.5 h-3.5 text-neutral-400 absolute right-3 top-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+        <button type="button" onclick="askCurrentSelectedPreset()" class="px-4 py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold shrink-0 cursor-pointer transition shadow-xs">
+          Ask
+        </button>
       </div>
-    </div>
-
-    <!-- Locked Custom Input Notice -->
-    <div class="p-3 bg-white border-t border-neutral-200 flex items-center justify-center gap-2 text-center">
-      <svg class="w-3.5 h-3.5 text-neutral-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      <span class="text-[11px] text-neutral-400 font-sans">Custom input disabled · Strictly preset verified knowledge</span>
+      <!-- Preset Fast Quick Chips (Airy and minimalist) -->
+      <div id="helpPresetQuickChips" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1">
+        <!-- Rendered dynamically -->
+      </div>
+      <!-- Locked Notice -->
+      <div class="pt-2 border-t border-neutral-200/50 flex items-center justify-center gap-1.5 text-center">
+        <svg class="w-3 h-3 text-neutral-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span class="text-[10px] text-neutral-400 font-sans">Strictly preset verified knowledge · Zero hallucinations</span>
+      </div>
     </div>
 
   </aside>
@@ -3795,7 +3824,7 @@ requests.post("${origin}/v1/analytics/capture", json={
     async function handleAppSearch(e) {
       if (e && e.preventDefault) e.preventDefault();
       const query = document.getElementById('appSearchQuery')?.value.trim();
-      const mode = parseInt(document.querySelector('input[name="appSearchMode"]:checked')?.value || '1', 10);
+      const mode = parseInt(document.getElementById('appSearchModeSelect')?.value || document.querySelector('input[name="appSearchMode"]:checked')?.value || '1', 10);
       const resultsDiv = document.getElementById('appSearchResults');
 
       if (!query) return;
@@ -4717,12 +4746,14 @@ requests.post("${origin}/v1/analytics/capture", json={
     function selectTesterPreset(presetKey) {
       const p = TESTER_PRESETS[presetKey];
       if (!p) return;
+      const pSelect = document.getElementById('testerPresetSelect');
       const m = document.getElementById('testerMethod');
       const e = document.getElementById('testerEndpoint');
       const k = document.getElementById('testerKeySelect');
       const b = document.getElementById('testerBody');
       const bCont = document.getElementById('testerBodyContainer');
 
+      if (pSelect) pSelect.value = presetKey;
       if (m) m.value = p.method;
       if (e) e.value = p.endpoint;
       if (k) k.value = p.auth;
@@ -5092,47 +5123,66 @@ requests.post("${origin}/v1/analytics/capture", json={
 
     function filterHelpPresets(cat) {
       currentHelpCategory = cat;
-      const cats = ['all', 'keys', 'memory', 'search', 'errors', 'mcp'];
-      cats.forEach(c => {
-        const btn = document.getElementById('helpCatBtn-' + c);
-        if (btn) {
-          if (c === cat) {
-            btn.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold bg-neutral-900 text-white shrink-0 cursor-pointer shadow-xs transition';
-          } else {
-            btn.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold bg-neutral-100 hover:bg-neutral-200 text-neutral-600 shrink-0 cursor-pointer transition';
-          }
-        }
-      });
+      const select = document.getElementById('helpTopicSelect');
+      if (select && select.value !== cat) select.value = cat;
       renderHelpPresetQuestions();
     }
 
     function renderHelpPresetQuestions() {
-      const container = document.getElementById('helpPresetQuestionsContainer');
-      if (!container) return;
+      const select = document.getElementById('helpPresetSelect');
+      const countEl = document.getElementById('helpPresetCount');
+      const chipsCont = document.getElementById('helpPresetQuickChips');
+      if (!select) return;
 
       const filtered = currentHelpCategory === 'all'
         ? HELP_PRESETS
         : HELP_PRESETS.filter(p => p.category === currentHelpCategory);
 
-      if (filtered.length === 0) {
-        container.innerHTML = '<div class="text-xs text-neutral-400 p-2 text-center">No preset questions found in this category.</div>';
-        return;
-      }
+      if (countEl) countEl.innerText = filtered.length + ' Presets';
 
-      let html = '';
+      let optionsHtml = '<option value="" disabled selected>Select a question (' + filtered.length + ' available)...</option>';
       filtered.forEach(p => {
-        html += '<button type="button" onclick="askPresetQuestion(&apos;' + p.id + '&apos;)" class="w-full text-left p-2.5 rounded-xl bg-white hover:bg-neutral-100 border border-neutral-200/80 shadow-2xs transition group flex items-start justify-between gap-2 cursor-pointer">' +
-          '<div class="flex-1">' +
-            '<div class="flex items-center gap-1.5 mb-1">' +
-              '<span class="text-[9px] font-bold font-num uppercase px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-600 border border-neutral-200">' + escapeHtml(p.tag) + '</span>' +
-            '</div>' +
-            '<p class="text-xs font-medium text-neutral-800 group-hover:text-black leading-snug">' + escapeHtml(p.question) + '</p>' +
-          '</div>' +
-          '<svg class="w-3.5 h-3.5 text-neutral-400 group-hover:text-black shrink-0 mt-1 transition transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>' +
-        '</button>';
+        optionsHtml += '<option value="' + p.id + '">[' + escapeHtml(p.tag) + '] ' + escapeHtml(p.question) + '</option>';
       });
+      select.innerHTML = optionsHtml;
 
-      container.innerHTML = html;
+      if (chipsCont) {
+        let chipsHtml = '';
+        filtered.slice(0, 3).forEach(p => {
+          chipsHtml += '<button type="button" onclick="askPresetQuestion(&apos;' + p.id + '&apos;)" class="px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-white hover:bg-neutral-100 border border-neutral-200/90 text-neutral-700 hover:text-black shrink-0 transition cursor-pointer shadow-2xs truncate max-w-[170px]">' +
+            escapeHtml(p.tag) +
+          '</button>';
+        });
+        chipsCont.innerHTML = chipsHtml;
+      }
+    }
+
+    function onPresetDropdownSelected(presetId) {
+      if (presetId) {
+        askPresetQuestion(presetId);
+      }
+    }
+
+    function askCurrentSelectedPreset() {
+      const select = document.getElementById('helpPresetSelect');
+      if (select && select.value) {
+        askPresetQuestion(select.value);
+      } else {
+        showAppToast('Please select a question from the dropdown first');
+      }
+    }
+
+    function clearHelpChat() {
+      const chatContainer = document.getElementById('helpChatMessages');
+      if (!chatContainer) return;
+      chatContainer.innerHTML = '<div class="flex items-start gap-3">' +
+        '<div class="w-7 h-7 rounded-xl bg-neutral-950 text-white flex items-center justify-center text-[10px] font-bold font-num shrink-0 mt-0.5">S</div>' +
+        '<div class="bg-neutral-50/70 border border-neutral-200/70 rounded-2xl rounded-tl-xs p-5 text-xs text-neutral-800 max-w-[92%] shadow-2xs leading-relaxed space-y-2.5">' +
+          '<p class="font-bold text-neutral-950">Conversation Cleared.</p>' +
+          '<p class="text-neutral-600">Select any preset question from the dropdown below to explore sovereign engine specifications and solutions.</p>' +
+        '</div>' +
+      '</div>';
+      showAppToast('Conversation cleared');
     }
 
     function askPresetQuestion(id) {
@@ -5144,15 +5194,19 @@ requests.post("${origin}/v1/analytics/capture", json={
 
       // Append user bubble
       const userBubble = document.createElement('div');
-      userBubble.className = 'flex justify-end mb-3';
-      userBubble.innerHTML = '<div class="bg-neutral-900 text-white rounded-2xl rounded-tr-xs px-3.5 py-2 text-xs max-w-[85%] shadow-xs font-medium">' + escapeHtml(preset.question) + '</div>';
+      userBubble.className = 'flex justify-end mb-4';
+      userBubble.innerHTML = '<div class="bg-neutral-950 text-white rounded-2xl rounded-tr-xs px-4 py-3 text-xs max-w-[85%] shadow-sm font-medium leading-relaxed">' + escapeHtml(preset.question) + '</div>';
       chatContainer.appendChild(userBubble);
       chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      // Reset dropdown selection
+      const select = document.getElementById('helpPresetSelect');
+      if (select) select.value = '';
 
       // Typing indicator
       const typingIndicator = document.createElement('div');
       typingIndicator.id = 'helpBotTyping';
-      typingIndicator.className = 'flex items-center gap-2 mb-3 text-neutral-400 text-xs';
+      typingIndicator.className = 'flex items-center gap-2 mb-4 text-neutral-400 text-xs px-2';
       typingIndicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-neutral-400 animate-bounce"></span><span class="w-1.5 h-1.5 rounded-full bg-neutral-400 animate-bounce [animation-delay:0.2s]"></span><span class="w-1.5 h-1.5 rounded-full bg-neutral-400 animate-bounce [animation-delay:0.4s]"></span><span class="text-[11px] font-num">Retrieving verified knowledge...</span>';
       chatContainer.appendChild(typingIndicator);
       chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -5162,22 +5216,22 @@ requests.post("${origin}/v1/analytics/capture", json={
         if (typing) typing.remove();
 
         const botBubble = document.createElement('div');
-        botBubble.className = 'flex flex-col gap-2 mb-4';
+        botBubble.className = 'flex flex-col gap-2 mb-5';
 
         let actionBtnHtml = '';
         if (preset.actionView && preset.actionLabel) {
-          actionBtnHtml = '<div class="mt-2.5 pt-2.5 border-t border-neutral-100 flex items-center justify-between">' +
-            '<button type="button" onclick="setAppView(&apos;' + preset.actionView + '&apos;); closeHelpBotDrawer();" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-neutral-950 hover:bg-neutral-800 text-white text-[11px] font-semibold transition cursor-pointer">' +
+          actionBtnHtml = '<div class="mt-3 pt-3 border-t border-neutral-100 flex items-center justify-between">' +
+            '<button type="button" onclick="setAppView(&apos;' + preset.actionView + '&apos;); closeHelpBotDrawer();" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-950 hover:bg-neutral-800 text-white text-[11px] font-semibold transition cursor-pointer shadow-2xs">' +
               '<span>' + preset.actionLabel + '</span>' +
               '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>' +
             '</button>' +
-            '<span class="text-[10px] text-neutral-400 font-num">Shortcut</span>' +
+            '<span class="text-[10px] text-neutral-400 font-num">Dashboard Action</span>' +
           '</div>';
         }
 
-        botBubble.innerHTML = '<div class="flex items-start gap-2">' +
-          '<div class="w-6 h-6 rounded-full bg-neutral-900 text-white flex items-center justify-center text-[10px] font-bold font-num shrink-0 mt-0.5">S</div>' +
-          '<div class="bg-neutral-50 border border-neutral-200/90 rounded-2xl rounded-tl-xs p-3.5 text-xs text-neutral-800 max-w-[90%] shadow-2xs leading-relaxed">' +
+        botBubble.innerHTML = '<div class="flex items-start gap-3">' +
+          '<div class="w-7 h-7 rounded-xl bg-neutral-950 text-white flex items-center justify-center text-[10px] font-bold font-num shrink-0 mt-0.5">S</div>' +
+          '<div class="bg-neutral-50/70 border border-neutral-200/70 rounded-2xl rounded-tl-xs p-5 text-xs text-neutral-800 max-w-[92%] shadow-2xs leading-relaxed space-y-2.5">' +
             '<p class="whitespace-pre-line">' + escapeHtml(preset.answer) + '</p>' +
             actionBtnHtml +
           '</div>' +
