@@ -25,6 +25,7 @@ import { renderAppDashboard } from './ui/app';
 import { MICHELANGELUS_BOLD_ITALIC_B64 } from './ui/font';
 import { HERO_BRAIN_WEBP_B64, HERO_LENS_WEBP_B64 } from './ui/hero-assets';
 import { DEMO_ASSETS_MAP } from './ui/demo-images';
+import { ULTRADEMON_FAVICON_B64, ULTRADEMON_LOGO_PNG_B64 } from './ui/logo-data';
 import { processCrawlQueue } from './lib/crawler';
 
 // Re-export Durable Object (required by Cloudflare runtime)
@@ -69,6 +70,50 @@ app.get('/assets/demo/:filename', (c) => {
   return new Response(bytes.buffer, {
     headers: {
       'Content-Type': 'image/webp',
+      'Cache-Control': 'public, max-age=31536000, immutable',
+    },
+  });
+});
+
+// Serve Official UltraDemon Favicon (Binary PNG)
+app.get('/favicon.ico', (c) => {
+  const binaryString = atob(ULTRADEMON_FAVICON_B64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return new Response(bytes.buffer, {
+    headers: {
+      'Content-Type': 'image/png',
+      'Cache-Control': 'public, max-age=31536000, immutable',
+    },
+  });
+});
+
+app.get('/favicon.png', (c) => {
+  const binaryString = atob(ULTRADEMON_FAVICON_B64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return new Response(bytes.buffer, {
+    headers: {
+      'Content-Type': 'image/png',
+      'Cache-Control': 'public, max-age=31536000, immutable',
+    },
+  });
+});
+
+// Serve Official UltraDemon High-Res Logo
+app.get('/logo.png', (c) => {
+  const binaryString = atob(ULTRADEMON_LOGO_PNG_B64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return new Response(bytes.buffer, {
+    headers: {
+      'Content-Type': 'image/png',
       'Cache-Control': 'public, max-age=31536000, immutable',
     },
   });

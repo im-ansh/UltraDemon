@@ -5,6 +5,7 @@
 
 import { MICHELANGELUS_BOLD_ITALIC_WOFF2_B64, MICHELANGELUS_REGULAR_WOFF2_B64, NB_INTERNATIONAL_PRO_WOFF2_B64 } from './font-data';
 import { CUSTOM_CURSORS_CSS } from './cursors';
+import { ULTRADEMON_LOGO_URI, ULTRADEMON_FAVICON_URI } from './logo-data';
 
 export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, supabaseUrl: string, supabaseAnonKey: string): string {
   const isLogin = initialMode === 'login';
@@ -15,7 +16,7 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${isLogin ? 'Sign In' : 'Create Account'} — UltraDemon Platform</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2309090b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M13 2L3 14h9l-1 8 10-12h-9l1-8z'/></svg>">
+  <link rel="icon" type="image/png" href="${ULTRADEMON_FAVICON_URI}">
   
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -81,11 +82,7 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
   <!-- Top Simple Navigation -->
   <header class="p-6 border-b border-neutral-100 flex items-center justify-between max-w-5xl mx-auto w-full">
     <a href="/" class="flex items-center gap-2.5 group">
-      <div class="w-7 h-7 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:bg-black group-hover:text-white group-hover:border-black transition">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-        </svg>
-      </div>
+      <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-7 h-7 object-contain select-none shrink-0" />
       <span class="font-normal text-base tracking-tight text-neutral-950 flex items-center gap-1">
         ultrademon
         <span class="font-serif text-xs font-bold italic text-neutral-500">engine</span>
@@ -108,11 +105,7 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
       
       <!-- Brand Header -->
       <div class="text-center mb-8">
-        <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 mx-auto flex items-center justify-center text-neutral-800 mb-3">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-          </svg>
-        </div>
+        <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-12 h-12 object-contain mx-auto mb-3 select-none" />
         <h1 id="pageTitle" class="text-2xl font-normal tracking-tight text-neutral-950">
           ${isLogin ? 'Sign in to <span class="font-serif font-bold italic">UltraDemon</span>' : 'Create your <span class="font-serif font-bold italic">UltraDemon</span> account'}
         </h1>
@@ -475,7 +468,7 @@ export function renderAuthCallbackPage(origin: string): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Verifying Email — UltraDemon Platform</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2309090b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M13 2L3 14h9l-1 8 10-12h-9l1-8z'/></svg>">
+  <link rel="icon" type="image/png" href="${ULTRADEMON_FAVICON_URI}">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -520,9 +513,7 @@ export function renderAuthCallbackPage(origin: string): string {
   <!-- Simple Header -->
   <header class="p-6 border-b border-neutral-100 flex items-center justify-between max-w-5xl mx-auto w-full">
     <a href="/" class="flex items-center gap-2.5 group">
-      <div class="w-7 h-7 rounded-lg bg-black text-white flex items-center justify-center">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-      </div>
+      <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-7 h-7 object-contain select-none shrink-0" />
       <span class="font-normal text-base tracking-tight text-neutral-950 flex items-center gap-1">
         ultrademon
         <span class="font-serif text-xs font-bold italic text-neutral-500">engine</span>

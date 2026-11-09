@@ -10,7 +10,7 @@ export const CURSOR_TEXT_B64 = 'iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAE
 
 export const CUSTOM_CURSORS_CSS = `
   /* UltraDemon Custom Operating System Cursors */
-  html, body {
+  html, body, *, *::before, *::after {
     cursor: url('data:image/png;base64,${CURSOR_DEFAULT_B64}') 2 2, default;
   }
 
@@ -19,10 +19,16 @@ export const CUSTOM_CURSORS_CSS = `
   button, button *, 
   [role="button"], [role="button"] *, 
   input[type="submit"], input[type="button"], input[type="checkbox"], input[type="radio"], 
-  select, 
+  select, select *,
+  label, label *,
   .cursor-pointer, .cursor-pointer *, 
   [onclick], [onclick] *, 
-  summary, summary * {
+  summary, summary *,
+  .clickable, .clickable *,
+  .tab-btn, .tab-btn *,
+  .suite-tab-btn, .suite-tab-btn *,
+  [data-view-target], [data-view-target] *,
+  [data-action], [data-action] * {
     cursor: url('data:image/png;base64,${CURSOR_POINTER_B64}') 4 2, pointer !important;
   }
 
@@ -35,12 +41,13 @@ export const CUSTOM_CURSORS_CSS = `
   input[type="number"], 
   input:not([type]), 
   textarea, 
-  [contenteditable="true"], [contenteditable="true"] * {
+  [contenteditable="true"], [contenteditable="true"] *,
+  .cursor-text, .cursor-text * {
     cursor: url('data:image/png;base64,${CURSOR_TEXT_B64}') 18 18, text !important;
   }
 
   /* Text Reading & Code Inspection -> Custom Chunky I-Beam */
-  p, pre, pre *, code, code *, .font-mono:not(button):not(a), blockquote {
+  p, p *, pre, pre *, code, code *, .font-mono:not(button):not(a):not([onclick]):not([data-view-target]):not([role="button"]), blockquote {
     cursor: url('data:image/png;base64,${CURSOR_TEXT_B64}') 18 18, text;
   }
 

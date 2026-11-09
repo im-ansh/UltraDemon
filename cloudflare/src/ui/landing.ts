@@ -6,6 +6,7 @@
 import { MICHELANGELUS_BOLD_ITALIC_WOFF2_B64, MICHELANGELUS_REGULAR_WOFF2_B64, NB_INTERNATIONAL_PRO_WOFF2_B64 } from './font-data';
 import { BLUEPRINT_CIRCUIT_SVG, VINTAGE_TERMINAL_SVG, MATH_MANUSCRIPT_SVG, TECHNICAL_SCHEMATIC_SVG } from './science-assets';
 import { CUSTOM_CURSORS_CSS } from './cursors';
+import { ULTRADEMON_LOGO_URI, ULTRADEMON_FAVICON_URI } from './logo-data';
 
 export function renderLandingPage(origin: string, supabaseUrl: string, supabaseAnonKey: string): string {
   return `<!DOCTYPE html>
@@ -15,7 +16,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UltraDemon — Sovereign Autonomous Engine for Agent Memory &amp; Search</title>
   <meta name="description" content="UltraDemon gives autonomous agents sub-15ms long-term memory recall, full-text edge web search, and kinetic micro-telemetry across 330+ Cloudflare edge locations with zero third-party latency.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2309090b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'/></svg>">
+  <link rel="icon" type="image/png" href="${ULTRADEMON_FAVICON_URI}">
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -208,11 +209,11 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 </head>
 <body class="min-h-screen bg-white text-neutral-900 selection:bg-neutral-900 selection:text-white flex flex-col justify-between">
 
-  <!-- SECTION 1: ANNOUNCEMENT BAR (Devin Style) -->
+  <!-- SECTION 1: ANNOUNCEMENT BAR -->
   <aside id="topAnnouncementBar" class="w-full bg-[#fbfbfd] border-b border-neutral-200/70 py-2 px-4 text-center text-xs text-neutral-600">
     <div class="max-w-6xl mx-auto flex items-center justify-center gap-2">
       <span class="w-1.5 h-1.5 rounded-full bg-neutral-950 animate-pulse-subtle"></span>
-      <span class="font-normal">We're giving engineering teams 10,000 free autonomous edge queries with sub-15ms memory.</span>
+      <span class="font-normal">Sovereign edge intelligence: 10,000 free queries, sub-15ms persistent memory, and live web crawl.</span>
       <a href="#pricing" class="font-semibold text-neutral-950 hover:underline inline-flex items-center gap-1 ml-1">
         <span>View pricing</span>
         <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -220,17 +221,13 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     </div>
   </aside>
 
-  <!-- SECTION 2: PRIMARY NAVIGATION (Sticky, Devin Restrained Chrome) -->
+  <!-- SECTION 2: PRIMARY NAVIGATION (Sticky, Restrained Chrome) -->
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-neutral-100">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
       
-      <!-- Wordmark -->
-      <a href="/" class="flex items-center gap-2 group">
-        <div class="w-6 h-6 rounded-md bg-neutral-950 flex items-center justify-center text-white">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-          </svg>
-        </div>
+      <!-- Wordmark with Official Oni Mask Logo -->
+      <a href="/" class="flex items-center gap-2.5 group">
+        <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-7 h-7 object-contain select-none shrink-0 group-hover:scale-105 transition" />
         <span class="font-bold text-sm tracking-tight text-neutral-950 flex items-center gap-1">
           UltraDemon
           <span class="text-[10px] font-mono text-neutral-400 font-semibold px-1 py-0.5 rounded bg-neutral-100">OS</span>
@@ -248,7 +245,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <a href="/app" class="hover:text-neutral-950 transition-colors">Console</a>
       </nav>
 
-      <!-- Nav Action CTAs (Devin Benchmark Standard) -->
+      <!-- Nav Action CTAs -->
       <div class="flex items-center gap-3">
         <a href="#demo" onclick="openDemoModal(); return false;" class="hidden sm:inline-block text-xs font-medium text-neutral-600 hover:text-neutral-950 px-3 py-1.5 transition-colors cursor-pointer">
           Book a demo
@@ -266,27 +263,27 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <!-- MAIN EDITORIAL CONTENT -->
   <main class="flex-1">
 
-    <!-- SECTION 3: HERO & PRODUCT PROMISE (Devin Benchmark Layout with Flowing Scientific Elements) -->
+    <!-- SECTION 3: HERO & PRODUCT PROMISE -->
     <section class="relative pt-12 sm:pt-20 pb-20 px-4 sm:px-6 max-w-7xl mx-auto overflow-hidden text-left" id="overview">
       
       <!-- Eyebrow Wayfinding Label -->
       <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-neutral-200/90 bg-neutral-50/70 hover:bg-neutral-100/70 transition-colors text-xs text-neutral-600 mb-6 cursor-pointer" onclick="document.getElementById('value').scrollIntoView({ behavior: 'smooth' })">
         <span class="w-1.5 h-1.5 rounded-full bg-neutral-950 animate-pulse-subtle"></span>
-        <span class="font-mono text-[11px] uppercase tracking-wider font-semibold text-neutral-700">Autonomous Software Engineer</span>
+        <span class="font-mono text-[11px] uppercase tracking-wider font-semibold text-neutral-700">Sovereign Agent Memory &amp; Edge Search</span>
         <svg class="w-3 h-3 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
 
-      <!-- Display Headline (Iconic Left-Aligned Devin Style) -->
+      <!-- Display Headline (Iconic Editorial Style) -->
       <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-[68px] font-bold tracking-tight text-neutral-950 leading-[1.06] max-w-3xl">
-        Meet UltraDemon, your team's <span class="font-serif font-bold italic text-neutral-950">autonomous software engineer</span>
+        Give your autonomous agents <span class="font-serif font-bold italic text-neutral-950">sovereign memory</span> and sub-15ms edge search
       </h1>
 
       <!-- Supporting Paragraph (Controlled Measure, Left Aligned) -->
       <p class="text-base sm:text-lg text-neutral-600 max-w-[580px] mt-6 leading-relaxed font-normal">
-        UltraDemon runs in the cloud or on your machine, tests in its own browser, and won't stop until your agents have sub-15ms long-term memory recall and full-text edge search across 330+ Cloudflare Anycast cities.
+        UltraDemon equips autonomous agents and multi-agent swarms with persistent long-term memory, sub-15ms BM25 full-text recall, and an autonomous edge crawler across 330+ Anycast cities—with zero third-party latency or data leakage.
       </p>
 
-      <!-- Action Buttons (Left Aligned Pill Buttons Matching Devin) -->
+      <!-- Action Buttons -->
       <div class="mt-8 flex flex-wrap items-center gap-3">
         <a href="/signup" onclick="openAuthModal('signup'); return false;" class="bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-5 py-2.5 text-xs sm:text-sm font-semibold transition-all shadow-xs flex items-center gap-2 cursor-pointer">
           <span>Get started</span>
@@ -347,7 +344,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                 <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f56]"></span>
                 <span class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]"></span>
                 <span class="w-2.5 h-2.5 rounded-full bg-[#27c93f]"></span>
-                <span class="ml-2 font-mono text-[11px] text-neutral-500 font-medium">ultrademon-workspace — 330 Anycast PoPs · Active</span>
+                <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-4 h-4 object-contain inline-block ml-1.5" />
+                <span class="ml-1 font-mono text-[11px] text-neutral-600 font-medium">ultrademon-workspace — 330 Anycast PoPs · Active</span>
               </div>
               <div class="flex items-center gap-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -361,14 +359,15 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             </div>
           </div>
 
-          <!-- Overlapping Layered Window: UltraSearch Live Studio Result (Devin Style Overlay) -->
+          <!-- Overlapping Layered Window: UltraSearch Live Studio Result -->
           <div class="drift-mid hidden sm:block absolute -right-4 -bottom-8 md:-right-8 md:-bottom-10 w-[65%] md:w-[50%] lg:w-[46%] rounded-xl border border-neutral-200/90 bg-white shadow-2xl z-20 overflow-hidden">
             <div class="h-8 px-3.5 bg-[#fbfbfd] border-b border-neutral-200 flex items-center justify-between select-none">
               <div class="flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
                 <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
                 <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
-                <span class="ml-1.5 font-mono text-[10px] text-neutral-500 font-semibold truncate">UltraSearch Studio — Live Execution</span>
+                <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon" class="w-3.5 h-3.5 object-contain ml-1" />
+                <span class="ml-1 font-mono text-[10px] text-neutral-500 font-semibold truncate">UltraSearch Studio — Live Execution</span>
               </div>
               <span class="font-mono text-[9px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.2 rounded font-bold font-num">11.4ms</span>
             </div>
@@ -377,32 +376,32 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             </div>
           </div>
 
-          <!-- Overlapping Floating PR / Recording Card (Devin Screenshot Exact Feature) -->
-          <div class="drift-near hidden lg:block absolute -left-8 -bottom-6 w-[290px] rounded-2xl border border-neutral-200/90 bg-white/95 backdrop-blur-md shadow-2xl z-30 p-4 space-y-3">
+          <!-- Overlapping Floating Live Memory Query Execution Card -->
+          <div class="drift-near hidden lg:block absolute -left-8 -bottom-6 w-[310px] rounded-2xl border border-neutral-200/90 bg-white/95 backdrop-blur-md shadow-2xl z-30 p-4 space-y-3">
             <div class="flex items-center justify-between border-b border-neutral-100 pb-2">
               <div class="flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span class="font-mono text-[10px] text-emerald-800 font-bold uppercase">PR Open · ultrademon #2922</span>
+                <span class="font-mono text-[10px] text-emerald-800 font-bold uppercase">Edge Recall · fleet-alpha</span>
               </div>
-              <span class="font-mono text-[10px] text-neutral-400">12 files · +814</span>
+              <span class="font-mono text-[10px] text-neutral-400">330 PoPs · &lt;15ms</span>
             </div>
 
             <div>
-              <h4 class="font-bold text-xs text-neutral-950">Add enterprise Sovereign Memory</h4>
+              <h4 class="font-bold text-xs text-neutral-950">Associative Agent Memory Retrieval</h4>
               <p class="text-[11px] text-neutral-500 mt-1 leading-snug">
-                Sub-15ms SQLite FTS5 BM25 search across 330 Anycast edge locations.
+                SQLite FTS5 BM25 ranked recall with temporal decay and relevance filtering.
               </p>
             </div>
 
             <!-- Terminal Recording Frame -->
             <div class="rounded-xl bg-neutral-950 p-2.5 text-neutral-300 font-mono text-[10px] space-y-1">
               <div class="flex items-center justify-between text-neutral-500 text-[9px] pb-1 border-b border-neutral-800">
-                <span>Test recording on Anycast edge</span>
-                <span>2/5</span>
+                <span>Edge Query Trace</span>
+                <span>status: 200</span>
               </div>
-              <div class="text-emerald-400">&gt; curl -X POST /v1/memory/query</div>
-              <div class="text-neutral-400">{ status: 200, latency_ms: 11.2 }</div>
-              <div class="text-emerald-400">&gt; 5 passed (0.012s)</div>
+              <div class="text-emerald-400">&gt; ultrademon memory query &quot;consensus protocols&quot;</div>
+              <div class="text-neutral-400">{ matched: 3, latency_ms: 11.2, rank: &quot;bm25&quot; }</div>
+              <div class="text-emerald-400">&gt; 3 memory nodes loaded (0.011s)</div>
             </div>
           </div>
 
@@ -414,7 +413,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     <!-- SECTION 4: TRUST / BUILT-FOR STRIP (Quiet, Editorial) -->
     <section class="py-14 border-y border-neutral-100 bg-[#fbfbfd]">
       <div class="max-w-6xl mx-auto px-4 sm:px-6">
-        <div class="text-xs uppercase tracking-wider font-mono text-neutral-400 mb-6 font-semibold">Your team’s favorite autonomous infrastructure</div>
+        <div class="text-xs uppercase tracking-wider font-mono text-neutral-400 mb-6 font-semibold">Trusted edge fabric for autonomous agents and developer swarms</div>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 items-center">
           
           <div class="flex items-center gap-2 text-neutral-500 hover:text-neutral-900 transition-colors">
@@ -508,14 +507,14 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </div>
     </section>
 
-    <!-- SECTION 6: FEATURE EVIDENCE GRID ("Your team members’ favorite teammate") -->
+    <!-- SECTION 6: FEATURE EVIDENCE GRID -->
     <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="features">
       <div class="text-left mb-12">
         <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950">
-          Your team members’ <span class="font-serif font-bold italic text-neutral-950">favorite teammate</span>
+          Everything your autonomous agents need to <span class="font-serif font-bold italic text-neutral-950">remember and explore</span>
         </h2>
         <p class="text-neutral-600 text-sm sm:text-base mt-2 max-w-xl font-normal">
-          Designed from the ground up for autonomous agent swarms that demand sub-15ms memory lookups and zero-leakage web search.
+          Purpose-built for agent swarms and developer copilots that require sub-15ms memory lookups and sovereign web search without rate limits.
         </p>
       </div>
 
@@ -624,25 +623,25 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     <!-- SECTION 7: FOUR-STAGE PRODUCT WORKFLOW (The Narrative Backbone with Real Master Screens) -->
     <section class="py-24 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="workflow">
       <div class="text-left max-w-3xl mb-16">
-        <div class="text-xs uppercase tracking-wider font-mono text-neutral-400 mb-2 font-semibold">The Engineering Workflow</div>
+        <div class="text-xs uppercase tracking-wider font-mono text-neutral-400 mb-2 font-semibold">The Sovereign Knowledge Loop</div>
         <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-neutral-950 leading-[1.12]">
-          From prompt to verified memory.<br><span class="font-serif font-bold italic text-neutral-950">UltraDemon</span> gets hard engineering work done.
+          From fleeting context to persistent intelligence.<br><span class="font-serif font-bold italic text-neutral-950">UltraDemon</span> closes the agent memory loop.
         </h2>
         <p class="text-neutral-600 text-base mt-3 max-w-xl font-normal">
-          A continuous edge loop that transforms noisy task requests into verified, durable memory artifacts and live web insights.
+          A sovereign edge architecture that transforms raw web crawls and user conversations into structured, durable knowledge nodes across your entire fleet.
         </p>
       </div>
 
-      <!-- 4 Alternating Stages (Devin Style) -->
+      <!-- 4 Alternating Stages -->
       <div class="space-y-24">
         
-        <!-- Stage 01: Understand and plan (Text Left, Image Right) -->
+        <!-- Stage 01: Ingest & Index (Text Left, Image Right) -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div class="lg:col-span-5 space-y-4">
             <span class="font-mono text-sm font-semibold text-neutral-400">01</span>
-            <h3 class="text-2xl sm:text-3xl font-bold text-neutral-950 tracking-tight">Understand and plan</h3>
+            <h3 class="text-2xl sm:text-3xl font-bold text-neutral-950 tracking-tight">Ingest &amp; Index</h3>
             <p class="text-sm text-neutral-600 leading-relaxed font-normal">
-              UltraDemon ingests codebase context, indexes namespace vectors, and builds a dependency memory graph across all active worker nodes with zero centralized database round-trips.
+              UltraDemon ingests documentation, conversation turns, and unstructured knowledge into persistent SQLite FTS5 index partitions distributed across edge locations.
             </p>
             <div class="pt-2">
               <a href="#value" class="text-xs font-bold text-neutral-950 hover:underline inline-flex items-center gap-1.5">
@@ -659,7 +658,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                   <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
                   <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
                   <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
-                  <span class="ml-2 font-mono text-[10px] text-neutral-500 font-semibold">01 · Codebase Indexing &amp; Namespace Setup</span>
+                  <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon" class="w-3.5 h-3.5 object-contain ml-1" />
+                  <span class="ml-1 font-mono text-[10px] text-neutral-500 font-semibold">01 · Autonomous Context Ingestion &amp; BM25 Indexing</span>
                 </div>
                 <span class="font-mono text-[10px] text-neutral-400">Workspace Master</span>
               </div>
@@ -668,7 +668,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           </div>
         </div>
 
-        <!-- Stage 02: Code and test (Image Left, Text Right) -->
+        <!-- Stage 02: Search & Crawl (Image Left, Text Right) -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div class="lg:col-span-7 order-2 lg:order-1">
             <div class="window-frame">
@@ -677,7 +677,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                   <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
                   <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
                   <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
-                  <span class="ml-2 font-mono text-[10px] text-neutral-500 font-semibold">02 · Sub-Millisecond Search Execution</span>
+                  <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon" class="w-3.5 h-3.5 object-contain ml-1" />
+                  <span class="ml-1 font-mono text-[10px] text-neutral-500 font-semibold">02 · Sub-Millisecond Search &amp; Autonomous Web Crawl</span>
                 </div>
                 <span class="font-mono text-[9px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.2 rounded font-bold">11.4ms p95</span>
               </div>
@@ -687,9 +688,9 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
           <div class="lg:col-span-5 space-y-4 order-1 lg:order-2">
             <span class="font-mono text-sm font-semibold text-neutral-400">02</span>
-            <h3 class="text-2xl sm:text-3xl font-bold text-neutral-950 tracking-tight">Code and test</h3>
+            <h3 class="text-2xl sm:text-3xl font-bold text-neutral-950 tracking-tight">Search &amp; Crawl</h3>
             <p class="text-sm text-neutral-600 leading-relaxed font-normal">
-              Agents trigger parallel BM25 searches and live edge web scrapes. The engine executes queries in under 15ms, returning clean markdown and citations with zero rate limits or bot captcha freezes.
+              Agents trigger parallel BM25 queries and streaming edge crawls via HTMLRewriter. Queries return in under 15ms with clean markdown and verified source citations.
             </p>
             <div class="pt-2">
               <a href="#sandbox" class="text-xs font-bold text-neutral-950 hover:underline inline-flex items-center gap-1.5">
@@ -700,13 +701,13 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           </div>
         </div>
 
-        <!-- Stage 03: Review and refine (Text Left, Image Right) -->
+        <!-- Stage 03: Recall & Rank (Text Left, Image Right) -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div class="lg:col-span-5 space-y-4">
             <span class="font-mono text-sm font-semibold text-neutral-400">03</span>
-            <h3 class="text-2xl sm:text-3xl font-bold text-neutral-950 tracking-tight">Review and refine</h3>
+            <h3 class="text-2xl sm:text-3xl font-bold text-neutral-950 tracking-tight">Recall &amp; Rank</h3>
             <p class="text-sm text-neutral-600 leading-relaxed font-normal">
-              Browse structured agent memory nodes, prune expired conversation keys, and verify semantic relevance rankings in the interactive memory explorer.
+              Recall long-term memories with temporal decay scoring, container scoping, and associative relevance filtering without polluting LLM context windows.
             </p>
             <div class="pt-2">
               <a href="/app" class="text-xs font-bold text-neutral-950 hover:underline inline-flex items-center gap-1.5">
@@ -723,7 +724,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                   <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
                   <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
                   <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
-                  <span class="ml-2 font-mono text-[10px] text-neutral-500 font-semibold">03 · Memory Node Inspector</span>
+                  <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon" class="w-3.5 h-3.5 object-contain ml-1" />
+                  <span class="ml-1 font-mono text-[10px] text-neutral-500 font-semibold">03 · Semantic Relevance &amp; Memory Pruning</span>
                 </div>
                 <span class="font-mono text-[10px] text-neutral-400">D1 SQLite FTS5</span>
               </div>
@@ -732,7 +734,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           </div>
         </div>
 
-        <!-- Stage 04: Automate and maintain (Image Left, Text Right) -->
+        <!-- Stage 04: Persist & Scale (Image Left, Text Right) -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div class="lg:col-span-7 order-2 lg:order-1">
             <div class="window-frame">
@@ -741,7 +743,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
                   <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
                   <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
                   <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
-                  <span class="ml-2 font-mono text-[10px] text-neutral-500 font-semibold">04 · Telemetry, Cron Crawler &amp; ICP Engine</span>
+                  <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon" class="w-3.5 h-3.5 object-contain ml-1" />
+                  <span class="ml-1 font-mono text-[10px] text-neutral-500 font-semibold">04 · Continuous Edge Sync &amp; Telemetry</span>
                 </div>
                 <span class="font-mono text-[9px] bg-neutral-900 text-white px-1.5 py-0.2 rounded font-bold">Active SLA 99.99%</span>
               </div>
@@ -751,7 +754,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
           <div class="lg:col-span-5 space-y-4 order-1 lg:order-2">
             <span class="font-mono text-sm font-semibold text-neutral-400">04</span>
-            <h3 class="text-2xl sm:text-3xl font-bold text-neutral-950 tracking-tight">Automate and maintain</h3>
+            <h3 class="text-2xl sm:text-3xl font-bold text-neutral-950 tracking-tight">Persist &amp; Scale</h3>
             <p class="text-sm text-neutral-600 leading-relaxed font-normal">
               Autonomous background cron workers refresh edge caches every 15 minutes. Kinetic telemetry continuously monitors latency, cache hits, and persona profiles.
             </p>
@@ -807,15 +810,15 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </div>
     </section>
 
-    <!-- SECTION 9: INTEGRATIONS GRID ("Connect once, deliver repeatedly") -->
+    <!-- SECTION 9: INTEGRATIONS GRID -->
     <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="integrations">
       <div class="text-left max-w-2xl mb-12">
         <div class="text-xs uppercase tracking-wider font-mono text-neutral-400 mb-2 font-semibold">Ecosystem &amp; SDKs</div>
         <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950">
-          Connect once, deliver repeatedly with your <span class="font-serif font-bold italic text-neutral-950">favorite tools</span>
+          Connect in seconds. Drop into your <span class="font-serif font-bold italic text-neutral-950">existing agent stack</span>
         </h2>
         <p class="text-neutral-600 text-sm sm:text-base mt-2 max-w-xl font-normal">
-          UltraDemon drops into your existing agent stack with zero proxy layers and full protocol compatibility.
+          UltraDemon drops into your workflow with native Model Context Protocol (MCP), Python SDK, and zero-install NPX CLI.
         </p>
       </div>
 
@@ -1046,7 +1049,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
       <div class="devin-card p-6 sm:p-8 rounded-2xl space-y-6">
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <input type="text" id="liveSearchInput" value="autonomous software engineer memory recall" class="flex-1 px-4 py-2.5 rounded-xl border border-neutral-200 bg-neutral-50/50 text-xs sm:text-sm focus:outline-none focus:border-neutral-950 transition-colors font-mono" placeholder="Enter query...">
+          <input type="text" id="liveSearchInput" value="autonomous agent memory recall with temporal decay" class="flex-1 px-4 py-2.5 rounded-xl border border-neutral-200 bg-neutral-50/50 text-xs sm:text-sm focus:outline-none focus:border-neutral-950 transition-colors font-mono" placeholder="Enter query...">
           <button id="btnRunLiveProbe" onclick="runLiveLandingProbe()" class="px-5 py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-xs sm:text-sm font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs">
             <span>Send Edge Query</span>
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
@@ -1257,13 +1260,13 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </div>
     </section>
 
-    <!-- SECTION 13: FINAL CTA (Devin Centered Closing Statement) -->
+    <!-- SECTION 13: FINAL CTA -->
     <section class="py-28 px-4 sm:px-6 max-w-4xl mx-auto text-center">
       <h2 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-neutral-950 leading-[1.08]">
-        Stop deprioritizing.<br><span class="font-serif font-bold italic text-neutral-950">Do it all with UltraDemon</span>
+        Stop waiting on centralized latency.<br><span class="font-serif font-bold italic text-neutral-950">Power your agents with UltraDemon</span>
       </h2>
       <p class="text-sm sm:text-base text-neutral-600 max-w-xl mx-auto mt-6 leading-relaxed font-normal">
-        Sub-15ms agent memory, sovereign web scraping, and distributed telemetry. Deploy in under 60 seconds with your first API key.
+        Sub-15ms agent memory, sovereign edge search, and distributed telemetry across 330+ Anycast cities. Provision your first key in seconds.
       </p>
       <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
         <a href="/signup" onclick="openAuthModal('signup'); return false;" class="bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-6 py-2.5 text-xs sm:text-sm font-semibold transition-all shadow-xs flex items-center gap-2 cursor-pointer">
@@ -1287,11 +1290,9 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       
       <!-- Brand Col -->
       <div class="col-span-2 space-y-3">
-        <div class="flex items-center gap-2">
-          <div class="w-5 h-5 rounded bg-neutral-950 text-white flex items-center justify-center">
-            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          </div>
-          <span class="font-bold text-neutral-950 tracking-tight">UltraDemon OS</span>
+        <div class="flex items-center gap-2.5">
+          <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-6 h-6 object-contain select-none shrink-0" />
+          <span class="font-bold text-neutral-950 tracking-tight text-sm">UltraDemon OS</span>
         </div>
         <p class="text-[11px] text-neutral-500 max-w-sm leading-relaxed">
           The sovereign autonomous engine for agent memory, search, and edge telemetry. Runs across 330+ Cloudflare Anycast edge data centers worldwide.
@@ -1341,10 +1342,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </button>
 
       <!-- Modal Header -->
-      <div class="flex items-center gap-2 mb-4">
-        <div class="w-6 h-6 rounded-md bg-neutral-950 flex items-center justify-center text-white">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        </div>
+      <div class="flex items-center gap-2.5 mb-4">
+        <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-7 h-7 object-contain select-none shrink-0" />
         <span class="font-bold text-base text-neutral-950">UltraDemon OS</span>
       </div>
 
@@ -1399,10 +1398,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       <button onclick="closeDemoModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-neutral-900 transition-colors p-1 cursor-pointer">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
-      <div class="flex items-center gap-2 mb-2">
-        <div class="w-6 h-6 rounded-md bg-neutral-950 flex items-center justify-center text-white">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        </div>
+      <div class="flex items-center gap-2.5 mb-2">
+        <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-7 h-7 object-contain select-none shrink-0" />
         <span class="font-bold text-base text-neutral-950">Book an Architecture Demo</span>
       </div>
       <p class="text-xs text-neutral-500 mb-5 leading-relaxed">

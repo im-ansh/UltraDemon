@@ -5,6 +5,7 @@
 
 import { MICHELANGELUS_BOLD_ITALIC_WOFF2_B64, MICHELANGELUS_REGULAR_WOFF2_B64, NB_INTERNATIONAL_PRO_WOFF2_B64 } from './font-data';
 import { CUSTOM_CURSORS_CSS } from './cursors';
+import { ULTRADEMON_LOGO_URI, ULTRADEMON_FAVICON_URI } from './logo-data';
 
 export function renderAppDashboard(origin: string, supabaseUrl: string, supabaseAnonKey: string): string {
   return `<!DOCTYPE html>
@@ -13,7 +14,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Developer Workspace — UltraDemon Engine</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2309090b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M13 2L3 14h9l-1 8 10-12h-9l1-8z'/></svg>">
+  <link rel="icon" type="image/png" href="${ULTRADEMON_FAVICON_URI}">
   
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -274,11 +275,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     <div class="space-y-6">
       <!-- Brand Logo -->
       <a href="/" class="flex items-center gap-2.5 group">
-        <div class="w-8 h-8 rounded-xl bg-neutral-950 text-white flex items-center justify-center group-hover:scale-105 transition shadow-xs">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-          </svg>
-        </div>
+        <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-8 h-8 object-contain shrink-0 group-hover:scale-105 transition" />
         <div class="flex flex-col">
           <span class="font-normal text-base tracking-tight text-neutral-950 flex items-center gap-1.5 leading-none">
             <span class="font-serif font-bold italic text-neutral-950">UltraDemon</span>
@@ -2435,9 +2432,7 @@ requests.post("${origin}/v1/analytics/capture", json={
     <!-- Drawer Header with Generous Whitespace -->
     <div class="p-6 border-b border-neutral-100 flex items-center justify-between bg-white">
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-2xl bg-neutral-950 text-white flex items-center justify-center font-bold font-num text-xs shadow-sm">
-          S
-        </div>
+        <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Assistant" class="w-9 h-9 object-contain select-none shrink-0" />
         <div>
           <div class="flex items-center gap-2">
             <h2 class="text-sm font-bold text-neutral-950 font-sans tracking-tight">Sovereign Assistant</h2>
