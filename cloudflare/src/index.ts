@@ -123,16 +123,25 @@ app.get('/verify', (c) => {
 // Dedicated Developer App / Dashboard Workspace
 app.get('/app', (c) => {
   const origin = new URL(c.req.url).origin;
+  c.header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+  c.header('Pragma', 'no-cache');
+  c.header('Expires', '0');
   return c.html(renderAppDashboard(origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
 });
 
 app.get('/dashboard', (c) => {
   const origin = new URL(c.req.url).origin;
+  c.header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+  c.header('Pragma', 'no-cache');
+  c.header('Expires', '0');
   return c.html(renderAppDashboard(origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
 });
 
 app.get('/console', (c) => {
   const origin = new URL(c.req.url).origin;
+  c.header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+  c.header('Pragma', 'no-cache');
+  c.header('Expires', '0');
   return c.html(renderAppDashboard(origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
 });
 

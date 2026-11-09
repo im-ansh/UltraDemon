@@ -380,8 +380,8 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     </div>
   </aside>
 
-  <!-- Main Content Workspace Area (Spacious & Minimalist) -->
-  <main class="flex-1 lg:ml-64 p-6 sm:p-10 lg:p-14 max-w-6xl w-full">
+  <!-- Main Content Workspace Area -->
+  <main class="flex-1 lg:ml-64 p-6 sm:p-10 lg:p-12 max-w-6xl w-full">
     
     <!-- Top Bar -->
     <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-5 border-b border-neutral-200/80">
@@ -449,6 +449,68 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </div>
       </div>
     </header>
+
+    <!-- Sovereign Workspace Control Bar (Minimalist Dropdown-First with Abundant Whitespace) -->
+    <div class="mb-8 p-4 sm:p-5 bg-white border border-neutral-200/90 rounded-2xl shadow-xs flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <label for="mainSuiteDropdown" class="text-[11px] font-bold uppercase tracking-wider text-neutral-400 font-num">Active Suite:</label>
+        <div class="relative min-w-[220px]">
+          <select id="mainSuiteDropdown" onchange="switchSuite(this.value, event)" class="w-full px-3.5 py-2.5 bg-neutral-50 hover:bg-neutral-100 border border-neutral-200/90 rounded-xl text-xs font-bold text-neutral-950 cursor-pointer shadow-2xs appearance-none pr-8 focus:outline-none focus:border-black transition font-sans">
+            <option value="overview" selected>Overview Suite</option>
+            <option value="search">UltraSearch Studio (&lt;40ms Edge)</option>
+            <option value="memory">UltraMemory Lab (&lt;15ms BM25)</option>
+            <option value="metrics">UltraMetrics Telemetry (vs PostHog)</option>
+            <option value="tester">Interactive Sandbox Workbench</option>
+          </select>
+          <svg class="w-4 h-4 text-neutral-500 absolute right-3 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+
+      <!-- Overview Telemetry & Workspace Dropdowns -->
+      <div class="flex items-center gap-3 flex-wrap">
+        <div class="flex items-center gap-2">
+          <label for="overviewTimeframeDropdown" class="text-[11px] font-medium text-neutral-400 font-num">Timeframe:</label>
+          <div class="relative">
+            <select id="overviewTimeframeDropdown" onchange="onOverviewTimeframeChange(this.value)" class="px-3 py-2 bg-neutral-50 hover:bg-white border border-neutral-200/90 rounded-xl text-xs font-semibold text-neutral-800 cursor-pointer shadow-2xs appearance-none pr-7 focus:outline-none focus:border-black transition font-num">
+              <option value="5m">Real-Time (5m)</option>
+              <option value="1h">Last 1 Hour</option>
+              <option value="24h" selected>Last 24 Hours</option>
+              <option value="7d">Last 7 Days</option>
+              <option value="all">All-Time</option>
+            </select>
+            <svg class="w-3.5 h-3.5 text-neutral-400 absolute right-2 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <label for="overviewEngineDropdown" class="text-[11px] font-medium text-neutral-400 font-num">Engine:</label>
+          <div class="relative">
+            <select id="overviewEngineDropdown" onchange="onOverviewEngineChange(this.value)" class="px-3 py-2 bg-neutral-50 hover:bg-white border border-neutral-200/90 rounded-xl text-xs font-semibold text-neutral-800 cursor-pointer shadow-2xs appearance-none pr-7 focus:outline-none focus:border-black transition font-num">
+              <option value="all" selected>All Engines (Unified)</option>
+              <option value="search">UltraSearch (&lt;40ms)</option>
+              <option value="memory">UltraMemory (&lt;15ms)</option>
+              <option value="telemetry">Sovereign Telemetry</option>
+            </select>
+            <svg class="w-3.5 h-3.5 text-neutral-400 absolute right-2 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          </div>
+        </div>
+
+        <!-- Quick Actions Dropdown -->
+        <div class="relative">
+          <select id="overviewActionsDropdown" onchange="handleOverviewAction(this.value); this.value='';" class="px-3.5 py-2 bg-neutral-950 hover:bg-neutral-800 text-white border border-neutral-900 rounded-xl text-xs font-semibold cursor-pointer shadow-xs appearance-none pr-8 transition">
+            <option value="" disabled selected>Quick Actions...</option>
+            <option value="create_key">Create New API Key</option>
+            <option value="open_help">Open Sovereign Help Bot</option>
+            <option value="test_search">Test UltraSearch</option>
+            <option value="test_memory">Recall Agent Memory</option>
+            <option value="test_sandbox">Open Sandbox Workbench</option>
+            <option value="view_telemetry_stats">View Telemetry API JSON</option>
+          </select>
+          <svg class="w-3.5 h-3.5 text-white absolute right-2.5 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+    </div>
+
     <!-- Sovereign Engine Suite Switcher (Overview • Search • Memory • Metrics) -->
     <div class="mb-8 p-1.5 bg-neutral-200/60 border border-neutral-200/90 rounded-2xl flex items-center gap-1.5 shadow-inner">
       <!-- 0. Overview Suite -->
@@ -515,6 +577,70 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </div>
 
         <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
+      </div>
+
+      <!-- Dedicated Minimalist Sovereign Knowledge Card (Abundant Whitespace & Dropdowns) -->
+      <div class="card-clean p-6 sm:p-7 rounded-3xl bg-white border border-neutral-200/90 shadow-xs space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-100 pb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-2xl bg-neutral-950 text-white flex items-center justify-center font-bold font-num text-xs shadow-xs">
+              S
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-sm font-bold text-neutral-950 font-serif">Sovereign Knowledge &amp; Troubleshooting</h3>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[10px] font-semibold font-num border border-emerald-200/60">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  Verified Presets Only
+                </span>
+              </div>
+              <p class="text-xs text-neutral-500 mt-0.5">Explore answers, resolve scope errors, and configure sub-15ms memory architecture.</p>
+            </div>
+          </div>
+          <button type="button" onclick="openHelpBotDrawer()" class="px-3.5 py-2 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 self-start sm:self-auto">
+            <span>Open Side Drawer</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+          </button>
+        </div>
+
+        <!-- Inline Knowledge Dropdown Controls -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+          <div>
+            <label for="inlineHelpTopicSelect" class="block text-[11px] font-bold text-neutral-600 uppercase tracking-wider mb-1.5 font-num">Knowledge Topic</label>
+            <div class="relative">
+              <select id="inlineHelpTopicSelect" onchange="onInlineTopicChange(this.value)" class="w-full px-3.5 py-2.5 bg-neutral-50 hover:bg-white border border-neutral-200/90 rounded-xl text-xs font-semibold text-neutral-800 cursor-pointer shadow-2xs appearance-none pr-8 focus:outline-none focus:border-black transition font-sans">
+                <option value="all">All Topics (10 Presets)</option>
+                <option value="keys">API Keys &amp; Scopes</option>
+                <option value="memory">UltraMemory (Sub-15ms)</option>
+                <option value="search">UltraSearch Engine</option>
+                <option value="errors">Errors &amp; Resolution</option>
+                <option value="mcp">Cursor &amp; MCP Protocol</option>
+              </select>
+              <svg class="w-3.5 h-3.5 text-neutral-400 absolute right-3 top-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+          </div>
+
+          <div>
+            <label for="inlineHelpQuestionSelect" class="block text-[11px] font-bold text-neutral-600 uppercase tracking-wider mb-1.5 font-num">Select Verified Preset Question</label>
+            <div class="relative">
+              <select id="inlineHelpQuestionSelect" onchange="onInlineQuestionChange(this.value)" class="w-full px-3.5 py-2.5 bg-neutral-50 hover:bg-white border border-neutral-200/90 rounded-xl text-xs font-medium text-neutral-900 cursor-pointer shadow-2xs appearance-none pr-8 focus:outline-none focus:border-black transition truncate">
+                <option value="" disabled selected>Select a question to view instant solution...</option>
+                <!-- Populated dynamically -->
+              </select>
+              <svg class="w-3.5 h-3.5 text-neutral-400 absolute right-3 top-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inline Question Answer Display Box -->
+        <div id="inlineHelpAnswerBox" class="hidden p-5 rounded-2xl bg-neutral-50/80 border border-neutral-200/80 text-xs text-neutral-800 space-y-3 leading-relaxed">
+          <div class="flex items-center justify-between border-b border-neutral-200/60 pb-2">
+            <span id="inlineHelpAnswerTitle" class="font-bold text-neutral-950 font-serif"></span>
+            <span id="inlineHelpAnswerTag" class="text-[9px] font-bold uppercase font-num px-2 py-0.5 rounded bg-neutral-200 text-neutral-800"></span>
+          </div>
+          <p id="inlineHelpAnswerBody" class="whitespace-pre-line text-neutral-700"></p>
+          <div id="inlineHelpAnswerAction" class="pt-2"></div>
+        </div>
       </div>
 
       <!-- 4 Top Metric Cards (Card Design Skill) -->
@@ -2761,6 +2887,11 @@ requests.post("${origin}/v1/analytics/capture", json={
           if (svg) svg.className = 'w-3.5 h-3.5 text-neutral-400';
         }
       });
+      const mainDropdown = document.getElementById('mainSuiteDropdown');
+      if (mainDropdown) {
+        if (suite === 'analytics') mainDropdown.value = 'metrics';
+        else mainDropdown.value = suite;
+      }
     }
 
     function setAppView(viewId, triggerEvent = null) {
@@ -4027,6 +4158,18 @@ requests.post("${origin}/v1/analytics/capture", json={
     window.copySnippetCode = copySnippetCode;
     window.emitSimulationEvent = emitSimulationEvent;
     window.handleCustomSimulation = handleCustomSimulation;
+    window.onInlineTopicChange = onInlineTopicChange;
+    window.onInlineQuestionChange = onInlineQuestionChange;
+    window.onOverviewTimeframeChange = onOverviewTimeframeChange;
+    window.onOverviewEngineChange = onOverviewEngineChange;
+    window.handleOverviewAction = handleOverviewAction;
+    window.openHelpBotDrawer = openHelpBotDrawer;
+    window.closeHelpBotDrawer = closeHelpBotDrawer;
+    window.toggleHelpBotDrawer = toggleHelpBotDrawer;
+    window.filterHelpPresets = filterHelpPresets;
+    window.renderHelpPresetQuestions = renderHelpPresetQuestions;
+    window.askPresetQuestion = askPresetQuestion;
+    window.clearHelpChat = clearHelpChat;
     window.loadVipWatchTargets = loadVipWatchTargets;
     window.handleCreateVipTarget = handleCreateVipTarget;
     window.deleteVipTarget = deleteVipTarget;
@@ -5155,6 +5298,68 @@ requests.post("${origin}/v1/analytics/capture", json={
         });
         chipsCont.innerHTML = chipsHtml;
       }
+
+      const inlineSelect = document.getElementById('inlineHelpQuestionSelect');
+      if (inlineSelect) {
+        let inlineOpts = '<option value="" disabled selected>Select a question (' + filtered.length + ' available)...</option>';
+        filtered.forEach(p => {
+          inlineOpts += '<option value="' + p.id + '">[' + escapeHtml(p.tag) + '] ' + escapeHtml(p.question) + '</option>';
+        });
+        inlineSelect.innerHTML = inlineOpts;
+      }
+    }
+
+    function onInlineTopicChange(cat) {
+      filterHelpPresets(cat);
+      const inlineTopic = document.getElementById('inlineHelpTopicSelect');
+      if (inlineTopic) inlineTopic.value = cat;
+    }
+
+    function onInlineQuestionChange(presetId) {
+      if (!presetId) return;
+      const preset = HELP_PRESETS.find(p => p.id === presetId);
+      if (!preset) return;
+
+      const box = document.getElementById('inlineHelpAnswerBox');
+      const title = document.getElementById('inlineHelpAnswerTitle');
+      const tag = document.getElementById('inlineHelpAnswerTag');
+      const body = document.getElementById('inlineHelpAnswerBody');
+      const action = document.getElementById('inlineHelpAnswerAction');
+
+      if (box && title && tag && body && action) {
+        title.innerText = preset.question;
+        tag.innerText = preset.tag;
+        body.innerText = preset.answer;
+        if (preset.actionView && preset.actionLabel) {
+          action.innerHTML = '<button type="button" onclick="setAppView(&apos;' + preset.actionView + '&apos;)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-950 hover:bg-neutral-800 text-white text-[11px] font-semibold transition cursor-pointer shadow-2xs">' +
+            '<span>' + preset.actionLabel + '</span>' +
+            '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>' +
+          '</button>';
+        } else {
+          action.innerHTML = '';
+        }
+        box.classList.remove('hidden');
+      }
+    }
+
+    function onOverviewTimeframeChange(timeframe) {
+      showAppToast('Telemetry timeframe set to ' + timeframe);
+      refreshTelemetry();
+    }
+
+    function onOverviewEngineChange(engine) {
+      showAppToast('Engine view: ' + engine);
+      refreshTelemetry();
+    }
+
+    function handleOverviewAction(action) {
+      if (!action) return;
+      if (action === 'create_key') setAppView('keys');
+      else if (action === 'open_help') openHelpBotDrawer();
+      else if (action === 'test_search') setAppView('search');
+      else if (action === 'test_memory') setAppView('memory');
+      else if (action === 'test_sandbox') setAppView('tester');
+      else if (action === 'view_telemetry_stats') window.open('/v1/telemetry/stats', '_blank');
     }
 
     function onPresetDropdownSelected(presetId) {
