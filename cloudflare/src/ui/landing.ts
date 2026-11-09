@@ -86,6 +86,15 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       font-family: 'Michelangelus', Georgia, serif;
     }
 
+
+    /* Explicit Modal Visibility Guarantee */
+    #authModal.hidden {
+      display: none !important;
+    }
+    #authModal:not(.hidden) {
+      display: flex !important;
+    }
+
     /* Soft minimalist card shadow */
     .devin-card {
       background: #ffffff;
@@ -153,12 +162,12 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       <!-- Right CTAs -->
       <div class="flex items-center gap-3">
         <div id="headerAuthLoggedOut" class="flex items-center gap-2">
-          <button onclick="openAuthModal('signin')" class="text-xs font-normal text-neutral-600 hover:text-neutral-950 px-3 py-1.5 transition-colors">
+          <a href="/login" onclick="openAuthModal('signin'); return false;" class="text-xs font-normal text-neutral-600 hover:text-neutral-950 px-3 py-1.5 transition-colors cursor-pointer">
             Log in
-          </button>
-          <button onclick="openAuthModal('signup')" class="text-xs font-medium bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-4 py-1.5 transition-colors shadow-xs">
+          </a>
+          <a href="/signup" onclick="openAuthModal('signup'); return false;" class="text-xs font-medium bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-4 py-1.5 transition-colors shadow-xs cursor-pointer">
             Get started
-          </button>
+          </a>
         </div>
         <div id="headerAuthLoggedIn" class="hidden flex items-center gap-2">
           <a href="/app" class="text-xs font-medium bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-4 py-1.5 transition-colors shadow-xs">
@@ -199,13 +208,13 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
       <!-- Action Buttons -->
       <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <button onclick="openAuthModal('signup')" class="bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-6 py-2.5 text-xs sm:text-sm font-medium transition-all shadow-sm flex items-center gap-2">
+        <a href="/signup" onclick="openAuthModal('signup'); return false;" class="bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-6 py-2.5 text-xs sm:text-sm font-medium transition-all shadow-sm flex items-center gap-2 cursor-pointer">
           <span>Start building</span>
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
           </svg>
-        </button>
+        </a>
         <a href="/app" class="border border-neutral-200 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-800 rounded-full px-6 py-2.5 text-xs sm:text-sm font-medium transition-all">
           Explore console
         </a>
@@ -1033,9 +1042,9 @@ Fetching live Anycast telemetry...
         Sub-15ms agent memory, zero-leakage edge search, and kinetic micro-telemetry.
       </p>
       <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <button onclick="openAuthModal('signup')" class="bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-7 py-3 text-xs sm:text-sm font-medium transition-all shadow-sm">
+        <a href="/signup" onclick="openAuthModal('signup'); return false;" class="bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-7 py-3 text-xs sm:text-sm font-medium transition-all shadow-sm cursor-pointer">
           Get started ->
-        </button>
+        </a>
         <a href="/app" class="border border-neutral-200 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-800 rounded-full px-7 py-3 text-xs sm:text-sm font-medium transition-all">
           Open console
         </a>
@@ -1095,7 +1104,7 @@ Fetching live Anycast telemetry...
   </footer>
 
   <!-- AUTH MODAL (Sign In / Sign Up) -->
-  <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs hidden">
+  <div id="authModal" onclick="if(event.target === this) closeAuthModal();" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm hidden">
     <div class="bg-white rounded-2xl border border-neutral-200 shadow-2xl max-w-sm w-full p-6 text-left relative" onclick="event.stopPropagation()">
       <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-neutral-900 transition">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -1143,6 +1152,19 @@ Fetching live Anycast telemetry...
 
   <!-- CLIENT SCRIPTS -->
   <script>
+    // Early window bindings to guarantee instant button responsiveness
+    window.openAuthModal = openAuthModal;
+    window.closeAuthModal = closeAuthModal;
+    window.switchAuthMode = switchAuthMode;
+    window.handleAuthSubmit = handleAuthSubmit;
+    window.handleSignOut = handleSignOut;
+    window.runHeroLatencyTest = runHeroLatencyTest;
+    window.switchSandboxTab = switchSandboxTab;
+    window.handleStoreMemoryClick = handleStoreMemoryClick;
+    window.handleQueryMemoryClick = handleQueryMemoryClick;
+    window.handleSearchClick = handleSearchClick;
+    window.fetchTelemetryStats = fetchTelemetryStats;
+
     const STORAGE_KEY = 'ultrademon_keys';
     const SUPABASE_URL = "${supabaseUrl}";
     const SUPABASE_ANON_KEY = "${supabaseAnonKey}";
@@ -1158,9 +1180,14 @@ Fetching live Anycast telemetry...
     } catch (e) {}
 
     function openAuthModal(mode) {
+      if (currentUser) {
+        window.location.href = '/app';
+        return;
+      }
       const modal = document.getElementById('authModal');
       if (modal) {
         modal.classList.remove('hidden');
+        modal.style.display = 'flex';
         switchAuthMode(mode || 'signin');
       } else {
         window.location.href = mode === 'signup' ? '/signup' : '/login';
@@ -1169,7 +1196,10 @@ Fetching live Anycast telemetry...
 
     function closeAuthModal() {
       const modal = document.getElementById('authModal');
-      if (modal) modal.classList.add('hidden');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+      }
     }
 
     function switchAuthMode(mode) {
