@@ -1,7 +1,6 @@
 // UltraDemon — Sovereign Autonomous Engine for Agent Memory & Search
-// High-End Editorial SaaS Landing Page (Designed to Devin Quality Standards).
-// Typography: NB International Pro (Regular), Michelangelus (Serif Bold Italic Accent), Geist Mono (Tabular Numbers & Code).
-// Palette: Pure Canvas (#ffffff, #fbfbfd), Ink (#09090b), Line (#e5e5eb), Surface (#f8f8fa), Muted (#71717a).
+// High-End Editorial SaaS Landing Page Styled to Devin AI Benchmark Standards.
+// Uses Real 4K High-Fidelity Dashboard Screenshots from UltraDemon.
 // Strict Constraint: ZERO EMOJIS ANYWHERE. Minimalist SVG icons only.
 
 import { MICHELANGELUS_BOLD_ITALIC_WOFF2_B64, MICHELANGELUS_REGULAR_WOFF2_B64, NB_INTERNATIONAL_PRO_WOFF2_B64 } from './font-data';
@@ -106,6 +105,14 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       box-shadow: 0 1px 4px rgba(0,0,0,0.03), 0 12px 32px rgba(0,0,0,0.05);
     }
 
+    .window-frame {
+      border: 1px solid #e5e5eb;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 20px 48px -10px rgba(0,0,0,0.08);
+      border-radius: 1rem;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
     /* Code Block Scrollbars */
     ::-webkit-scrollbar {
       width: 5px;
@@ -118,20 +125,18 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       background: #d4d4d8;
       border-radius: 9999px;
     }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #a1a1aa;
-    }
 
     @keyframes pulse-subtle {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.92); }
+      50% { opacity: 0.55; transform: scale(0.96); }
     }
     .animate-pulse-subtle {
       animation: pulse-subtle 2.2s infinite ease-in-out;
     }
   </style>
+
+  <!-- Early-Bound Bulletproof Auth Handlers (Available Millisecond 0) -->
   <script>
-    // Bulletproof Early-Bound Auth Handlers
     window.openAuthModal = function(mode) {
       if (window.currentUser) {
         window.location.href = '/app';
@@ -159,7 +164,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <aside id="topAnnouncementBar" class="w-full bg-[#fbfbfd] border-b border-neutral-200/70 py-2 px-4 text-center text-xs text-neutral-600">
     <div class="max-w-6xl mx-auto flex items-center justify-center gap-2">
       <span class="w-1.5 h-1.5 rounded-full bg-neutral-950 animate-pulse-subtle"></span>
-      <span class="font-normal">UltraDemon 2.0 is live — sub-15ms agent memory &amp; sovereign edge search across 330+ Anycast cities.</span>
+      <span class="font-normal">UltraDemon 2.0 is live &mdash; sub-15ms agent memory &amp; sovereign edge search across 330+ Anycast cities.</span>
       <a href="#features" class="font-semibold text-neutral-950 hover:underline inline-flex items-center gap-1 ml-1">
         <span>Explore architecture</span>
         <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -180,7 +185,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
         <span class="font-bold text-sm tracking-tight text-neutral-950 flex items-center gap-1">
           UltraDemon
-          <span class="font-serif font-bold italic text-neutral-400 text-xs">engine</span>
+          <span class="text-[10px] font-mono text-neutral-400 font-semibold px-1 py-0.5 rounded bg-neutral-100">OS</span>
         </span>
       </a>
 
@@ -190,45 +195,32 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <a href="#value" class="hover:text-neutral-950 transition-colors">Core Engine</a>
         <a href="#features" class="hover:text-neutral-950 transition-colors">Features</a>
         <a href="#workflow" class="hover:text-neutral-950 transition-colors">Workflow</a>
-        <a href="#usecases" class="hover:text-neutral-950 transition-colors">Use Cases</a>
         <a href="#integrations" class="hover:text-neutral-950 transition-colors">Integrations</a>
-        <a href="#changelog" class="hover:text-neutral-950 transition-colors">Changelog</a>
-        <a href="#security" class="hover:text-neutral-950 transition-colors">Security</a>
-        <a href="/docs" class="hover:text-neutral-950 transition-colors">Docs</a>
+        <a href="/app" class="hover:text-neutral-950 transition-colors">Console</a>
       </nav>
 
-      <!-- Right CTAs -->
+      <!-- Nav Action CTAs (Devin Style) -->
       <div class="flex items-center gap-3">
-        <div id="headerAuthLoggedOut" class="flex items-center gap-2">
-          <a href="/login" onclick="openAuthModal('signin'); return false;" class="text-xs font-semibold text-neutral-600 hover:text-neutral-950 px-3 py-1.5 transition-colors cursor-pointer">
-            Log in
-          </a>
-          <a href="/signup" onclick="openAuthModal('signup'); return false;" class="text-xs font-bold bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-4 py-1.5 transition-colors shadow-xs cursor-pointer">
-            Get started
-          </a>
-        </div>
-        <div id="headerAuthLoggedIn" class="hidden flex items-center gap-2">
-          <a href="/app" class="text-xs font-bold bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-4 py-1.5 transition-colors shadow-xs">
-            Open Dashboard
-          </a>
-          <button onclick="handleSignOut()" class="text-xs text-neutral-500 hover:text-neutral-900 px-2 py-1 transition-colors">
-            Sign out
-          </button>
-        </div>
+        <a href="/login" onclick="openAuthModal('signin'); return false;" class="text-xs font-medium text-neutral-600 hover:text-neutral-950 px-3 py-1.5 transition-colors cursor-pointer">
+          Log in
+        </a>
+        <a href="/signup" onclick="openAuthModal('signup'); return false;" id="navCtaBtn" class="text-xs font-semibold bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-4 py-1.5 transition-colors shadow-xs cursor-pointer">
+          Try UltraDemon
+        </a>
       </div>
     </div>
   </header>
 
   <!-- MAIN EDITORIAL CONTENT -->
-  <main class="flex-1 w-full" id="overview">
+  <main class="flex-1">
 
-    <!-- SECTION 3: HERO & PRODUCT PROMISE -->
-    <section class="relative pt-16 sm:pt-24 pb-20 px-4 sm:px-6 max-w-6xl mx-auto text-left">
+    <!-- SECTION 3: HERO & PRODUCT PROMISE (Devin Left-Aligned Editorial Composition) -->
+    <section class="relative pt-16 sm:pt-24 pb-20 px-4 sm:px-6 max-w-6xl mx-auto text-left" id="overview">
       
       <!-- Eyebrow Wayfinding Label -->
       <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-neutral-200/90 bg-neutral-50/70 hover:bg-neutral-100/70 transition-colors text-xs text-neutral-600 mb-6 cursor-pointer" onclick="document.getElementById('value').scrollIntoView({ behavior: 'smooth' })">
         <span class="w-1.5 h-1.5 rounded-full bg-neutral-950 animate-pulse-subtle"></span>
-        <span class="font-mono text-[11px] uppercase tracking-wider font-semibold text-neutral-700">Autonomous Edge Intelligence</span>
+        <span class="font-mono text-[11px] uppercase tracking-wider font-semibold text-neutral-700">Autonomous Software Engine</span>
         <svg class="w-3 h-3 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
 
@@ -265,282 +257,148 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <span>Native MCP protocol</span>
       </div>
 
-      <!-- LAYERED PRODUCT UI COMPOSITION (The Centerpiece) -->
+      <!-- LAYERED PRODUCT UI COMPOSITION (Real 4K Master Screenshots with Overlapping Window) -->
       <div class="relative mt-12 sm:mt-16 text-left">
-        <div class="rounded-2xl border border-neutral-200/90 bg-[#fafafa] shadow-2xl shadow-neutral-200/60 overflow-hidden">
-          
-          <!-- Window Header / Chrome -->
-          <div class="h-10 px-4 bg-white border-b border-neutral-200/80 flex items-center justify-between">
+        
+        <!-- Base Window: Workspace Overview Master (macOS Framed) -->
+        <div class="window-frame">
+          <!-- macOS Window Titlebar -->
+          <div class="h-9 px-4 bg-[#f8f8fa] border-b border-neutral-200/80 flex items-center justify-between select-none">
             <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-neutral-300"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-neutral-300"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-neutral-300"></span>
-              <span class="ml-2 font-mono text-[11px] text-neutral-500">ultrademon-workspace — 330 Anycast PoPs · Active</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f56]"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#27c93f]"></span>
+              <span class="ml-2 font-mono text-[11px] text-neutral-500 font-medium">ultrademon-workspace — 330 Anycast PoPs · Active</span>
             </div>
             <div class="flex items-center gap-2">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span class="font-mono text-[11px] text-neutral-500">Connected · 0.8ms local edge link</span>
+              <span class="font-mono text-[11px] text-neutral-500 font-medium">Anycast Connected · 0.8ms link</span>
             </div>
           </div>
 
-          <!-- 3-Pane Layered Body -->
-          <div class="grid grid-cols-1 lg:grid-cols-12 min-h-[460px] bg-white divide-y lg:divide-y-0 lg:divide-x divide-neutral-200/80">
-            
-            <!-- Pane 1: Workspace Shell & Namespaces (3 cols) -->
-            <div class="lg:col-span-3 p-4 bg-[#fbfbfd] text-xs font-mono space-y-5 text-neutral-600">
-              <div>
-                <div class="text-[10px] uppercase font-bold text-neutral-400 tracking-wider mb-2">Namespaces (D1 + KV)</div>
-                <ul class="space-y-1.5">
-                  <li class="flex items-center gap-2 text-neutral-900 font-bold">
-                    <span class="w-1.5 h-1.5 rounded-full bg-neutral-900"></span>
-                    <span>agent_production</span>
-                  </li>
-                  <li class="flex items-center gap-2 text-neutral-500 hover:text-neutral-800 cursor-pointer">
-                    <span class="w-1.5 h-1.5 rounded-full bg-neutral-300"></span>
-                    <span>reasoning_scratchpad</span>
-                  </li>
-                  <li class="flex items-center gap-2 text-neutral-500 hover:text-neutral-800 cursor-pointer">
-                    <span class="w-1.5 h-1.5 rounded-full bg-neutral-300"></span>
-                    <span>episodic_memory_store</span>
-                  </li>
-                  <li class="flex items-center gap-2 text-neutral-500 hover:text-neutral-800 cursor-pointer">
-                    <span class="w-1.5 h-1.5 rounded-full bg-neutral-300"></span>
-                    <span>swarm_coordination_lock</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div>
-                <div class="text-[10px] uppercase font-bold text-neutral-400 tracking-wider mb-2">Active Engines</div>
-                <ul class="space-y-1.5">
-                  <li class="flex items-center justify-between text-neutral-800">
-                    <span class="flex items-center gap-1.5 font-medium">
-                      <svg class="w-3.5 h-3.5 text-neutral-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                      UltraMemory
-                    </span>
-                    <span class="text-[10px] bg-neutral-100 text-neutral-700 font-bold px-1.5 py-0.5 rounded">BM25</span>
-                  </li>
-                  <li class="flex items-center justify-between text-neutral-800">
-                    <span class="flex items-center gap-1.5 font-medium">
-                      <svg class="w-3.5 h-3.5 text-neutral-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                      UltraSearch
-                    </span>
-                    <span class="text-[10px] bg-neutral-100 text-neutral-700 font-bold px-1.5 py-0.5 rounded">Edge</span>
-                  </li>
-                  <li class="flex items-center justify-between text-neutral-800">
-                    <span class="flex items-center gap-1.5 font-medium">
-                      <svg class="w-3.5 h-3.5 text-neutral-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                      UltraTelemetry
-                    </span>
-                    <span class="text-[10px] bg-neutral-100 text-neutral-700 font-bold px-1.5 py-0.5 rounded">&lt;15ms</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div class="pt-2 border-t border-neutral-200/60">
-                <div class="text-[10px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Edge Hardware</div>
-                <div class="text-[11px] text-neutral-500 space-y-0.5">
-                  <div>Region: Global Anycast</div>
-                  <div>Colo: SIN (Colo 09)</div>
-                  <div>Tier: RAM L1 + KV L2</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Pane 2: Agent Activity & Code/Artifact Stream (9 cols) -->
-            <div class="lg:col-span-9 p-5 sm:p-6 flex flex-col justify-between relative bg-white">
-              
-              <div class="space-y-3.5">
-                <!-- Agent Task Prompt -->
-                <div class="p-3.5 rounded-lg border border-neutral-200 bg-neutral-50/80 text-xs">
-                  <div class="font-mono text-[10px] text-neutral-400 uppercase tracking-wider mb-1 font-bold">Autonomous Agent Task</div>
-                  <div class="text-neutral-900 font-normal">
-                    "Recall previous architecture decisions for tenant <span class="font-mono font-bold bg-neutral-200/70 px-1 rounded text-neutral-900">acme-corp</span> and query latest LLM inference benchmarks."
-                  </div>
-                </div>
-
-                <!-- Execution Step 1: Memory Recall -->
-                <div class="space-y-1.5">
-                  <div class="flex items-center gap-2 font-mono text-[11px] text-neutral-500">
-                    <span class="text-neutral-400">[00:00.003]</span>
-                    <span class="text-neutral-900 font-bold">UltraMemory:</span>
-                    <span>Querying edge RAM index (tenant="acme-corp", k=5, threshold=0.85)</span>
-                  </div>
-                  <div class="flex items-center gap-2 font-mono text-[11px] text-neutral-500 pl-4 border-l border-neutral-200">
-                    <span class="text-neutral-400">[00:00.011]</span>
-                    <span class="text-emerald-700 font-bold">Memory Recall Complete:</span>
-                    <span>5 documents matched in <strong class="text-neutral-900 font-num font-bold">11.4ms</strong> (RAM L1 HIT)</span>
-                  </div>
-                </div>
-
-                <!-- Retrieved JSON Card -->
-                <div class="p-3.5 rounded-lg border border-neutral-200 bg-[#fafafa] font-mono text-[11px] leading-relaxed text-neutral-800 overflow-x-auto">
-                  <div class="text-neutral-400">// Retrieved Context Payload</div>
-                  <div>{</div>
-                  <div class="pl-4"><span class="text-neutral-500">"tenant_id":</span> <span class="text-neutral-900">"acme-corp"</span>,</div>
-                  <div class="pl-4"><span class="text-neutral-500">"edge_latency_ms":</span> <span class="text-emerald-700 font-bold font-num">11.4</span>,</div>
-                  <div class="pl-4"><span class="text-neutral-500">"bm25_score":</span> <span class="text-neutral-900 font-num">0.968</span>,</div>
-                  <div class="pl-4"><span class="text-neutral-500">"top_match":</span> <span class="text-neutral-900">"Architecture RFC: In-memory BM25 index with Cloudflare D1 persistence"</span>,</div>
-                  <div class="pl-4"><span class="text-neutral-500">"cache_hierarchy":</span> <span class="text-neutral-900">"EDGE_RAM_L1"</span>,</div>
-                  <div class="pl-4"><span class="text-neutral-500">"colo":</span> <span class="text-neutral-900">"SIN"</span></div>
-                  <div>}</div>
-                </div>
-
-                <!-- Execution Step 2: Web Search -->
-                <div class="space-y-1.5">
-                  <div class="flex items-center gap-2 font-mono text-[11px] text-neutral-500">
-                    <span class="text-neutral-400">[00:00.018]</span>
-                    <span class="text-neutral-900 font-bold">UltraSearch:</span>
-                    <span>Parallel sovereign edge scrape for "deepseek v3 inference benchmarks"...</span>
-                  </div>
-                  <div class="flex items-center gap-2 font-mono text-[11px] text-neutral-500 pl-4 border-l border-neutral-200">
-                    <span class="text-neutral-400">[00:00.142]</span>
-                    <span class="text-emerald-700 font-bold">Search Complete:</span>
-                    <span>8 sources scraped, markdown extracted, zero bot blocks</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Pane 3: Overlaid Floating Inspector Card (Overlapping Bottom-Right) -->
-              <div class="mt-4 lg:mt-0 lg:absolute lg:right-6 lg:bottom-6 w-full lg:w-72 bg-white rounded-xl border border-neutral-200/90 shadow-xl p-4 text-xs font-mono space-y-3 z-10">
-                <div class="flex items-center justify-between pb-2 border-b border-neutral-100">
-                  <span class="font-sans font-bold text-neutral-950 text-xs">Live Edge Telemetry</span>
-                  <span class="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono font-bold">
-                    <span class="w-1 h-1 rounded-full bg-emerald-600"></span> 99.99% SLA
-                  </span>
-                </div>
-                <div class="grid grid-cols-2 gap-2 text-[11px]">
-                  <div>
-                    <div class="text-neutral-400 text-[10px]">P50 LATENCY</div>
-                    <div class="text-neutral-950 font-bold font-num text-sm">11.8ms</div>
-                  </div>
-                  <div>
-                    <div class="text-neutral-400 text-[10px]">P95 LATENCY</div>
-                    <div class="text-neutral-950 font-bold font-num text-sm">28.4ms</div>
-                  </div>
-                  <div>
-                    <div class="text-neutral-400 text-[10px]">CACHE HIT</div>
-                    <div class="text-neutral-950 font-bold font-num text-sm">98.4%</div>
-                  </div>
-                  <div>
-                    <div class="text-neutral-400 text-[10px]">ACTIVE POPS</div>
-                    <div class="text-neutral-950 font-bold font-num text-sm">330+ Cities</div>
-                  </div>
-                </div>
-                <div class="pt-2 border-t border-neutral-100">
-                  <button id="btnHeroLatencyTest" onclick="runHeroLatencyTest()" class="w-full text-center py-1.5 rounded-md bg-neutral-950 hover:bg-neutral-800 text-white font-sans text-xs font-bold transition-colors">
-                    Probe Live Edge Latency
-                  </button>
-                  <div id="heroLatencyOutput" class="text-center text-[10px] text-neutral-500 mt-1.5 hidden font-mono">
-                    Measured response: <span id="heroLatencyMs" class="text-emerald-700 font-bold font-num">--</span> in Anycast Colo
-                  </div>
-                </div>
-              </div>
-
-            </div>
+          <!-- Real 4K Master Screenshot -->
+          <div class="relative bg-neutral-950 overflow-hidden">
+            <img src="/assets/demo/01_workspace_overview.webp" alt="UltraDemon Sovereign Workspace Master Screenshot" class="w-full h-auto block object-cover object-top max-h-[580px]" fetchpriority="high" loading="eager">
           </div>
         </div>
+
+        <!-- Overlapping Layered Window: UltraSearch Live Studio Result (Devin Style Overlay) -->
+        <div class="hidden sm:block absolute -right-3 -bottom-10 md:-right-6 md:-bottom-12 w-[65%] md:w-[50%] lg:w-[46%] rounded-xl border border-neutral-200/90 bg-white shadow-2xl z-20 overflow-hidden">
+          <div class="h-8 px-3.5 bg-[#fbfbfd] border-b border-neutral-200 flex items-center justify-between select-none">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
+              <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
+              <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
+              <span class="ml-1.5 font-mono text-[10px] text-neutral-500 font-semibold truncate">UltraSearch Studio — Live Execution</span>
+            </div>
+            <span class="font-mono text-[9px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.2 rounded font-bold">11.4ms</span>
+          </div>
+          <div class="p-1 bg-white">
+            <img src="/assets/demo/02_ultrasearch_live_result.webp" alt="UltraSearch Studio Live Result Screenshot" class="w-full h-auto block rounded-b-lg object-cover object-top max-h-[300px]">
+          </div>
+        </div>
+
       </div>
     </section>
 
     <!-- SECTION 4: TRUST / BUILT-FOR STRIP (Quiet, Editorial) -->
-    <section class="py-12 border-y border-neutral-100 bg-[#fafafa]">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
-        <p class="text-[11px] font-bold tracking-wider uppercase text-neutral-400 mb-8 font-num">
-          Built for autonomous agent labs, AI engineers, and production swarms
-        </p>
-        <div class="flex flex-wrap items-center justify-center gap-8 sm:gap-12 md:gap-16 opacity-75 grayscale hover:grayscale-0 transition-all">
-          <div class="flex items-center gap-1.5 font-bold text-xs text-neutral-700">
-            <svg class="w-5 h-5 text-neutral-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
-            <span>Cloudflare</span>
+    <section class="py-14 border-y border-neutral-100 bg-[#fbfbfd]">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="text-xs uppercase tracking-wider font-mono text-neutral-400 mb-6 font-semibold">Your team’s favorite autonomous infrastructure</div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 items-center">
+          
+          <div class="flex items-center gap-2 text-neutral-500 hover:text-neutral-900 transition-colors">
+            <svg class="w-4 h-4 text-neutral-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+            <span class="font-semibold text-xs tracking-tight">Cloudflare Workers</span>
           </div>
-          <div class="flex items-center gap-1.5 font-bold text-xs text-neutral-700">
-            <svg class="w-5 h-5 text-neutral-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 3 21 12 12 14 9 21 3 3"/></svg>
-            <span>Cursor</span>
+
+          <div class="flex items-center gap-2 text-neutral-500 hover:text-neutral-900 transition-colors">
+            <svg class="w-4 h-4 text-neutral-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            <span class="font-semibold text-xs tracking-tight">Anthropic MCP</span>
           </div>
-          <div class="flex items-center gap-1.5 font-bold text-xs text-neutral-700">
-            <svg class="w-5 h-5 text-neutral-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
-            <span>Claude Desktop</span>
+
+          <div class="flex items-center gap-2 text-neutral-500 hover:text-neutral-900 transition-colors">
+            <svg class="w-4 h-4 text-neutral-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m10 15 5-3-5-3v6Z"/></svg>
+            <span class="font-semibold text-xs tracking-tight">OpenAI Swarms</span>
           </div>
-          <div class="flex items-center gap-1.5 font-bold text-xs text-neutral-700">
-            <svg class="w-5 h-5 text-neutral-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07l14.14-14.14"/></svg>
-            <span>OpenAI</span>
+
+          <div class="flex items-center gap-2 text-neutral-500 hover:text-neutral-900 transition-colors">
+            <svg class="w-4 h-4 text-neutral-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
+            <span class="font-semibold text-xs tracking-tight">Cursor Agent</span>
           </div>
-          <div class="flex items-center gap-1.5 font-bold text-xs text-neutral-700">
-            <svg class="w-5 h-5 text-neutral-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-            <span>Python SDK</span>
+
+          <div class="flex items-center gap-2 text-neutral-500 hover:text-neutral-900 transition-colors">
+            <svg class="w-4 h-4 text-neutral-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+            <span class="font-semibold text-xs tracking-tight">Supabase Edge</span>
           </div>
-          <div class="flex items-center gap-1.5 font-bold text-xs text-neutral-700">
-            <svg class="w-5 h-5 text-neutral-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg>
-            <span>TypeScript</span>
+
+          <div class="flex items-center gap-2 text-neutral-500 hover:text-neutral-900 transition-colors">
+            <svg class="w-4 h-4 text-neutral-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="font-semibold text-xs tracking-tight">Vercel AI SDK</span>
           </div>
-          <div class="flex items-center gap-1.5 font-bold text-xs text-neutral-700">
-            <svg class="w-5 h-5 text-neutral-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-            <span>LangChain</span>
-          </div>
-          <div class="flex items-center gap-1.5 font-bold text-xs text-neutral-700">
-            <svg class="w-5 h-5 text-neutral-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            <span>Supabase</span>
-          </div>
+
         </div>
       </div>
     </section>
 
     <!-- SECTION 5: CORE VALUE PROPOSITION (The Architecture Contrast) -->
     <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto" id="value">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-        <div class="lg:col-span-5 space-y-4">
-          <span class="font-mono text-[11px] uppercase tracking-wider font-bold text-neutral-400">Zero-Latency Edge Architecture</span>
-          <h2 class="text-3xl sm:text-4xl font-normal tracking-tight text-neutral-950">
-            Engineered for agents that refuse <span class="font-serif font-bold italic text-neutral-950">third-party latency</span>.
-          </h2>
-          <p class="text-neutral-600 text-sm sm:text-base leading-relaxed">
-            Traditional vector databases introduce 150-300ms network roundtrips. UltraDemon executes BM25 inverted index queries directly inside Cloudflare edge V8 isolates in under 15ms—10x faster than centralized APIs.
-          </p>
-          <div class="pt-2">
-            <a href="#features" class="inline-flex items-center gap-1.5 text-xs font-bold text-neutral-950 hover:underline">
-              <span>See feature benchmarks</span>
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-            </a>
+      <div class="text-left max-w-2xl mb-12">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950">
+          Engineered for agents that refuse third-party latency.
+        </h2>
+        <p class="text-neutral-600 text-sm sm:text-base mt-3 leading-relaxed">
+          Standard cloud architectures force autonomous agents into multi-region hops, external vector databases, and rate-limited scraper proxies. UltraDemon runs directly inside Cloudflare's Anycast edge across 330+ locations.
+        </p>
+      </div>
+
+      <!-- Contrast Card Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+        
+        <!-- Left: Centralized Cloud Lag (The Problem) -->
+        <div class="p-6 sm:p-8 rounded-2xl border border-neutral-200 bg-[#fbfbfd] space-y-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-mono uppercase tracking-wider text-neutral-400 font-semibold">Legacy Architecture</span>
+              <span class="text-xs font-mono font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">280ms p95</span>
+            </div>
+            <h3 class="text-lg font-bold text-neutral-950 tracking-tight">Centralized DB &amp; Proxy Bottlenecks</h3>
+            <p class="text-xs sm:text-sm text-neutral-600 mt-2 leading-relaxed">
+              Every memory recall round-trips to us-east-1. Scrapers hit bot blockers and cloud captchas. Swarms spend 80% of runtime waiting on network I/O.
+            </p>
+          </div>
+          
+          <div class="space-y-2 pt-4 border-t border-neutral-200 font-mono text-xs text-neutral-500">
+            <div class="flex justify-between"><span>Vector DB Hop (Virginia)</span><span class="text-neutral-900 font-num font-semibold">160ms</span></div>
+            <div class="flex justify-between"><span>Third-party Scraper Proxy</span><span class="text-neutral-900 font-num font-semibold">420ms</span></div>
+            <div class="flex justify-between"><span>Cold Start Penalty</span><span class="text-neutral-900 font-num font-semibold">+1,200ms</span></div>
           </div>
         </div>
 
-        <div class="lg:col-span-7">
-          <div class="devin-card rounded-2xl p-6 sm:p-7 space-y-5 bg-[#fafafa]">
-            <div class="flex items-center justify-between text-[11px] font-mono text-neutral-400 pb-3 border-b border-neutral-200">
-              <span>LATENCY BENCHMARK: CONTEXT RECALL</span>
-              <span class="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded">10x Faster Recall</span>
+        <!-- Right: UltraDemon Anycast Edge (The Solution) -->
+        <div class="p-6 sm:p-8 rounded-2xl border border-neutral-950 bg-neutral-950 text-white space-y-6 flex flex-col justify-between shadow-xl">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-mono uppercase tracking-wider text-neutral-400 font-semibold">UltraDemon Sovereign Mesh</span>
+              <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-800 px-2 py-0.5 rounded-full">&lt;15ms p95</span>
             </div>
-
-            <!-- Centralized DB Bar -->
-            <div class="space-y-1.5">
-              <div class="flex items-center justify-between text-xs font-mono">
-                <span class="text-neutral-500">Centralized Cloud Vector DB (AWS us-east-1)</span>
-                <span class="text-neutral-700 font-bold font-num">280ms</span>
-              </div>
-              <div class="w-full bg-neutral-200 rounded-full h-3 overflow-hidden">
-                <div class="bg-neutral-400 h-full rounded-full" style="width: 100%;"></div>
-              </div>
-              <div class="text-[10px] text-neutral-400 font-mono">DNS (45ms) + TLS (65ms) + Central DB (140ms) + Transfer (30ms)</div>
-            </div>
-
-            <!-- UltraDemon Anycast RAM Bar -->
-            <div class="space-y-1.5 pt-2">
-              <div class="flex items-center justify-between text-xs font-mono">
-                <span class="text-neutral-950 font-bold">UltraDemon Anycast Edge RAM (330+ Cities)</span>
-                <span class="text-emerald-700 font-bold font-num">11.8ms</span>
-              </div>
-              <div class="w-full bg-neutral-200 rounded-full h-3 overflow-hidden">
-                <div class="bg-neutral-950 h-full rounded-full" style="width: 4.2%;"></div>
-              </div>
-              <div class="text-[10px] text-emerald-700 font-mono font-bold">Direct Local V8 Edge RAM + Zero DNS Lookup + D1 ACID Persistence</div>
-            </div>
+            <h3 class="text-lg font-bold text-white tracking-tight">Sovereign Edge In-Memory BM25</h3>
+            <p class="text-xs sm:text-sm text-neutral-300 mt-2 leading-relaxed">
+              Memories, full-text indexes, and search scrapers reside directly in memory at the edge PoP nearest to the client. Zero centralized bottlenecks.
+            </p>
+          </div>
+          
+          <div class="space-y-2 pt-4 border-t border-neutral-800 font-mono text-xs text-neutral-400">
+            <div class="flex justify-between"><span>RAM L1 Local Cache</span><span class="text-emerald-400 font-num font-bold">0.8ms</span></div>
+            <div class="flex justify-between"><span>D1 SQLite FTS5 Persistence</span><span class="text-emerald-400 font-num font-bold">11.4ms</span></div>
+            <div class="flex justify-between"><span>Autonomous Edge Scraping</span><span class="text-emerald-400 font-num font-bold">142ms</span></div>
           </div>
         </div>
+
       </div>
     </section>
 
-    <!-- SECTION 6: FEATURE EVIDENCE GRID (Varied Compositions, Not 4 Identical Cards) -->
+    <!-- SECTION 6: FEATURE EVIDENCE GRID ("Your team members’ favorite teammate") -->
     <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="features">
       <div class="text-left mb-12">
         <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950">
@@ -551,63 +409,45 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </p>
       </div>
 
-      <!-- Bento Grid: 2 Large Top, 3 Varied Bottom -->
+      <!-- Bento Grid: 2 Large Top Cards, 3 Varied Bottom Cards (Devin Style) -->
       <div class="space-y-6">
         
-        <!-- Top Row: 2 Large Cards -->
+        <!-- Top Row: 2 Large Cards with Real 4K App Images -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           
-          <!-- Card 1: Sub-15ms BM25 Memory Recall -->
+          <!-- Card 1: Sub-15ms Anycast Memory Recall -->
           <div class="devin-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
             <div>
               <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-5">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
               </div>
-              <h3 class="text-lg font-bold text-neutral-950 tracking-tight">Sub-15ms BM25 Memory Recall</h3>
-              <p class="text-xs sm:text-sm text-neutral-600 mt-2 leading-relaxed">
-                Store episodic conversation states, agent memories, and project context. Retrieved directly from Anycast edge RAM before external APIs finish DNS lookups.
+              <h3 class="text-lg font-bold text-neutral-950 tracking-tight">Sub-15ms Anycast Memory Recall</h3>
+              <p class="text-xs sm:text-sm text-neutral-600 mt-2 leading-relaxed font-normal">
+                Structured long-term memory indexed with SQLite FTS5 BM25 directly across 330 Anycast edge locations. Instant associative recall without vector DB drift.
               </p>
             </div>
-            <!-- Mock UI inside Card -->
-            <div class="mt-6 p-4 rounded-xl border border-neutral-200 bg-neutral-50/60 font-mono text-[11px] space-y-2">
-              <div class="flex items-center justify-between text-neutral-400 text-[10px]">
-                <span>KEY: agent_session_884</span>
-                <span class="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-bold font-num">11.2ms recall</span>
-              </div>
-              <div class="text-neutral-900 font-sans text-xs">
-                "Resolved distributed lock conflict for tenant production-01 via token CAS algorithm."
-              </div>
-              <div class="flex items-center gap-2 pt-1">
-                <span class="bg-white border border-neutral-200 px-2 py-0.5 rounded text-[10px] text-neutral-600 font-bold">BM25: 0.94</span>
-                <span class="bg-white border border-neutral-200 px-2 py-0.5 rounded text-[10px] text-neutral-600">Tier: RAM_L1</span>
-              </div>
+            
+            <!-- Real Screenshot Preview -->
+            <div class="mt-6 rounded-xl border border-neutral-200/90 overflow-hidden bg-neutral-50 shadow-sm">
+              <img src="/assets/demo/03_ultramemory_stored_memory.webp" alt="UltraMemory Stored Memory Master Preview" class="w-full h-56 sm:h-64 object-cover object-top" loading="lazy">
             </div>
           </div>
 
-          <!-- Card 2: Sovereign Edge Web Search -->
+          <!-- Card 2: Edge Web Search Studio -->
           <div class="devin-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
             <div>
               <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-5">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               </div>
-              <h3 class="text-lg font-bold text-neutral-950 tracking-tight">Zero-Leakage Edge Web Search</h3>
-              <p class="text-xs sm:text-sm text-neutral-600 mt-2 leading-relaxed">
-                Autonomous agents explore the open web without rate limits, bot blocks, or third-party data tracking. Returns clean, structured markdown ready for LLM context.
+              <h3 class="text-lg font-bold text-neutral-950 tracking-tight">Edge Web Search Studio</h3>
+              <p class="text-xs sm:text-sm text-neutral-600 mt-2 leading-relaxed font-normal">
+                Real-time edge web search and autonomous scraping. Scrapes 8 sources simultaneously, parses markdown cleanly, and circumvents anti-bot blocks.
               </p>
             </div>
-            <!-- Mock UI inside Card -->
-            <div class="mt-6 p-4 rounded-xl border border-neutral-200 bg-neutral-50/60 font-mono text-[11px] space-y-2">
-              <div class="flex items-center justify-between text-neutral-400 text-[10px]">
-                <span>QUERY: "deepseek v3 reasoning benchmarks"</span>
-                <span class="text-neutral-900 bg-white border border-neutral-200 px-1.5 py-0.5 rounded font-bold font-num">142ms total</span>
-              </div>
-              <div class="text-neutral-800 font-sans text-xs line-clamp-2">
-                # DeepSeek-V3 Technical Overview\nEvaluations demonstrate state-of-the-art reasoning across MATH and HumanEval...
-              </div>
-              <div class="flex items-center gap-2 pt-1">
-                <span class="bg-white border border-neutral-200 px-2 py-0.5 rounded text-[10px] text-neutral-600 font-bold">Citations: 8</span>
-                <span class="bg-white border border-neutral-200 px-2 py-0.5 rounded text-[10px] text-neutral-600">Ads: Stripped</span>
-              </div>
+            
+            <!-- Real Screenshot Preview -->
+            <div class="mt-6 rounded-xl border border-neutral-200/90 overflow-hidden bg-neutral-50 shadow-sm">
+              <img src="/assets/demo/02_ultrasearch_live_result.webp" alt="UltraSearch Studio Live Result Preview" class="w-full h-56 sm:h-64 object-cover object-top" loading="lazy">
             </div>
           </div>
 
@@ -616,54 +456,53 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <!-- Bottom Row: 3 Varied Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          <!-- Card 3: Multi-Tenant Namespaces -->
+          <!-- Card 3: Interactive API Sandbox -->
           <div class="devin-card rounded-2xl p-6 flex flex-col justify-between">
             <div>
-              <div class="w-7 h-7 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
+              <div class="w-7 h-7 rounded-md bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+              </div>
+              <h4 class="text-base font-bold text-neutral-950 tracking-tight">Interactive API Sandbox</h4>
+              <p class="text-xs text-neutral-600 mt-2 leading-relaxed">
+                Test live endpoints, inspect headers, and calibrate prompt tokens directly in the developer workbench.
+              </p>
+            </div>
+            <div class="mt-4 rounded-lg border border-neutral-200/80 overflow-hidden bg-neutral-50">
+              <img src="/assets/demo/05_api_sandbox.webp" alt="API Sandbox Preview" class="w-full h-44 object-cover object-top" loading="lazy">
+            </div>
+          </div>
+
+          <!-- Card 4: Telemetry & Kinetic ICP vs PostHog -->
+          <div class="devin-card rounded-2xl p-6 flex flex-col justify-between">
+            <div>
+              <div class="w-7 h-7 rounded-md bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+              </div>
+              <h4 class="text-base font-bold text-neutral-950 tracking-tight">Telemetry &amp; ICP Engine</h4>
+              <p class="text-xs text-neutral-600 mt-2 leading-relaxed">
+                PostHog-competitive real-time telemetry. Evaluates agent session patterns and synthesizes Ideal Customer Profiles.
+              </p>
+            </div>
+            <div class="mt-4 rounded-lg border border-neutral-200/80 overflow-hidden bg-neutral-50">
+              <img src="/assets/demo/04_telemetry_icp.webp" alt="Telemetry ICP Engine Preview" class="w-full h-44 object-cover object-top" loading="lazy">
+            </div>
+          </div>
+
+          <!-- Card 5: Deterministic Audit Trails -->
+          <div class="devin-card rounded-2xl p-6 flex flex-col justify-between">
+            <div>
+              <div class="w-7 h-7 rounded-md bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               </div>
-              <h4 class="text-sm font-bold text-neutral-950">Isolated Multi-Tenant Namespaces</h4>
-              <p class="text-xs text-neutral-600 mt-1.5 leading-relaxed">
-                Partition memory across agents, projects, and users with zero risk of context contamination. AES-256 encrypted keys.
+              <h4 class="text-base font-bold text-neutral-950 tracking-tight">Deterministic Audit Trails</h4>
+              <p class="text-xs text-neutral-600 mt-2 leading-relaxed">
+                Cryptographic SHA-256 verification hashes for every recalled memory vector. Single-tenant zero data leakage.
               </p>
             </div>
-            <div class="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between font-mono text-[10px] text-neutral-500">
-              <span>Cryptographic separation</span>
-              <span class="text-neutral-950 font-bold">Active</span>
-            </div>
-          </div>
-
-          <!-- Card 4: Native MCP Protocol -->
-          <div class="devin-card rounded-2xl p-6 flex flex-col justify-between">
-            <div>
-              <div class="w-7 h-7 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-              </div>
-              <h4 class="text-sm font-bold text-neutral-950">Native MCP Protocol Support</h4>
-              <p class="text-xs text-neutral-600 mt-1.5 leading-relaxed">
-                Plug directly into Claude Desktop, Cursor, and Windsurf via one standard Model Context Protocol tool command.
-              </p>
-            </div>
-            <div class="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between font-mono text-[10px] text-neutral-500">
-              <span>Standard MCP JSON-RPC</span>
-              <span class="text-neutral-950 font-bold">v1.0</span>
-            </div>
-          </div>
-
-          <!-- Card 5: Sub-Millisecond Telemetry -->
-          <div class="devin-card rounded-2xl p-6 flex flex-col justify-between">
-            <div>
-              <div class="w-7 h-7 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-4">
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-              </div>
-              <h4 class="text-sm font-bold text-neutral-950">Sub-Millisecond Telemetry</h4>
-              <p class="text-xs text-neutral-600 mt-1.5 leading-relaxed">
-                Inspect every query with P50/P90/P99 latency distribution, Anycast PoP colo mapping, and cache hierarchy tracing.
-              </p>
-            </div>
-            <div class="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between font-mono text-[10px] text-neutral-500">
-              <span>Real-time edge stats</span>
-              <span class="text-emerald-700 font-bold font-num">0.6ms probe</span>
+            <div class="mt-4 p-3 rounded-lg border border-neutral-200/80 bg-[#fbfbfd] font-mono text-[10px] text-neutral-600 space-y-1.5">
+              <div class="text-emerald-700 font-bold">VERIFIED HASH · AES-256-GCM</div>
+              <div class="truncate text-neutral-400">0x8f2d...3a9c (Tenant: Acme)</div>
+              <div class="text-neutral-500 pt-1 border-t border-neutral-200">Audit Status: 100% Deterministic</div>
             </div>
           </div>
 
@@ -672,147 +511,146 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </div>
     </section>
 
-    <!-- SECTION 7: FOUR-STAGE PRODUCT WORKFLOW (The Narrative Backbone) -->
-    <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="workflow">
-      <div class="text-center max-w-3xl mx-auto mb-16">
-        <h2 class="text-3xl sm:text-4xl font-normal tracking-tight text-neutral-950">
-          From prompt to verified memory.<br><span class="font-serif font-bold italic text-neutral-950">UltraDemon</span> gets hard agent work done.
+    <!-- SECTION 7: FOUR-STAGE PRODUCT WORKFLOW (The Narrative Backbone with Real Master Screens) -->
+    <section class="py-24 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="workflow">
+      <div class="text-left max-w-3xl mb-16">
+        <div class="text-xs uppercase tracking-wider font-mono text-neutral-400 mb-2 font-semibold">The Engineering Workflow</div>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-neutral-950 leading-[1.12]">
+          From prompt to verified memory.<br><span class="font-serif font-bold italic text-neutral-950">UltraDemon</span> gets hard engineering work done.
         </h2>
-        <p class="text-neutral-600 text-sm sm:text-base mt-3">
-          A disciplined, sub-millisecond edge pipeline engineered for mission-critical agent workflows.
+        <p class="text-neutral-600 text-base mt-3 max-w-xl font-normal">
+          A continuous edge loop that transforms noisy task requests into verified, durable memory artifacts and live web insights.
         </p>
       </div>
 
-      <!-- 4 Alternating Steps -->
-      <div class="space-y-16">
+      <!-- 4 Alternating Stages (Devin Style) -->
+      <div class="space-y-24">
         
-        <!-- Step 01: Understand and Plan -->
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-          <div class="md:col-span-5 space-y-3">
-            <span class="font-mono text-xs font-bold text-neutral-400">01</span>
-            <h3 class="text-xl font-bold text-neutral-950 tracking-tight">Understand and index</h3>
-            <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-              UltraDemon accepts unstructured text, conversational turns, agent scratchpads, and codebases. Content is automatically tokenized and indexed into dual BM25 inverted indexes and vector caches across Anycast edge nodes.
+        <!-- Stage 01: Understand and plan (Text Left, Image Right) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div class="lg:col-span-5 space-y-4">
+            <span class="font-mono text-sm font-semibold text-neutral-400">01</span>
+            <h3 class="text-2xl sm:text-3xl font-bold text-neutral-950 tracking-tight">Understand and plan</h3>
+            <p class="text-sm text-neutral-600 leading-relaxed font-normal">
+              UltraDemon ingests codebase context, indexes namespace vectors, and builds a dependency memory graph across all active worker nodes with zero centralized database round-trips.
             </p>
+            <div class="pt-2">
+              <a href="#value" class="text-xs font-bold text-neutral-950 hover:underline inline-flex items-center gap-1.5">
+                <span>Explore namespace architecture</span>
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </a>
+            </div>
           </div>
-          <div class="md:col-span-7">
-            <div class="devin-card rounded-2xl p-5 font-mono text-[11px] space-y-3 bg-[#fafafa]">
-              <div class="flex items-center justify-between text-neutral-400 text-[10px]">
-                <span>INPUT STREAM</span>
-                <span class="text-neutral-900 font-bold font-num">Indexed in 4.2ms</span>
+          
+          <div class="lg:col-span-7">
+            <div class="window-frame">
+              <div class="h-8 px-3.5 bg-[#f8f8fa] border-b border-neutral-200/80 flex items-center justify-between select-none">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
+                  <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
+                  <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
+                  <span class="ml-2 font-mono text-[10px] text-neutral-500 font-semibold">01 · Codebase Indexing &amp; Namespace Setup</span>
+                </div>
+                <span class="font-mono text-[10px] text-neutral-400">Workspace Master</span>
               </div>
-              <div class="bg-white p-3 rounded-lg border border-neutral-200 text-neutral-800">
-                <span class="text-neutral-400">POST /v1/memory/store</span><br>
-                { "key": "rfc_edge_cache", "content": "BM25 scoring algorithm deployed directly on Cloudflare V8 isolates.", "tags": ["architecture", "edge"] }
-              </div>
-              <div class="flex items-center gap-3 text-[10px] text-neutral-500">
-                <span>Tokens: 38</span>
-                <span>·</span>
-                <span>Hash: sha256_9b8a...</span>
-                <span>·</span>
-                <span class="text-emerald-700 font-bold">D1 Durability Confirmed</span>
-              </div>
+              <img src="/assets/demo/01_workspace_overview.webp" alt="Stage 01 Workspace Overview Screenshot" class="w-full h-auto block object-cover object-top max-h-[380px]" loading="lazy">
             </div>
           </div>
         </div>
 
-        <!-- Step 02: Build and Test (Sub-15ms Edge Retrieval) -->
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-          <div class="md:col-span-7 order-2 md:order-1">
-            <div class="devin-card rounded-2xl p-5 font-mono text-[11px] space-y-3 bg-[#fafafa]">
-              <div class="flex items-center justify-between text-neutral-400 text-[10px]">
-                <span>QUERY: "edge cache algorithm"</span>
-                <span class="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-bold font-num">11.4ms edge recall</span>
+        <!-- Stage 02: Code and test (Image Left, Text Right) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div class="lg:col-span-7 order-2 lg:order-1">
+            <div class="window-frame">
+              <div class="h-8 px-3.5 bg-[#f8f8fa] border-b border-neutral-200/80 flex items-center justify-between select-none">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
+                  <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
+                  <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
+                  <span class="ml-2 font-mono text-[10px] text-neutral-500 font-semibold">02 · Sub-Millisecond Search Execution</span>
+                </div>
+                <span class="font-mono text-[9px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.2 rounded font-bold">11.4ms p95</span>
               </div>
-              <div class="bg-white p-3 rounded-lg border border-neutral-200 text-neutral-800">
-                <div class="text-neutral-400 mb-1">// BM25 Ranked Result (Score 0.968)</div>
-                <div>"BM25 scoring algorithm deployed directly on Cloudflare V8 isolates."</div>
-              </div>
-              <div class="flex items-center gap-3 text-[10px] text-neutral-500">
-                <span>Cache: RAM_L1_HIT</span>
-                <span>·</span>
-                <span>PoP: SIN</span>
-                <span>·</span>
-                <span class="text-neutral-950 font-bold">Zero Cold Start</span>
-              </div>
+              <img src="/assets/demo/02_ultrasearch_live_result.webp" alt="Stage 02 Search Studio Screenshot" class="w-full h-auto block object-cover object-top max-h-[380px]" loading="lazy">
             </div>
           </div>
-          <div class="md:col-span-5 order-1 md:order-2 space-y-3">
-            <span class="font-mono text-xs font-bold text-neutral-400">02</span>
-            <h3 class="text-xl font-bold text-neutral-950 tracking-tight">Build and test</h3>
-            <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-              When an agent queries context, UltraDemon queries its Anycast edge RAM cache first. Verified responses return in under 15ms—over 10x faster than traditional centralized vector databases.
-            </p>
-          </div>
-        </div>
 
-        <!-- Step 03: Review and Refine (Sovereign Web Search & Extraction) -->
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-          <div class="md:col-span-5 space-y-3">
-            <span class="font-mono text-xs font-bold text-neutral-400">03</span>
-            <h3 class="text-xl font-bold text-neutral-950 tracking-tight">Review and refine</h3>
-            <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-              When internal memory lacks real-time facts, UltraDemon deploys autonomous edge fetchers that crawl websites, sanitize HTML into structured markdown, and return clean citations with zero third-party tracking.
+          <div class="lg:col-span-5 space-y-4 order-1 lg:order-2">
+            <span class="font-mono text-sm font-semibold text-neutral-400">02</span>
+            <h3 class="text-2xl sm:text-3xl font-bold text-neutral-950 tracking-tight">Code and test</h3>
+            <p class="text-sm text-neutral-600 leading-relaxed font-normal">
+              Agents trigger parallel BM25 searches and live edge web scrapes. The engine executes queries in under 15ms, returning clean markdown and citations with zero rate limits or bot captcha freezes.
             </p>
-          </div>
-          <div class="md:col-span-7">
-            <div class="devin-card rounded-2xl p-5 font-mono text-[11px] space-y-3 bg-[#fafafa]">
-              <div class="flex items-center justify-between text-neutral-400 text-[10px]">
-                <span>AUTONOMOUS CRAWLER</span>
-                <span class="text-neutral-900 font-bold">8 Sources Ingested</span>
-              </div>
-              <div class="bg-white p-3 rounded-lg border border-neutral-200 text-neutral-800">
-                <div class="text-neutral-400 mb-1">GET /v1/search?q=latest+llm+release&amp;format=markdown</div>
-                <div class="text-neutral-700 font-sans text-xs">
-                  Clean LLM-ready markdown extracted. Scripts, cookies, and ad trackers purged at edge runtime.
-                </div>
-              </div>
-              <div class="flex items-center gap-3 text-[10px] text-neutral-500">
-                <span>Sanitization: 100%</span>
-                <span>·</span>
-                <span>Ads: 0</span>
-                <span>·</span>
-                <span class="text-emerald-700 font-bold">Zero 3rd-Party Leakage</span>
-              </div>
+            <div class="pt-2">
+              <a href="#sandbox" class="text-xs font-bold text-neutral-950 hover:underline inline-flex items-center gap-1.5">
+                <span>Test live search latency</span>
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </a>
             </div>
           </div>
         </div>
 
-        <!-- Step 04: Automate and Maintain (Swarm Coordination & Telemetry) -->
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-          <div class="md:col-span-7 order-2 md:order-1">
-            <div class="devin-card rounded-2xl p-5 font-mono text-[11px] space-y-3 bg-[#fafafa]">
-              <div class="flex items-center justify-between text-neutral-400 text-[10px]">
-                <span>SWARM STATE COORDINATOR</span>
-                <span class="text-neutral-950 font-bold">12 Agents Synced</span>
-              </div>
-              <div class="bg-white p-3 rounded-lg border border-neutral-200 grid grid-cols-3 gap-2 text-center">
-                <div>
-                  <div class="text-[9px] text-neutral-400 uppercase font-bold">Lock Status</div>
-                  <div class="text-emerald-700 font-bold mt-0.5">ACQUIRED</div>
-                </div>
-                <div>
-                  <div class="text-[9px] text-neutral-400 uppercase font-bold">Sync Latency</div>
-                  <div class="text-neutral-950 font-bold font-num mt-0.5">0.8ms</div>
-                </div>
-                <div>
-                  <div class="text-[9px] text-neutral-400 uppercase font-bold">Race Conditions</div>
-                  <div class="text-neutral-950 font-bold mt-0.5">0 Detected</div>
-                </div>
-              </div>
-              <div class="flex items-center gap-3 text-[10px] text-neutral-500">
-                <span>Lock Duration: 400ms</span>
-                <span>·</span>
-                <span>Colo: Anycast Global</span>
-              </div>
+        <!-- Stage 03: Review and refine (Text Left, Image Right) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div class="lg:col-span-5 space-y-4">
+            <span class="font-mono text-sm font-semibold text-neutral-400">03</span>
+            <h3 class="text-2xl sm:text-3xl font-bold text-neutral-950 tracking-tight">Review and refine</h3>
+            <p class="text-sm text-neutral-600 leading-relaxed font-normal">
+              Browse structured agent memory nodes, prune expired conversation keys, and verify semantic relevance rankings in the interactive memory explorer.
+            </p>
+            <div class="pt-2">
+              <a href="/app" class="text-xs font-bold text-neutral-950 hover:underline inline-flex items-center gap-1.5">
+                <span>Inspect memory hierarchy</span>
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </a>
             </div>
           </div>
-          <div class="md:col-span-5 order-1 md:order-2 space-y-3">
-            <span class="font-mono text-xs font-bold text-neutral-400">04</span>
-            <h3 class="text-xl font-bold text-neutral-950 tracking-tight">Automate and maintain</h3>
-            <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-              Coordinate multi-agent swarms with atomic state locks and shared episodic memory. Monitor every query with sub-millisecond telemetry percentiles across all 330+ Cloudflare edge PoPs.
+
+          <div class="lg:col-span-7">
+            <div class="window-frame">
+              <div class="h-8 px-3.5 bg-[#f8f8fa] border-b border-neutral-200/80 flex items-center justify-between select-none">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
+                  <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
+                  <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
+                  <span class="ml-2 font-mono text-[10px] text-neutral-500 font-semibold">03 · Memory Node Inspector</span>
+                </div>
+                <span class="font-mono text-[10px] text-neutral-400">D1 SQLite FTS5</span>
+              </div>
+              <img src="/assets/demo/03_ultramemory_stored_memory.webp" alt="Stage 03 Stored Memory Screenshot" class="w-full h-auto block object-cover object-top max-h-[380px]" loading="lazy">
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 04: Automate and maintain (Image Left, Text Right) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div class="lg:col-span-7 order-2 lg:order-1">
+            <div class="window-frame">
+              <div class="h-8 px-3.5 bg-[#f8f8fa] border-b border-neutral-200/80 flex items-center justify-between select-none">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
+                  <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
+                  <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
+                  <span class="ml-2 font-mono text-[10px] text-neutral-500 font-semibold">04 · Telemetry, Cron Crawler &amp; ICP Engine</span>
+                </div>
+                <span class="font-mono text-[9px] bg-neutral-900 text-white px-1.5 py-0.2 rounded font-bold">Active SLA 99.99%</span>
+              </div>
+              <img src="/assets/demo/04_telemetry_icp.webp" alt="Stage 04 Telemetry Screenshot" class="w-full h-auto block object-cover object-top max-h-[380px]" loading="lazy">
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 space-y-4 order-1 lg:order-2">
+            <span class="font-mono text-sm font-semibold text-neutral-400">04</span>
+            <h3 class="text-2xl sm:text-3xl font-bold text-neutral-950 tracking-tight">Automate and maintain</h3>
+            <p class="text-sm text-neutral-600 leading-relaxed font-normal">
+              Autonomous background cron workers refresh edge caches every 15 minutes. Kinetic telemetry continuously monitors latency, cache hits, and persona profiles.
             </p>
+            <div class="pt-2">
+              <a href="/app" class="text-xs font-bold text-neutral-950 hover:underline inline-flex items-center gap-1.5">
+                <span>View real-time telemetry</span>
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </a>
+            </div>
           </div>
         </div>
 
@@ -821,57 +659,39 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
     <!-- SECTION 8: USE CASES & AUDIENCES -->
     <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="usecases">
-      <div class="text-center max-w-2xl mx-auto mb-14">
-        <h2 class="text-3xl sm:text-4xl font-normal tracking-tight text-neutral-950">
-          Built for teams shipping <span class="font-serif font-bold italic text-neutral-950">production autonomy</span>
+      <div class="text-left max-w-2xl mb-12">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950">
+          Built for teams shipping production autonomy
         </h2>
-        <p class="text-neutral-600 text-sm sm:text-base mt-3">
-          Explore how engineering teams and AI labs deploy UltraDemon across real workloads.
+        <p class="text-neutral-600 text-sm sm:text-base mt-2">
+          From developer IDE extensions to distributed enterprise swarms.
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         
-        <!-- Use Case 1 -->
-        <div class="devin-card rounded-2xl p-6 sm:p-7 space-y-3">
-          <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-950 font-bold font-num text-xs">
-            01
-          </div>
-          <h4 class="text-base font-bold text-neutral-950">Autonomous Coding Agents &amp; IDEs</h4>
-          <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-            Provide Cursor, Windsurf, or custom Devin-like coding assistants with persistent codebase memory and live API search that never stalls execution.
+        <div class="devin-card p-6 rounded-2xl space-y-3">
+          <div class="text-xs font-mono font-bold uppercase text-neutral-400">01 / Autonomous Coding Agents</div>
+          <h3 class="text-lg font-bold text-neutral-950">Cursor &amp; Claude Copilots</h3>
+          <p class="text-xs text-neutral-600 leading-relaxed">
+            Supply agents with sub-15ms codebase recall and live web documentation search without polluting the LLM prompt context window.
           </p>
-          <div class="pt-2 text-[11px] font-mono text-neutral-500 border-t border-neutral-100">
-            Use Case: Code Context &amp; AST Recall
-          </div>
         </div>
 
-        <!-- Use Case 2 -->
-        <div class="devin-card rounded-2xl p-6 sm:p-7 space-y-3">
-          <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-950 font-bold font-num text-xs">
-            02
-          </div>
-          <h4 class="text-base font-bold text-neutral-950">Production Agent Swarms</h4>
-          <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-            Synchronize state across hundreds of concurrent agent workers. Atomic state locks and shared episodic memory eliminate race conditions.
+        <div class="devin-card p-6 rounded-2xl space-y-3">
+          <div class="text-xs font-mono font-bold uppercase text-neutral-400">02 / Production Swarms</div>
+          <h3 class="text-lg font-bold text-neutral-950">Multi-Agent Swarm Sync</h3>
+          <p class="text-xs text-neutral-600 leading-relaxed">
+            Synchronize shared facts, tool outputs, and task dependencies across dozens of concurrent agents running simultaneously.
           </p>
-          <div class="pt-2 text-[11px] font-mono text-neutral-500 border-t border-neutral-100">
-            Use Case: Multi-Agent Consensus
-          </div>
         </div>
 
-        <!-- Use Case 3 -->
-        <div class="devin-card rounded-2xl p-6 sm:p-7 space-y-3">
-          <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-950 font-bold font-num text-xs">
-            03
-          </div>
-          <h4 class="text-base font-bold text-neutral-950">Privacy-Conscious Enterprise Labs</h4>
-          <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-            Zero third-party data leakage. Customer search queries and sensitive agent memories remain strictly isolated inside encrypted edge tenants.
+        <div class="devin-card p-6 rounded-2xl space-y-3">
+          <div class="text-xs font-mono font-bold uppercase text-neutral-400">03 / Privacy-Conscious Labs</div>
+          <h3 class="text-lg font-bold text-neutral-950">Sovereign Compliance</h3>
+          <p class="text-xs text-neutral-600 leading-relaxed">
+            Strict single-tenant database encryption with zero third-party telemetry, zero vendor training, and zero cloud log retention.
           </p>
-          <div class="pt-2 text-[11px] font-mono text-neutral-500 border-t border-neutral-100">
-            Use Case: Zero-Leakage Edge RAG
-          </div>
         </div>
 
       </div>
@@ -879,308 +699,274 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
     <!-- SECTION 9: INTEGRATIONS GRID ("Connect once, deliver repeatedly") -->
     <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="integrations">
-      <div class="text-center max-w-2xl mx-auto mb-14">
-        <h2 class="text-3xl sm:text-4xl font-normal tracking-tight text-neutral-950">
-          Connect once, deliver repeatedly<br>with your <span class="font-serif font-bold italic text-neutral-950">favorite tools</span>
+      <div class="text-left max-w-2xl mb-12">
+        <div class="text-xs uppercase tracking-wider font-mono text-neutral-400 mb-2 font-semibold">Ecosystem &amp; SDKs</div>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950">
+          Connect once, deliver repeatedly with your <span class="font-serif font-bold italic text-neutral-950">favorite tools</span>
         </h2>
-        <p class="text-neutral-600 text-sm sm:text-base mt-3">
-          UltraDemon speaks standard agent protocols. Native MCP, REST, Python, and TypeScript SDKs.
+        <p class="text-neutral-600 text-sm sm:text-base mt-2 max-w-xl font-normal">
+          UltraDemon drops into your existing agent stack with zero proxy layers and full protocol compatibility.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="devin-card rounded-xl p-5 space-y-2">
-          <div class="w-7 h-7 rounded-md bg-neutral-100 flex items-center justify-center text-neutral-800">
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 3 21 12 12 14 9 21 3 3"/></svg>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        
+        <div class="devin-card p-4 rounded-xl flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-900 font-bold font-mono text-xs">Cu</div>
+            <div>
+              <div class="text-xs font-bold text-neutral-950">Cursor IDE</div>
+              <div class="text-[10px] text-neutral-500 font-mono">Editor MCP Link</div>
+            </div>
           </div>
-          <h4 class="text-sm font-bold text-neutral-950">Cursor &amp; Windsurf</h4>
-          <p class="text-xs text-neutral-500 leading-relaxed">Native IDE context injection for autonomous coding agents.</p>
+          <span class="text-[9px] font-mono bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Active</span>
         </div>
 
-        <div class="devin-card rounded-xl p-5 space-y-2">
-          <div class="w-7 h-7 rounded-md bg-neutral-100 flex items-center justify-center text-neutral-800">
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+        <div class="devin-card p-4 rounded-xl flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-900 font-bold font-mono text-xs">Cl</div>
+            <div>
+              <div class="text-xs font-bold text-neutral-950">Claude Desktop</div>
+              <div class="text-[10px] text-neutral-500 font-mono">Native MCP Protocol</div>
+            </div>
           </div>
-          <h4 class="text-sm font-bold text-neutral-950">Claude Desktop &amp; MCP</h4>
-          <p class="text-xs text-neutral-500 leading-relaxed">Standard Model Context Protocol tool provider out of the box.</p>
+          <span class="text-[9px] font-mono bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Active</span>
         </div>
 
-        <div class="devin-card rounded-xl p-5 space-y-2">
-          <div class="w-7 h-7 rounded-md bg-neutral-100 flex items-center justify-center text-neutral-800">
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        <div class="devin-card p-4 rounded-xl flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-900 font-bold font-mono text-xs">Py</div>
+            <div>
+              <div class="text-xs font-bold text-neutral-950">Python SDK</div>
+              <div class="text-[10px] text-neutral-500 font-mono">pip install ultrademon</div>
+            </div>
           </div>
-          <h4 class="text-sm font-bold text-neutral-950">LangChain &amp; LlamaIndex</h4>
-          <p class="text-xs text-neutral-500 leading-relaxed">Drop-in retriever and episodic memory store plugins.</p>
+          <span class="text-[9px] font-mono bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">v1.0.0</span>
         </div>
 
-        <div class="devin-card rounded-xl p-5 space-y-2">
-          <div class="w-7 h-7 rounded-md bg-neutral-100 flex items-center justify-center text-neutral-800">
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <div class="devin-card p-4 rounded-xl flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-900 font-bold font-mono text-xs">TS</div>
+            <div>
+              <div class="text-xs font-bold text-neutral-950">TypeScript SDK</div>
+              <div class="text-[10px] text-neutral-500 font-mono">npm i ultrademon</div>
+            </div>
           </div>
-          <h4 class="text-sm font-bold text-neutral-950">Python SDK</h4>
-          <p class="text-xs text-neutral-500 leading-relaxed"><code class="font-mono text-[11px] bg-neutral-100 px-1 rounded font-bold">pip install ultrademon</code> for sync &amp; async clients.</p>
+          <span class="text-[9px] font-mono bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">v1.0.0</span>
         </div>
 
-        <div class="devin-card rounded-xl p-5 space-y-2">
-          <div class="w-7 h-7 rounded-md bg-neutral-100 flex items-center justify-center text-neutral-800">
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg>
+        <div class="devin-card p-4 rounded-xl flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-900 font-bold font-mono text-xs">LC</div>
+            <div>
+              <div class="text-xs font-bold text-neutral-950">LangChain</div>
+              <div class="text-[10px] text-neutral-500 font-mono">Community Retriever</div>
+            </div>
           </div>
-          <h4 class="text-sm font-bold text-neutral-950">TypeScript &amp; Node.js</h4>
-          <p class="text-xs text-neutral-500 leading-relaxed">Strict typings, ESM/CJS dual builds, zero runtime overhead.</p>
+          <span class="text-[9px] font-mono bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Verified</span>
         </div>
 
-        <div class="devin-card rounded-xl p-5 space-y-2">
-          <div class="w-7 h-7 rounded-md bg-neutral-100 flex items-center justify-center text-neutral-800">
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+        <div class="devin-card p-4 rounded-xl flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-900 font-bold font-mono text-xs">CF</div>
+            <div>
+              <div class="text-xs font-bold text-neutral-950">Cloudflare Workers</div>
+              <div class="text-[10px] text-neutral-500 font-mono">Anycast Edge Deploy</div>
+            </div>
           </div>
-          <h4 class="text-sm font-bold text-neutral-950">Cloudflare Workers</h4>
-          <p class="text-xs text-neutral-500 leading-relaxed">Direct edge bindings to D1, KV, and Vectorize storage.</p>
+          <span class="text-[9px] font-mono bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Native</span>
         </div>
 
-        <div class="devin-card rounded-xl p-5 space-y-2">
-          <div class="w-7 h-7 rounded-md bg-neutral-100 flex items-center justify-center text-neutral-800">
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <div class="devin-card p-4 rounded-xl flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-900 font-bold font-mono text-xs">Sb</div>
+            <div>
+              <div class="text-xs font-bold text-neutral-950">Supabase Auth</div>
+              <div class="text-[10px] text-neutral-500 font-mono">Row-Level Tenancy</div>
+            </div>
           </div>
-          <h4 class="text-sm font-bold text-neutral-950">REST &amp; SSE Streaming</h4>
-          <p class="text-xs text-neutral-500 leading-relaxed">Clean JSON endpoints with real-time server-sent events.</p>
+          <span class="text-[9px] font-mono bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Built-In</span>
         </div>
 
-        <div class="devin-card rounded-xl p-5 space-y-2">
-          <div class="w-7 h-7 rounded-md bg-neutral-100 flex items-center justify-center text-neutral-800">
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <div class="devin-card p-4 rounded-xl flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-900 font-bold font-mono text-xs">GH</div>
+            <div>
+              <div class="text-xs font-bold text-neutral-950">GitHub Actions</div>
+              <div class="text-[10px] text-neutral-500 font-mono">CI/CD Sync Daemon</div>
+            </div>
           </div>
-          <h4 class="text-sm font-bold text-neutral-950">Supabase &amp; Auth</h4>
-          <p class="text-xs text-neutral-500 leading-relaxed">Cryptographic user sessions and edge-synced permissions.</p>
+          <span class="text-[9px] font-mono bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Live</span>
         </div>
+
       </div>
     </section>
 
-    <!-- SECTION 10: RECENTLY SHIPPED / CHANGELOG TABLE -->
+    <!-- SECTION 10: RECENTLY SHIPPED / CHANGELOG TABLE (Devin Style with Preview Thumbnail) -->
     <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="changelog">
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
-        <div>
-          <h2 class="text-2xl sm:text-3xl font-normal tracking-tight text-neutral-950">Recently shipped</h2>
-          <p class="text-neutral-500 text-xs sm:text-sm mt-1">Continuous deployments across 330+ Cloudflare edge cities.</p>
-        </div>
-        <a href="/app" class="text-xs text-neutral-600 hover:text-neutral-950 font-bold inline-flex items-center gap-1">
-          <span>View all releases</span>
-          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-        </a>
-      </div>
-
-      <div class="devin-card rounded-2xl overflow-hidden divide-y divide-neutral-100">
-        <div class="p-4 sm:px-6 flex items-center justify-between text-xs hover:bg-neutral-50/70 transition-colors">
-          <div class="flex items-center gap-4">
-            <span class="font-mono text-neutral-400 text-[11px] w-20">Nov 2026</span>
-            <span class="font-bold text-neutral-950">Sub-15ms Memory Architecture (L1 RAM + L2 KV + D1 ACID)</span>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Left: Section Title & Thumbnail -->
+        <div class="lg:col-span-4 space-y-4 text-left">
+          <h2 class="text-3xl font-bold tracking-tight text-neutral-950">Recently shipped</h2>
+          <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+            Continuous deployments to 330+ Anycast edge cities with zero downtime and sub-second rollouts.
+          </p>
+          <div class="rounded-xl border border-neutral-200/90 overflow-hidden bg-neutral-100 shadow-sm mt-4">
+            <img src="/assets/demo/04_telemetry_icp.webp" alt="Changelog Preview" class="w-full h-36 object-cover object-top" loading="lazy">
           </div>
-          <div class="flex items-center gap-2">
-            <span class="font-mono text-[10px] font-bold bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded">v2.4</span>
-            <svg class="w-3.5 h-3.5 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <div class="pt-2">
+            <a href="/app" class="text-xs text-neutral-600 hover:text-neutral-950 font-bold inline-flex items-center gap-1">
+              <span>View all releases</span>
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
           </div>
         </div>
 
-        <div class="p-4 sm:px-6 flex items-center justify-between text-xs hover:bg-neutral-50/70 transition-colors">
-          <div class="flex items-center gap-4">
-            <span class="font-mono text-neutral-400 text-[11px] w-20">Nov 2026</span>
-            <span class="font-bold text-neutral-950">Kinetic Telemetry API with P50/P75/P90/P95/P99 latency distribution</span>
+        <!-- Right: Sleek Activity Table -->
+        <div class="lg:col-span-8 divide-y divide-neutral-200 border-t border-b border-neutral-200 text-xs">
+          
+          <div class="py-4 flex items-center justify-between gap-4 hover:bg-neutral-50/50 px-2 rounded-lg transition-colors">
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-neutral-400 text-[11px] w-20">Nov 2026</span>
+              <span class="font-semibold text-neutral-950">Autonomous Cron Crawler Engine 2.0</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-[10px] bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded">Core</span>
+              <span class="font-mono text-neutral-400">#21347ad</span>
+            </div>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="font-mono text-[10px] font-bold bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded">Telemetry</span>
-            <svg class="w-3.5 h-3.5 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+
+          <div class="py-4 flex items-center justify-between gap-4 hover:bg-neutral-50/50 px-2 rounded-lg transition-colors">
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-neutral-400 text-[11px] w-20">Nov 2026</span>
+              <span class="font-semibold text-neutral-950">SQLite FTS5 BM25 In-Memory L1 Caching</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-[10px] bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded">Memory</span>
+              <span class="font-mono text-neutral-400">#6607b43</span>
+            </div>
           </div>
+
+          <div class="py-4 flex items-center justify-between gap-4 hover:bg-neutral-50/50 px-2 rounded-lg transition-colors">
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-neutral-400 text-[11px] w-20">Oct 2026</span>
+              <span class="font-semibold text-neutral-950">Native Claude Desktop MCP Protocol Endpoint</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-[10px] bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded">Protocol</span>
+              <span class="font-mono text-neutral-400">#73ed02d</span>
+            </div>
+          </div>
+
+          <div class="py-4 flex items-center justify-between gap-4 hover:bg-neutral-50/50 px-2 rounded-lg transition-colors">
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-neutral-400 text-[11px] w-20">Oct 2026</span>
+              <span class="font-semibold text-neutral-950">Sub-15ms Anycast Edge Routing Calibration</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-[10px] bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded">Edge</span>
+              <span class="font-mono text-neutral-400">#c575245</span>
+            </div>
+          </div>
+
         </div>
 
-        <div class="p-4 sm:px-6 flex items-center justify-between text-xs hover:bg-neutral-50/70 transition-colors">
-          <div class="flex items-center gap-4">
-            <span class="font-mono text-neutral-400 text-[11px] w-20">Nov 2026</span>
-            <span class="font-bold text-neutral-950">Sovereign Workspace Dropdown Navigation &amp; Troubleshooting Bot</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="font-mono text-[10px] font-bold bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded">UI</span>
-            <svg class="w-3.5 h-3.5 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-        </div>
-
-        <div class="p-4 sm:px-6 flex items-center justify-between text-xs hover:bg-neutral-50/70 transition-colors">
-          <div class="flex items-center gap-4">
-            <span class="font-mono text-neutral-400 text-[11px] w-20">Nov 2026</span>
-            <span class="font-bold text-neutral-950">Autonomous Edge Web Crawler with Smart Content-Type Sanitization</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="font-mono text-[10px] font-bold bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded">Crawler</span>
-            <svg class="w-3.5 h-3.5 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-        </div>
-
-        <div class="p-4 sm:px-6 flex items-center justify-between text-xs hover:bg-neutral-50/70 transition-colors">
-          <div class="flex items-center gap-4">
-            <span class="font-mono text-neutral-400 text-[11px] w-20">Nov 2026</span>
-            <span class="font-bold text-neutral-950">Cryptographic Multi-Tenant Isolation with Encrypted API Keys</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="font-mono text-[10px] font-bold bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded">Security</span>
-            <svg class="w-3.5 h-3.5 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-        </div>
-
-        <div class="p-4 sm:px-6 flex items-center justify-between text-xs hover:bg-neutral-50/70 transition-colors">
-          <div class="flex items-center gap-4">
-            <span class="font-mono text-neutral-400 text-[11px] w-20">Nov 2026</span>
-            <span class="font-bold text-neutral-950">Native Model Context Protocol (MCP) Server with Tool Schemas</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="font-mono text-[10px] font-bold bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded">Protocol</span>
-            <svg class="w-3.5 h-3.5 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-        </div>
       </div>
     </section>
 
     <!-- SECTION 11: SECURITY & ENTERPRISE CONTROLS -->
     <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="security">
-      <div class="text-center max-w-2xl mx-auto mb-14">
-        <h2 class="text-3xl sm:text-4xl font-normal tracking-tight text-neutral-950">
-          Enterprise security<br>with <span class="font-serif font-bold italic text-neutral-950">fine-grained controls</span>
+      <div class="text-left max-w-2xl mb-12">
+        <div class="text-xs uppercase tracking-wider font-mono text-neutral-400 mb-2 font-semibold">Single-Tenant Governance</div>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950">
+          Enterprise security with <span class="font-serif font-bold italic text-neutral-950">fine-grained controls</span>
         </h2>
-        <p class="text-neutral-600 text-sm sm:text-base mt-3">
-          Your search queries and agent memories remain strictly sovereign. Zero data leakage to third parties.
+        <p class="text-neutral-600 text-sm sm:text-base mt-2 max-w-xl font-normal">
+          Your search queries and agent memories remain strictly sovereign. We enforce hardware-isolated runtime boundaries across every Anycast node.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="devin-card rounded-2xl p-6 sm:p-8 space-y-3">
-          <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <div class="space-y-3">
+          <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-900 mb-3">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           </div>
-          <h4 class="text-base font-bold text-neutral-950">AES-256 Edge Encryption</h4>
-          <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-            Every memory collection is encrypted with AES-256 at rest and partitioned in isolated tenant namespaces at the edge.
+          <h3 class="text-base font-bold text-neutral-950">Single-Tenant Edge Encryption</h3>
+          <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal">
+            AES-256-GCM encryption at rest and in transit. Your memories are partitioned by cryptographic tenant identifiers with zero shared state.
           </p>
         </div>
 
-        <div class="devin-card rounded-2xl p-6 sm:p-8 space-y-3">
-          <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <div class="space-y-3">
+          <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-900 mb-3">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           </div>
-          <h4 class="text-base font-bold text-neutral-950">SOC2 &amp; D1 Compliance</h4>
-          <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-            Cloudflare D1 and KV global storage adhere to SOC2 Type II, ISO 27001, and strict zero-retention policies.
+          <h3 class="text-base font-bold text-neutral-950">Fine-Grained Scope RBAC</h3>
+          <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal">
+            Issue restricted API keys scoped exclusively to individual namespaces, memory read-only modes, or specific crawl domains.
           </p>
         </div>
 
-        <div class="devin-card rounded-2xl p-6 sm:p-8 space-y-3">
-          <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+        <div class="space-y-3">
+          <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-900 mb-3">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          <h4 class="text-base font-bold text-neutral-950">Zero Third-Party Leakage</h4>
-          <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-            Your search queries and agent memories never leave sovereign infrastructure. No ad tracking, no profiling, no selling.
+          <h3 class="text-base font-bold text-neutral-950">Zero Model Training Policy</h3>
+          <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal">
+            Your data is never utilized for LLM training, evaluations, or shared analytics. Complete data portability with one-click purge APIs.
           </p>
         </div>
+
       </div>
     </section>
 
     <!-- SECTION 12: INTERACTIVE DEVELOPER SANDBOX -->
     <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="sandbox">
-      <div class="text-center max-w-2xl mx-auto mb-12">
-        <h2 class="text-3xl sm:text-4xl font-normal tracking-tight text-neutral-950">
-          Try the sub-15ms engine <span class="font-serif font-bold italic text-neutral-950">right now</span>
+      <div class="text-left max-w-2xl mb-8">
+        <div class="text-xs uppercase tracking-wider font-mono text-neutral-400 mb-2 font-semibold">Live Edge Latency Probe</div>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950">
+          Try the sub-15ms engine right now
         </h2>
-        <p class="text-neutral-600 text-sm sm:text-base mt-3">
-          Execute live memory storage and search queries against active Anycast edge nodes.
+        <p class="text-neutral-600 text-sm sm:text-base mt-2 font-normal">
+          Benchmark our live Anycast endpoint from your browser. Measures real network roundtrip to the nearest Cloudflare PoP.
         </p>
       </div>
 
-      <div class="devin-card rounded-2xl overflow-hidden">
-        <!-- Tab Bar -->
-        <div class="h-12 px-6 bg-[#fafafa] border-b border-neutral-200/80 flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <button id="tabBtnMemory" onclick="switchSandboxTab('memory')" class="text-xs font-bold px-3 py-1.5 rounded-md bg-white border border-neutral-200 text-neutral-900 shadow-2xs">
-              UltraMemory (BM25 Recall)
-            </button>
-            <button id="tabBtnSearch" onclick="switchSandboxTab('search')" class="text-xs font-semibold px-3 py-1.5 rounded-md text-neutral-600 hover:text-neutral-900">
-              UltraSearch (Edge Web)
-            </button>
-            <button id="tabBtnTelemetry" onclick="switchSandboxTab('telemetry')" class="text-xs font-semibold px-3 py-1.5 rounded-md text-neutral-600 hover:text-neutral-900">
-              Live Edge Telemetry Stats
-            </button>
-          </div>
-          <div class="font-mono text-[11px] text-neutral-500 hidden sm:block">
-            Target: 330+ Anycast PoPs
-          </div>
+      <div class="devin-card p-6 sm:p-8 rounded-2xl space-y-6">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <input type="text" id="liveSearchInput" value="autonomous software engineer memory recall" class="flex-1 px-4 py-2.5 rounded-xl border border-neutral-200 bg-neutral-50/50 text-xs sm:text-sm focus:outline-none focus:border-neutral-950 transition-colors font-mono" placeholder="Enter query...">
+          <button id="btnRunLiveProbe" onclick="runLiveLandingProbe()" class="px-5 py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-xs sm:text-sm font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs">
+            <span>Send Edge Query</span>
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
         </div>
 
-        <!-- Tab 1: UltraMemory -->
-        <div id="sandboxTabMemory" class="p-6 space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="space-y-3">
-              <label class="block text-xs font-bold text-neutral-950">Store New Agent Memory</label>
-              <input id="demoMemKey" type="text" placeholder="Key (e.g. agent_preference_01)" value="agent_preference_01" class="w-full text-xs font-mono px-3 py-2 rounded-lg border border-neutral-200 bg-white focus:outline-hidden focus:border-neutral-950">
-              <textarea id="demoMemContent" rows="3" placeholder="Context to store..." class="w-full text-xs px-3 py-2 rounded-lg border border-neutral-200 bg-white focus:outline-hidden focus:border-neutral-950">Architecture decision: Use L1 edge RAM for sub-15ms BM25 recall, backed by D1 ACID store.</textarea>
-              <button onclick="handleStoreMemoryClick()" class="text-xs font-bold bg-neutral-950 hover:bg-neutral-800 text-white px-4 py-2 rounded-lg transition-colors">
-                Store to Edge RAM (D1 Durability)
-              </button>
-            </div>
-            <div class="space-y-3">
-              <label class="block text-xs font-bold text-neutral-950">Recall Memory by Query</label>
-              <input id="demoMemQuery" type="text" placeholder="Search query..." value="architecture decision edge RAM" class="w-full text-xs font-mono px-3 py-2 rounded-lg border border-neutral-200 bg-white focus:outline-hidden focus:border-neutral-950">
-              <div class="flex items-center gap-2">
-                <button onclick="handleQueryMemoryClick()" class="text-xs font-bold bg-neutral-950 hover:bg-neutral-800 text-white px-4 py-2 rounded-lg transition-colors">
-                  Query Memory (&lt;15ms)
-                </button>
-                <span id="demoMemLatencyBadge" class="font-mono text-xs text-neutral-500 font-bold"></span>
-              </div>
-              <div id="demoMemOutput" class="p-3 rounded-lg border border-neutral-200 bg-neutral-50 font-mono text-[11px] text-neutral-700 min-h-[72px] whitespace-pre-wrap overflow-x-auto">
-// Output will appear here upon query
-              </div>
-            </div>
-          </div>
+        <div id="liveProbeOutput" class="p-4 rounded-xl bg-[#09090b] text-neutral-200 font-mono text-xs overflow-x-auto leading-relaxed border border-neutral-800 hidden">
+          <!-- Dynamic JSON results -->
         </div>
-
-        <!-- Tab 2: UltraSearch -->
-        <div id="sandboxTabSearch" class="p-6 space-y-4 hidden">
-          <div class="flex flex-col sm:flex-row gap-3">
-            <input id="demoSearchQuery" type="text" placeholder="Search the web (e.g. quantum computing benchmarks)" value="quantum computing error correction benchmarks" class="flex-1 text-xs font-mono px-3 py-2 rounded-lg border border-neutral-200 bg-white focus:outline-hidden focus:border-neutral-950">
-            <button onclick="handleSearchClick()" class="text-xs font-bold bg-neutral-950 hover:bg-neutral-800 text-white px-5 py-2 rounded-lg transition-colors flex-shrink-0">
-              Sovereign Edge Search
-            </button>
-          </div>
-          <div id="demoSearchOutput" class="p-4 rounded-lg border border-neutral-200 bg-neutral-50 font-mono text-[11px] text-neutral-700 min-h-[140px] whitespace-pre-wrap overflow-x-auto">
-// Search results and extracted markdown citations will appear here
-          </div>
-        </div>
-
-        <!-- Tab 3: Live Telemetry -->
-        <div id="sandboxTabTelemetry" class="p-6 space-y-4 hidden">
-          <div class="flex items-center justify-between">
-            <span class="text-xs text-neutral-600">Real-time edge stats fetched from <code class="font-mono bg-neutral-100 px-1 rounded font-bold">/v1/telemetry/stats</code></span>
-            <button onclick="fetchTelemetryStats()" class="text-xs font-bold bg-neutral-100 hover:bg-neutral-200 text-neutral-950 px-3 py-1 rounded-md transition-colors">
-              Refresh Stats
-            </button>
-          </div>
-          <div id="demoTelemetryOutput" class="p-4 rounded-lg border border-neutral-200 bg-neutral-50 font-mono text-[11px] text-neutral-700 min-h-[140px] whitespace-pre-wrap overflow-x-auto">
-Fetching live Anycast telemetry...
-          </div>
-        </div>
-
       </div>
     </section>
 
-    <!-- SECTION 13: FINAL CTA (Spacious, Low-Noise Conversion) -->
-    <section class="py-24 sm:py-32 px-4 sm:px-6 max-w-4xl mx-auto text-center">
-      <h2 class="text-4xl sm:text-5xl md:text-6xl font-normal tracking-tight text-neutral-950 leading-tight">
-        Stop deprioritizing.<br>Move the work forward with <span class="font-serif font-bold italic text-neutral-950">UltraDemon</span>.
+    <!-- SECTION 13: FINAL CTA (Devin Centered Closing Statement) -->
+    <section class="py-28 px-4 sm:px-6 max-w-4xl mx-auto text-center">
+      <h2 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-neutral-950 leading-[1.08]">
+        Stop deprioritizing.<br><span class="font-serif font-bold italic text-neutral-950">Do it all with UltraDemon</span>
       </h2>
-      <p class="text-sm sm:text-base text-neutral-600 max-w-xl mx-auto mt-5">
-        Sub-15ms agent memory, zero-leakage edge search, and kinetic micro-telemetry.
+      <p class="text-sm sm:text-base text-neutral-600 max-w-xl mx-auto mt-6 leading-relaxed font-normal">
+        Sub-15ms agent memory, sovereign web scraping, and distributed telemetry. Deploy in under 60 seconds with your first API key.
       </p>
       <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <a href="/signup" onclick="openAuthModal('signup'); return false;" class="bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-7 py-3 text-xs sm:text-sm font-bold transition-all shadow-sm cursor-pointer">
-          Start building ->
+        <a href="/signup" onclick="openAuthModal('signup'); return false;" class="bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-6 py-2.5 text-xs sm:text-sm font-semibold transition-all shadow-xs flex items-center gap-2 cursor-pointer">
+          <span>Try UltraDemon</span>
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
         </a>
-        <a href="/app" class="border border-neutral-200 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-900 rounded-full px-7 py-3 text-xs sm:text-sm font-semibold transition-all">
-          Open console
+        <a href="/app" class="border border-neutral-200/90 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-900 rounded-full px-6 py-2.5 text-xs sm:text-sm font-semibold transition-all">
+          Talk to sales
         </a>
       </div>
     </section>
@@ -1188,430 +974,260 @@ Fetching live Anycast telemetry...
   </main>
 
   <!-- SECTION 14: MULTI-COLUMN EDITORIAL FOOTER -->
-  <footer class="border-t border-neutral-100 bg-[#fafafa] py-16 px-4 sm:px-6 text-xs text-neutral-500">
-    <div class="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-8 mb-12">
-      <!-- Col 1: Wordmark & Mission -->
+  <footer class="border-t border-neutral-200 bg-[#fbfbfd] py-14 px-4 sm:px-6 text-xs text-neutral-600">
+    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-8">
+      
+      <!-- Brand Col -->
       <div class="col-span-2 space-y-3">
         <div class="flex items-center gap-2">
-          <div class="w-5 h-5 rounded-sm bg-neutral-950 flex items-center justify-center text-white">
+          <div class="w-5 h-5 rounded bg-neutral-950 text-white flex items-center justify-center">
             <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           </div>
-          <span class="font-bold text-sm text-neutral-950">UltraDemon</span>
+          <span class="font-bold text-neutral-950 tracking-tight">UltraDemon OS</span>
         </div>
-        <p class="text-xs text-neutral-500 max-w-xs leading-relaxed">
-          The sovereign edge engine for autonomous agent memory, full-text web search, and kinetic telemetry across 330+ Cloudflare edge locations.
+        <p class="text-[11px] text-neutral-500 max-w-sm leading-relaxed">
+          The sovereign autonomous engine for agent memory, search, and edge telemetry. Runs across 330+ Cloudflare Anycast edge data centers worldwide.
         </p>
-        <div class="font-mono text-[11px] text-neutral-400">
-          (c) 2026 UltraDemon Labs. All rights reserved.
+        <div class="font-mono text-[10px] text-neutral-400">
+          &copy; 2026 UltraDemon Inc. All rights reserved.
         </div>
       </div>
 
-      <!-- Col 2: Product -->
-      <div class="space-y-2.5">
-        <div class="font-bold text-neutral-950 text-xs">Product</div>
+      <!-- Links Col 1 -->
+      <div class="space-y-2">
+        <div class="font-bold text-neutral-950 font-mono text-[11px] uppercase tracking-wider mb-2">Product</div>
         <div><a href="#features" class="hover:text-neutral-950 transition-colors">UltraMemory</a></div>
         <div><a href="#features" class="hover:text-neutral-950 transition-colors">UltraSearch</a></div>
-        <div><a href="#sandbox" class="hover:text-neutral-950 transition-colors">Kinetic Telemetry</a></div>
-        <div><a href="#changelog" class="hover:text-neutral-950 transition-colors">Changelog</a></div>
-        <div><a href="/pricing" class="hover:text-neutral-950 transition-colors">Pricing</a></div>
+        <div><a href="#workflow" class="hover:text-neutral-950 transition-colors">Web Crawler</a></div>
+        <div><a href="#sandbox" class="hover:text-neutral-950 transition-colors">API Sandbox</a></div>
       </div>
 
-      <!-- Col 3: Developers -->
-      <div class="space-y-2.5">
-        <div class="font-bold text-neutral-950 text-xs">Developers</div>
-        <div><a href="/docs" class="hover:text-neutral-950 transition-colors">Documentation</a></div>
+      <!-- Links Col 2 -->
+      <div class="space-y-2">
+        <div class="font-bold text-neutral-950 font-mono text-[11px] uppercase tracking-wider mb-2">Resources</div>
+        <div><a href="/app" class="hover:text-neutral-950 transition-colors">Developer Console</a></div>
+        <div><a href="#integrations" class="hover:text-neutral-950 transition-colors">Claude MCP Server</a></div>
         <div><a href="#integrations" class="hover:text-neutral-950 transition-colors">Python SDK</a></div>
         <div><a href="#integrations" class="hover:text-neutral-950 transition-colors">TypeScript SDK</a></div>
-        <div><a href="#integrations" class="hover:text-neutral-950 transition-colors">Model Context Protocol</a></div>
-        <div><a href="/app" class="hover:text-neutral-950 transition-colors">Developer Console</a></div>
       </div>
 
-      <!-- Col 4: Company & Legal -->
-      <div class="space-y-2.5">
-        <div class="font-bold text-neutral-950 text-xs">Company</div>
-        <div><a href="#security" class="hover:text-neutral-950 transition-colors">Security</a></div>
+      <!-- Links Col 3 -->
+      <div class="space-y-2">
+        <div class="font-bold text-neutral-950 font-mono text-[11px] uppercase tracking-wider mb-2">Legal</div>
         <div><a href="/privacy" class="hover:text-neutral-950 transition-colors">Privacy Policy</a></div>
         <div><a href="/terms" class="hover:text-neutral-950 transition-colors">Terms of Service</a></div>
-        <div><a href="/v1/telemetry" class="hover:text-neutral-950 transition-colors font-mono">Edge Status (SIN)</a></div>
+        <div><a href="#security" class="hover:text-neutral-950 transition-colors">Security Whitepaper</a></div>
+        <div><a href="mailto:support@ultrademon.ai" class="hover:text-neutral-950 transition-colors">Contact</a></div>
       </div>
+
     </div>
   </footer>
 
-  <!-- AUTH MODAL (Instant, Resilient, Dual-Action) -->
+  <!-- AUTH MODAL (Early-Bound, z-[100], Guaranteed Resilient) -->
   <div id="authModal" onclick="if(event.target === this) closeAuthModal();" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm hidden">
-    <div class="bg-white rounded-2xl border border-neutral-200 shadow-2xl max-w-sm w-full p-6 text-left relative" onclick="event.stopPropagation()">
-      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-neutral-950 transition">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    <div class="bg-white rounded-2xl border border-neutral-200 shadow-2xl max-w-sm w-full p-6 text-left relative" onclick="event.stopPropagation();">
+      
+      <!-- Close Button -->
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-neutral-900 transition-colors p-1 cursor-pointer">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
 
-      <div class="mb-5">
-        <h3 id="authModalTitle" class="text-base font-bold text-neutral-950">
-          Sign In to UltraDemon
-        </h3>
-        <p class="text-xs text-neutral-500 mt-1">
-          Access your sovereign API keys and edge memory namespaces.
-        </p>
+      <!-- Modal Header -->
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-6 h-6 rounded-md bg-neutral-950 flex items-center justify-center text-white">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <span class="font-bold text-base text-neutral-950">UltraDemon OS</span>
       </div>
 
-      <!-- Tabs -->
-      <div class="grid grid-cols-2 gap-1 p-1 bg-neutral-100 rounded-lg text-xs mb-4">
-        <button id="authTabSignIn" onclick="switchAuthMode('signin')" class="py-1.5 rounded-md font-bold bg-white text-neutral-900 shadow-2xs">
+      <!-- Tab Switcher -->
+      <div class="flex border-b border-neutral-200 mb-5">
+        <button id="modalTabSignin" onclick="switchAuthTab('signin')" class="flex-1 pb-2 text-xs font-bold border-b-2 border-neutral-950 text-neutral-950 transition-colors cursor-pointer">
           Sign In
         </button>
-        <button id="authTabSignUp" onclick="switchAuthMode('signup')" class="py-1.5 rounded-md font-medium text-neutral-600 hover:text-neutral-900">
-          Sign Up
+        <button id="modalTabSignup" onclick="switchAuthTab('signup')" class="flex-1 pb-2 text-xs font-medium border-b-2 border-transparent text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer">
+          Create Account
         </button>
       </div>
 
-      <!-- Form -->
-      <form id="authForm" onsubmit="event.preventDefault(); handleAuthSubmit(event); return false;" class="space-y-3">
+      <!-- Auth Form -->
+      <form id="authModalForm" onsubmit="handleAuthModalSubmit(event)" class="space-y-4 text-xs">
         <div>
-          <label class="block text-xs font-bold text-neutral-700 mb-1">Email Address</label>
-          <input id="authEmail" type="email" required placeholder="developer@agency.internal" class="w-full px-3 py-2 text-xs border border-neutral-200 rounded-lg focus:outline-hidden focus:border-neutral-950">
+          <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Email</label>
+          <input type="email" id="modalAuthEmail" required class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-mono" placeholder="agent@company.com">
         </div>
         <div>
-          <label class="block text-xs font-bold text-neutral-700 mb-1">Password</label>
-          <input id="authPassword" type="password" required placeholder="Minimum 6 characters" class="w-full px-3 py-2 text-xs border border-neutral-200 rounded-lg focus:outline-hidden focus:border-neutral-950">
+          <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Password</label>
+          <input type="password" id="modalAuthPassword" required minlength="6" class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-mono" placeholder="••••••••">
         </div>
 
-        <div id="authAlert" class="hidden p-2.5 rounded-lg text-xs font-medium"></div>
+        <div id="modalAuthError" class="text-red-600 text-[11px] hidden font-mono"></div>
+        <div id="modalAuthSuccess" class="text-emerald-700 text-[11px] hidden font-mono"></div>
 
-        <button id="authSubmitBtn" type="submit" class="w-full py-2 bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1.5">
-          <span id="authSubmitText">Sign In</span>
-          <span id="authSpinner" class="hidden w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+        <button type="submit" id="modalAuthSubmitBtn" class="w-full py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold transition-colors cursor-pointer shadow-xs">
+          Sign In
         </button>
       </form>
+
+      <div class="mt-4 text-center">
+        <a href="/login" class="text-[11px] text-neutral-500 hover:underline">Or use standard login page</a>
+      </div>
     </div>
   </div>
 
-  <!-- CLIENT SCRIPTS -->
+  <!-- Client-Side Runtime Script -->
   <script>
-    const STORAGE_KEY = 'ultrademon_keys';
     const SUPABASE_URL = "${supabaseUrl}";
     const SUPABASE_ANON_KEY = "${supabaseAnonKey}";
-
-    let currentAuthMode = 'signin';
+    let supabaseClient = null;
+    let authMode = 'signin';
     let currentUser = null;
-    let supabase = null;
 
-    try {
-      if (window.supabase) {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    if (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase) {
+      try {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      } catch (e) {
+        console.error('Supabase init error:', e);
       }
-    } catch (e) {}
+    }
 
-    // Early window bindings to guarantee instant button responsiveness
-    window.openAuthModal = openAuthModal;
-    window.closeAuthModal = closeAuthModal;
-    window.switchAuthMode = switchAuthMode;
-    window.handleAuthSubmit = handleAuthSubmit;
-    window.handleSignOut = handleSignOut;
-    window.runHeroLatencyTest = runHeroLatencyTest;
-    window.switchSandboxTab = switchSandboxTab;
-    window.handleStoreMemoryClick = handleStoreMemoryClick;
-    window.handleQueryMemoryClick = handleQueryMemoryClick;
-    window.handleSearchClick = handleSearchClick;
-    window.fetchTelemetryStats = fetchTelemetryStats;
+    // Check existing session
+    async function checkAuthSession() {
+      if (!supabaseClient) return;
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session && session.user) {
+          currentUser = session.user;
+          window.currentUser = currentUser;
+          const navCta = document.getElementById('navCtaBtn');
+          if (navCta) {
+            navCta.innerText = 'Open Console';
+            navCta.onclick = function() { window.location.href = '/app'; };
+          }
+        }
+      } catch (err) {}
+    }
 
-    function openAuthModal(mode) {
-      if (currentUser) {
-        window.location.href = '/app';
+    window.switchAuthTab = function(mode) {
+      authMode = mode;
+      const tabIn = document.getElementById('modalTabSignin');
+      const tabUp = document.getElementById('modalTabSignup');
+      const btn = document.getElementById('modalAuthSubmitBtn');
+      const err = document.getElementById('modalAuthError');
+      const succ = document.getElementById('modalAuthSuccess');
+      if (err) err.classList.add('hidden');
+      if (succ) succ.classList.add('hidden');
+
+      if (mode === 'signin') {
+        if (tabIn) {
+          tabIn.className = 'flex-1 pb-2 text-xs font-bold border-b-2 border-neutral-950 text-neutral-950 transition-colors cursor-pointer';
+        }
+        if (tabUp) {
+          tabUp.className = 'flex-1 pb-2 text-xs font-medium border-b-2 border-transparent text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer';
+        }
+        if (btn) btn.innerText = 'Sign In';
+      } else {
+        if (tabUp) {
+          tabUp.className = 'flex-1 pb-2 text-xs font-bold border-b-2 border-neutral-950 text-neutral-950 transition-colors cursor-pointer';
+        }
+        if (tabIn) {
+          tabIn.className = 'flex-1 pb-2 text-xs font-medium border-b-2 border-transparent text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer';
+        }
+        if (btn) btn.innerText = 'Create Account';
+      }
+    };
+
+    async function handleAuthModalSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('modalAuthEmail').value.trim();
+      const password = document.getElementById('modalAuthPassword').value;
+      const err = document.getElementById('modalAuthError');
+      const succ = document.getElementById('modalAuthSuccess');
+      const btn = document.getElementById('modalAuthSubmitBtn');
+
+      if (err) err.classList.add('hidden');
+      if (succ) succ.classList.add('hidden');
+      if (btn) { btn.disabled = true; btn.innerText = 'Verifying...'; }
+
+      if (!supabaseClient) {
+        window.location.href = authMode === 'signin' ? '/login' : '/signup';
         return;
       }
-      const modal = document.getElementById('authModal');
-      if (modal) {
-        modal.classList.remove('hidden');
-        modal.style.display = 'flex';
-        switchAuthMode(mode || 'signin');
-      } else {
-        window.location.href = mode === 'signup' ? '/signup' : '/login';
-      }
-    }
-
-    function closeAuthModal() {
-      const modal = document.getElementById('authModal');
-      if (modal) {
-        modal.classList.add('hidden');
-        modal.style.display = 'none';
-      }
-    }
-
-    function switchAuthMode(mode) {
-      currentAuthMode = mode;
-      const isSignIn = mode === 'signin';
-      document.getElementById('authModalTitle').innerText = isSignIn ? 'Sign In to UltraDemon' : 'Sign Up for UltraDemon';
-      document.getElementById('authSubmitText').innerText = isSignIn ? 'Sign In' : 'Sign Up';
-
-      const tabIn = document.getElementById('authTabSignIn');
-      const tabUp = document.getElementById('authTabSignUp');
-      if (isSignIn) {
-        tabIn.className = 'py-1.5 rounded-md font-bold bg-white text-neutral-900 shadow-2xs';
-        tabUp.className = 'py-1.5 rounded-md font-medium text-neutral-600 hover:text-neutral-900';
-      } else {
-        tabIn.className = 'py-1.5 rounded-md font-medium text-neutral-600 hover:text-neutral-900';
-        tabUp.className = 'py-1.5 rounded-md font-bold bg-white text-neutral-900 shadow-2xs';
-      }
-    }
-
-    function getAuthToken() {
-      const edge = localStorage.getItem('ultrademon_auth_session');
-      if (edge) {
-        try {
-          const parsed = JSON.parse(edge);
-          if (parsed && parsed.access_token) return parsed.access_token;
-        } catch {}
-      }
-      return null;
-    }
-
-    async function handleAuthSubmit(e) {
-      if (e && e.preventDefault) e.preventDefault();
-      const email = document.getElementById('authEmail').value.trim();
-      const password = document.getElementById('authPassword').value;
-      const alertBox = document.getElementById('authAlert');
-      const spinner = document.getElementById('authSpinner');
-      const submitBtn = document.getElementById('authSubmitBtn');
-
-      spinner.classList.remove('hidden');
-      submitBtn.disabled = true;
-      alertBox.classList.add('hidden');
 
       try {
-        if (currentAuthMode === 'signup') {
-          const res = await fetch('/v1/auth/signup', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-          });
-          let data = await res.json();
-          if (data.requires_verification || res.status === 201) {
-            alertBox.className = 'p-2.5 rounded-lg text-xs bg-neutral-100 text-neutral-800';
-            alertBox.innerHTML = 'Verification email sent to <strong>' + email + '</strong>.<br>Please confirm before signing in.';
-            alertBox.classList.remove('hidden');
-            return;
-          }
-          if (!res.ok) throw new Error(data.error || 'Failed to create account');
-
-          localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session));
-          localStorage.setItem('ultrademon_user', JSON.stringify(data.user));
-          updateAuthUI(data.user);
-          setTimeout(() => { closeAuthModal(); window.location.href = '/app'; }, 600);
+        if (authMode === 'signin') {
+          const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          window.location.href = '/app';
         } else {
-          const res = await fetch('/v1/auth/signin', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-          });
-          let data = await res.json();
-          if (!res.ok) throw new Error(data.error || 'Invalid credentials');
-
-          localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session));
-          localStorage.setItem('ultrademon_user', JSON.stringify(data.user));
-          updateAuthUI(data.user);
-          setTimeout(() => { closeAuthModal(); window.location.href = '/app'; }, 500);
-        }
-      } catch (err) {
-        alertBox.className = 'p-2.5 rounded-lg text-xs bg-red-50 text-red-600';
-        alertBox.innerText = err.message || 'Authentication error';
-        alertBox.classList.remove('hidden');
-      } finally {
-        spinner.classList.add('hidden');
-        submitBtn.disabled = false;
-      }
-    }
-
-    async function handleSignOut() {
-      const token = getAuthToken();
-      if (token) {
-        fetch('/v1/auth/signout', {
-          method: 'POST',
-          headers: { 'Authorization': 'Bearer ' + token }
-        }).catch(() => {});
-      }
-      localStorage.removeItem('ultrademon_auth_session');
-      localStorage.removeItem('ultrademon_user');
-      updateAuthUI(null);
-    }
-
-    function updateAuthUI(user) {
-      currentUser = user;
-      const loggedOut = document.getElementById('headerAuthLoggedOut');
-      const loggedIn = document.getElementById('headerAuthLoggedIn');
-      if (user) {
-        if (loggedOut) loggedOut.classList.add('hidden');
-        if (loggedIn) loggedIn.classList.remove('hidden');
-      } else {
-        if (loggedOut) loggedOut.classList.remove('hidden');
-        if (loggedIn) loggedIn.classList.add('hidden');
-      }
-    }
-
-    async function initAuth() {
-      const stored = localStorage.getItem('ultrademon_auth_session');
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          if (parsed && parsed.access_token) {
-            const res = await fetch('/v1/auth/user', {
-              headers: { 'Authorization': 'Bearer ' + parsed.access_token }
-            });
-            if (res.ok) {
-              const data = await res.json();
-              updateAuthUI(data.user);
-              return;
+          const { data, error } = await supabaseClient.auth.signUp({ email, password });
+          if (error) throw error;
+          if (data.session) {
+            window.location.href = '/app';
+          } else {
+            if (succ) {
+              succ.innerText = 'Check your email for confirmation link.';
+              succ.classList.remove('hidden');
             }
           }
-        } catch {}
-      }
-      updateAuthUI(null);
-    }
-
-    async function runHeroLatencyTest() {
-      const btn = document.getElementById('btnHeroLatencyTest');
-      const out = document.getElementById('heroLatencyOutput');
-      const msSpan = document.getElementById('heroLatencyMs');
-      btn.disabled = true;
-      btn.innerText = 'Measuring...';
-      const start = performance.now();
-      try {
-        const res = await fetch('/v1/telemetry/realtime');
-        const end = performance.now();
-        const duration = Math.round(end - start);
-        msSpan.innerText = duration + 'ms';
-        out.classList.remove('hidden');
-      } catch (e) {
-        msSpan.innerText = '12ms';
-        out.classList.remove('hidden');
+        }
+      } catch (error) {
+        if (err) {
+          err.innerText = error.message || 'Authentication failed';
+          err.classList.remove('hidden');
+        }
       } finally {
-        btn.disabled = false;
-        btn.innerText = 'Probe Live Edge Latency';
+        if (btn) {
+          btn.disabled = false;
+          btn.innerText = authMode === 'signin' ? 'Sign In' : 'Create Account';
+        }
       }
     }
 
-    function switchSandboxTab(tab) {
-      const tabMem = document.getElementById('sandboxTabMemory');
-      const tabSearch = document.getElementById('sandboxTabSearch');
-      const tabTelem = document.getElementById('sandboxTabTelemetry');
-      const btnMem = document.getElementById('tabBtnMemory');
-      const btnSearch = document.getElementById('tabBtnSearch');
-      const btnTelem = document.getElementById('tabBtnTelemetry');
+    async function runLiveLandingProbe() {
+      const input = document.getElementById('liveSearchInput');
+      const output = document.getElementById('liveProbeOutput');
+      const btn = document.getElementById('btnRunLiveProbe');
+      const query = input ? input.value.trim() : 'autonomous agent memory';
 
-      tabMem.classList.add('hidden');
-      tabSearch.classList.add('hidden');
-      tabTelem.classList.add('hidden');
-
-      btnMem.className = 'text-xs font-semibold px-3 py-1.5 rounded-md text-neutral-600 hover:text-neutral-900';
-      btnSearch.className = 'text-xs font-semibold px-3 py-1.5 rounded-md text-neutral-600 hover:text-neutral-900';
-      btnTelem.className = 'text-xs font-semibold px-3 py-1.5 rounded-md text-neutral-600 hover:text-neutral-900';
-
-      if (tab === 'memory') {
-        tabMem.classList.remove('hidden');
-        btnMem.className = 'text-xs font-bold px-3 py-1.5 rounded-md bg-white border border-neutral-200 text-neutral-900 shadow-2xs';
-      } else if (tab === 'search') {
-        tabSearch.classList.remove('hidden');
-        btnSearch.className = 'text-xs font-bold px-3 py-1.5 rounded-md bg-white border border-neutral-200 text-neutral-900 shadow-2xs';
-      } else if (tab === 'telemetry') {
-        tabTelem.classList.remove('hidden');
-        btnTelem.className = 'text-xs font-bold px-3 py-1.5 rounded-md bg-white border border-neutral-200 text-neutral-900 shadow-2xs';
-        fetchTelemetryStats();
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Probing Anycast...</span>';
       }
-    }
 
-    async function handleStoreMemoryClick() {
-      const key = document.getElementById('demoMemKey').value.trim();
-      const content = document.getElementById('demoMemContent').value.trim();
-      const output = document.getElementById('demoMemOutput');
-      if (!key || !content) {
-        output.innerText = 'Error: Key and content are required.';
-        return;
-      }
-      output.innerText = 'Writing to Anycast edge RAM + D1...';
-      const start = performance.now();
+      const t0 = performance.now();
       try {
-        const res = await fetch('/v1/memory/store', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ key, content, tags: ['demo'] })
-        });
-        const duration = Math.round(performance.now() - start);
+        const res = await fetch('/v1/search?q=' + encodeURIComponent(query) + '&limit=3');
+        const t1 = performance.now();
+        const latency = (t1 - t0).toFixed(1);
         const data = await res.json();
-        output.innerText = JSON.stringify({ status: 'stored', duration_ms: duration, edge_colo: 'SIN', key, content_preview: content.slice(0, 60) }, null, 2);
-      } catch (err) {
-        output.innerText = JSON.stringify({ status: 'stored_local_simulation', duration_ms: 11, key }, null, 2);
-      }
-    }
 
-    async function handleQueryMemoryClick() {
-      const q = document.getElementById('demoMemQuery').value.trim();
-      const output = document.getElementById('demoMemOutput');
-      const badge = document.getElementById('demoMemLatencyBadge');
-      if (!q) {
-        output.innerText = 'Error: Query cannot be empty.';
-        return;
-      }
-      output.innerText = 'Searching Anycast edge RAM...';
-      const start = performance.now();
-      try {
-        const res = await fetch('/v1/memory/query', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 3 })
-        });
-        const duration = Math.round(performance.now() - start);
-        badge.innerText = '(' + duration + 'ms recall)';
-        const data = await res.json();
-        output.innerText = JSON.stringify(data, null, 2);
-      } catch (err) {
-        badge.innerText = '(12ms recall)';
-        output.innerText = JSON.stringify({
-          query: q,
-          latency_ms: 12.1,
-          matches: [
-            { key: "rfc_edge_cache", score: 0.968, content: "Use L1 edge RAM for sub-15ms BM25 recall, backed by D1 ACID store." }
-          ]
-        }, null, 2);
-      }
-    }
-
-    async function handleSearchClick() {
-      const q = document.getElementById('demoSearchQuery').value.trim();
-      const output = document.getElementById('demoSearchOutput');
-      if (!q) return;
-      output.innerText = 'Executing sovereign edge scrape across 330+ locations...';
-      const start = performance.now();
-      try {
-        const res = await fetch('/v1/search?q=' + encodeURIComponent(q) + '&limit=3');
-        const duration = Math.round(performance.now() - start);
-        const data = await res.json();
-        output.innerText = '// Latency: ' + duration + 'ms · 0 bot blocks · Sovereign edge scrape\n\n' + JSON.stringify(data, null, 2);
+        if (output) {
+          output.classList.remove('hidden');
+          output.innerHTML = '// UltraDemon Anycast Response — ' + latency + 'ms roundtrip\n' +
+            JSON.stringify({
+              latency_ms: parseFloat(latency),
+              status: res.status,
+              edge_colo: res.headers.get('cf-ray') || 'Cloudflare Anycast',
+              query: query,
+              results_count: (data.results || []).length,
+              results: data.results || data
+            }, null, 2);
+        }
       } catch (e) {
-        output.innerText = '// Fallback edge result:\n' + JSON.stringify({ query: q, results: [{ title: 'Quantum Computing Benchmarks 2026', snippet: 'State of the art error correction thresholds reached across 128 logical qubits.' }] }, null, 2);
+        if (output) {
+          output.classList.remove('hidden');
+          output.innerText = '// Error querying live endpoint: ' + e.message;
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<span>Send Edge Query</span><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
+        }
       }
     }
 
-    async function fetchTelemetryStats() {
-      const output = document.getElementById('demoTelemetryOutput');
-      output.innerText = 'Fetching live telemetry from /v1/telemetry/stats...';
-      try {
-        const res = await fetch('/v1/telemetry/stats');
-        const data = await res.json();
-        output.innerText = JSON.stringify(data, null, 2);
-      } catch (e) {
-        output.innerText = JSON.stringify({
-          status: "healthy",
-          edge_colo: "SIN",
-          latency_percentiles: { p50_ms: 11.8, p75_ms: 18.2, p90_ms: 24.1, p95_ms: 28.4, p99_ms: 42.1 },
-          cache_hit_rate: 0.984,
-          active_pops: 330
-        }, null, 2);
-      }
-    }
-
-    if (document.readyState === 'loading') {
-      window.addEventListener('DOMContentLoaded', initAuth);
-    } else {
-      initAuth();
-    }
+    document.addEventListener('DOMContentLoaded', checkAuthSession);
   </script>
 </body>
 </html>`;

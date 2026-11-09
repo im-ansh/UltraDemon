@@ -24,6 +24,7 @@ import { renderPrivacyPage, renderTermsPage } from './ui/legal-pages';
 import { renderAppDashboard } from './ui/app';
 import { MICHELANGELUS_BOLD_ITALIC_B64 } from './ui/font';
 import { HERO_BRAIN_WEBP_B64, HERO_LENS_WEBP_B64 } from './ui/hero-assets';
+import { DEMO_ASSETS_MAP } from './ui/demo-images';
 import { processCrawlQueue } from './lib/crawler';
 
 // Re-export Durable Object (required by Cloudflare runtime)
@@ -50,6 +51,28 @@ app.use('*', logger());
 app.use('*', prettyJSON());
 
 // ── Routes ────────────────────────────────────────────────────────────────────
+
+// Serve High-Fidelity Demo Screenshots for Landing Page
+app.get('/assets/demo/:filename', (c) => {
+  const filename = c.req.param('filename');
+  const b64 = DEMO_ASSETS_MAP[filename];
+  if (!b64) {
+    return c.notFound();
+  }
+  // Convert base64 to binary
+  const binaryString = atob(b64);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return new Response(bytes.buffer, {
+    headers: {
+      'Content-Type': 'image/webp',
+      'Cache-Control': 'public, max-age=31536000, immutable',
+    },
+  });
+});
 
 // Landing Page & Developer Platform UI
 app.get('/', (c) => {

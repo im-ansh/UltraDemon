@@ -419,7 +419,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
           </span>
         </div>
         <h1 id="viewHeaderTitle" class="text-2xl sm:text-3xl font-normal text-neutral-950 tracking-tight flex items-center gap-2 transition-all">
-          Workspace <span class="font-serif font-bold italic text-black">Overview</span>
+          Workspace Overview
         </h1>
         <p id="viewHeaderDesc" class="text-xs text-neutral-500 mt-1 font-sans transition-all">
           Live edge telemetry, database metrics, and active sovereign API keys.
@@ -467,7 +467,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         <div id="topKeyMenuPopover" class="hidden absolute right-0 top-full mt-2 w-72 bg-white border border-neutral-200/90 rounded-2xl shadow-2xl p-2 z-50">
           <div class="px-3 py-1.5 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider border-b border-neutral-100 flex items-center justify-between">
             <span>Switch Sovereign API Key</span>
-            <span class="text-[9px] text-amber-600 font-serif italic">Magic Cast</span>
+            <span class="text-[9px] text-amber-600 font-mono font-semibold uppercase tracking-wider">Magic Cast</span>
           </div>
           <div id="topKeyMenuList" class="max-h-56 overflow-y-auto py-1 divide-y divide-neutral-100/60">
             <!-- Populated dynamically with available keys -->
@@ -584,7 +584,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
             <span>Edge Engine Connected · Sub-15ms BM25</span>
           </div>
           <h2 class="text-xl sm:text-2xl font-normal tracking-tight text-white">
-            Welcome to <span class="font-serif font-bold italic text-white">UltraDemon Workspace</span>
+            Welcome to <span class="font-bold text-white">UltraDemon Workspace</span>
           </h2>
           <p class="text-xs text-neutral-400 max-w-xl leading-relaxed">
             Sovereign edge search, long-term agent memory recall, and full-spectrum kinetic telemetry running on Cloudflare Workers and D1 SQLite.
@@ -614,7 +614,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
             </div>
             <div>
               <div class="flex items-center gap-2">
-                <h3 class="text-sm font-bold text-neutral-950 font-sans">Sovereign Knowledge &amp; <span class="font-serif font-bold italic text-neutral-900">Troubleshooting</span></h3>
+                <h3 class="text-sm font-bold text-neutral-950 font-sans">Sovereign Knowledge &amp; Troubleshooting</h3>
                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[10px] font-semibold font-num border border-emerald-200/60">
                   <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                   Verified Presets Only
@@ -661,7 +661,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         <!-- Inline Question Answer Display Box -->
         <div id="inlineHelpAnswerBox" class="hidden p-5 rounded-2xl bg-neutral-50/80 border border-neutral-200/80 text-xs text-neutral-800 space-y-3 leading-relaxed">
           <div class="flex items-center justify-between border-b border-neutral-200/60 pb-2">
-            <span id="inlineHelpAnswerTitle" class="font-bold text-neutral-950 font-serif"></span>
+            <span id="inlineHelpAnswerTitle" class="font-bold text-neutral-950 font-sans"></span>
             <span id="inlineHelpAnswerTag" class="text-[9px] font-bold uppercase font-num px-2 py-0.5 rounded bg-neutral-200 text-neutral-800"></span>
           </div>
           <p id="inlineHelpAnswerBody" class="whitespace-pre-line text-neutral-700"></p>
@@ -741,7 +741,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               <span>Real-Time Edge Monitor · Sub-Millisecond</span>
             </div>
             <h2 class="text-xl sm:text-2xl font-normal tracking-tight text-neutral-950">
-              API Key Daily Calls &amp; <span class="font-serif font-bold italic">Real-Time Telemetry</span>
+              API Key Daily Calls &amp; <span class="font-bold text-neutral-950">Real-Time Telemetry</span>
             </h2>
             <p class="text-xs text-neutral-500 mt-1 font-num">
               Track requests made per day for each individual API key, separated across UltraSearch, UltraMemory, and UltraMetrics, plus combined total.
@@ -906,7 +906,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               <span>All-Engine Telemetry Matrix · Edge Connected</span>
             </div>
             <h2 class="text-xl sm:text-2xl font-normal tracking-tight text-neutral-950">
-              Cross-Engine Deep <span class="font-serif font-bold italic">Performance &amp; Health</span>
+              Cross-Engine Deep <span class="font-bold text-neutral-950">Performance &amp; Health</span>
             </h2>
             <p class="text-xs text-neutral-500 mt-1 font-num">
               Comprehensive telemetry, roundtrip latency percentiles, and cache efficiency metrics across UltraSearch, UltraMemory, and UltraMetrics.
@@ -1817,7 +1817,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
               <span>Autonomous ICP Engine · Exclusive Advantage vs PostHog</span>
             </div>
             <h2 class="text-xl sm:text-2xl font-normal tracking-tight text-neutral-950">
-              Ideal Customer Profile: <span id="icpPersonaTitle" class="font-serif font-bold italic">Synthesizing...</span>
+              Ideal Customer Profile: <span id="icpPersonaTitle" class="font-bold text-neutral-950">Synthesizing...</span>
             </h2>
             <p id="icpArchetype" class="text-xs text-neutral-500 mt-1 font-num">
               Clustering recurring visitors, high-affinity traits, and conversion patterns across edge telemetry.
@@ -2311,7 +2311,7 @@ requests.post("${origin}/v1/analytics/capture", json={
               <span>Interactive Edge Sandbox · Live Execution</span>
             </div>
             <h2 class="text-xl sm:text-2xl font-normal tracking-tight text-neutral-950">
-              API Sandbox &amp; <span class="font-serif font-bold italic">Endpoint Workbench</span>
+              API Sandbox &amp; <span class="font-bold text-neutral-950">Endpoint Workbench</span>
             </h2>
             <p class="text-xs text-neutral-500 mt-1 font-num">
               Execute live requests against sovereign Cloudflare edge endpoints with sub-millisecond precision, payload inspector, and response headers.
@@ -2437,7 +2437,7 @@ requests.post("${origin}/v1/analytics/capture", json={
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <h2 class="text-sm font-bold text-neutral-950 font-serif tracking-tight">Sovereign Assistant</h2>
+            <h2 class="text-sm font-bold text-neutral-950 font-sans tracking-tight">Sovereign Assistant</h2>
             <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[9px] font-semibold font-num border border-emerald-200/60">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
               Verified Presets
@@ -3072,15 +3072,15 @@ requests.post("${origin}/v1/analytics/capture", json={
 
     function updateHeaderTitles(viewId) {
       const titles = {
-        overview: ['Workspace <span class="font-serif font-bold italic text-neutral-950">Overview</span>', 'Live edge telemetry, database metrics, and active sovereign API keys.'],
-        keys: ['API Keys <span class="font-serif font-bold italic text-neutral-950">Studio</span>', 'Create, manage, and revoke high-speed edge API keys.'],
-        memory: ['UltraMemory <span class="font-serif font-bold italic text-neutral-950">Lab</span>', 'Store, query, and browse agent structured long-term memory.'],
-        search: ['UltraSearch <span class="font-serif font-bold italic text-neutral-950">Studio</span>', 'Test live BM25 web search and multi-hop research queries.'],
-        crawler: ['Web Crawler <span class="font-serif font-bold italic text-neutral-950">Control</span>', 'Dispatch edge crawler tasks directly into D1 SQLite FTS5.'],
-        membership: ['Memberships &amp; <span class="font-serif font-bold italic text-neutral-950">Quotas</span>', 'Manage your subscription tier and upgrade daily limits.'],
-        integrations: ['Integrations &amp; <span class="font-serif font-bold italic text-neutral-950">MCP Protocol</span>', 'Connect UltraDemon to Claude Desktop, Cursor, and Vercel AI SDK.'],
-        analytics: ['Telemetry &amp; <span class="font-serif font-bold italic text-neutral-950">ICP Engine</span>', 'PostHog-competitive edge analytics with autonomous Ideal Customer Profile synthesis.'],
-        tester: ['API Sandbox <span class="font-serif font-bold italic text-neutral-950">Tester</span>', 'Interactive real-time test bench for UltraSearch, UltraMemory, and UltraMetrics endpoints with live latency metrics.'],
+        overview: ['Workspace Overview', 'Live edge telemetry, database metrics, and active sovereign API keys.'],
+        keys: ['API Keys Studio', 'Create, manage, and revoke high-speed edge API keys.'],
+        memory: ['UltraMemory Lab', 'Store, query, and browse agent structured long-term memory.'],
+        search: ['UltraSearch Studio', 'Test live BM25 web search and multi-hop research queries.'],
+        crawler: ['Web Crawler Control', 'Dispatch edge crawler tasks directly into D1 SQLite FTS5.'],
+        membership: ['Memberships &amp; Quotas', 'Manage your subscription tier and upgrade daily limits.'],
+        integrations: ['Integrations &amp; MCP Protocol', 'Connect UltraDemon to Claude Desktop, Cursor, and Vercel AI SDK.'],
+        analytics: ['Telemetry &amp; ICP Engine', 'PostHog-competitive edge analytics with autonomous Ideal Customer Profile synthesis.'],
+        tester: ['API Sandbox Tester', 'Interactive real-time test bench for UltraSearch, UltraMemory, and UltraMetrics endpoints with live latency metrics.'],
       };
       if (titles[viewId]) {
         const t = document.getElementById('viewHeaderTitle');
