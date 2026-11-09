@@ -130,6 +130,28 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       animation: pulse-subtle 2.2s infinite ease-in-out;
     }
   </style>
+  <script>
+    // Bulletproof Early-Bound Auth Handlers
+    window.openAuthModal = function(mode) {
+      if (window.currentUser) {
+        window.location.href = '/app';
+        return;
+      }
+      var modal = document.getElementById('authModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        if (typeof window.switchAuthTab === 'function') {
+          window.switchAuthTab(mode === 'signin' ? 'signin' : 'signup');
+        }
+      } else {
+        window.location.href = mode === 'signin' ? '/login' : '/signup';
+      }
+    };
+    window.closeAuthModal = function() {
+      var modal = document.getElementById('authModal');
+      if (modal) modal.classList.add('hidden');
+    };
+  </script>
 </head>
 <body class="min-h-screen bg-white text-neutral-900 selection:bg-neutral-900 selection:text-white flex flex-col justify-between">
 
@@ -201,7 +223,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <main class="flex-1 w-full" id="overview">
 
     <!-- SECTION 3: HERO & PRODUCT PROMISE -->
-    <section class="relative pt-16 sm:pt-24 pb-20 px-4 sm:px-6 max-w-6xl mx-auto text-center">
+    <section class="relative pt-16 sm:pt-24 pb-20 px-4 sm:px-6 max-w-6xl mx-auto text-left">
       
       <!-- Eyebrow Wayfinding Label -->
       <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-neutral-200/90 bg-neutral-50/70 hover:bg-neutral-100/70 transition-colors text-xs text-neutral-600 mb-6 cursor-pointer" onclick="document.getElementById('value').scrollIntoView({ behavior: 'smooth' })">
@@ -210,32 +232,32 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <svg class="w-3 h-3 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
 
-      <!-- Display Headline -->
-      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-[72px] font-normal tracking-tight text-neutral-950 leading-[1.08] max-w-4xl mx-auto">
-        Your team’s sovereign <span class="font-serif font-bold italic text-neutral-950">autonomous engine</span>.
+      <!-- Display Headline (Iconic Left-Aligned Devin Style) -->
+      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-[68px] font-bold tracking-tight text-neutral-950 leading-[1.08] max-w-3xl">
+        Meet UltraDemon, your swarm’s <span class="font-serif font-bold italic text-neutral-950">autonomous software engine</span>.
       </h1>
 
-      <!-- Supporting Paragraph (Controlled Measure 560px) -->
-      <p class="text-base sm:text-lg text-neutral-600 max-w-[560px] mx-auto mt-6 leading-relaxed font-normal">
-        Sub-15ms long-term memory recall, sovereign edge web search, and kinetic telemetry across 330+ Cloudflare edge locations with zero third-party latency.
+      <!-- Supporting Paragraph (Controlled Measure 560px, Left Aligned) -->
+      <p class="text-base sm:text-lg text-neutral-600 max-w-[560px] mt-6 leading-relaxed font-normal">
+        UltraDemon gives autonomous agents sub-15ms long-term memory recall, full-text edge web search, and kinetic micro-telemetry across 330+ Cloudflare edge locations with zero third-party latency.
       </p>
 
-      <!-- Action Buttons -->
-      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <a href="/signup" onclick="openAuthModal('signup'); return false;" class="bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-6 py-2.5 text-xs sm:text-sm font-bold transition-all shadow-sm flex items-center gap-2 cursor-pointer">
-          <span>Start building</span>
+      <!-- Action Buttons (Left Aligned Pill Buttons) -->
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <a href="/signup" onclick="openAuthModal('signup'); return false;" class="bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-5 py-2.5 text-xs sm:text-sm font-semibold transition-all shadow-xs flex items-center gap-2 cursor-pointer">
+          <span>Try UltraDemon</span>
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
           </svg>
         </a>
-        <a href="/app" class="border border-neutral-200 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-900 rounded-full px-6 py-2.5 text-xs sm:text-sm font-semibold transition-all">
-          Explore console
+        <a href="/app" class="border border-neutral-200/90 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-900 rounded-full px-5 py-2.5 text-xs sm:text-sm font-semibold transition-all">
+          Talk to sales
         </a>
       </div>
 
       <!-- Proof Line -->
-      <div class="mt-4 font-mono text-[11px] text-neutral-400 flex items-center justify-center gap-3">
+      <div class="mt-4 font-mono text-[11px] text-neutral-400 flex items-center gap-3">
         <span>Sub-15ms edge recall</span>
         <span>·</span>
         <span>Zero third-party data leakage</span>
@@ -520,11 +542,11 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
     <!-- SECTION 6: FEATURE EVIDENCE GRID (Varied Compositions, Not 4 Identical Cards) -->
     <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="features">
-      <div class="text-center max-w-2xl mx-auto mb-14">
-        <h2 class="text-3xl sm:text-4xl font-normal tracking-tight text-neutral-950">
-          Your AI team's <span class="font-serif font-bold italic text-neutral-950">favorite engine</span>
+      <div class="text-left mb-12">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950">
+          Your team members’ <span class="font-serif font-bold italic text-neutral-950">favorite teammate</span>
         </h2>
-        <p class="text-neutral-600 text-sm sm:text-base mt-3">
+        <p class="text-neutral-600 text-sm sm:text-base mt-2 max-w-xl font-normal">
           Designed from the ground up for autonomous agent swarms that demand sub-15ms memory lookups and zero-leakage web search.
         </p>
       </div>
@@ -1216,7 +1238,7 @@ Fetching live Anycast telemetry...
   </footer>
 
   <!-- AUTH MODAL (Instant, Resilient, Dual-Action) -->
-  <div id="authModal" onclick="if(event.target === this) closeAuthModal();" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm hidden">
+  <div id="authModal" onclick="if(event.target === this) closeAuthModal();" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm hidden">
     <div class="bg-white rounded-2xl border border-neutral-200 shadow-2xl max-w-sm w-full p-6 text-left relative" onclick="event.stopPropagation()">
       <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-neutral-950 transition">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>

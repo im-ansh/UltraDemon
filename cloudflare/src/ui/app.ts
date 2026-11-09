@@ -267,7 +267,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 <body class="min-h-screen bg-[#fafafa] text-neutral-950 flex flex-col lg:flex-row antialiased selection:bg-black selection:text-white">
 
   <!-- Left Sidebar Navigation -->
-  <aside class="w-full lg:w-64 lg:min-h-screen lg:fixed lg:top-0 lg:left-0 border-b lg:border-b-0 lg:border-r border-neutral-200/80 bg-white z-40 flex flex-col justify-between p-5 shadow-[1px_0_10px_rgba(0,0,0,0.02)]">
+  <aside class="w-full lg:w-72 lg:min-h-screen lg:fixed lg:top-0 lg:left-0 border-b lg:border-b-0 lg:border-r border-neutral-200/80 bg-white z-40 flex flex-col justify-between p-5 shadow-[1px_0_10px_rgba(0,0,0,0.02)]">
     <div class="space-y-6">
       <!-- Brand Logo -->
       <a href="/" class="flex items-center gap-2.5 group">
@@ -309,77 +309,85 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       <nav class="flex flex-col space-y-4 text-xs" id="sidebarNav">
         <!-- Group 1: Platform -->
         <div class="space-y-1">
-          <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Platform</div>
-          <button type="button" onclick="setAppView('overview', event)" data-view-target="overview" id="nav-overview" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl bg-neutral-950 text-white font-semibold cursor-pointer transition text-left shadow-xs">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
-            <span>Overview</span>
+          <div class="px-3.5 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Platform</div>
+          <button type="button" onclick="setAppView('overview', event)" data-view-target="overview" id="nav-overview" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-neutral-950 text-white font-semibold cursor-pointer transition text-left shadow-xs">
+            <div class="flex items-center gap-3 min-w-0">
+              <svg class="w-4 h-4 shrink-0 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+              <span class="text-xs font-semibold tracking-tight truncate">Overview</span>
+            </div>
           </button>
 
-          <button type="button" onclick="setAppView('keys', event)" data-view-target="keys" id="nav-keys" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
-            <div class="flex items-center gap-2.5">
-              <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
-              <span>API Keys</span>
+          <button type="button" onclick="setAppView('keys', event)" data-view-target="keys" id="nav-keys" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+            <div class="flex items-center gap-3 min-w-0">
+              <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+              <span class="text-xs font-medium tracking-tight truncate">API Keys</span>
             </div>
-            <span id="keysCountBadge" class="font-num text-[10px] text-neutral-400">0</span>
+            <span id="keysCountBadge" class="font-num text-[10px] text-neutral-400 font-semibold ml-auto shrink-0 pl-2">0</span>
           </button>
         </div>
 
         <!-- Group 2: Engines -->
         <div class="space-y-1">
-          <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Engines</div>
-          <button type="button" onclick="setAppView('memory', event)" data-view-target="memory" id="nav-memory" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
-            <div class="flex items-center gap-2.5">
-              <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
-              <span>UltraMemory</span>
+          <div class="px-3.5 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Engines</div>
+          <button type="button" onclick="setAppView('memory', event)" data-view-target="memory" id="nav-memory" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+            <div class="flex items-center gap-3 min-w-0">
+              <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+              <span class="text-xs font-medium tracking-tight truncate">UltraMemory</span>
             </div>
-            <span class="font-num text-[10px] bg-purple-50 text-purple-700 border border-purple-200 px-1.5 py-0.2 rounded font-bold">&lt;15ms</span>
+            <span class="font-num text-[10px] bg-purple-50 text-purple-700 border border-purple-200/60 px-2 py-0.5 rounded-md font-bold ml-auto shrink-0 pl-1">&lt;15ms</span>
           </button>
 
-          <button type="button" onclick="setAppView('search', event)" data-view-target="search" id="nav-search" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
-            <div class="flex items-center gap-2.5">
-              <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-              <span>UltraSearch Studio</span>
+          <button type="button" onclick="setAppView('search', event)" data-view-target="search" id="nav-search" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+            <div class="flex items-center gap-3 min-w-0">
+              <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span class="text-xs font-medium tracking-tight truncate">UltraSearch Studio</span>
             </div>
-            <span class="font-num text-[10px] bg-sky-50 text-sky-700 border border-sky-200 px-1.5 py-0.2 rounded font-bold">&lt;40ms</span>
+            <span class="font-num text-[10px] bg-sky-50 text-sky-700 border border-sky-200/60 px-2 py-0.5 rounded-md font-bold ml-auto shrink-0 pl-1">&lt;40ms</span>
           </button>
 
-          <button type="button" onclick="setAppView('crawler', event)" data-view-target="crawler" id="nav-crawler" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
-            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-            <span>Web Crawler</span>
+          <button type="button" onclick="setAppView('crawler', event)" data-view-target="crawler" id="nav-crawler" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+            <div class="flex items-center gap-3 min-w-0">
+              <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+              <span class="text-xs font-medium tracking-tight truncate">Web Crawler</span>
+            </div>
           </button>
         </div>
 
         <!-- Group 3: Observability & Protocol -->
         <div class="space-y-1">
-          <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Analytics &amp; Protocol</div>
-          <button type="button" onclick="setAppView('analytics', event)" data-view-target="analytics" id="nav-analytics" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
-            <div class="flex items-center gap-2.5">
-              <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-              <span>Telemetry &amp; ICP</span>
+          <div class="px-3.5 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Analytics &amp; Protocol</div>
+          <button type="button" onclick="setAppView('analytics', event)" data-view-target="analytics" id="nav-analytics" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+            <div class="flex items-center gap-3 min-w-0">
+              <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+              <span class="text-xs font-medium tracking-tight truncate">Telemetry &amp; ICP</span>
             </div>
-            <span class="font-num text-[9px] bg-neutral-900 text-white px-1.5 py-0.5 rounded font-semibold">vs PostHog</span>
+            <span class="font-num text-[9px] bg-neutral-900 text-white px-2 py-0.5 rounded-md font-semibold ml-auto shrink-0">vs PostHog</span>
           </button>
 
-          <button type="button" onclick="setAppView('membership', event)" data-view-target="membership" id="nav-membership" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
-            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            <span>Memberships &amp; Quotas</span>
+          <button type="button" onclick="setAppView('membership', event)" data-view-target="membership" id="nav-membership" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+            <div class="flex items-center gap-3 min-w-0">
+              <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span class="text-xs font-medium tracking-tight truncate">Memberships &amp; Quotas</span>
+            </div>
           </button>
 
-          <button type="button" onclick="setAppView('integrations', event)" data-view-target="integrations" id="nav-integrations" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
-            <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
-            <span>Integrations &amp; MCP</span>
+          <button type="button" onclick="setAppView('integrations', event)" data-view-target="integrations" id="nav-integrations" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+            <div class="flex items-center gap-3 min-w-0">
+              <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+              <span class="text-xs font-medium tracking-tight truncate">Integrations &amp; MCP</span>
+            </div>
           </button>
         </div>
 
         <!-- Group 4: Developer Workbench & Sandbox -->
         <div class="space-y-1">
-          <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Developer Workbench</div>
-          <button type="button" onclick="setAppView('tester', event)" data-view-target="tester" id="nav-tester" class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-neutral-100/90 hover:text-black cursor-pointer transition text-left text-neutral-600 font-medium">
-            <div class="flex items-center gap-2.5">
-              <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
-              <span>API Sandbox</span>
+          <div class="px-3.5 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Developer Workbench</div>
+          <button type="button" onclick="setAppView('tester', event)" data-view-target="tester" id="nav-tester" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+            <div class="flex items-center gap-3 min-w-0">
+              <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+              <span class="text-xs font-medium tracking-tight truncate">API Sandbox</span>
             </div>
-            <span class="font-num text-[9px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.2 rounded font-semibold">Live Tester</span>
+            <span class="font-num text-[9px] bg-emerald-50 text-emerald-800 border border-emerald-200/60 px-2 py-0.5 rounded-md font-semibold ml-auto shrink-0">Live Tester</span>
           </button>
         </div>
       </nav>
@@ -399,7 +407,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
   </aside>
 
   <!-- Main Content Workspace Area -->
-  <main class="flex-1 lg:ml-64 p-6 sm:p-10 lg:p-12 max-w-6xl w-full">
+  <main class="flex-1 lg:ml-72 p-6 sm:p-10 lg:p-12 max-w-6xl w-full">
     
     <!-- Top Bar -->
     <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-5 border-b border-neutral-200/80">
@@ -2916,40 +2924,55 @@ requests.post("${origin}/v1/analytics/capture", json={
       const views = ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations', 'analytics', 'tester'];
       if (!views.includes(viewId)) return;
 
-      currentAppViewId = viewId;
+      const isForced = triggerEvent && triggerEvent.isForced;
+      if (viewId === currentAppViewId && !isForced) {
+        return;
+      }
 
-      // 1. Instantly and reliably toggle visibility across all views
-      views.forEach(id => {
-        const el = document.getElementById('view-' + id);
-        if (!el) return;
-        if (id === viewId) {
-          el.classList.remove('hidden', 'magic-flow-out');
-          el.style.display = 'block';
-          el.style.opacity = '1';
-          el.style.pointerEvents = 'auto';
-        } else {
-          el.classList.add('hidden');
-          el.classList.remove('magic-flow-out', 'magic-flow-in');
-          el.style.display = 'none';
-        }
-      });
+      if (isViewTransitioning) {
+        clearTimeout(isViewTransitioning);
+        isViewTransitioning = null;
+      }
 
-      // 2. Update Nav Buttons
+      // Spark source coordinates
+      let sparkX = window.innerWidth / 2;
+      let sparkY = 180;
+      if (triggerEvent && typeof triggerEvent.clientX === 'number') {
+        sparkX = triggerEvent.clientX;
+        sparkY = triggerEvent.clientY;
+      }
+      if (typeof triggerMagicWandSparks === 'function') {
+        triggerMagicWandSparks(sparkX, sparkY);
+      }
+
+      const prevViewId = currentAppViewId;
+      const prevViewEl = document.getElementById('view-' + prevViewId);
+      const nextViewEl = document.getElementById('view-' + viewId);
+      const titleEl = document.getElementById('viewHeaderTitle');
+      const descEl = document.getElementById('viewHeaderDesc');
+
+      // 1. Update Nav Buttons with clean left-aligned typography
       views.forEach(id => {
         const navBtn = document.getElementById('nav-' + id);
         if (navBtn) {
-          const svg = (navBtn && navBtn.querySelector) ? navBtn.querySelector('svg') : null;
+          const svg = navBtn.querySelector('svg');
           if (id === viewId) {
-            navBtn.className = 'w-full flex items-center justify-between px-3 py-2 rounded-xl bg-neutral-950 text-white font-bold cursor-pointer transition text-left shadow-xs';
-            if (svg) svg.classList.remove('text-neutral-400');
+            navBtn.className = 'w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-neutral-950 text-white font-semibold cursor-pointer transition text-left shadow-xs';
+            if (svg) {
+              svg.classList.remove('text-neutral-400');
+              svg.classList.add('text-white');
+            }
           } else {
-            navBtn.className = 'w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-black font-semibold cursor-pointer transition text-left';
-            if (svg) svg.classList.add('text-neutral-400');
+            navBtn.className = 'w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left';
+            if (svg) {
+              svg.classList.add('text-neutral-400');
+              svg.classList.remove('text-white');
+            }
           }
         }
       });
 
-      // 3. Update Suite switchers and Header titles
+      // 2. Update Suite switchers
       if (viewId === 'overview') updateSuiteSwitcher('overview');
       else if (viewId === 'search' || viewId === 'crawler') updateSuiteSwitcher('search');
       else if (viewId === 'memory') updateSuiteSwitcher('memory');
@@ -2957,27 +2980,94 @@ requests.post("${origin}/v1/analytics/capture", json={
       else if (viewId === 'tester') updateSuiteSwitcher('tester');
       else updateSuiteSwitcher(null);
 
-      updateHeaderTitles(viewId);
-
-      // 4. Update URL without reload
-      try {
-        const u = new URL(window.location.href);
-        u.searchParams.set('tab', viewId);
-        window.history.replaceState(null, '', u.toString());
-      } catch {}
-
-      // 5. Trigger view-specific background refresh
-      if (viewId === 'analytics') {
-        loadAnalyticsDashboard();
-      } else if (viewId === 'keys' || viewId === 'overview') {
-        loadRealtimeKeyMetrics(false);
+      // Fast fallback if element not ready or initial view setup
+      if (!prevViewEl || prevViewId === viewId) {
+        currentAppViewId = viewId;
+        views.forEach(id => {
+          const v = document.getElementById('view-' + id);
+          if (v) {
+            if (id === viewId) {
+              v.classList.remove('hidden', 'magic-flow-out');
+              v.style.display = 'block';
+              v.style.opacity = '1';
+              v.style.pointerEvents = 'auto';
+              if (typeof applyMagicCardCascade === 'function') applyMagicCardCascade(v);
+            } else {
+              v.classList.add('hidden');
+              v.classList.remove('magic-flow-out', 'magic-flow-in');
+              v.style.display = 'none';
+            }
+          }
+        });
+        updateHeaderTitles(viewId);
+        return;
       }
 
-      updateAllSuiteSnippets();
-
-      if (window.innerWidth < 1024) {
-        document.querySelector('main')?.scrollIntoView({ behavior: 'smooth' });
+      // ── PHASE 1: Flow Away Outgoing Page Text and Cards (Ethereal Dissolve Animation) ──
+      prevViewEl.classList.remove('magic-flow-in');
+      prevViewEl.classList.add('magic-flow-out');
+      if (titleEl) {
+        titleEl.classList.remove('magic-text-flow-in');
+        titleEl.classList.add('magic-text-flow-out');
       }
+      if (descEl) {
+        descEl.classList.remove('magic-text-flow-in');
+        descEl.classList.add('magic-text-flow-out');
+      }
+
+      isViewTransitioning = setTimeout(() => {
+        // ── PHASE 2: Reconstitute & Flow In Next Page Text and Cards ──
+        prevViewEl.classList.add('hidden');
+        prevViewEl.style.display = 'none';
+        prevViewEl.classList.remove('magic-flow-out');
+
+        currentAppViewId = viewId;
+        updateHeaderTitles(viewId);
+
+        if (nextViewEl) {
+          nextViewEl.classList.remove('hidden');
+          nextViewEl.style.display = 'block';
+          nextViewEl.classList.remove('magic-flow-out');
+          nextViewEl.classList.add('magic-flow-in');
+          if (typeof applyMagicCardCascade === 'function') applyMagicCardCascade(nextViewEl);
+        }
+
+        if (titleEl) {
+          titleEl.classList.remove('magic-text-flow-out');
+          titleEl.classList.add('magic-text-flow-in');
+        }
+        if (descEl) {
+          descEl.classList.remove('magic-text-flow-out');
+          descEl.classList.add('magic-text-flow-in');
+        }
+
+        try {
+          const u = new URL(window.location.href);
+          u.searchParams.set('tab', viewId);
+          window.history.replaceState(null, '', u.toString());
+        } catch {}
+
+        if (viewId === 'analytics') {
+          loadAnalyticsDashboard();
+        } else if (viewId === 'keys' || viewId === 'overview') {
+          loadRealtimeKeyMetrics(false);
+        }
+
+        updateAllSuiteSnippets();
+
+        if (window.innerWidth < 1024) {
+          document.querySelector('main')?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        setTimeout(() => {
+          if (nextViewEl) {
+            nextViewEl.classList.remove('magic-flow-in');
+            nextViewEl.style.opacity = '1';
+            nextViewEl.style.pointerEvents = 'auto';
+          }
+          isViewTransitioning = null;
+        }, 480);
+      }, 180);
     }
 
     function updateHeaderTitles(viewId) {
