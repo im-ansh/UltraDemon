@@ -225,6 +225,21 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
             <svg class="w-3.5 h-3.5 text-white animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/></svg>
           </span>
         </button>
+
+        <div class="relative flex items-center justify-center my-3">
+          <div class="border-t border-neutral-200 w-full"></div>
+          <span class="bg-white px-2 text-[10px] uppercase font-mono text-neutral-400 absolute">or</span>
+        </div>
+
+        <!-- 1-Click Guest Access -->
+        <button 
+          type="button" 
+          onclick="handleGuestAccess(); return false;"
+          id="authGuestBtn"
+          class="w-full py-2.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 font-semibold text-xs rounded-xl transition shadow-2xs flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <span>Continue with 1-Click Demo Console</span>
+        </button>
       </form>
 
       <!-- Security / Edge Guarantee Footer -->
@@ -233,7 +248,7 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
           <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           <span>Edge Web Crypto SHA-256</span>
         </span>
-        <span>Mandatory Email Verification</span>
+        <span>Instant Sovereign Access</span>
       </div>
 
     </div>
@@ -290,12 +305,19 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
     }
 
     async function handleFormSubmit(e) {
-      e.preventDefault();
+      if (e && e.preventDefault) e.preventDefault();
       const email = document.getElementById('authEmail').value.trim();
       const password = document.getElementById('authPassword').value;
       const alertBox = document.getElementById('authAlert');
       const spinner = document.getElementById('authSpinner');
       const submitBtn = document.getElementById('authSubmitBtn');
+
+      if (!email || !password) {
+        alertBox.className = 'p-3 rounded-xl text-xs font-medium bg-neutral-100 border border-neutral-300 text-red-600';
+        alertBox.innerText = 'Please enter both email and password';
+        alertBox.classList.remove('hidden');
+        return;
+      }
 
       alertBox.classList.add('hidden');
       spinner.classList.remove('hidden');
@@ -315,24 +337,20 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
         });
         const data = await res.json();
 
-        // 1. Mandatory Email Verification Required Handling
-        if (data.requires_verification || res.status === 403) {
-          currentPendingEmail = email;
-          document.getElementById('authForm').classList.add('hidden');
-          document.getElementById('verifyTargetEmail').innerText = email;
-          document.getElementById('verifyNoticeCard').classList.remove('hidden');
-          document.getElementById('pageTitle').innerHTML = 'Email Verification <span class="font-serif font-bold italic">Required</span>';
-          document.getElementById('pageSubtitle').innerText = 'Please click the link in your email to activate your account.';
-          return;
-        }
-
         if (!res.ok) {
           throw new Error(data.error || 'Authentication failed');
         }
 
-        // Store session and user
-        localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session));
-        localStorage.setItem('ultrademon_user', JSON.stringify(data.user));
+        // Store session, user, and active key
+        if (data.session) {
+          localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session));
+        }
+        if (data.user) {
+          localStorage.setItem('ultrademon_user', JSON.stringify(data.user));
+        }
+        if (data.active_key) {
+          localStorage.setItem('ultrademon_active_key', data.active_key);
+        }
 
         alertBox.className = 'p-3 rounded-xl text-xs font-medium bg-neutral-100 border border-neutral-300 text-neutral-900 flex items-center gap-2';
         alertBox.innerHTML = '<svg class="w-4 h-4 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Signed in! Redirecting to workspace...</span>';
@@ -342,7 +360,7 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
         setTimeout(() => {
           const targetUrl = '/app' + (selectedPlan ? '?plan=' + encodeURIComponent(selectedPlan) : '');
           window.location.href = targetUrl;
-        }, 500);
+        }, 300);
 
       } catch (err) {
         alertBox.className = 'p-3 rounded-xl text-xs font-medium bg-neutral-100 border border-neutral-300 text-red-600';
@@ -351,6 +369,43 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
       } finally {
         spinner.classList.add('hidden');
         submitBtn.disabled = false;
+      }
+    }
+
+    async function handleGuestAccess() {
+      const guestBtn = document.getElementById('authGuestBtn');
+      const alertBox = document.getElementById('authAlert');
+      if (guestBtn) {
+        guestBtn.disabled = true;
+        guestBtn.innerText = 'Initializing demo workspace...';
+      }
+      try {
+        const res = await fetch('/v1/auth/anonymous', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan: selectedPlan || 'free' })
+        });
+        const data = await res.json();
+        if (data.session) {
+          localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session));
+        }
+        if (data.user) {
+          localStorage.setItem('ultrademon_user', JSON.stringify(data.user));
+        }
+        if (data.initial_key) {
+          localStorage.setItem('ultrademon_active_key', data.initial_key);
+        }
+        window.location.href = '/app' + (selectedPlan ? '?plan=' + encodeURIComponent(selectedPlan) : '');
+      } catch (e) {
+        if (alertBox) {
+          alertBox.className = 'p-3 rounded-xl text-xs font-medium bg-neutral-100 border border-neutral-300 text-red-600';
+          alertBox.innerText = 'Failed to initialize guest console: ' + e.message;
+          alertBox.classList.remove('hidden');
+        }
+        if (guestBtn) {
+          guestBtn.disabled = false;
+          guestBtn.innerText = 'Continue with 1-Click Demo Console';
+        }
       }
     }
 

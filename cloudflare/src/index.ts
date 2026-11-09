@@ -121,6 +121,13 @@ app.get('/signup', (c) => {
   return c.html(renderAuthPage('signup', origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
 });
 
+// Dedicated Pricing Page (Renders Full Landing with Focus on Pricing)
+app.get('/pricing', (c) => {
+  const origin = new URL(c.req.url).origin;
+  c.header('Cache-Control', 'no-cache, no-store, must-revalidate');
+  return c.html(renderLandingPage(origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
+});
+
 // Dedicated Legal & Compliance Pages
 app.get('/privacy', (c) => {
   const origin = new URL(c.req.url).origin;
