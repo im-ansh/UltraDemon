@@ -3,7 +3,7 @@
 // Typography: Geist Sans, Michelangelus Bold Italic, Geist Mono.
 // Strict Design Rule: NO EMOJIS ANYWHERE. Minimalist grey SVGs only.
 
-import { MICHELANGELUS_BOLD_ITALIC_WOFF2_B64, MICHELANGELUS_REGULAR_WOFF2_B64 } from './font-data';
+import { MICHELANGELUS_BOLD_ITALIC_WOFF2_B64, MICHELANGELUS_REGULAR_WOFF2_B64, NB_INTERNATIONAL_PRO_WOFF2_B64 } from './font-data';
 
 function getLegalHeader(origin: string, activePage: 'privacy' | 'terms'): string {
   return `
@@ -80,9 +80,16 @@ export function renderPrivacyPage(origin: string): string {
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
+    @font-face {
+      font-family: 'NB International Pro';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
     @font-face {
       font-family: 'Michelangelus';
       src: url('data:font/woff2;base64,${MICHELANGELUS_BOLD_ITALIC_WOFF2_B64}') format('woff2');
@@ -95,8 +102,8 @@ export function renderPrivacyPage(origin: string): string {
       font-weight: 400;
       font-style: normal;
     }
-    body {
-      font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+    body, input, textarea, button, select {
+      font-family: 'NB International Pro', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: #ffffff;
       color: #09090b;
     }
@@ -245,9 +252,16 @@ export function renderTermsPage(origin: string): string {
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
+    @font-face {
+      font-family: 'NB International Pro';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
     @font-face {
       font-family: 'Michelangelus';
       src: url('data:font/woff2;base64,${MICHELANGELUS_BOLD_ITALIC_WOFF2_B64}') format('woff2');
@@ -260,8 +274,8 @@ export function renderTermsPage(origin: string): string {
       font-weight: 400;
       font-style: normal;
     }
-    body {
-      font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+    body, input, textarea, button, select {
+      font-family: 'NB International Pro', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: #ffffff;
       color: #09090b;
     }
