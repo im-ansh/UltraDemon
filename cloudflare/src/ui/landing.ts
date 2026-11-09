@@ -5,6 +5,7 @@
 
 import { MICHELANGELUS_BOLD_ITALIC_WOFF2_B64, MICHELANGELUS_REGULAR_WOFF2_B64, NB_INTERNATIONAL_PRO_WOFF2_B64 } from './font-data';
 import { BLUEPRINT_CIRCUIT_SVG, VINTAGE_TERMINAL_SVG, MATH_MANUSCRIPT_SVG, TECHNICAL_SCHEMATIC_SVG } from './science-assets';
+import { CUSTOM_CURSORS_CSS } from './cursors';
 
 export function renderLandingPage(origin: string, supabaseUrl: string, supabaseAnonKey: string): string {
   return `<!DOCTYPE html>
@@ -85,6 +86,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     .font-serif {
       font-family: 'Michelangelus', Georgia, serif;
     }
+
+    ${CUSTOM_CURSORS_CSS}
 
     /* Guaranteed Modal Visibility Rules */
     #authModal.hidden {

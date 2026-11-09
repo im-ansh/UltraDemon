@@ -4,6 +4,7 @@
 // Strict Design Rule: NO EMOJIS ANYWHERE. Minimalist grey SVGs only.
 
 import { MICHELANGELUS_BOLD_ITALIC_WOFF2_B64, MICHELANGELUS_REGULAR_WOFF2_B64, NB_INTERNATIONAL_PRO_WOFF2_B64 } from './font-data';
+import { CUSTOM_CURSORS_CSS } from './cursors';
 
 function getLegalHeader(origin: string, activePage: 'privacy' | 'terms'): string {
   return `
@@ -114,6 +115,7 @@ export function renderPrivacyPage(origin: string): string {
       font-family: 'Geist Mono', monospace;
       font-variant-numeric: tabular-nums;
     }
+    ${CUSTOM_CURSORS_CSS}
   </style>
 </head>
 <body class="min-h-screen bg-white text-neutral-950 flex flex-col justify-between selection:bg-black selection:text-white">
@@ -286,6 +288,7 @@ export function renderTermsPage(origin: string): string {
       font-family: 'Geist Mono', monospace;
       font-variant-numeric: tabular-nums;
     }
+    ${CUSTOM_CURSORS_CSS}
   </style>
 </head>
 <body class="min-h-screen bg-white text-neutral-950 flex flex-col justify-between selection:bg-black selection:text-white">

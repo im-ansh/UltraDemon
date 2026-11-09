@@ -4,6 +4,7 @@
 // Strict Design Rule: NO EMOJIS ANYWHERE. Minimalist grey SVGs only.
 
 import { MICHELANGELUS_BOLD_ITALIC_WOFF2_B64, MICHELANGELUS_REGULAR_WOFF2_B64, NB_INTERNATIONAL_PRO_WOFF2_B64 } from './font-data';
+import { CUSTOM_CURSORS_CSS } from './cursors';
 
 export function renderAppDashboard(origin: string, supabaseUrl: string, supabaseAnonKey: string): string {
   return `<!DOCTYPE html>
@@ -70,6 +71,8 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       font-family: 'Geist Mono', monospace;
       font-variant-numeric: tabular-nums;
     }
+
+    ${CUSTOM_CURSORS_CSS}
     
     .devin-card {
       background: #ffffff;
