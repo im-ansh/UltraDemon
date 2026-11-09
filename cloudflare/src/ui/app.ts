@@ -70,6 +70,17 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       font-family: 'Geist Mono', monospace;
       font-variant-numeric: tabular-nums;
     }
+    
+    .devin-card {
+      background: #ffffff;
+      border: 1px solid #e5e5eb;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 8px 24px rgba(0,0,0,0.03);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .devin-card:hover {
+      border-color: #d4d4d8;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.03), 0 12px 32px rgba(0,0,0,0.05);
+    }
     .card-clean {
       background: #ffffff;
       border: 1px solid #e5e5e5;
@@ -595,7 +606,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
             </div>
             <div>
               <div class="flex items-center gap-2">
-                <h3 class="text-sm font-bold text-neutral-950 font-serif">Sovereign Knowledge &amp; Troubleshooting</h3>
+                <h3 class="text-sm font-bold text-neutral-950 font-sans">Sovereign Knowledge &amp; <span class="font-serif font-bold italic text-neutral-900">Troubleshooting</span></h3>
                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[10px] font-semibold font-num border border-emerald-200/60">
                   <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                   Verified Presets Only
@@ -2905,49 +2916,40 @@ requests.post("${origin}/v1/analytics/capture", json={
       const views = ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations', 'analytics', 'tester'];
       if (!views.includes(viewId)) return;
 
-      const isForced = triggerEvent && triggerEvent.isForced;
-      if (viewId === currentAppViewId && !isForced) {
-        return;
-      }
+      currentAppViewId = viewId;
 
-      if (isViewTransitioning) {
-        clearTimeout(isViewTransitioning);
-        isViewTransitioning = null;
-      }
+      // 1. Instantly and reliably toggle visibility across all views
+      views.forEach(id => {
+        const el = document.getElementById('view-' + id);
+        if (!el) return;
+        if (id === viewId) {
+          el.classList.remove('hidden', 'magic-flow-out');
+          el.style.display = 'block';
+          el.style.opacity = '1';
+          el.style.pointerEvents = 'auto';
+        } else {
+          el.classList.add('hidden');
+          el.classList.remove('magic-flow-out', 'magic-flow-in');
+          el.style.display = 'none';
+        }
+      });
 
-      // Spark source coordinates
-      let sparkX = window.innerWidth / 2;
-      let sparkY = 180;
-      if (triggerEvent && typeof triggerEvent.clientX === 'number') {
-        sparkX = triggerEvent.clientX;
-        sparkY = triggerEvent.clientY;
-      }
-      triggerMagicWandSparks(sparkX, sparkY);
-
-      const prevViewId = currentAppViewId;
-      const prevViewEl = document.getElementById('view-' + prevViewId);
-      const nextViewEl = document.getElementById('view-' + viewId);
-      const titleEl = document.getElementById('viewHeaderTitle');
-      const descEl = document.getElementById('viewHeaderDesc');
-
-      // Update Nav Buttons immediately for snappy feedback
+      // 2. Update Nav Buttons
       views.forEach(id => {
         const navBtn = document.getElementById('nav-' + id);
         if (navBtn) {
-          const svg = navBtn.querySelector('svg');
+          const svg = (navBtn && navBtn.querySelector) ? navBtn.querySelector('svg') : null;
           if (id === viewId) {
-            navBtn.classList.add('bg-neutral-950', 'text-white', 'font-semibold', 'shadow-xs');
-            navBtn.classList.remove('text-neutral-600', 'hover:bg-neutral-100', 'hover:text-black', 'font-normal');
+            navBtn.className = 'w-full flex items-center justify-between px-3 py-2 rounded-xl bg-neutral-950 text-white font-bold cursor-pointer transition text-left shadow-xs';
             if (svg) svg.classList.remove('text-neutral-400');
           } else {
-            navBtn.classList.remove('bg-neutral-950', 'text-white', 'font-semibold', 'shadow-xs');
-            navBtn.classList.add('text-neutral-600', 'hover:bg-neutral-100', 'hover:text-black', 'font-normal');
+            navBtn.className = 'w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-black font-semibold cursor-pointer transition text-left';
             if (svg) svg.classList.add('text-neutral-400');
           }
         }
       });
 
-      // Update suite switcher buttons immediately
+      // 3. Update Suite switchers and Header titles
       if (viewId === 'overview') updateSuiteSwitcher('overview');
       else if (viewId === 'search' || viewId === 'crawler') updateSuiteSwitcher('search');
       else if (viewId === 'memory') updateSuiteSwitcher('memory');
@@ -2955,90 +2957,27 @@ requests.post("${origin}/v1/analytics/capture", json={
       else if (viewId === 'tester') updateSuiteSwitcher('tester');
       else updateSuiteSwitcher(null);
 
-      // Fast fallback if element not ready or initial view setup
-      if (!prevViewEl || prevViewId === viewId) {
-        currentAppViewId = viewId;
-        views.forEach(id => {
-          const v = document.getElementById('view-' + id);
-          if (v) {
-            if (id === viewId) {
-              v.classList.remove('hidden');
-              v.style.display = 'block';
-              applyMagicCardCascade(v);
-            } else {
-              v.classList.add('hidden');
-              v.style.display = 'none';
-            }
-          }
-        });
-        updateHeaderTitles(viewId);
-        return;
+      updateHeaderTitles(viewId);
+
+      // 4. Update URL without reload
+      try {
+        const u = new URL(window.location.href);
+        u.searchParams.set('tab', viewId);
+        window.history.replaceState(null, '', u.toString());
+      } catch {}
+
+      // 5. Trigger view-specific background refresh
+      if (viewId === 'analytics') {
+        loadAnalyticsDashboard();
+      } else if (viewId === 'keys' || viewId === 'overview') {
+        loadRealtimeKeyMetrics(false);
       }
 
-      // ── PHASE 1: Flow Away Outgoing Page Text and Cards (Ethereal Dissolve) ──
-      prevViewEl.classList.remove('magic-flow-in');
-      prevViewEl.classList.add('magic-flow-out');
-      if (titleEl) {
-        titleEl.classList.remove('magic-text-flow-in');
-        titleEl.classList.add('magic-text-flow-out');
+      updateAllSuiteSnippets();
+
+      if (window.innerWidth < 1024) {
+        document.querySelector('main')?.scrollIntoView({ behavior: 'smooth' });
       }
-      if (descEl) {
-        descEl.classList.remove('magic-text-flow-in');
-        descEl.classList.add('magic-text-flow-out');
-      }
-
-      isViewTransitioning = setTimeout(() => {
-        // ── PHASE 2: Reconstitute & Flow In Next Page Text and Cards ──
-        prevViewEl.classList.add('hidden');
-        prevViewEl.style.display = 'none';
-        prevViewEl.classList.remove('magic-flow-out');
-
-        currentAppViewId = viewId;
-        updateHeaderTitles(viewId);
-
-        if (nextViewEl) {
-          nextViewEl.classList.remove('hidden');
-          nextViewEl.style.display = 'block';
-          nextViewEl.classList.remove('magic-flow-out');
-          nextViewEl.classList.add('magic-flow-in');
-          applyMagicCardCascade(nextViewEl);
-        }
-
-        if (titleEl) {
-          titleEl.classList.remove('magic-text-flow-out');
-          titleEl.classList.add('magic-text-flow-in');
-        }
-        if (descEl) {
-          descEl.classList.remove('magic-text-flow-out');
-          descEl.classList.add('magic-text-flow-in');
-        }
-
-        try {
-          const u = new URL(window.location.href);
-          u.searchParams.set('tab', viewId);
-          window.history.replaceState(null, '', u.toString());
-        } catch {}
-
-        if (viewId === 'analytics') {
-          loadAnalyticsDashboard();
-        } else if (viewId === 'keys' || viewId === 'overview') {
-          loadRealtimeKeyMetrics(false);
-        }
-
-        updateAllSuiteSnippets();
-
-        if (window.innerWidth < 1024) {
-          document.querySelector('main')?.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        setTimeout(() => {
-          if (nextViewEl) nextViewEl.classList.remove('magic-flow-in');
-          if (titleEl) titleEl.classList.remove('magic-text-flow-in');
-          if (descEl) descEl.classList.remove('magic-text-flow-in');
-          isViewTransitioning = null;
-        }, 480);
-
-      }, 190);
     }
 
     function updateHeaderTitles(viewId) {
@@ -4143,6 +4082,12 @@ requests.post("${origin}/v1/analytics/capture", json={
 
     // Export all global handlers to window immediately
     window.setAppView = setAppView;
+    window.selectActiveAppKey = selectActiveAppKey;
+    window.toggleActiveKeyMenu = toggleActiveKeyMenu;
+    window.selectTesterPreset = selectTesterPreset;
+    window.formatTesterJson = formatTesterJson;
+    window.askCurrentSelectedPreset = askCurrentSelectedPreset;
+
     window.switchSuite = switchSuite;
     window.switchSuiteTab = switchSuite;
     window.switchProfilePeriod = switchProfilePeriod;
@@ -5456,26 +5401,7 @@ requests.post("${origin}/v1/analytics/capture", json={
 
     // Initialize Workspace
     async function initWorkspace() {
-      // 1. Direct event listener bindings for sidebar and switcher buttons (synchronous)
-      document.querySelectorAll('#sidebarNav button[data-view-target]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          const target = btn.getAttribute('data-view-target');
-          if (target) setAppView(target, e);
-        });
-      });
-
-      ['overview', 'search', 'memory', 'metrics', 'tester'].forEach(s => {
-        const btn = document.getElementById('suiteBtn-' + s);
-        if (btn) {
-          btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            switchSuite(s, e);
-          });
-        }
-      });
-
-      // 2. Synchronous hydration first (<1ms) - instantaneous local state render
+      // 1. Synchronous hydration first (<1ms) - instantaneous local state render
       hydrateCachedState();
 
       // 3. Immediately activate target view from URL / hash so UI is interactive instantly
