@@ -24,6 +24,9 @@ export interface Env {
 
   // Security secret for signing and hashing API keys
   ULTRASEARCH_SECRET: string;
+
+  // Vercel multi-service binding to ultrasearch-api
+  ULTRASEARCH_API_URL?: string;
 }
 
 // Plan config shape

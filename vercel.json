@@ -1,0 +1,31 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "cloudflare": {
+      "root": "cloudflare",
+      "framework": "hono",
+      "bindings": [
+        {
+          "type": "service",
+          "service": "ultrasearch-api",
+          "format": "url",
+          "env": "ULTRASEARCH_API_URL"
+        }
+      ]
+    },
+    "ultrasearch-api": {
+      "root": "ultrasearch-api",
+      "framework": "fastapi",
+      "entrypoint": "main:app"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "cloudflare"
+      }
+    }
+  ]
+}
+

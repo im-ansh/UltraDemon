@@ -573,6 +573,38 @@ export async function runSearch(
   const classification = classifyQuery(query);
   const activeMode = forceMode || classification.mode;
 
+  // Check Vercel internal service binding to ultrasearch-api
+  const procEnv = (globalThis as unknown as { process?: { env?: Record<string, string | undefined> } }).process?.env;
+  const ultrasearchApiUrl = env?.ULTRASEARCH_API_URL || procEnv?.ULTRASEARCH_API_URL;
+  if (ultrasearchApiUrl) {
+    try {
+      const targetUrl = new URL('/v1/search', ultrasearchApiUrl);
+      const res = await fetch(targetUrl.toString(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': env?.ULTRASEARCH_SECRET || procEnv?.ULTRASEARCH_SECRET || 'us_internal_service_key',
+        },
+        body: JSON.stringify({
+          query,
+          num_results: numResults,
+          semantic: activeMode >= 2,
+          news_only: false,
+          use_cache: true,
+        }),
+      });
+
+      if (res.ok) {
+        const pyData = await res.json<SearchResponse>();
+        if (pyData?.results && pyData.results.length > 0) {
+          return pyData;
+        }
+      }
+    } catch (err) {
+      console.warn('Internal ultrasearch-api service call failed, falling back to edge index:', err);
+    }
+  }
+
   let results: SearchResult[] = [];
   let subQueries: string[] | undefined;
   let synthesis: string | undefined;

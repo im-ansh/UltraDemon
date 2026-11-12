@@ -349,14 +349,16 @@ app.onError((err, c) => {
   return c.json({ error: 'Internal server error', message: err.message }, 500);
 });
 
-// ── Worker Export with Scheduled Cron Support ─────────────────────────────────
+// ── App Export with Scheduled Cron Support ─────────────────────────────────
 
-export default {
-  fetch: app.fetch,
-
-  // Scheduled background crawler job (every 15 mins)
-  async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
-    console.log(`[Crawler Cron] Running scheduled crawler tick at ${new Date(event.scheduledTime).toISOString()}`);
-    ctx.waitUntil(processCrawlQueue(env, 15));
-  },
+// Attach scheduled cron handler to app for Cloudflare Workers runtime compatibility
+(app as unknown as { scheduled: (event: ScheduledEvent, env: Env, ctx: ExecutionContext) => Promise<void> }).scheduled = async (
+  event: ScheduledEvent,
+  env: Env,
+  ctx: ExecutionContext
+): Promise<void> => {
+  console.log(`[Crawler Cron] Running scheduled crawler tick at ${new Date(event.scheduledTime).toISOString()}`);
+  ctx.waitUntil(processCrawlQueue(env, 15));
 };
+
+export default app;
