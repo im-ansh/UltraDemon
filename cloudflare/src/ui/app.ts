@@ -270,8 +270,138 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 </head>
 <body class="min-h-screen bg-[#fafafa] text-neutral-950 flex flex-col lg:flex-row antialiased selection:bg-black selection:text-white">
 
-  <!-- Left Sidebar Navigation -->
-  <aside class="w-full lg:w-72 lg:min-h-screen lg:fixed lg:top-0 lg:left-0 border-b lg:border-b-0 lg:border-r border-neutral-200/80 bg-white z-40 flex flex-col justify-between p-5 shadow-[1px_0_10px_rgba(0,0,0,0.02)]">
+  <!-- Mobile Top Sticky Navigation Bar (Mobile / Tablet Only) -->
+  <div class="lg:hidden sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-neutral-200/80 px-4 py-2.5 flex items-center justify-between shadow-2xs">
+    <div class="flex items-center gap-2.5 min-w-0">
+      <a href="/" class="flex items-center gap-2 group shrink-0">
+        <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-7 h-7 object-contain" />
+        <span class="font-serif font-bold italic text-neutral-950 text-sm">UltraDemon</span>
+      </a>
+      <span id="mobileActiveViewBadge" class="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-800 border border-neutral-200 truncate">
+        Overview
+      </span>
+    </div>
+
+    <div class="flex items-center gap-2 shrink-0">
+      <button type="button" onclick="toggleHelpBotDrawer()" class="p-1.5 rounded-lg border border-neutral-200 text-neutral-600 hover:text-black hover:bg-neutral-50 transition cursor-pointer" title="Help Assistant">
+        <svg class="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+      </button>
+      <button type="button" id="appMobileMenuBtn" onclick="toggleAppMobileDrawer()" class="p-1.5 rounded-lg border border-neutral-200 text-neutral-700 hover:text-black hover:bg-neutral-50 transition cursor-pointer flex items-center gap-1.5" aria-label="Toggle Navigation Menu">
+        <svg id="appMobileHamburgerIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <svg id="appMobileCloseIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Quick-Swipe View Pills Bar (Smooth Horizontal Scroll) -->
+  <div class="lg:hidden bg-white/95 border-b border-neutral-200/60 px-3 py-2 overflow-x-auto no-scrollbar flex items-center gap-1.5 whitespace-nowrap z-30 shadow-xs">
+    <button type="button" onclick="setAppView('overview', event)" data-mobile-pill="overview" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-semibold bg-neutral-950 text-white shadow-2xs shrink-0 cursor-pointer">Overview</button>
+    <button type="button" onclick="setAppView('keys', event)" data-mobile-pill="keys" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 bg-neutral-50 border border-neutral-200/80 shrink-0 cursor-pointer">API Keys</button>
+    <button type="button" onclick="setAppView('memory', event)" data-mobile-pill="memory" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 bg-neutral-50 border border-neutral-200/80 shrink-0 cursor-pointer">UltraMemory</button>
+    <button type="button" onclick="setAppView('search', event)" data-mobile-pill="search" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 bg-neutral-50 border border-neutral-200/80 shrink-0 cursor-pointer">UltraSearch</button>
+    <button type="button" onclick="setAppView('crawler', event)" data-mobile-pill="crawler" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 bg-neutral-50 border border-neutral-200/80 shrink-0 cursor-pointer">Crawler</button>
+    <button type="button" onclick="setAppView('analytics', event)" data-mobile-pill="analytics" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 bg-neutral-50 border border-neutral-200/80 shrink-0 cursor-pointer">Telemetry</button>
+    <button type="button" onclick="setAppView('membership', event)" data-mobile-pill="membership" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 bg-neutral-50 border border-neutral-200/80 shrink-0 cursor-pointer">Quotas</button>
+    <button type="button" onclick="setAppView('integrations', event)" data-mobile-pill="integrations" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 bg-neutral-50 border border-neutral-200/80 shrink-0 cursor-pointer">MCP &amp; SDK</button>
+    <button type="button" onclick="setAppView('tester', event)" data-mobile-pill="tester" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 bg-neutral-50 border border-neutral-200/80 shrink-0 cursor-pointer">Sandbox</button>
+  </div>
+
+  <!-- Off-Canvas Mobile Drawer Overlay -->
+  <div id="appMobileDrawer" class="hidden fixed inset-0 z-50 flex lg:hidden">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-neutral-950/60 backdrop-blur-xs transition-opacity" onclick="toggleAppMobileDrawer()"></div>
+
+    <!-- Slide-Out Menu -->
+    <div class="relative w-4/5 max-w-xs bg-white h-full shadow-2xl p-5 flex flex-col justify-between overflow-y-auto z-10">
+      <div class="space-y-5">
+        <!-- Brand Logo & Close Button -->
+        <div class="flex items-center justify-between pb-3 border-b border-neutral-100">
+          <a href="/" class="flex items-center gap-2 group">
+            <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-7 h-7 object-contain" />
+            <span class="font-serif font-bold italic text-base text-neutral-950">UltraDemon OS</span>
+          </a>
+          <button type="button" onclick="toggleAppMobileDrawer()" class="p-1.5 text-neutral-500 hover:text-black rounded-lg hover:bg-neutral-100 cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <!-- User Profile & Plan Badge -->
+        <div class="p-3 bg-neutral-50 border border-neutral-200 rounded-xl space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Account</span>
+            </div>
+            <span id="mobileDrawerPlanBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase font-num bg-neutral-950 text-white">
+              Free
+            </span>
+          </div>
+          <div id="mobileDrawerEmail" class="font-num text-xs font-semibold text-neutral-900 truncate">
+            Active Workspace
+          </div>
+          <div class="flex items-center justify-between pt-1 border-t border-neutral-200/60 text-[10px] font-num text-neutral-500">
+            <span>Edge PoP: Active</span>
+            <span class="text-neutral-900 font-semibold">&lt;15ms</span>
+          </div>
+        </div>
+
+        <!-- Navigation List -->
+        <nav class="flex flex-col space-y-1 text-xs">
+          <button type="button" onclick="setAppView('overview', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+            <span>Overview</span>
+          </button>
+          <button type="button" onclick="setAppView('keys', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+            <span>API Keys</span>
+          </button>
+          <button type="button" onclick="setAppView('memory', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+            <span>UltraMemory Lab</span>
+          </button>
+          <button type="button" onclick="setAppView('search', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <span>UltraSearch Studio</span>
+          </button>
+          <button type="button" onclick="setAppView('crawler', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            <span>Web Crawler</span>
+          </button>
+          <button type="button" onclick="setAppView('analytics', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+            <span>Telemetry &amp; ICP</span>
+          </button>
+          <button type="button" onclick="setAppView('membership', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <span>Memberships &amp; Quotas</span>
+          </button>
+          <button type="button" onclick="setAppView('integrations', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+            <span>Integrations &amp; MCP</span>
+          </button>
+          <button type="button" onclick="setAppView('tester', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+            <span>API Sandbox Live Tester</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Drawer Bottom Actions -->
+      <div class="pt-4 border-t border-neutral-100 space-y-2">
+        <a href="/" class="w-full py-2 px-3 text-xs text-neutral-600 hover:text-black hover:bg-neutral-100 rounded-lg transition flex items-center gap-2">
+          <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m15 19-7-7 7-7"/></svg>
+          <span>Back to Landing Page</span>
+        </a>
+        <button type="button" onclick="handleAppSignOut()" class="w-full py-2 px-3 text-xs text-red-600 hover:bg-red-50 rounded-lg transition flex items-center gap-2 cursor-pointer">
+          <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Left Sidebar Navigation (Desktop Fixed, hidden on mobile) -->
+  <aside class="hidden lg:flex lg:w-72 lg:min-h-screen lg:fixed lg:top-0 lg:left-0 lg:border-r border-neutral-200/80 bg-white z-40 flex-col justify-between p-5 shadow-[1px_0_10px_rgba(0,0,0,0.02)]">
     <div class="space-y-6">
       <!-- Brand Logo -->
       <a href="/" class="flex items-center gap-2.5 group">
@@ -407,10 +537,10 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
   </aside>
 
   <!-- Main Content Workspace Area -->
-  <main class="flex-1 lg:ml-72 p-6 sm:p-10 lg:p-12 max-w-6xl w-full">
+  <main class="flex-1 lg:ml-72 p-3.5 sm:p-8 lg:p-12 max-w-6xl w-full min-w-0">
     
     <!-- Top Bar -->
-    <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-5 border-b border-neutral-200/80">
+    <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8 pb-4 sm:pb-5 border-b border-neutral-200/80">
       <div>
         <div class="flex items-center gap-2 mb-1.5">
           <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white border border-neutral-200 text-[10px] font-num text-neutral-600 font-semibold shadow-2xs">
@@ -476,11 +606,11 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       </div>
     </header>
 
-    <!-- Sovereign Workspace Control Bar (Minimalist Dropdown-First with Abundant Whitespace) -->
-    <div class="mb-8 p-4 sm:p-5 bg-white border border-neutral-200/90 rounded-2xl shadow-xs flex flex-wrap items-center justify-between gap-4">
+    <!-- Sovereign Workspace Control Bar (Responsive) -->
+    <div class="mb-6 sm:mb-8 p-3.5 sm:p-5 bg-white border border-neutral-200/90 rounded-2xl shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
       <div class="flex items-center gap-3">
-        <label for="mainSuiteDropdown" class="text-[11px] font-bold uppercase tracking-wider text-neutral-400 font-num">Active Suite:</label>
-        <div class="relative min-w-[220px]">
+        <label for="mainSuiteDropdown" class="text-[11px] font-bold uppercase tracking-wider text-neutral-400 font-num shrink-0">Active Suite:</label>
+        <div class="relative flex-1 sm:min-w-[220px]">
           <select id="mainSuiteDropdown" onchange="switchSuite(this.value, event)" class="w-full px-3.5 py-2.5 bg-neutral-50 hover:bg-neutral-100 border border-neutral-200/90 rounded-xl text-xs font-bold text-neutral-950 cursor-pointer shadow-2xs appearance-none pr-8 focus:outline-none focus:border-black transition font-sans">
             <option value="overview" selected>Overview Suite</option>
             <option value="search">UltraSearch Studio (&lt;40ms Edge)</option>
@@ -493,81 +623,81 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       </div>
 
       <!-- Overview Telemetry & Workspace Dropdowns -->
-      <div class="flex items-center gap-3 flex-wrap">
-        <div class="flex items-center gap-2">
-          <label for="overviewTimeframeDropdown" class="text-[11px] font-medium text-neutral-400 font-num">Timeframe:</label>
+      <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <label for="overviewTimeframeDropdown" class="text-[11px] font-medium text-neutral-400 font-num">Time:</label>
           <div class="relative">
-            <select id="overviewTimeframeDropdown" onchange="onOverviewTimeframeChange(this.value)" class="px-3 py-2 bg-neutral-50 hover:bg-white border border-neutral-200/90 rounded-xl text-xs font-semibold text-neutral-800 cursor-pointer shadow-2xs appearance-none pr-7 focus:outline-none focus:border-black transition font-num">
-              <option value="5m">Real-Time (5m)</option>
-              <option value="1h">Last 1 Hour</option>
-              <option value="24h" selected>Last 24 Hours</option>
-              <option value="7d">Last 7 Days</option>
-              <option value="all">All-Time</option>
+            <select id="overviewTimeframeDropdown" onchange="onOverviewTimeframeChange(this.value)" class="px-2.5 sm:px-3 py-2 bg-neutral-50 hover:bg-white border border-neutral-200/90 rounded-xl text-xs font-semibold text-neutral-800 cursor-pointer shadow-2xs appearance-none pr-6 sm:pr-7 focus:outline-none focus:border-black transition font-num">
+              <option value="5m">5m</option>
+              <option value="1h">1h</option>
+              <option value="24h" selected>24h</option>
+              <option value="7d">7d</option>
+              <option value="all">All</option>
             </select>
-            <svg class="w-3.5 h-3.5 text-neutral-400 absolute right-2 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            <svg class="w-3.5 h-3.5 text-neutral-400 absolute right-1.5 sm:right-2 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
           </div>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1.5 sm:gap-2">
           <label for="overviewEngineDropdown" class="text-[11px] font-medium text-neutral-400 font-num">Engine:</label>
           <div class="relative">
-            <select id="overviewEngineDropdown" onchange="onOverviewEngineChange(this.value)" class="px-3 py-2 bg-neutral-50 hover:bg-white border border-neutral-200/90 rounded-xl text-xs font-semibold text-neutral-800 cursor-pointer shadow-2xs appearance-none pr-7 focus:outline-none focus:border-black transition font-num">
-              <option value="all" selected>All Engines (Unified)</option>
-              <option value="search">UltraSearch (&lt;40ms)</option>
-              <option value="memory">UltraMemory (&lt;15ms)</option>
-              <option value="telemetry">Sovereign Telemetry</option>
+            <select id="overviewEngineDropdown" onchange="onOverviewEngineChange(this.value)" class="px-2.5 sm:px-3 py-2 bg-neutral-50 hover:bg-white border border-neutral-200/90 rounded-xl text-xs font-semibold text-neutral-800 cursor-pointer shadow-2xs appearance-none pr-6 sm:pr-7 focus:outline-none focus:border-black transition font-num">
+              <option value="all" selected>All Engines</option>
+              <option value="search">UltraSearch</option>
+              <option value="memory">UltraMemory</option>
+              <option value="telemetry">Telemetry</option>
             </select>
-            <svg class="w-3.5 h-3.5 text-neutral-400 absolute right-2 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            <svg class="w-3.5 h-3.5 text-neutral-400 absolute right-1.5 sm:right-2 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
           </div>
         </div>
 
         <!-- Quick Actions Dropdown -->
         <div class="relative">
-          <select id="overviewActionsDropdown" onchange="handleOverviewAction(this.value); this.value='';" class="px-3.5 py-2 bg-neutral-950 hover:bg-neutral-800 text-white border border-neutral-900 rounded-xl text-xs font-semibold cursor-pointer shadow-xs appearance-none pr-8 transition">
-            <option value="" disabled selected>Quick Actions...</option>
+          <select id="overviewActionsDropdown" onchange="handleOverviewAction(this.value); this.value='';" class="px-3 sm:px-3.5 py-2 bg-neutral-950 hover:bg-neutral-800 text-white border border-neutral-900 rounded-xl text-xs font-semibold cursor-pointer shadow-xs appearance-none pr-7 sm:pr-8 transition">
+            <option value="" disabled selected>Actions...</option>
             <option value="create_key">Create New API Key</option>
-            <option value="open_help">Open Sovereign Help Bot</option>
+            <option value="open_help">Open Help Bot</option>
             <option value="test_search">Test UltraSearch</option>
             <option value="test_memory">Recall Agent Memory</option>
             <option value="test_sandbox">Open Sandbox Workbench</option>
-            <option value="view_telemetry_stats">View Telemetry API JSON</option>
+            <option value="view_telemetry_stats">View Telemetry JSON</option>
           </select>
-          <svg class="w-3.5 h-3.5 text-white absolute right-2.5 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          <svg class="w-3.5 h-3.5 text-white absolute right-2 sm:right-2.5 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
         </div>
       </div>
     </div>
 
     <!-- Sovereign Engine Suite Switcher (Overview • Search • Memory • Metrics) -->
-    <div class="mb-8 p-1.5 bg-neutral-200/60 border border-neutral-200/90 rounded-2xl flex items-center gap-1.5 shadow-inner">
+    <div class="mb-6 sm:mb-8 p-1.5 bg-neutral-200/60 border border-neutral-200/90 rounded-2xl flex items-center gap-1.5 shadow-inner overflow-x-auto no-scrollbar flex-nowrap">
       <!-- 0. Overview Suite -->
-      <button type="button" onclick="switchSuite('overview', event)" id="suiteBtn-overview" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer bg-white text-neutral-950 shadow-xs border border-neutral-300/80">
+      <button type="button" onclick="switchSuite('overview', event)" id="suiteBtn-overview" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer bg-white text-neutral-950 shadow-xs border border-neutral-300/80 shrink-0 min-w-[85px] sm:min-w-0">
         <svg class="w-3.5 h-3.5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
         <span class="font-bold">Overview</span>
       </button>
 
       <!-- 1. Search Suite -->
-      <button type="button" onclick="switchSuite('search', event)" id="suiteBtn-search" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
+      <button type="button" onclick="switchSuite('search', event)" id="suiteBtn-search" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent shrink-0 min-w-[85px] sm:min-w-0">
         <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         <span class="font-bold">Search</span>
         <span class="text-[9px] bg-neutral-100 border border-neutral-300/60 px-1.5 py-0.2 rounded font-num text-neutral-700 hidden sm:inline">&lt;40ms Edge</span>
       </button>
 
       <!-- 2. Memory Suite -->
-      <button type="button" onclick="switchSuite('memory', event)" id="suiteBtn-memory" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
+      <button type="button" onclick="switchSuite('memory', event)" id="suiteBtn-memory" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent shrink-0 min-w-[85px] sm:min-w-0">
         <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
         <span class="font-bold">Memory</span>
         <span class="text-[9px] bg-neutral-100 border border-neutral-300/60 px-1.5 py-0.2 rounded font-num text-neutral-700 hidden sm:inline">&lt;15ms BM25</span>
       </button>
 
       <!-- 3. Metrics Suite -->
-      <button type="button" onclick="switchSuite('metrics', event)" id="suiteBtn-metrics" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
+      <button type="button" onclick="switchSuite('metrics', event)" id="suiteBtn-metrics" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent shrink-0 min-w-[85px] sm:min-w-0">
         <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
         <span class="font-bold">Metrics</span>
         <span class="text-[9px] bg-neutral-900 text-white px-1.5 py-0.2 rounded font-num hidden sm:inline">vs PostHog</span>
       </button>
 
       <!-- 4. Sandbox Tester -->
-      <button type="button" onclick="switchSuite('tester', event)" id="suiteBtn-tester" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent">
+      <button type="button" onclick="switchSuite('tester', event)" id="suiteBtn-tester" class="suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent shrink-0 min-w-[85px] sm:min-w-0">
         <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
         <span class="font-bold">Sandbox</span>
         <span class="text-[9px] bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.2 rounded font-num hidden sm:inline">Live Tester</span>
@@ -670,7 +800,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       </div>
 
       <!-- 4 Top Metric Cards (Card Design Skill) -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <!-- Daily Requests -->
         <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
           <div class="flex items-center justify-between mb-3">
@@ -764,7 +894,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </div>
 
         <!-- 4 Top Real-Time KPI Cards (Combined & Service Breakdown) -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <!-- Card 1: Combined Calls Today -->
           <div class="p-4 rounded-2xl bg-neutral-950 text-white flex flex-col justify-between shadow-md relative overflow-hidden">
             <div class="flex items-center justify-between mb-2">
@@ -1177,7 +1307,7 @@ curl -X POST "${origin}/v1/memory/query" \\
     <!-- SECTION 3: ULTRAMEMORY LAB & AGENT API STUDIO -->
     <section id="view-memory" class="space-y-6 hidden">
       <!-- UltraMemory Suite Top KPI Strip & Dedicated Usage Tracker -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <!-- Daily Memory Calls -->
         <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
           <div class="flex items-center justify-between mb-3">
@@ -1370,7 +1500,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
     <!-- SECTION 4: ULTRASEARCH STUDIO -->
     <section id="view-search" class="space-y-6 hidden">
       <!-- Search Suite Top KPI Strip & Dedicated Usage Tracker -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <!-- Daily Search Calls -->
         <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
           <div class="flex items-center justify-between mb-3">
@@ -1751,7 +1881,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
       </div>
 
       <!-- Top Analytics KPI Grid -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <!-- Live Active Visitors -->
         <div class="card-clean p-5 rounded-2xl flex flex-col justify-between">
           <div class="flex items-center justify-between mb-3">
@@ -2918,6 +3048,25 @@ requests.post("${origin}/v1/analytics/capture", json={
       }
     }
 
+    window.toggleAppMobileDrawer = function() {
+      var d = document.getElementById('appMobileDrawer');
+      var hIcon = document.getElementById('appMobileHamburgerIcon');
+      var cIcon = document.getElementById('appMobileCloseIcon');
+      if (!d) return;
+      var isHidden = d.classList.contains('hidden');
+      if (isHidden) {
+        d.classList.remove('hidden');
+        if (hIcon) hIcon.classList.add('hidden');
+        if (cIcon) cIcon.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      } else {
+        d.classList.add('hidden');
+        if (hIcon) hIcon.classList.remove('hidden');
+        if (cIcon) cIcon.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    };
+
     function setAppView(viewId, triggerEvent = null) {
       const views = ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations', 'analytics', 'tester'];
       if (!views.includes(viewId)) return;
@@ -2926,6 +3075,33 @@ requests.post("${origin}/v1/analytics/capture", json={
       if (viewId === currentAppViewId && !isForced) {
         return;
       }
+
+      // Close mobile navigation drawer if open
+      const drawer = document.getElementById('appMobileDrawer');
+      if (drawer && !drawer.classList.contains('hidden')) {
+        toggleAppMobileDrawer();
+      }
+
+      // Update mobile top active view badge
+      const mobileBadge = document.getElementById('mobileActiveViewBadge');
+      if (mobileBadge) {
+        const viewNames = {
+          overview: 'Overview', keys: 'API Keys', memory: 'Memory',
+          search: 'Search', crawler: 'Crawler', analytics: 'Telemetry',
+          membership: 'Quotas', integrations: 'MCP & SDK', tester: 'Sandbox'
+        };
+        mobileBadge.textContent = viewNames[viewId] || viewId;
+      }
+
+      // Update mobile navigation pills
+      document.querySelectorAll('.mobile-nav-pill').forEach(pill => {
+        const target = pill.getAttribute('data-mobile-pill');
+        if (target === viewId) {
+          pill.className = 'mobile-nav-pill px-3 py-1 rounded-full text-xs font-semibold bg-neutral-950 text-white shadow-2xs shrink-0 cursor-pointer';
+        } else {
+          pill.className = 'mobile-nav-pill px-3 py-1 rounded-full text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 bg-neutral-50 border border-neutral-200/80 shrink-0 cursor-pointer';
+        }
+      });
 
       if (isViewTransitioning) {
         clearTimeout(isViewTransitioning);

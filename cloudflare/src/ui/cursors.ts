@@ -9,49 +9,51 @@ export const CURSOR_POINTER_B64 = 'iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYA
 export const CURSOR_TEXT_B64 = 'iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAEAklEQVR4nO1YTUgkRxT+qrp7/hh1NgMzJKDZNdFdcJAsC8FzyNyih4gI3kW8BQLJwVPAw4ZFWJBNvOagB/HoaVfwkByEiCQqaDYHSSCM6TDDOMFxpqu6KrzebunI2LM7xrCwflBMT9Wrfl+/elXU9xii8S6ArwDc7+rqMjnnTGsNx3HQaDROAPwJ4GcAPwCIAXgA4C6AdwzDyKVSKUYvEULoRqNRA/BTMpmcPzs7++Myh96ECDwdHR0tzs3NIZfLwTAMr7PZbOLk5ARHR0fY2trC/v4+4vE4hoaGUCgU0NfXh2w2i1QqBcaYZ18qlTA/P4+NjY11AKPoBOl0+rlt21JrTc1t0YIx5bdI21KpJNPp9K9RPnnUoFLKtG2boqhCTfuNSSkNIYThui49M3qm5keebBCy17Ztc631izBfAjNqsF6vfz82NnZncnKSZzIZUP4opeC6rrcsU1NTME3T6+ecn/+urq6ynZ0dIur10bLVajWsr6/j9PR0M8pnuxwyAXwE4O2QPX1hGsBnS0tLt2dmZpQQwou0ZVl6bW2NTUxMULI/AvCccjoUrQqAHzuOEADJOX9KXx3AMIzvYrHYPcdxvj44OPj2gr06PDw0TNN8mEgkPnEc50Ol1GQwGETsKoSYUoorpSgyxEq5rntLa51zHKdiWZZnE55AfVLKKu0s2u5+RL25Aa+rENIXX6C1/rTZbGrGWNH/WnIUJCr1+2b649C0SBIvvcsugbIsyw05/xcCQkIIevBC+CrohBDznUWCEjyUzNdKCL6zlmgVtWsnFIUbQv9lNP6XJbsqbgi9WbuM3SR1B7g5GMNod9l6c88h4V8/XpcI6eD68boQMkLa6zKw6yTEfDvS7gZj7Jt4PE7ypjviHVIIQfd1I9T4yxBtd8nndIc2DIPuz443wTQViUPG2C0hSHK9ULHBBOozTbM3mUxK0zRl0B+ITK11WIG8MiGVzWa7yuXyewASADJSymcA9gB8MTg4ePFANAqFgpZSfi6lJFH4m0+2DuBvAMcASlEOI0NoWdYDIcTayMjI7f7+fiQSCSpAeHJ5YGAA09PT51L6PKScY2VlBdvb254wbDQaJJ9h2zY2NzdrUsovASyhQyzMzs6SxhKh6kZQzSAJrR3H0a5LfzWJSO//hUrI+Zzl5WXNOf8lymHbJRsfH5fhikd4jKITJD2dTaRaOeetRKE3v1gsqlgsxilqnRJqLiwsmPl8HlT9INTrdVSrVRwfH3sFq729Pezu7qJcLlfz+XxmeHiY8gi9vb3o7g42IlCpVLC4uEhLGBmhdtuQSnqPOed3e3p6aCkY5YMQogzgLwC/Azj0y3r0fAfABwDeB/BWyEeQZJTkT/zkbol/AEWTPV4xlql5AAAAAElFTkSuQmCC';
 
 export const CUSTOM_CURSORS_CSS = `
-  /* UltraDemon Custom Operating System Cursors */
-  html, body, *, *::before, *::after {
-    cursor: url('data:image/png;base64,${CURSOR_DEFAULT_B64}') 2 2, default;
-  }
+  /* UltraDemon Custom Operating System Cursors (Desktop mouse/trackpad only, native on touch screens) */
+  @media (hover: hover) and (pointer: fine) {
+    html, body, *, *::before, *::after {
+      cursor: url('data:image/png;base64,${CURSOR_DEFAULT_B64}') 2 2, default;
+    }
 
-  /* Interactive / Clickable -> Custom Cartoon Hand Pointer */
-  a, a *, 
-  button, button *, 
-  [role="button"], [role="button"] *, 
-  input[type="submit"], input[type="button"], input[type="checkbox"], input[type="radio"], 
-  select, select *,
-  label, label *,
-  .cursor-pointer, .cursor-pointer *, 
-  [onclick], [onclick] *, 
-  summary, summary *,
-  .clickable, .clickable *,
-  .tab-btn, .tab-btn *,
-  .suite-tab-btn, .suite-tab-btn *,
-  [data-view-target], [data-view-target] *,
-  [data-action], [data-action] * {
-    cursor: url('data:image/png;base64,${CURSOR_POINTER_B64}') 4 2, pointer !important;
-  }
+    /* Interactive / Clickable -> Custom Cartoon Hand Pointer */
+    a, a *, 
+    button, button *, 
+    [role="button"], [role="button"] *, 
+    input[type="submit"], input[type="button"], input[type="checkbox"], input[type="radio"], 
+    select, select *,
+    label, label *,
+    .cursor-pointer, .cursor-pointer *, 
+    [onclick], [onclick] *, 
+    summary, summary *,
+    .clickable, .clickable *,
+    .tab-btn, .tab-btn *,
+    .suite-tab-btn, .suite-tab-btn *,
+    [data-view-target], [data-view-target] *,
+    [data-action], [data-action] * {
+      cursor: url('data:image/png;base64,${CURSOR_POINTER_B64}') 4 2, pointer !important;
+    }
 
-  /* Form Text Inputs & Textareas -> Custom Chunky I-Beam */
-  input[type="text"], 
-  input[type="email"], 
-  input[type="password"], 
-  input[type="search"], 
-  input[type="url"], 
-  input[type="number"], 
-  input:not([type]), 
-  textarea, 
-  [contenteditable="true"], [contenteditable="true"] *,
-  .cursor-text, .cursor-text * {
-    cursor: url('data:image/png;base64,${CURSOR_TEXT_B64}') 18 18, text !important;
-  }
+    /* Form Text Inputs & Textareas -> Custom Chunky I-Beam */
+    input[type="text"], 
+    input[type="email"], 
+    input[type="password"], 
+    input[type="search"], 
+    input[type="url"], 
+    input[type="number"], 
+    input:not([type]), 
+    textarea, 
+    [contenteditable="true"], [contenteditable="true"] *,
+    .cursor-text, .cursor-text * {
+      cursor: url('data:image/png;base64,${CURSOR_TEXT_B64}') 18 18, text !important;
+    }
 
-  /* Text Reading & Code Inspection -> Custom Chunky I-Beam */
-  p, p *, pre, pre *, code, code *, .font-mono:not(button):not(a):not([onclick]):not([data-view-target]):not([role="button"]), blockquote {
-    cursor: url('data:image/png;base64,${CURSOR_TEXT_B64}') 18 18, text;
-  }
+    /* Text Reading & Code Inspection -> Custom Chunky I-Beam */
+    p, p *, pre, pre *, code, code *, .font-mono:not(button):not(a):not([onclick]):not([data-view-target]):not([role="button"]), blockquote {
+      cursor: url('data:image/png;base64,${CURSOR_TEXT_B64}') 18 18, text;
+    }
 
-  ::selection {
-    cursor: url('data:image/png;base64,${CURSOR_TEXT_B64}') 18 18, text;
+    ::selection {
+      cursor: url('data:image/png;base64,${CURSOR_TEXT_B64}') 18 18, text;
+    }
   }
 `;

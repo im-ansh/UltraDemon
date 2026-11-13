@@ -175,12 +175,69 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       }
     }
 
+    /* Left-Tilted Architectural Perspective Stage (Desktop) */
+    @media (min-width: 768px) {
+      .hero-stage-tilt {
+        perspective: 1400px;
+        perspective-origin: 40% 45%;
+      }
+      .hero-window-tilted {
+        transform: rotateY(-3.5deg) rotateX(1.8deg) rotate(-0.6deg);
+        transform-style: preserve-3d;
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
+      }
+      .hero-window-tilted:hover {
+        transform: rotateY(-1deg) rotateX(0.5deg) rotate(0deg);
+        box-shadow: 0 4px 14px rgba(0,0,0,0.06), 0 24px 60px -10px rgba(0,0,0,0.12);
+      }
+      .hero-card-studio {
+        transform: rotate(1.2deg) translateZ(32px);
+        transform-style: preserve-3d;
+        transition: transform 0.4s ease;
+      }
+      .hero-card-studio:hover {
+        transform: rotate(0deg) translateZ(48px);
+      }
+      .hero-card-memory {
+        transform: rotate(-1.5deg) translateZ(38px);
+        transform-style: preserve-3d;
+        transition: transform 0.4s ease;
+      }
+      .hero-card-memory:hover {
+        transform: rotate(0deg) translateZ(52px);
+      }
+    }
+    @media (max-width: 767px) {
+      .hero-window-tilted, .hero-card-studio, .hero-card-memory {
+        transform: none !important;
+      }
+      .drift-far, .drift-mid, .drift-near {
+        animation: none !important;
+      }
+    }
+
     #demoModal.hidden { display: none !important; }
     #demoModal:not(.hidden) { display: flex !important; }
   </style>
 
   <!-- Early-Bound Bulletproof Handlers (Available Millisecond 0) -->
   <script>
+    window.toggleLandingMobileMenu = function() {
+      var m = document.getElementById('landingMobileMenu');
+      var hIcon = document.getElementById('landingHamburgerIcon');
+      var cIcon = document.getElementById('landingCloseIcon');
+      if (!m) return;
+      var isHidden = m.classList.contains('hidden');
+      if (isHidden) {
+        m.classList.remove('hidden');
+        if (hIcon) hIcon.classList.add('hidden');
+        if (cIcon) cIcon.classList.remove('hidden');
+      } else {
+        m.classList.add('hidden');
+        if (hIcon) hIcon.classList.remove('hidden');
+        if (cIcon) cIcon.classList.add('hidden');
+      }
+    };
     window.openAuthModal = function(mode, plan) {
       window.selectedModalPlan = plan || 'free';
       var modal = document.getElementById('authModal');
@@ -246,16 +303,51 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </nav>
 
       <!-- Nav Action CTAs -->
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 sm:gap-3">
         <a href="#demo" onclick="openDemoModal(); return false;" class="hidden sm:inline-block text-xs font-medium text-neutral-600 hover:text-neutral-950 px-3 py-1.5 transition-colors cursor-pointer">
           Book a demo
         </a>
-        <a href="/login" onclick="openAuthModal('signin'); return false;" class="text-xs font-medium text-neutral-600 hover:text-neutral-950 px-3 py-1.5 transition-colors cursor-pointer">
+        <a href="/login" onclick="openAuthModal('signin'); return false;" class="text-xs font-medium text-neutral-600 hover:text-neutral-950 px-2.5 sm:px-3 py-1.5 transition-colors cursor-pointer">
           Log in
         </a>
-        <a href="/signup" onclick="openAuthModal('signup'); return false;" id="navCtaBtn" class="text-xs font-semibold bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-4 py-1.5 transition-colors shadow-xs cursor-pointer">
+        <a href="/signup" onclick="openAuthModal('signup'); return false;" id="navCtaBtn" class="text-xs font-semibold bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-3.5 sm:px-4 py-1.5 transition-colors shadow-xs cursor-pointer">
           Get started
         </a>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button type="button" id="landingMobileNavBtn" onclick="toggleLandingMobileMenu()" class="md:hidden p-1.5 text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 rounded-lg transition cursor-pointer ml-1" aria-label="Toggle navigation menu">
+          <svg id="landingHamburgerIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <svg id="landingCloseIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Slide-Down Menu Drawer -->
+    <div id="landingMobileMenu" class="hidden md:hidden border-b border-neutral-200 bg-white/98 backdrop-blur-md px-5 py-4 space-y-3 shadow-lg transition-all">
+      <nav class="flex flex-col space-y-2 text-sm font-medium text-neutral-700">
+        <a href="#overview" onclick="toggleLandingMobileMenu()" class="py-1.5 hover:text-neutral-950">Overview</a>
+        <a href="#value" onclick="toggleLandingMobileMenu()" class="py-1.5 hover:text-neutral-950">Core Engine</a>
+        <a href="#features" onclick="toggleLandingMobileMenu()" class="py-1.5 hover:text-neutral-950">Features</a>
+        <a href="#workflow" onclick="toggleLandingMobileMenu()" class="py-1.5 hover:text-neutral-950">Workflow</a>
+        <a href="#integrations" onclick="toggleLandingMobileMenu()" class="py-1.5 hover:text-neutral-950">Integrations</a>
+        <a href="#pricing" onclick="toggleLandingMobileMenu()" class="py-1.5 hover:text-neutral-950">Pricing</a>
+        <a href="/app" class="py-1.5 hover:text-neutral-950 flex items-center justify-between font-semibold">
+          <span>Console Workspace</span>
+          <span class="text-[10px] font-mono bg-neutral-100 px-2 py-0.5 rounded text-neutral-600">Active</span>
+        </a>
+      </nav>
+      <div class="pt-3 border-t border-neutral-100 flex flex-col gap-2">
+        <button onclick="openDemoModal(); toggleLandingMobileMenu();" class="w-full py-2.5 text-xs font-semibold border border-neutral-200 rounded-xl text-neutral-800 bg-neutral-50 hover:bg-neutral-100 transition cursor-pointer">
+          Book a demo
+        </button>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="openAuthModal('signin'); toggleLandingMobileMenu();" class="py-2.5 text-xs font-semibold border border-neutral-200 rounded-xl text-neutral-800 hover:bg-neutral-50 transition cursor-pointer">
+            Log in
+          </button>
+          <button onclick="openAuthModal('signup'); toggleLandingMobileMenu();" class="py-2.5 text-xs font-semibold bg-neutral-950 text-white rounded-xl hover:bg-neutral-800 transition cursor-pointer">
+            Get started
+          </button>
+        </div>
       </div>
     </div>
   </header>
@@ -264,103 +356,123 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <main class="flex-1">
 
     <!-- SECTION 3: HERO & PRODUCT PROMISE -->
-    <section class="relative pt-12 sm:pt-20 pb-20 px-4 sm:px-6 max-w-7xl mx-auto overflow-hidden text-left" id="overview">
+    <section class="relative pt-8 sm:pt-16 pb-16 sm:pb-20 px-4 sm:px-6 max-w-7xl mx-auto overflow-hidden text-left" id="overview">
       
-      <!-- Eyebrow Wayfinding Label -->
-      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-neutral-200/90 bg-neutral-50/70 hover:bg-neutral-100/70 transition-colors text-xs text-neutral-600 mb-6 cursor-pointer" onclick="document.getElementById('value').scrollIntoView({ behavior: 'smooth' })">
-        <span class="w-1.5 h-1.5 rounded-full bg-neutral-950 animate-pulse-subtle"></span>
-        <span class="font-mono text-[11px] uppercase tracking-wider font-semibold text-neutral-700">Sovereign Agent Memory &amp; Edge Search</span>
-        <svg class="w-3 h-3 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <!-- Faint Architectural Blueprint Grid Columns (Cognition Reference Style) -->
+      <div class="absolute inset-0 pointer-events-none grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 max-w-7xl mx-auto px-4 sm:px-6 select-none opacity-40 z-0">
+        <div class="border-r border-neutral-100 h-full"></div>
+        <div class="border-r border-neutral-100 h-full"></div>
+        <div class="border-r border-neutral-100 h-full"></div>
+        <div class="border-r border-neutral-100 h-full hidden sm:block"></div>
+        <div class="border-r border-neutral-100 h-full hidden md:block"></div>
+        <div class="h-full hidden md:block"></div>
       </div>
 
-      <!-- Display Headline (Iconic Editorial Style) -->
-      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-[68px] font-bold tracking-tight text-neutral-950 leading-[1.06] max-w-3xl">
-        Give your autonomous agents <span class="font-serif font-bold italic text-neutral-950">sovereign memory</span> and sub-15ms edge search
-      </h1>
+      <div class="relative z-10">
+        <!-- Section Numeral Marker (Cognition Style) -->
+        <div class="font-mono text-xs text-neutral-400 mb-3 flex items-center gap-2 select-none">
+          <span class="w-1.5 h-1.5 bg-neutral-900 rounded-full"></span>
+          <span class="font-semibold text-neutral-600">01</span>
+          <span class="text-neutral-300">/</span>
+          <span>SOVEREIGN AGENT INTELLIGENCE</span>
+        </div>
 
-      <!-- Supporting Paragraph (Controlled Measure, Left Aligned) -->
-      <p class="text-base sm:text-lg text-neutral-600 max-w-[580px] mt-6 leading-relaxed font-normal">
-        UltraDemon equips autonomous agents and multi-agent swarms with persistent long-term memory, sub-15ms BM25 full-text recall, and an autonomous edge crawler across 330+ Anycast cities—with zero third-party latency or data leakage.
-      </p>
+        <!-- Eyebrow Wayfinding Label -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-neutral-200/90 bg-neutral-50/80 hover:bg-neutral-100 transition-colors text-xs text-neutral-700 mb-5 cursor-pointer" onclick="document.getElementById('value').scrollIntoView({ behavior: 'smooth' })">
+          <span class="w-1.5 h-1.5 rounded-full bg-neutral-950 animate-pulse-subtle"></span>
+          <span class="font-mono text-[11px] uppercase tracking-wider font-semibold text-neutral-700">Sovereign Agent Memory &amp; Edge Search</span>
+          <svg class="w-3 h-3 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
 
-      <!-- Action Buttons -->
-      <div class="mt-8 flex flex-wrap items-center gap-3">
-        <a href="/signup" onclick="openAuthModal('signup'); return false;" class="bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-5 py-2.5 text-xs sm:text-sm font-semibold transition-all shadow-xs flex items-center gap-2 cursor-pointer">
-          <span>Get started</span>
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
-        </a>
-        <button onclick="openDemoModal()" class="border border-neutral-200/90 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-900 rounded-full px-5 py-2.5 text-xs sm:text-sm font-semibold transition-all cursor-pointer">
-          Book a demo
-        </button>
+        <!-- Display Headline (Smaller, Refined, Balanced Editorial Size - Cognition / Devin Standard) -->
+        <h1 class="text-3xl sm:text-4xl md:text-[42px] lg:text-[46px] font-bold tracking-tight text-neutral-950 leading-[1.12] max-w-2xl">
+          Give your autonomous agents <span class="font-serif font-bold italic text-neutral-950">sovereign memory</span> and sub-15ms edge search
+        </h1>
+
+        <!-- Supporting Paragraph (Editorial Measure with Subtle Keyword Accents) -->
+        <p class="text-sm sm:text-base md:text-[17px] text-neutral-600 max-w-[560px] mt-5 leading-relaxed font-normal">
+          UltraDemon equips autonomous agents and multi-agent swarms with <span class="text-neutral-950 underline decoration-neutral-300 underline-offset-4 font-medium">persistent long-term memory</span>, sub-15ms BM25 full-text recall, and an <span class="text-neutral-950 underline decoration-neutral-300 underline-offset-4 font-medium">autonomous edge crawler</span> across 330+ Anycast cities—with zero third-party latency or data leakage.
+        </p>
+
+        <!-- Action Buttons -->
+        <div class="mt-7 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+          <a href="/signup" onclick="openAuthModal('signup'); return false;" class="bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-5 py-2.5 text-xs sm:text-sm font-semibold transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer">
+            <span>Get started</span>
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          <button onclick="openDemoModal()" class="border border-neutral-200/90 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-900 rounded-full px-5 py-2.5 text-xs sm:text-sm font-semibold transition-all cursor-pointer text-center">
+            Book a demo
+          </button>
+        </div>
+
+        <!-- Proof Line -->
+        <div class="mt-4 font-mono text-[11px] text-neutral-400 flex flex-wrap items-center gap-x-3 gap-y-1">
+          <span>Sub-15ms edge recall</span>
+          <span>·</span>
+          <span>Zero third-party data leakage</span>
+          <span>·</span>
+          <span>Native MCP protocol</span>
+        </div>
       </div>
 
-      <!-- Proof Line -->
-      <div class="mt-4 font-mono text-[11px] text-neutral-400 flex items-center gap-3">
-        <span>Sub-15ms edge recall</span>
-        <span>·</span>
-        <span>Zero third-party data leakage</span>
-        <span>·</span>
-        <span>Native MCP protocol</span>
-      </div>
-
-      <!-- PANORAMIC FLOATING PRODUCT & SCIENTIFIC ARTIFACTS STAGE -->
-      <div class="relative mt-12 sm:mt-16 text-left min-h-[540px]">
+      <!-- PANORAMIC FLOATING PRODUCT & SCIENTIFIC ARTIFACTS STAGE (LEFT-TILTED 3D PERSPECTIVE) -->
+      <div class="hero-stage-tilt relative mt-10 sm:mt-14 text-left min-h-0 sm:min-h-[520px]">
         
-        <!-- Continuous Drifting Scientific & Blueprint Artifacts (Moving left to right across velocities) -->
-        <div class="absolute inset-0 pointer-events-none select-none overflow-visible">
+        <!-- Continuous Drifting Scientific & Blueprint Artifacts (Hidden on small mobile to avoid overflow) -->
+        <div class="absolute inset-0 pointer-events-none select-none overflow-hidden sm:overflow-visible hidden sm:block">
           
           <!-- Blueprint Circuit (Top Left Drift) -->
-          <div class="drift-far absolute -left-10 -top-8 w-[280px] sm:w-[340px] h-[210px] rounded-2xl border border-neutral-200/70 bg-white/60 backdrop-blur-xs p-2 shadow-sm opacity-55 z-0">
+          <div class="drift-far absolute -left-10 -top-8 w-[280px] sm:w-[340px] h-[210px] rounded-2xl border border-neutral-200/70 bg-white/60 backdrop-blur-xs p-2 shadow-sm opacity-50 z-0">
             ${BLUEPRINT_CIRCUIT_SVG}
           </div>
 
           <!-- Vintage 1982 Microcomputer CRT (Bottom Left Drift) -->
-          <div class="drift-mid absolute left-4 bottom-2 w-[260px] sm:w-[320px] h-[220px] rounded-2xl border border-neutral-200/70 bg-white/60 backdrop-blur-xs p-2 shadow-sm opacity-60 z-0">
+          <div class="drift-mid absolute left-4 bottom-2 w-[260px] sm:w-[320px] h-[220px] rounded-2xl border border-neutral-200/70 bg-white/60 backdrop-blur-xs p-2 shadow-sm opacity-55 z-0">
             ${VINTAGE_TERMINAL_SVG}
           </div>
 
           <!-- Handwritten Math / BM25 Manuscript (Top Right Drift) -->
-          <div class="drift-far absolute right-4 -top-8 w-[270px] sm:w-[330px] h-[220px] rounded-2xl border border-neutral-200/70 bg-white/60 backdrop-blur-xs p-2 shadow-sm opacity-50 z-0">
+          <div class="drift-far absolute right-4 -top-8 w-[270px] sm:w-[330px] h-[220px] rounded-2xl border border-neutral-200/70 bg-white/60 backdrop-blur-xs p-2 shadow-sm opacity-45 z-0">
             ${MATH_MANUSCRIPT_SVG}
           </div>
 
           <!-- Optics & Waveguide Technical Schematic (Bottom Right Drift) -->
-          <div class="drift-mid absolute -right-8 bottom-6 w-[250px] sm:w-[310px] h-[200px] rounded-2xl border border-neutral-200/70 bg-white/60 backdrop-blur-xs p-2 shadow-sm opacity-55 z-0">
+          <div class="drift-mid absolute -right-8 bottom-6 w-[250px] sm:w-[310px] h-[200px] rounded-2xl border border-neutral-200/70 bg-white/60 backdrop-blur-xs p-2 shadow-sm opacity-50 z-0">
             ${TECHNICAL_SCHEMATIC_SVG}
           </div>
         </div>
 
-        <!-- Central Layered Product Windows (Focal Plane) -->
+        <!-- Central Layered Product Windows (Left-Tilted Focal Plane) -->
         <div class="relative z-10 max-w-4xl mx-auto">
           
           <!-- Base Window: Workspace Overview Master (macOS Framed with Real 4K Screenshot) -->
-          <div class="drift-near window-frame">
+          <div class="drift-near window-frame hero-window-tilted shadow-xl sm:shadow-2xl">
             <!-- macOS Window Titlebar -->
-            <div class="h-9 px-4 bg-[#f8f8fa] border-b border-neutral-200/80 flex items-center justify-between select-none">
-              <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f56]"></span>
-                <span class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]"></span>
-                <span class="w-2.5 h-2.5 rounded-full bg-[#27c93f]"></span>
-                <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-4 h-4 object-contain inline-block ml-1.5" />
-                <span class="ml-1 font-mono text-[11px] text-neutral-600 font-medium">ultrademon-workspace — 330 Anycast PoPs · Active</span>
+            <div class="h-9 px-3 sm:px-4 bg-[#f8f8fa] border-b border-neutral-200/80 flex items-center justify-between select-none">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f56] shrink-0"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e] shrink-0"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-[#27c93f] shrink-0"></span>
+                <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-4 h-4 object-contain inline-block ml-1 shrink-0" />
+                <span class="ml-1 font-mono text-[10px] sm:text-[11px] text-neutral-600 font-medium truncate">ultrademon-workspace — 330 Anycast PoPs · Active</span>
               </div>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1.5 shrink-0">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="font-mono text-[11px] text-neutral-500 font-medium">Anycast Connected · 0.8ms link</span>
+                <span class="font-mono text-[10px] sm:text-[11px] text-neutral-500 font-medium hidden xs:inline">0.8ms link</span>
               </div>
             </div>
 
             <!-- Real 4K Master Screenshot -->
             <div class="relative bg-neutral-950 overflow-hidden">
-              <img src="/assets/demo/01_workspace_overview.webp" alt="UltraDemon Sovereign Workspace Master Screenshot" class="w-full h-auto block object-cover object-top max-h-[540px]" fetchpriority="high" loading="eager">
+              <img src="/assets/demo/01_workspace_overview.webp" alt="UltraDemon Sovereign Workspace Master Screenshot" class="w-full h-auto block object-cover object-top max-h-[300px] sm:max-h-[540px]" fetchpriority="high" loading="eager">
             </div>
           </div>
 
-          <!-- Overlapping Layered Window: UltraSearch Live Studio Result -->
-          <div class="drift-mid hidden sm:block absolute -right-4 -bottom-8 md:-right-8 md:-bottom-10 w-[65%] md:w-[50%] lg:w-[46%] rounded-xl border border-neutral-200/90 bg-white shadow-2xl z-20 overflow-hidden">
+          <!-- Overlapping Layered Window: UltraSearch Live Studio Result (Desktop Floating) -->
+          <div class="drift-mid hero-card-studio hidden sm:block absolute -right-4 -bottom-8 md:-right-8 md:-bottom-10 w-[65%] md:w-[50%] lg:w-[46%] rounded-xl border border-neutral-200/90 bg-white shadow-2xl z-20 overflow-hidden">
             <div class="h-8 px-3.5 bg-[#fbfbfd] border-b border-neutral-200 flex items-center justify-between select-none">
               <div class="flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-neutral-300"></span>
@@ -376,8 +488,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             </div>
           </div>
 
-          <!-- Overlapping Floating Live Memory Query Execution Card -->
-          <div class="drift-near hidden lg:block absolute -left-8 -bottom-6 w-[310px] rounded-2xl border border-neutral-200/90 bg-white/95 backdrop-blur-md shadow-2xl z-30 p-4 space-y-3">
+          <!-- Overlapping Floating Live Memory Query Execution Card (Desktop Floating) -->
+          <div class="drift-near hero-card-memory hidden lg:block absolute -left-8 -bottom-6 w-[310px] rounded-2xl border border-neutral-200/90 bg-white/95 backdrop-blur-md shadow-2xl z-30 p-4 space-y-3">
             <div class="flex items-center justify-between border-b border-neutral-100 pb-2">
               <div class="flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
@@ -397,6 +509,34 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             <div class="rounded-xl bg-neutral-950 p-2.5 text-neutral-300 font-mono text-[10px] space-y-1">
               <div class="flex items-center justify-between text-neutral-500 text-[9px] pb-1 border-b border-neutral-800">
                 <span>Edge Query Trace</span>
+                <span>status: 200</span>
+              </div>
+              <div class="text-emerald-400">&gt; ultrademon memory query &quot;consensus protocols&quot;</div>
+              <div class="text-neutral-400">{ matched: 3, latency_ms: 11.2, rank: &quot;bm25&quot; }</div>
+              <div class="text-emerald-400">&gt; 3 memory nodes loaded (0.011s)</div>
+            </div>
+          </div>
+
+          <!-- Mobile-Optimized Stacked Evidence Cards (Visible on mobile only for rich conversion punch) -->
+          <div class="sm:hidden mt-4 space-y-3">
+            <!-- Mobile Studio Result Card -->
+            <div class="rounded-xl border border-neutral-200/90 bg-white shadow-md overflow-hidden">
+              <div class="h-8 px-3 bg-[#fbfbfd] border-b border-neutral-200 flex items-center justify-between select-none">
+                <div class="flex items-center gap-1.5">
+                  <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon" class="w-3.5 h-3.5 object-contain" />
+                  <span class="font-mono text-[10px] text-neutral-600 font-semibold truncate">UltraSearch Studio — Live Execution</span>
+                </div>
+                <span class="font-mono text-[9px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.2 rounded font-bold font-num">11.4ms</span>
+              </div>
+              <div class="p-1 bg-white">
+                <img src="/assets/demo/02_ultrasearch_live_result.webp" alt="UltraSearch Studio Live Result Screenshot" class="w-full h-auto block rounded-b-lg object-cover object-top max-h-[190px]">
+              </div>
+            </div>
+
+            <!-- Mobile Live Query Trace Card -->
+            <div class="rounded-xl border border-neutral-200/90 bg-neutral-950 p-3 text-neutral-300 font-mono text-[10px] space-y-1 shadow-md">
+              <div class="flex items-center justify-between text-neutral-500 text-[9px] pb-1 border-b border-neutral-800">
+                <span class="text-emerald-400 font-bold">Edge Memory Trace · fleet-alpha</span>
                 <span>status: 200</span>
               </div>
               <div class="text-emerald-400">&gt; ultrademon memory query &quot;consensus protocols&quot;</div>
