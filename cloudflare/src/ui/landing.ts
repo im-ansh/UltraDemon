@@ -356,65 +356,27 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <main class="flex-1">
 
     <!-- SECTION 3: HERO & PRODUCT PROMISE -->
-    <section class="relative pt-8 sm:pt-16 pb-16 sm:pb-20 px-4 sm:px-6 max-w-7xl mx-auto overflow-hidden text-left" id="overview">
-      
-      <!-- Faint Architectural Blueprint Grid Columns (Cognition Reference Style) -->
-      <div class="absolute inset-0 pointer-events-none grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 max-w-7xl mx-auto px-4 sm:px-6 select-none opacity-40 z-0">
-        <div class="border-r border-neutral-100 h-full"></div>
-        <div class="border-r border-neutral-100 h-full"></div>
-        <div class="border-r border-neutral-100 h-full"></div>
-        <div class="border-r border-neutral-100 h-full hidden sm:block"></div>
-        <div class="border-r border-neutral-100 h-full hidden md:block"></div>
-        <div class="h-full hidden md:block"></div>
-      </div>
+    <section class="relative pt-10 sm:pt-16 pb-16 sm:pb-24 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden text-left" id="overview">
 
-      <div class="relative z-10">
-        <!-- Section Numeral Marker (Cognition Style) -->
-        <div class="font-mono text-xs text-neutral-400 mb-3 flex items-center gap-2 select-none">
-          <span class="w-1.5 h-1.5 bg-neutral-900 rounded-full"></span>
-          <span class="font-semibold text-neutral-600">01</span>
-          <span class="text-neutral-300">/</span>
-          <span>SOVEREIGN AGENT INTELLIGENCE</span>
-        </div>
-
-        <!-- Eyebrow Wayfinding Label -->
-        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-neutral-200/90 bg-neutral-50/80 hover:bg-neutral-100 transition-colors text-xs text-neutral-700 mb-5 cursor-pointer" onclick="document.getElementById('value').scrollIntoView({ behavior: 'smooth' })">
-          <span class="w-1.5 h-1.5 rounded-full bg-neutral-950 animate-pulse-subtle"></span>
-          <span class="font-mono text-[11px] uppercase tracking-wider font-semibold text-neutral-700">Sovereign Agent Memory &amp; Edge Search</span>
-          <svg class="w-3 h-3 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-        </div>
-
-        <!-- Display Headline (Smaller, Refined, Balanced Editorial Size - Cognition / Devin Standard) -->
-        <h1 class="text-3xl sm:text-4xl md:text-[42px] lg:text-[46px] font-bold tracking-tight text-neutral-950 leading-[1.12] max-w-2xl">
+      <div class="relative z-10 max-w-4xl mx-auto">
+        <!-- Display Headline (Minimal, High-End Editorial - Devin Standard) -->
+        <h1 class="text-3xl sm:text-4xl md:text-[44px] lg:text-[48px] font-bold tracking-tight text-neutral-950 leading-[1.12] max-w-2xl">
           Give your autonomous agents <span class="font-serif font-bold italic text-neutral-950">sovereign memory</span> and sub-15ms edge search
         </h1>
 
-        <!-- Supporting Paragraph (Editorial Measure with Subtle Keyword Accents) -->
-        <p class="text-sm sm:text-base md:text-[17px] text-neutral-600 max-w-[560px] mt-5 leading-relaxed font-normal">
-          UltraDemon equips autonomous agents and multi-agent swarms with <span class="text-neutral-950 underline decoration-neutral-300 underline-offset-4 font-medium">persistent long-term memory</span>, sub-15ms BM25 full-text recall, and an <span class="text-neutral-950 underline decoration-neutral-300 underline-offset-4 font-medium">autonomous edge crawler</span> across 330+ Anycast cities—with zero third-party latency or data leakage.
+        <!-- Supporting Subheading (Clean, Refined, Smaller Text) -->
+        <p class="text-xs sm:text-sm md:text-[15px] text-neutral-500 max-w-xl mt-3 sm:mt-4 leading-relaxed font-normal">
+          UltraDemon equips autonomous agents and multi-agent swarms with persistent long-term memory, sub-15ms BM25 full-text recall, and an autonomous edge crawler across 330+ Anycast cities—with zero third-party latency or data leakage.
         </p>
 
-        <!-- Action Buttons -->
-        <div class="mt-7 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
-          <a href="/signup" onclick="openAuthModal('signup'); return false;" class="bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-5 py-2.5 text-xs sm:text-sm font-semibold transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer">
-            <span>Get started</span>
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
+        <!-- Refined Minimalist Action Buttons -->
+        <div class="mt-6 sm:mt-7 flex items-center gap-3">
+          <a href="/signup" onclick="openAuthModal('signup'); return false;" class="inline-flex items-center justify-center bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-5 sm:px-6 py-2.5 text-xs sm:text-sm font-semibold tracking-tight transition-all shadow-xs hover:shadow active:scale-[0.98] cursor-pointer">
+            Get started
           </a>
-          <button onclick="openDemoModal()" class="border border-neutral-200/90 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-900 rounded-full px-5 py-2.5 text-xs sm:text-sm font-semibold transition-all cursor-pointer text-center">
+          <button onclick="openDemoModal()" class="inline-flex items-center justify-center border border-neutral-200/90 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-800 hover:text-neutral-950 rounded-full px-5 sm:px-6 py-2.5 text-xs sm:text-sm font-semibold tracking-tight transition-all active:scale-[0.98] shadow-2xs cursor-pointer">
             Book a demo
           </button>
-        </div>
-
-        <!-- Proof Line -->
-        <div class="mt-4 font-mono text-[11px] text-neutral-400 flex flex-wrap items-center gap-x-3 gap-y-1">
-          <span>Sub-15ms edge recall</span>
-          <span>·</span>
-          <span>Zero third-party data leakage</span>
-          <span>·</span>
-          <span>Native MCP protocol</span>
         </div>
       </div>
 
