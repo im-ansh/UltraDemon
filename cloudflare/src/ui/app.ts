@@ -3468,6 +3468,26 @@ requests.post("${origin}/v1/analytics/capture", json={
           }
         }
         const searchParams = new URLSearchParams(window.location.search);
+        const qCode = searchParams.get('code');
+        if (qCode) {
+          const verifier = localStorage.getItem('ultrademon_pkce_verifier') || '';
+          fetch('/v1/auth/confirm-verification', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code: qCode, code_verifier: verifier })
+          }).then(r => r.json()).then(data => {
+            if (data.session && data.session.access_token) {
+              localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session));
+              if (data.user) localStorage.setItem('ultrademon_user', JSON.stringify(data.user));
+              if (data.active_key) localStorage.setItem('ultrademon_active_key', data.active_key);
+              window.location.reload();
+            }
+          }).catch(() => {});
+          try {
+            const cleanUrl = window.location.pathname;
+            window.history.replaceState(null, '', cleanUrl);
+          } catch {}
+        }
         const qToken = searchParams.get('access_token') || searchParams.get('token');
         if (qToken) {
           localStorage.setItem('ultrademon_auth_session', JSON.stringify({ access_token: qToken }));
