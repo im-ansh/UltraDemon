@@ -270,7 +270,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <aside id="topAnnouncementBar" class="w-full bg-[#fbfbfd] border-b border-neutral-200/70 py-2 px-4 text-center text-xs text-neutral-600">
     <div class="max-w-6xl mx-auto flex items-center justify-center gap-2">
       <span class="w-1.5 h-1.5 rounded-full bg-neutral-950 animate-pulse-subtle"></span>
-      <span class="font-normal">Sovereign edge intelligence: 10,000 free queries, sub-15ms persistent memory, and live web crawl.</span>
+      <span class="font-normal">Token-style pricing: 100,000 API requests for $20. Pay as you scale, zero monthly lock-in.</span>
       <a href="#pricing" class="font-semibold text-neutral-950 hover:underline inline-flex items-center gap-1 ml-1">
         <span>View pricing</span>
         <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -1164,7 +1164,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </div>
     </section>
 
-    <!-- SECTION: PRICING & TIERS (Devin-Grade Editorial Pricing) -->
+    <!-- SECTION: PRICING & TIERS (Token-Style Pay-Per-Request & Custom Business Tiers) -->
     <section id="pricing" class="py-24 sm:py-32 border-b border-neutral-100 bg-[#fbfbfd]">
       <div class="max-w-6xl mx-auto px-4 sm:px-6">
         
@@ -1172,187 +1172,167 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <div class="max-w-3xl mb-16 text-left">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-neutral-200/90 bg-white text-xs text-neutral-600 mb-4">
             <span class="w-1.5 h-1.5 rounded-full bg-neutral-950"></span>
-            <span class="font-mono text-[11px] uppercase tracking-wider font-semibold text-neutral-800">PRICING &amp; TIERS</span>
+            <span class="font-mono text-[11px] uppercase tracking-wider font-semibold text-neutral-800">USAGE-BASED PRICING</span>
           </div>
           <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-neutral-950 leading-tight">
-            Simple, transparent edge pricing.
+            Pay per request. Zero monthly lock-in.
           </h2>
           <p class="text-base sm:text-lg text-neutral-600 mt-4 leading-relaxed max-w-2xl">
-            Deploy autonomous agent memory and BM25 edge search at global scale. No hidden ingress, egress, or cold start charges.
+            UltraDemon runs on a token-style usage model. Pay for the exact queries and edge memory operations your agents execute—no recurring monthly subscriptions, no wasted seats, and credits never expire.
           </p>
 
-          <!-- Billing Toggle -->
-          <div class="mt-8 inline-flex items-center p-1 bg-neutral-200/70 rounded-full text-xs font-semibold select-none">
-            <button id="billingBtnMonthly" onclick="setBillingCycle('monthly')" class="px-4 py-1.5 rounded-full bg-white text-neutral-950 shadow-xs transition cursor-pointer">Monthly</button>
-            <button id="billingBtnAnnual" onclick="setBillingCycle('annual')" class="px-4 py-1.5 rounded-full text-neutral-600 hover:text-neutral-950 transition flex items-center gap-1.5 cursor-pointer">
-              <span>Annual</span>
-              <span class="px-1.5 py-0.2 rounded-full bg-neutral-950 text-white text-[10px] font-mono">SAVE 20%</span>
-            </button>
+          <div class="mt-6 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-neutral-200/90 text-xs font-mono text-neutral-700 shadow-2xs">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span>1,000 free requests included for testing · Top up anytime</span>
           </div>
         </div>
 
-        <!-- Pricing Grid (4 Clean Monochrome Cards) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+        <!-- Pricing Grid (3 Clean Cards: $20 PAYG + 2 Custom Business Tiers) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
           
-          <!-- Card 1: Free / Developer -->
-          <div class="devin-card rounded-2xl p-6 flex flex-col justify-between hover:border-neutral-400 transition-all">
+          <!-- Tier 1: Pay-As-You-Go ($20 / 100,000 Requests) -->
+          <div class="relative bg-white rounded-2xl border-2 border-neutral-950 p-6 sm:p-8 flex flex-col justify-between shadow-xl ring-4 ring-neutral-950/5">
+            <div class="absolute -top-3 right-6 bg-neutral-950 text-white font-mono text-[10px] font-bold uppercase tracking-wider px-3 py-0.5 rounded-full shadow-xs">
+              POPULAR · PAY AS YOU GO
+            </div>
             <div>
-              <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500">DEVELOPER</span>
-              <h3 class="text-xl font-bold text-neutral-950 mt-1">Free Tier</h3>
-              <p class="text-xs text-neutral-500 mt-1 min-h-[36px]">For individual engineers testing autonomous agents locally.</p>
-              <div class="my-6">
-                <span class="text-4xl font-normal font-num text-neutral-950 price-free">$0</span>
-                <span class="text-xs text-neutral-400 font-mono">/month</span>
+              <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500">TOKEN-STYLE MODEL</span>
+              <h3 class="text-xl sm:text-2xl font-bold text-neutral-950 mt-1">100,000 Requests</h3>
+              <p class="text-xs text-neutral-500 mt-1 min-h-[36px]">For developers, startups, and autonomous agent builders. Buy credits on demand.</p>
+              
+              <div class="my-6 pb-6 border-b border-neutral-100">
+                <div class="flex items-baseline gap-1.5">
+                  <span class="text-4xl sm:text-5xl font-bold font-num text-neutral-950">$20</span>
+                  <span class="text-xs text-neutral-500 font-mono font-medium">/ 100k requests</span>
+                </div>
+                <div class="mt-1 text-[11px] font-mono text-emerald-800 font-semibold">$0.20 per 1,000 requests · Credits never expire</div>
               </div>
-              <ul class="space-y-2.5 text-xs text-neutral-600 border-t border-neutral-100 pt-5 font-mono">
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>100 queries / day</span>
+
+              <ul class="space-y-3 text-xs text-neutral-700 font-mono">
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>100,000 unified API requests</span>
                 </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>5 QPS burst limit</span>
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Sub-15ms BM25 full-text edge search</span>
                 </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Sub-15ms BM25 Search</span>
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Persistent SQLite FTS5 agent memory</span>
                 </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>100 stored memories</span>
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>50 QPS burst limit across 330+ Anycast PoPs</span>
                 </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Community support</span>
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Claude, Cursor &amp; Codex MCP remote server</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Zero monthly fees · Top up anytime</span>
                 </li>
               </ul>
             </div>
-            <button onclick="openAuthModal('signup', 'free')" class="w-full mt-8 py-2.5 px-4 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 font-semibold text-xs transition cursor-pointer">
-              Get Started Free
+
+            <button onclick="openAuthModal('signup', 'payg')" class="w-full mt-8 py-3 px-4 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold text-xs transition shadow-xs cursor-pointer active:scale-[0.98]">
+              Get 100K Requests ($20)
             </button>
           </div>
 
-          <!-- Card 2: Pro / Autonomous (Featured) -->
-          <div class="relative bg-white rounded-2xl border-2 border-neutral-950 p-6 flex flex-col justify-between shadow-lg">
-            <div class="absolute -top-3 right-6 bg-neutral-950 text-white font-mono text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
-              TEAM FAVORITE
-            </div>
+          <!-- Tier 2: Business Scale (Custom Tier 1 for Businesses) -->
+          <div class="devin-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between hover:border-neutral-400 transition-all bg-white">
             <div>
-              <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500">AUTONOMOUS</span>
-              <h3 class="text-xl font-bold text-neutral-950 mt-1">Pro Tier</h3>
-              <p class="text-xs text-neutral-500 mt-1 min-h-[36px]">For engineering teams running autonomous agent swarms in production.</p>
-              <div class="my-6">
-                <span class="text-4xl font-normal font-num text-neutral-950 price-amount" data-monthly="29" data-annual="24">$29</span>
-                <span class="text-xs text-neutral-400 font-mono">/month</span>
+              <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500">BUSINESS TIER 1</span>
+              <h3 class="text-xl sm:text-2xl font-bold text-neutral-950 mt-1">Business Scale</h3>
+              <p class="text-xs text-neutral-500 mt-1 min-h-[36px]">For high-concurrency agent swarms, production applications, and growing teams.</p>
+              
+              <div class="my-6 pb-6 border-b border-neutral-100">
+                <div class="flex items-baseline gap-1.5">
+                  <span class="text-4xl sm:text-5xl font-bold font-num text-neutral-950">Custom</span>
+                  <span class="text-xs text-neutral-500 font-mono font-medium">volume rate</span>
+                </div>
+                <div class="mt-1 text-[11px] font-mono text-neutral-500 font-semibold">Tiered volume discounts · Pooled team keys</div>
               </div>
-              <ul class="space-y-2.5 text-xs text-neutral-600 border-t border-neutral-100 pt-5 font-mono">
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>10,000 queries / day</span>
+
+              <ul class="space-y-3 text-xs text-neutral-700 font-mono">
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>High-volume request pools (1M - 100M+ reqs)</span>
                 </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>20 QPS burst limit</span>
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>150+ QPS burst limit &amp; adaptive concurrency</span>
                 </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Deep Research mode</span>
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Dedicated memory namespaces &amp; higher storage</span>
                 </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>10,000 isolated memories</span>
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Pooled organization keys &amp; consolidated invoicing</span>
                 </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>330 Anycast Edge PoPs</span>
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Autonomous edge crawler with scheduled intervals</span>
                 </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Priority email support</span>
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Priority engineering support &amp; shared Slack channel</span>
                 </li>
               </ul>
             </div>
-            <button onclick="openAuthModal('signup', 'pro')" class="w-full mt-8 py-2.5 px-4 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold text-xs transition shadow-xs cursor-pointer">
-              Start Pro Workspace
+
+            <button onclick="openDemoModal()" class="w-full mt-8 py-3 px-4 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 font-semibold text-xs transition cursor-pointer active:scale-[0.98]">
+              Contact Business Sales
             </button>
           </div>
 
-          <!-- Card 3: Ultra Engine -->
-          <div class="devin-card rounded-2xl p-6 flex flex-col justify-between hover:border-neutral-400 transition-all">
+          <!-- Tier 3: Enterprise Sovereign (Custom Tier 2 for Businesses) -->
+          <div class="devin-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between hover:border-neutral-400 transition-all bg-white">
             <div>
-              <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500">SCALE &amp; CRAWL</span>
-              <h3 class="text-xl font-bold text-neutral-950 mt-1">Ultra Engine</h3>
-              <p class="text-xs text-neutral-500 mt-1 min-h-[36px]">For high-concurrency swarms and continuous background edge crawling.</p>
-              <div class="my-6">
-                <span class="text-4xl font-normal font-num text-neutral-950 price-amount" data-monthly="99" data-annual="79">$99</span>
-                <span class="text-xs text-neutral-400 font-mono">/month</span>
+              <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500">BUSINESS TIER 2</span>
+              <h3 class="text-xl sm:text-2xl font-bold text-neutral-950 mt-1">Enterprise Sovereign</h3>
+              <p class="text-xs text-neutral-500 mt-1 min-h-[36px]">For enterprise fleets requiring dedicated edge isolates, private VPCs, and 99.99% SLAs.</p>
+              
+              <div class="my-6 pb-6 border-b border-neutral-100">
+                <div class="flex items-baseline gap-1.5">
+                  <span class="text-4xl sm:text-5xl font-bold font-num text-neutral-950">Custom</span>
+                  <span class="text-xs text-neutral-500 font-mono font-medium">contractual SLA</span>
+                </div>
+                <div class="mt-1 text-[11px] font-mono text-neutral-500 font-semibold">Dedicated Anycast sharding · Zero retention</div>
               </div>
-              <ul class="space-y-2.5 text-xs text-neutral-600 border-t border-neutral-100 pt-5 font-mono">
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>50,000 queries / day</span>
-                </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>50 QPS high burst limit</span>
-                </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Kinetic ICP Telemetry</span>
-                </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Autonomous Edge Crawler (15m)</span>
-                </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Claude &amp; Cursor MCP Server</span>
-                </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Dedicated D1 replica</span>
-                </li>
-              </ul>
-            </div>
-            <button onclick="openAuthModal('signup', 'ultra')" class="w-full mt-8 py-2.5 px-4 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 font-semibold text-xs transition cursor-pointer">
-              Deploy Ultra Engine
-            </button>
-          </div>
 
-          <!-- Card 4: Enterprise Sovereign -->
-          <div class="devin-card rounded-2xl p-6 flex flex-col justify-between hover:border-neutral-400 transition-all">
-            <div>
-              <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500">SOVEREIGN</span>
-              <h3 class="text-xl font-bold text-neutral-950 mt-1">Enterprise</h3>
-              <p class="text-xs text-neutral-500 mt-1 min-h-[36px]">Custom infrastructure, sovereign VPC deployment, and zero token leakage.</p>
-              <div class="my-6">
-                <span class="text-4xl font-normal font-num text-neutral-950">Custom</span>
-                <span class="text-xs text-neutral-400 font-mono">/annual</span>
-              </div>
-              <ul class="space-y-2.5 text-xs text-neutral-600 border-t border-neutral-100 pt-5 font-mono">
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Unlimited queries &amp; QPS</span>
+              <ul class="space-y-3 text-xs text-neutral-700 font-mono">
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Unlimited requests with bespoke volume economics</span>
                 </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Dedicated Anycast edge PoP</span>
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Dedicated Cloudflare PoP sharding &amp; isolated D1 clusters</span>
                 </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Private VPC / On-Premise</span>
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Private VPC peering &amp; sovereign on-prem deployment</span>
                 </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Custom fine-tuned vectors</span>
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>99.99% uptime guarantee with contractual SLA</span>
                 </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-neutral-950 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>99.99% SLA &amp; 24/7 hotline</span>
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Dedicated Solutions Architect &amp; 24/7 hotline</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-neutral-950 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>SOC 2 Type II, HIPAA, and custom enterprise DPA</span>
                 </li>
               </ul>
             </div>
-            <button onclick="openDemoModal()" class="w-full mt-8 py-2.5 px-4 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 font-semibold text-xs transition cursor-pointer">
+
+            <button onclick="openDemoModal()" class="w-full mt-8 py-3 px-4 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 font-semibold text-xs transition cursor-pointer active:scale-[0.98]">
               Contact Enterprise Sales
             </button>
           </div>
@@ -1698,27 +1678,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       }
     }
 
-    function setBillingCycle(cycle) {
-      const btnMonthly = document.getElementById('billingBtnMonthly');
-      const btnAnnual = document.getElementById('billingBtnAnnual');
-      const priceElements = document.querySelectorAll('.price-amount');
-
-      if (cycle === 'annual') {
-        if (btnAnnual) btnAnnual.className = 'px-4 py-1.5 rounded-full bg-white text-neutral-950 shadow-xs transition flex items-center gap-1.5 cursor-pointer';
-        if (btnMonthly) btnMonthly.className = 'px-4 py-1.5 rounded-full text-neutral-600 hover:text-neutral-950 transition cursor-pointer';
-        priceElements.forEach(el => {
-          const annualPrice = el.getAttribute('data-annual');
-          if (annualPrice) el.innerText = '$' + annualPrice;
-        });
-      } else {
-        if (btnMonthly) btnMonthly.className = 'px-4 py-1.5 rounded-full bg-white text-neutral-950 shadow-xs transition cursor-pointer';
-        if (btnAnnual) btnAnnual.className = 'px-4 py-1.5 rounded-full text-neutral-600 hover:text-neutral-950 transition flex items-center gap-1.5 cursor-pointer';
-        priceElements.forEach(el => {
-          const monthlyPrice = el.getAttribute('data-monthly');
-          if (monthlyPrice) el.innerText = '$' + monthlyPrice;
-        });
-      }
-    }
+    function setBillingCycle() {}
 
     async function runLiveLandingProbe() {
       const input = document.getElementById('liveSearchInput');

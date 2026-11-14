@@ -1239,10 +1239,10 @@ curl -X POST "${origin}/v1/memory/query" \\
           <div>
             <label class="block text-[11px] font-medium text-neutral-600 mb-1">Plan Tier</label>
             <select id="appKeyPlan" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-900 focus:outline-none focus:bg-white focus:border-black font-num">
-              <option value="free">Free (100 req/day)</option>
-              <option value="pro">Pro (10,000 req/day)</option>
-              <option value="ultra">Ultra (100,000 req/day)</option>
-              <option value="enterprise">Enterprise (Unlimited)</option>
+              <option value="free">Free Trial (1,000 reqs)</option>
+              <option value="payg" selected>Pay-As-You-Go ($20 / 100k reqs)</option>
+              <option value="business">Business Scale (Custom Tier 1)</option>
+              <option value="enterprise">Enterprise Sovereign (Custom Tier 2)</option>
             </select>
           </div>
           <div>
@@ -1706,54 +1706,63 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
     <!-- SECTION 6: MEMBERSHIPS & QUOTAS -->
     <section id="view-membership" class="space-y-6 hidden">
       <div class="card-clean p-6 rounded-2xl space-y-4">
-        <h2 class="text-sm font-bold text-neutral-950">Manage Membership Tier</h2>
-        <p class="text-xs text-neutral-600">Select a plan to immediately expand your daily D1 execution quotas across all your API keys.</p>
+        <h2 class="text-sm font-bold text-neutral-950">API Quotas &amp; Request Credit Packs</h2>
+        <p class="text-xs text-neutral-600">UltraDemon operates on a token-style usage model. Top up request credits on demand with zero monthly subscription lock-in, or upgrade to custom business tiers for scaling fleets.</p>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-5 items-stretch">
-          <!-- Free -->
-          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-300 transition-all duration-200" id="tierCardFree">
+          <!-- Tier 1: Pay-As-You-Go ($20 / 100,000 Requests) -->
+          <div class="group relative bg-white rounded-2xl border-2 border-neutral-950 p-6 flex flex-col justify-between shadow-xl hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-200 ring-4 ring-neutral-950/5" id="tierCardPro">
+            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20 px-4 py-1 text-[10px] font-bold bg-neutral-950 text-white rounded-full font-num uppercase tracking-wider shadow-lg whitespace-nowrap border border-neutral-800">POPULAR · PAYG</div>
             <div>
-              <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">DEVELOPER HOBBY</span>
-              <h3 class="text-base font-semibold text-neutral-950">Free Tier</h3>
-              <div class="text-3xl font-normal font-num text-neutral-950 my-3">$0<span class="text-xs font-sans text-neutral-400">/mo</span></div>
-              <ul class="text-xs text-neutral-600 space-y-2 mb-6 font-num">
-                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>100 requests / day</span></li>
-                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>UltraMemory &lt;15ms recall</span></li>
-                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>KV Hot Cache</span></li>
+              <span class="inline-block text-[10px] font-num font-bold text-neutral-900 uppercase tracking-wider mb-2">TOKEN-STYLE PACK</span>
+              <h3 class="text-base font-semibold text-neutral-950">100,000 Requests</h3>
+              <div class="text-3xl font-bold font-num text-neutral-950 my-2">$20<span class="text-xs font-mono font-normal text-neutral-500"> / pack</span></div>
+              <div class="text-[11px] font-mono text-emerald-800 font-semibold mb-4">$0.20 per 1k requests · Never expires</div>
+              <ul class="text-xs text-neutral-700 space-y-2 mb-6 font-mono">
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span><strong>100,000</strong> unified API requests</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Sub-15ms BM25 edge search</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Persistent SQLite FTS5 memory</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>50 QPS burst capacity</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Zero monthly fee · Top up anytime</span></li>
               </ul>
             </div>
-            <button type="button" onclick="upgradeTier('free')" class="w-full py-2.5 text-xs font-semibold rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 transition cursor-pointer">Select Free</button>
+            <button type="button" onclick="upgradeTier('payg')" class="w-full py-2.5 text-xs font-semibold rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white cursor-pointer shadow-md transition">Add 100K Requests ($20)</button>
           </div>
 
-          <!-- Pro -->
-          <div class="group relative bg-white rounded-2xl border-2 border-neutral-950 p-6 flex flex-col justify-between shadow-xl hover:-translate-y-2 hover:shadow-2xl transition-all duration-200 ring-4 ring-neutral-950/5" id="tierCardPro">
-            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20 px-4 py-1 text-[10px] font-bold bg-neutral-950 text-white rounded-full font-num uppercase tracking-wider shadow-lg whitespace-nowrap border border-neutral-800">POPULAR</div>
-            <div>
-              <span class="inline-block text-[10px] font-num font-bold text-neutral-900 uppercase tracking-wider mb-2">PRODUCTION FLEET</span>
-              <h3 class="text-base font-semibold text-neutral-950">Pro Tier</h3>
-              <div class="text-3xl font-normal font-num text-neutral-950 my-3">$29<span class="text-xs font-sans text-neutral-400">/mo</span></div>
-              <ul class="text-xs text-neutral-700 space-y-2 mb-6 font-num">
-                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span><strong class="font-bold">10,000</strong> requests / day</span></li>
-                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>UltraMemory File Ingestion</span></li>
-                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Full Crawler Access</span></li>
-              </ul>
-            </div>
-            <button type="button" onclick="upgradeTier('pro')" class="w-full py-2.5 text-xs font-semibold rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white cursor-pointer shadow-md transition">Upgrade to Pro</button>
-          </div>
-
-          <!-- Ultra -->
+          <!-- Tier 2: Business Scale (Custom Tier 1 for Businesses) -->
           <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-300 transition-all duration-200" id="tierCardUltra">
             <div>
-              <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">MULTI-TENANT SCALE</span>
-              <h3 class="text-base font-semibold text-neutral-950">Ultra Tier</h3>
-              <div class="text-3xl font-normal font-num text-neutral-950 my-3">$99<span class="text-xs font-sans text-neutral-400">/mo</span></div>
-              <ul class="text-xs text-neutral-600 space-y-2 mb-6 font-num">
-                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span><strong class="font-bold text-neutral-900">100,000</strong> requests / day</span></li>
-                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Priority Edge Queue</span></li>
-                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Dedicated Containers</span></li>
+              <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">BUSINESS TIER 1</span>
+              <h3 class="text-base font-semibold text-neutral-950">Business Scale</h3>
+              <div class="text-3xl font-bold font-num text-neutral-950 my-2">Custom<span class="text-xs font-mono font-normal text-neutral-500"> volume</span></div>
+              <div class="text-[11px] font-mono text-neutral-500 font-semibold mb-4">Volume discounts · Pooled team keys</div>
+              <ul class="text-xs text-neutral-600 space-y-2 mb-6 font-mono">
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>High-volume pools (1M - 100M+ reqs)</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>150+ QPS burst &amp; load balancing</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Dedicated memory namespaces</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Pooled team organization keys</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Autonomous scheduled crawler</span></li>
               </ul>
             </div>
-            <button type="button" onclick="upgradeTier('ultra')" class="w-full py-2.5 text-xs font-semibold rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 transition cursor-pointer">Upgrade to Ultra</button>
+            <button type="button" onclick="upgradeTier('business')" class="w-full py-2.5 text-xs font-semibold rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 transition cursor-pointer">Contact Business Sales</button>
+          </div>
+
+          <!-- Tier 3: Enterprise Sovereign (Custom Tier 2 for Businesses) -->
+          <div class="group relative bg-white rounded-2xl border border-neutral-200 p-6 flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-xl hover:border-neutral-300 transition-all duration-200" id="tierCardEnterprise">
+            <div>
+              <span class="inline-block text-[10px] font-num font-bold text-neutral-500 uppercase tracking-wider mb-2">BUSINESS TIER 2</span>
+              <h3 class="text-base font-semibold text-neutral-950">Enterprise Sovereign</h3>
+              <div class="text-3xl font-bold font-num text-neutral-950 my-2">Custom<span class="text-xs font-mono font-normal text-neutral-500"> SLA</span></div>
+              <div class="text-[11px] font-mono text-neutral-500 font-semibold mb-4">Dedicated Anycast PoPs · Zero retention</div>
+              <ul class="text-xs text-neutral-600 space-y-2 mb-6 font-mono">
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Unlimited requests &amp; bespoke economics</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Dedicated Cloudflare PoP sharding</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Private VPC peering &amp; sovereign on-prem</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>99.99% uptime contractual SLA</span></li>
+                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Dedicated 24/7 hotline &amp; Architect</span></li>
+              </ul>
+            </div>
+            <button type="button" onclick="upgradeTier('enterprise')" class="w-full py-2.5 text-xs font-semibold rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 transition cursor-pointer">Contact Enterprise Sales</button>
           </div>
         </div>
       </div>
@@ -5393,13 +5402,14 @@ requests.post("${origin}/v1/analytics/capture", json={
         tag: 'Rate Limits',
         question: 'What are the tier rate limits and how do I resolve 429 errors?',
         answer: [
-          'Edge rate limits are enforced per API key tier:',
+          'Edge rate limits are enforced based on your active request tier:',
           '',
-          '- Free Tier: 60 requests/minute, 5,000 requests/month.',
-          '- Pro Tier: 300 requests/minute, 50,000 requests/month.',
-          '- Ultra Tier: 1,200 requests/minute, 500,000 requests/month.',
+          '- Free Trial: 5 QPS burst limit, 1,000 requests included for sandbox testing.',
+          '- Pay-As-You-Go ($20 / 100,000 requests): Up to 50 QPS burst capacity across 330+ Anycast cities with zero monthly subscription.',
+          '- Business Scale (Custom Tier 1): High-concurrency pools with 150+ QPS burst limit and pooled organization keys.',
+          '- Enterprise Sovereign (Custom Tier 2): Unlimited request throughput with dedicated edge PoP sharding and 99.99% SLA.',
           '',
-          'If you receive HTTP 429 Too Many Requests, inspect your X-RateLimit-Reset header or upgrade your tier in the Membership tab.'
+          'If you receive HTTP 429 Too Many Requests, inspect your X-RateLimit-Reset header or top up your quota in the Quotas tab.'
         ].join('\\n'),
         actionView: 'membership',
         actionLabel: 'Explore Membership Tiers'
@@ -5732,7 +5742,7 @@ requests.post("${origin}/v1/analytics/capture", json={
       }
 
       const targetPlan = (urlParams.get('plan') || urlParams.get('upgrade') || '').toLowerCase();
-      if (targetPlan && ['free', 'pro', 'ultra', 'enterprise'].includes(targetPlan)) {
+      if (targetPlan && ['free', 'payg', 'pro', 'business', 'ultra', 'enterprise'].includes(targetPlan)) {
         if (currentUser && currentUser.plan !== targetPlan) {
           await upgradeTier(targetPlan, true);
         }

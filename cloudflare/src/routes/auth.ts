@@ -23,10 +23,12 @@ interface AuthBody {
   plan?: string;
 }
 
+const VALID_AUTH_PLANS = ['free', 'pro', 'ultra', 'enterprise', 'payg', 'business'];
+
 // ── POST /v1/auth/anonymous — Instant Sovereign Guest Workspace Session ────────
 authRouter.post('/anonymous', async (c) => {
   const body: { plan?: string } = await c.req.json<{ plan?: string }>().catch(() => ({}));
-  const requestedPlan = ['free', 'pro', 'ultra', 'enterprise'].includes((body.plan || '').toLowerCase())
+  const requestedPlan = VALID_AUTH_PLANS.includes((body.plan || '').toLowerCase())
     ? (body.plan || '').toLowerCase()
     : 'free';
 
@@ -81,7 +83,7 @@ authRouter.post('/signup', async (c) => {
   const body: AuthBody = await c.req.json<AuthBody>().catch(() => ({}));
   const email = (body.email || '').trim().toLowerCase();
   const password = body.password || '';
-  const requestedPlan = ['free', 'pro', 'ultra', 'enterprise'].includes((body.plan || '').toLowerCase())
+  const requestedPlan = VALID_AUTH_PLANS.includes((body.plan || '').toLowerCase())
     ? (body.plan || '').toLowerCase()
     : 'free';
 
@@ -510,8 +512,8 @@ authRouter.post('/membership', async (c) => {
 
   const body = await c.req.json<{ plan?: string }>().catch(() => ({ plan: undefined }));
   const plan = (body.plan || 'free').toLowerCase();
-  if (!['free', 'pro', 'ultra', 'enterprise'].includes(plan)) {
-    return c.json({ error: 'Invalid plan. Allowed: free, pro, ultra, enterprise' }, 400);
+  if (!VALID_AUTH_PLANS.includes(plan)) {
+    return c.json({ error: 'Invalid plan. Allowed: free, payg, pro, business, ultra, enterprise' }, 400);
   }
 
   // Update users table in D1
