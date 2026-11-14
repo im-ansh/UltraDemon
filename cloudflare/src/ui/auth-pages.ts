@@ -74,6 +74,27 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
       font-family: 'Geist Mono', monospace;
       font-variant-numeric: tabular-nums;
     }
+
+    /* Shimmering Skeleton Loaders */
+    @keyframes skeleton-shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, #f1f1f4 25%, #e4e4e9 50%, #f1f1f4 75%);
+      background-size: 200% 100%;
+      animation: skeleton-shimmer 1.5s ease-in-out infinite;
+      border-radius: 6px;
+      display: inline-block;
+    }
+    .skeleton-dark {
+      background: linear-gradient(90deg, #1c1c20 25%, #2d2d32 50%, #1c1c20 75%);
+      background-size: 200% 100%;
+      animation: skeleton-shimmer 1.5s ease-in-out infinite;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
     ${CUSTOM_CURSORS_CSS}
   </style>
 </head>
@@ -216,9 +237,7 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
           class="w-full py-2.5 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl transition shadow-xs flex items-center justify-center gap-2 cursor-pointer mt-2"
         >
           <span id="submitText">${isLogin ? 'Sign In to Workspace' : 'Create Sovereign Account'}</span>
-          <span id="authSpinner" class="hidden">
-            <svg class="w-3.5 h-3.5 text-white animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/></svg>
-          </span>
+          <span id="authSpinner" class="hidden skeleton-dark h-3.5 w-14 rounded"></span>
         </button>
 
         <div class="relative flex items-center justify-center my-3">
@@ -528,8 +547,10 @@ export function renderAuthCallbackPage(origin: string): string {
       
       <!-- In-Progress State -->
       <div id="verifyingState" class="space-y-4">
-        <div class="w-12 h-12 rounded-2xl bg-neutral-100 border border-neutral-200 mx-auto flex items-center justify-center text-neutral-800">
-          <svg class="w-6 h-6 animate-spin text-neutral-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/></svg>
+        <div class="w-full space-y-2.5 p-3">
+          <div class="skeleton h-5 w-48 mx-auto rounded-lg"></div>
+          <div class="skeleton h-3.5 w-64 mx-auto rounded"></div>
+          <div class="skeleton h-3.5 w-52 mx-auto rounded"></div>
         </div>
         <h1 class="text-xl font-semibold text-neutral-950">Verifying your email address...</h1>
         <p class="text-xs text-neutral-500 leading-relaxed">

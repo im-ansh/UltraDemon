@@ -75,25 +75,53 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
     ${CUSTOM_CURSORS_CSS}
     
+    /* Shimmering Skeleton Loaders (Devin & Cognition Minimalist Standard) */
+    @keyframes skeleton-shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, #f1f1f4 25%, #e4e4e9 50%, #f1f1f4 75%);
+      background-size: 200% 100%;
+      animation: skeleton-shimmer 1.5s ease-in-out infinite;
+      border-radius: 6px;
+      display: inline-block;
+    }
+    .skeleton-dark {
+      background: linear-gradient(90deg, #1c1c20 25%, #2d2d32 50%, #1c1c20 75%);
+      background-size: 200% 100%;
+      animation: skeleton-shimmer 1.5s ease-in-out infinite;
+      border-radius: 6px;
+      display: inline-block;
+    }
+    .skeleton-card {
+      background: #ffffff;
+      border: 1px solid #e8e8ed;
+      border-radius: 1rem;
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+
     .devin-card {
       background: #ffffff;
-      border: 1px solid #e5e5eb;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 8px 24px rgba(0,0,0,0.03);
+      border: 1px solid #e8e8ed;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02), 0 4px 16px rgba(0,0,0,0.02);
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .devin-card:hover {
       border-color: #d4d4d8;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.03), 0 12px 32px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03), 0 8px 24px rgba(0,0,0,0.04);
     }
     .card-clean {
       background: #ffffff;
-      border: 1px solid #e5e5e5;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.02);
+      border: 1px solid #e8e8ed;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.02);
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .card-clean:hover {
       border-color: #a3a3a3;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
     }
     .card-elevated {
       background: #ffffff;
@@ -400,27 +428,38 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     </div>
   </div>
 
-  <!-- Left Sidebar Navigation (Desktop Fixed, hidden on mobile) -->
-  <aside class="hidden lg:flex lg:w-72 lg:min-h-screen lg:fixed lg:top-0 lg:left-0 lg:border-r border-neutral-200/80 bg-white z-40 flex-col justify-between p-5 shadow-[1px_0_10px_rgba(0,0,0,0.02)]">
-    <div class="space-y-6">
-      <!-- Brand Logo -->
-      <a href="/" class="flex items-center gap-2.5 group">
-        <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-8 h-8 object-contain shrink-0 group-hover:scale-105 transition" />
-        <div class="flex flex-col">
-          <span class="font-normal text-base tracking-tight text-neutral-950 flex items-center gap-1.5 leading-none">
-            <span class="font-serif font-bold italic text-neutral-950">UltraDemon</span>
-            <span class="text-[9px] font-num uppercase tracking-wider font-bold px-1.5 py-0.5 rounded-full bg-neutral-100 text-neutral-600 border border-neutral-200">OS</span>
-          </span>
-          <span class="text-[10px] text-neutral-400 font-num mt-1">Sovereign Edge Workspace</span>
+  <!-- Left Sidebar Navigation (Desktop Fixed, Devin Minimalist Standard) -->
+  <aside class="hidden lg:flex lg:w-72 lg:min-h-screen lg:fixed lg:top-0 lg:left-0 lg:border-r border-neutral-200/80 bg-white z-40 flex-col justify-between p-4 shadow-[1px_0_10px_rgba(0,0,0,0.02)]">
+    <div class="space-y-4">
+      <!-- Devin Workspace Dropdown & Action Controls (devin.ai layout) -->
+      <div class="flex items-center justify-between px-1 py-0.5">
+        <div class="flex items-center gap-2 cursor-pointer hover:bg-neutral-100 rounded-lg px-2 py-1.5 transition">
+          <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon" class="w-5 h-5 object-contain shrink-0" />
+          <span id="sidebarWorkspaceName" class="text-xs font-bold text-neutral-900 tracking-tight font-num">im-ansh</span>
+          <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></svg>
         </div>
-      </a>
+        <div class="flex items-center gap-0.5 text-neutral-400">
+          <button type="button" onclick="focusDevinPrompt()" title="Search / Command" class="p-1.5 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition cursor-pointer">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </button>
+          <button type="button" onclick="openHelpBotDrawer()" title="Help &amp; Knowledge" class="p-1.5 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition cursor-pointer">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="18" height="14" x="3" y="5" rx="2"/><polyline points="3 7 12 13 21 7"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Devin Prominent "+ New session" Button -->
+      <button type="button" onclick="startNewDevinSession()" class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold shadow-xs transition cursor-pointer">
+        <svg class="w-3.5 h-3.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        <span>New session</span>
+      </button>
 
       <!-- User Profile & Plan Badge -->
-      <div class="p-3.5 bg-neutral-50/80 border border-neutral-200 rounded-2xl space-y-2">
+      <div class="p-3 bg-neutral-50/80 border border-neutral-200/90 rounded-xl space-y-1.5">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Account</span>
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Workspace</span>
           </div>
           <span id="userPlanBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase font-num bg-neutral-950 text-white shadow-2xs">
             Free
@@ -429,26 +468,22 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         <div id="userEmailDisplay" class="font-num text-xs font-semibold text-neutral-900 truncate">
           Active Workspace
         </div>
-        <div class="flex items-center justify-between pt-1 border-t border-neutral-200/60 text-[10px] font-num text-neutral-500">
-          <span>Edge PoP: Active</span>
-          <span class="text-neutral-900 font-semibold">&lt;15ms</span>
-        </div>
       </div>
 
       <!-- App Navigation Links -->
-      <nav class="flex flex-col space-y-4 text-xs" id="sidebarNav">
+      <nav class="flex flex-col space-y-3 text-xs" id="sidebarNav">
         <!-- Group 1: Platform -->
-        <div class="space-y-1">
-          <div class="px-3.5 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Platform</div>
-          <button type="button" onclick="setAppView('overview', event)" data-view-target="overview" id="nav-overview" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-neutral-950 text-white font-semibold cursor-pointer transition text-left shadow-xs">
-            <div class="flex items-center gap-3 min-w-0">
+        <div class="space-y-0.5">
+          <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1">Platform</div>
+          <button type="button" onclick="setAppView('overview', event)" data-view-target="overview" id="nav-overview" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-neutral-950 text-white font-semibold cursor-pointer transition text-left shadow-xs">
+            <div class="flex items-center gap-2.5 min-w-0">
               <svg class="w-4 h-4 shrink-0 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
               <span class="text-xs font-semibold tracking-tight truncate">Overview</span>
             </div>
           </button>
 
-          <button type="button" onclick="setAppView('keys', event)" data-view-target="keys" id="nav-keys" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
-            <div class="flex items-center gap-3 min-w-0">
+          <button type="button" onclick="setAppView('keys', event)" data-view-target="keys" id="nav-keys" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+            <div class="flex items-center gap-2.5 min-w-0">
               <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
               <span class="text-xs font-medium tracking-tight truncate">API Keys</span>
             </div>
@@ -457,26 +492,26 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </div>
 
         <!-- Group 2: Engines -->
-        <div class="space-y-1">
-          <div class="px-3.5 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Engines</div>
-          <button type="button" onclick="setAppView('memory', event)" data-view-target="memory" id="nav-memory" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
-            <div class="flex items-center gap-3 min-w-0">
+        <div class="space-y-0.5">
+          <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1">Engines</div>
+          <button type="button" onclick="setAppView('memory', event)" data-view-target="memory" id="nav-memory" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+            <div class="flex items-center gap-2.5 min-w-0">
               <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
               <span class="text-xs font-medium tracking-tight truncate">UltraMemory</span>
             </div>
-            <span class="font-num text-[10px] bg-purple-50 text-purple-700 border border-purple-200/60 px-2 py-0.5 rounded-md font-bold ml-auto shrink-0 pl-1">&lt;15ms</span>
+            <span class="font-num text-[10px] bg-purple-50 text-purple-700 border border-purple-200/60 px-1.5 py-0.2 rounded-md font-bold ml-auto shrink-0">&lt;15ms</span>
           </button>
 
-          <button type="button" onclick="setAppView('search', event)" data-view-target="search" id="nav-search" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
-            <div class="flex items-center gap-3 min-w-0">
+          <button type="button" onclick="setAppView('search', event)" data-view-target="search" id="nav-search" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+            <div class="flex items-center gap-2.5 min-w-0">
               <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
               <span class="text-xs font-medium tracking-tight truncate">UltraSearch Studio</span>
             </div>
-            <span class="font-num text-[10px] bg-sky-50 text-sky-700 border border-sky-200/60 px-2 py-0.5 rounded-md font-bold ml-auto shrink-0 pl-1">&lt;40ms</span>
+            <span class="font-num text-[10px] bg-sky-50 text-sky-700 border border-sky-200/60 px-1.5 py-0.2 rounded-md font-bold ml-auto shrink-0">&lt;40ms</span>
           </button>
 
-          <button type="button" onclick="setAppView('crawler', event)" data-view-target="crawler" id="nav-crawler" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
-            <div class="flex items-center gap-3 min-w-0">
+          <button type="button" onclick="setAppView('crawler', event)" data-view-target="crawler" id="nav-crawler" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+            <div class="flex items-center gap-2.5 min-w-0">
               <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
               <span class="text-xs font-medium tracking-tight truncate">Web Crawler</span>
             </div>
@@ -484,25 +519,25 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </div>
 
         <!-- Group 3: Observability & Protocol -->
-        <div class="space-y-1">
-          <div class="px-3.5 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Analytics &amp; Protocol</div>
-          <button type="button" onclick="setAppView('analytics', event)" data-view-target="analytics" id="nav-analytics" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
-            <div class="flex items-center gap-3 min-w-0">
+        <div class="space-y-0.5">
+          <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1">Analytics &amp; ICP</div>
+          <button type="button" onclick="setAppView('analytics', event)" data-view-target="analytics" id="nav-analytics" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+            <div class="flex items-center gap-2.5 min-w-0">
               <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
               <span class="text-xs font-medium tracking-tight truncate">Telemetry &amp; ICP</span>
             </div>
-            <span class="font-num text-[9px] bg-neutral-900 text-white px-2 py-0.5 rounded-md font-semibold ml-auto shrink-0">vs PostHog</span>
+            <span class="font-num text-[9px] bg-neutral-900 text-white px-1.5 py-0.2 rounded-md font-semibold ml-auto shrink-0">vs PostHog</span>
           </button>
 
-          <button type="button" onclick="setAppView('membership', event)" data-view-target="membership" id="nav-membership" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
-            <div class="flex items-center gap-3 min-w-0">
+          <button type="button" onclick="setAppView('membership', event)" data-view-target="membership" id="nav-membership" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+            <div class="flex items-center gap-2.5 min-w-0">
               <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              <span class="text-xs font-medium tracking-tight truncate">Memberships &amp; Quotas</span>
+              <span class="text-xs font-medium tracking-tight truncate">Quotas &amp; Top-Ups</span>
             </div>
           </button>
 
-          <button type="button" onclick="setAppView('integrations', event)" data-view-target="integrations" id="nav-integrations" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
-            <div class="flex items-center gap-3 min-w-0">
+          <button type="button" onclick="setAppView('integrations', event)" data-view-target="integrations" id="nav-integrations" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+            <div class="flex items-center gap-2.5 min-w-0">
               <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
               <span class="text-xs font-medium tracking-tight truncate">Integrations &amp; MCP</span>
             </div>
@@ -510,26 +545,57 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </div>
 
         <!-- Group 4: Developer Workbench & Sandbox -->
-        <div class="space-y-1">
-          <div class="px-3.5 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1.5">Developer Workbench</div>
-          <button type="button" onclick="setAppView('tester', event)" data-view-target="tester" id="nav-tester" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
-            <div class="flex items-center gap-3 min-w-0">
+        <div class="space-y-0.5">
+          <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1">Developer Workbench</div>
+          <button type="button" onclick="setAppView('tester', event)" data-view-target="tester" id="nav-tester" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+            <div class="flex items-center gap-2.5 min-w-0">
               <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
               <span class="text-xs font-medium tracking-tight truncate">API Sandbox</span>
             </div>
-            <span class="font-num text-[9px] bg-emerald-50 text-emerald-800 border border-emerald-200/60 px-2 py-0.5 rounded-md font-semibold ml-auto shrink-0">Live Tester</span>
+            <span class="font-num text-[9px] bg-emerald-50 text-emerald-800 border border-emerald-200/60 px-1.5 py-0.2 rounded-md font-semibold ml-auto shrink-0">Live</span>
           </button>
         </div>
       </nav>
+
+      <!-- Devin Sessions Drawer (devin.ai Sessions List) -->
+      <div class="pt-2 border-t border-neutral-100 space-y-1.5">
+        <div class="flex items-center justify-between px-2 text-[11px] font-semibold text-neutral-500 font-num">
+          <span class="tracking-tight uppercase text-[10px] text-neutral-400 font-bold">Sessions</span>
+          <div class="flex items-center gap-1">
+            <button type="button" onclick="startNewDevinSession()" class="p-1 hover:bg-neutral-100 rounded text-neutral-400 hover:text-neutral-950 cursor-pointer" title="New Session">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            </button>
+            <button type="button" onclick="clearDevinSessions()" class="p-1 hover:bg-neutral-100 rounded text-neutral-400 hover:text-neutral-950 cursor-pointer" title="Clear Sessions">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="px-2">
+          <div class="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 font-num mb-1 flex items-center gap-1.5">
+            <svg class="w-3 h-3 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Recent</span>
+          </div>
+          <div id="devinRecentSessionsList" class="space-y-0.5 text-xs text-neutral-600 font-sans max-h-32 overflow-y-auto">
+            <div class="px-2 py-1 text-[11px] text-neutral-400 italic">No sessions</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Bottom Actions -->
-    <div class="pt-6 border-t border-neutral-200 space-y-2">
-      <a href="/" class="w-full py-1.5 px-3 text-xs text-neutral-600 hover:text-black hover:bg-neutral-100 rounded-lg transition flex items-center gap-2">
+    <div class="pt-3 border-t border-neutral-200/80 space-y-1.5 text-xs">
+      <div class="flex items-center justify-between text-neutral-500 font-num text-[11px] px-1">
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>PoP: Online</span>
+        </div>
+        <span class="text-neutral-900 font-semibold">&lt;15ms</span>
+      </div>
+      <a href="/" class="w-full py-1.5 px-2.5 text-neutral-600 hover:text-black hover:bg-neutral-100 rounded-lg transition flex items-center gap-2">
         <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m15 19-7-7 7-7"/></svg>
-        <span>Back to Landing Page</span>
+        <span>Back to Website</span>
       </a>
-      <button type="button" onclick="handleAppSignOut()" class="w-full py-1.5 px-3 text-xs text-red-600 hover:bg-red-50 rounded-lg transition flex items-center gap-2 cursor-pointer">
+      <button type="button" onclick="handleAppSignOut()" class="w-full py-1.5 px-2.5 text-red-600 hover:bg-red-50 rounded-lg transition flex items-center gap-2 cursor-pointer">
         <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
         <span>Sign Out</span>
       </button>
@@ -706,6 +772,89 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
     <!-- SECTION 1: OVERVIEW -->
     <section id="view-overview" class="space-y-6">
+      <!-- Devin-Inspired Command Deck & Copilot Chatbot (Cognition Minimalism Standard) -->
+      <div id="devinCommandDeck" class="rounded-3xl bg-[#131316] text-white border border-[#27272a] p-5 sm:p-7 shadow-xl space-y-4 relative overflow-hidden">
+        <!-- Top Status Bar -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-7 h-7 object-contain" />
+            <div class="flex items-center gap-2">
+              <span class="font-serif font-bold text-base tracking-tight text-white">UltraDemon</span>
+              <span class="text-[9px] font-num uppercase tracking-wider font-bold px-2 py-0.5 rounded-full bg-white/10 text-neutral-300 border border-white/15">Copilot</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 text-xs font-num text-neutral-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="hidden sm:inline">Edge Node: Connected</span>
+            <span class="text-white font-bold">&lt;15ms</span>
+          </div>
+        </div>
+
+        <!-- Conversational Prompt Box (Matching Devin app.devin.ai) -->
+        <div class="relative bg-[#1c1c20] border border-[#2e2e34] rounded-2xl p-3.5 sm:p-4 focus-within:border-neutral-400 focus-within:ring-1 focus-within:ring-neutral-400 transition-all shadow-inner">
+          <textarea
+            id="devinPromptInput"
+            rows="3"
+            placeholder="Ask UltraDemon to search edge index, recall agent memory, crawl docs, or test APIs..."
+            class="w-full bg-transparent text-xs sm:text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none resize-none font-sans leading-relaxed"
+            onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); executeDevinCommand(); }"
+          ></textarea>
+
+          <!-- Bottom Control Bar inside Prompt Box -->
+          <div class="flex items-center justify-between pt-2.5 border-t border-[#2a2a30] mt-2 text-xs">
+            <!-- Left Tools & Mode -->
+            <div class="flex items-center gap-1.5 sm:gap-2">
+              <button type="button" onclick="promptDevinTag()" title="Attach memory container tag" class="p-1.5 text-neutral-400 hover:text-white hover:bg-white/10 rounded-lg transition cursor-pointer">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              </button>
+              <button type="button" onclick="toggleDevinCodeSnippet()" title="Insert DDL or JSON snippet" class="p-1.5 text-neutral-400 hover:text-white hover:bg-white/10 rounded-lg transition cursor-pointer">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              </button>
+              <!-- Mode Selector Pill -->
+              <div class="relative">
+                <select id="devinModeSelect" class="bg-[#26262c] hover:bg-[#2d2d34] text-neutral-200 border border-[#383842] rounded-lg px-2.5 py-1 text-[11px] font-semibold cursor-pointer focus:outline-none appearance-none pr-6 font-num transition">
+                  <option value="agent">Agent</option>
+                  <option value="memory">UltraMemory</option>
+                  <option value="search">UltraSearch</option>
+                  <option value="crawler">Web Crawler</option>
+                </select>
+                <svg class="w-3 h-3 text-neutral-400 absolute right-1.5 top-2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+
+            <!-- Right Controls: Speed and Send -->
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-num text-neutral-400 hidden sm:inline">Edge Fast</span>
+              <button type="button" onclick="executeDevinCommand()" id="btnDevinSend" title="Send request (Enter)" class="w-8 h-8 rounded-xl bg-white text-neutral-950 hover:bg-neutral-200 flex items-center justify-center font-bold transition cursor-pointer shadow-md">
+                <svg class="w-4 h-4 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19.5v-15m-6 6 6-6 6 6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Suggestion Chips -->
+        <div class="flex flex-wrap items-center gap-2 pt-1 text-xs">
+          <span class="text-[10px] uppercase font-num font-bold text-neutral-500">Suggestions:</span>
+          <button type="button" onclick="setDevinPrompt('Recall agent memories for active container', 'memory')" class="px-2.5 py-1 rounded-full bg-[#1c1c20] hover:bg-[#26262c] text-neutral-300 border border-[#2e2e36] text-[11px] transition cursor-pointer">
+            Recall agent memories
+          </button>
+          <button type="button" onclick="setDevinPrompt('Search edge index: sub-15ms BM25 ranking for sqlite vector', 'search')" class="px-2.5 py-1 rounded-full bg-[#1c1c20] hover:bg-[#26262c] text-neutral-300 border border-[#2e2e36] text-[11px] transition cursor-pointer">
+            Search edge index
+          </button>
+          <button type="button" onclick="setDevinPrompt('Crawl https://developers.cloudflare.com/workers and index documentation', 'crawler')" class="px-2.5 py-1 rounded-full bg-[#1c1c20] hover:bg-[#26262c] text-neutral-300 border border-[#2e2e36] text-[11px] transition cursor-pointer">
+            Crawl documentation
+          </button>
+          <button type="button" onclick="setDevinPrompt('Inspect combined API request volume and real-time telemetry', 'agent')" class="px-2.5 py-1 rounded-full bg-[#1c1c20] hover:bg-[#26262c] text-neutral-300 border border-[#2e2e36] text-[11px] transition cursor-pointer">
+            Inspect real-time telemetry
+          </button>
+        </div>
+
+        <!-- Live Streaming / Execution Feed -->
+        <div id="devinActionFeed" class="hidden space-y-3 pt-2">
+          <!-- Dynamically populated with shimmering skeletons during queries and rendered Devin output cards upon resolution -->
+        </div>
+      </div>
+
       <!-- Welcome Hero Banner -->
       <div class="relative overflow-hidden p-6 sm:p-7 rounded-3xl bg-neutral-950 text-white border border-neutral-800 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div class="space-y-1.5 z-10">
@@ -799,7 +948,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </div>
       </div>
 
-      <!-- 4 Top Metric Cards (Card Design Skill) -->
+      <!-- 4 Top Metric Cards (Card Design Skill with Shimmering Skeleton Defaults) -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <!-- Daily Requests -->
         <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
@@ -809,7 +958,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
             </div>
           </div>
-          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="metricUsed">0</div>
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="metricUsed"><span class="skeleton h-8 w-16"></span></div>
           <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
             <span>Quota Limit</span>
             <span class="font-bold text-neutral-900" id="metricLimit">100</span>
@@ -824,7 +973,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
             </div>
           </div>
-          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="metricKeys">0</div>
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="metricKeys"><span class="skeleton h-8 w-12"></span></div>
           <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
             <span>Edge Bound</span>
             <span class="font-bold text-neutral-900">D1 SQLite</span>
@@ -839,7 +988,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
             </div>
           </div>
-          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="metricMemories">0</div>
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="metricMemories"><span class="skeleton h-8 w-14"></span></div>
           <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
             <span>Recall Latency</span>
             <span class="font-bold text-emerald-600">&lt;15ms</span>
@@ -854,7 +1003,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
             </div>
           </div>
-          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="metricIndexed">0</div>
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="metricIndexed"><span class="skeleton h-8 w-12"></span></div>
           <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
             <span>Algorithm</span>
             <span class="font-bold text-neutral-900">BM25 Edge</span>
@@ -901,7 +1050,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-400 font-num">Combined Calls Today</span>
               <span class="px-2 py-0.5 rounded-full bg-white/10 text-emerald-400 text-[10px] font-num font-bold">ALL KEYS</span>
             </div>
-            <div class="text-3xl font-normal font-num tracking-tight" id="rtCombinedTotal">0</div>
+            <div class="text-3xl font-normal font-num tracking-tight" id="rtCombinedTotal"><span class="skeleton-dark h-8 w-16"></span></div>
             <div class="mt-3 pt-2 border-t border-white/10 text-[11px] font-num text-neutral-400 flex items-center justify-between">
               <span>Quota Used Today</span>
               <span id="rtCombinedQuotaPct" class="text-white font-bold font-num">0%</span>
@@ -914,7 +1063,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-500 font-num">UltraSearch Calls</span>
               <span class="px-2 py-0.5 rounded-full bg-neutral-200 text-neutral-800 text-[10px] font-num font-semibold">&lt;40ms</span>
             </div>
-            <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="rtCombinedSearch">0</div>
+            <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="rtCombinedSearch"><span class="skeleton h-8 w-12"></span></div>
             <div class="mt-3 pt-2 border-t border-neutral-200 text-[11px] font-num text-neutral-500 flex items-center justify-between">
               <span>Share of Today</span>
               <span id="rtSearchShare" class="text-neutral-950 font-bold font-num">0%</span>
@@ -927,7 +1076,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-500 font-num">UltraMemory Calls</span>
               <span class="px-2 py-0.5 rounded-full bg-neutral-200 text-neutral-800 text-[10px] font-num font-semibold">&lt;15ms</span>
             </div>
-            <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="rtCombinedMemory">0</div>
+            <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="rtCombinedMemory"><span class="skeleton h-8 w-12"></span></div>
             <div class="mt-3 pt-2 border-t border-neutral-200 text-[11px] font-num text-neutral-500 flex items-center justify-between">
               <span>Share of Today</span>
               <span id="rtMemoryShare" class="text-neutral-950 font-bold font-num">0%</span>
@@ -940,7 +1089,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-500 font-num">UltraMetrics Calls</span>
               <span class="px-2 py-0.5 rounded-full bg-neutral-200 text-neutral-800 text-[10px] font-num font-semibold">Sub-5ms</span>
             </div>
-            <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="rtCombinedMetrics">0</div>
+            <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="rtCombinedMetrics"><span class="skeleton h-8 w-12"></span></div>
             <div class="mt-3 pt-2 border-t border-neutral-200 text-[11px] font-num text-neutral-500 flex items-center justify-between">
               <span>Share of Today</span>
               <span id="rtMetricsShare" class="text-neutral-950 font-bold font-num">0%</span>
@@ -994,7 +1143,28 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
                 </tr>
               </thead>
               <tbody id="rtApiKeyTableBody" class="divide-y divide-neutral-100 font-num">
-                <tr><td colspan="9" class="p-6 text-center text-neutral-400">Loading real-time API key metrics...</td></tr>
+                <tr class="animate-pulse">
+                  <td class="p-3"><div class="skeleton h-3.5 w-28"></div></td>
+                  <td class="p-3"><div class="skeleton h-3.5 w-16"></div></td>
+                  <td class="p-3"><div class="skeleton h-3.5 w-12"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-12 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-10 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-10 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-10 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-12 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-16 ml-auto"></div></td>
+                </tr>
+                <tr class="animate-pulse">
+                  <td class="p-3"><div class="skeleton h-3.5 w-32"></div></td>
+                  <td class="p-3"><div class="skeleton h-3.5 w-16"></div></td>
+                  <td class="p-3"><div class="skeleton h-3.5 w-12"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-10 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-8 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-8 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-8 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-12 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-14 ml-auto"></div></td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -1261,9 +1431,7 @@ curl -X POST "${origin}/v1/memory/query" \\
           <div class="flex items-end">
             <button type="button" onclick="handleAppCreateKey(event); return false;" id="btnCreateKeyApp" class="w-full py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer">
               <span>Create Key</span>
-              <span id="spinnerCreateKeyApp" class="hidden">
-                <svg class="w-3.5 h-3.5 text-white animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/></svg>
-              </span>
+              <span id="spinnerCreateKeyApp" class="hidden skeleton-dark h-3 w-12 rounded"></span>
             </button>
           </div>
         </form>
@@ -1297,7 +1465,8 @@ curl -X POST "${origin}/v1/memory/query" \\
               </tr>
             </thead>
             <tbody id="appKeysTableBody" class="divide-y divide-neutral-100 font-num">
-              <tr><td colspan="6" class="py-4 text-center text-neutral-400">No API keys generated yet.</td></tr>
+              <tr><td colspan="6" class="p-3"><div class="skeleton h-4 w-full"></div></td></tr>
+              <tr><td colspan="6" class="p-3"><div class="skeleton h-4 w-4/5"></div></td></tr>
             </tbody>
           </table>
         </div>
@@ -1452,9 +1621,7 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
           </div>
           <button type="button" onclick="handleAppStoreMemory(event); return false;" id="btnStoreMemApp" class="px-4 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl transition shadow-xs flex items-center gap-1.5 cursor-pointer">
             <span>Store into Memory</span>
-            <span id="spinnerStoreMemApp" class="hidden">
-              <svg class="w-3.5 h-3.5 text-white animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/></svg>
-            </span>
+            <span id="spinnerStoreMemApp" class="hidden skeleton-dark h-3 w-12 rounded"></span>
           </button>
         </form>
         <div id="alertStoreMemApp" class="hidden p-3 rounded-xl text-xs font-num"></div>
@@ -1490,7 +1657,8 @@ curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
               </tr>
             </thead>
             <tbody id="appMemoriesTableBody" class="divide-y divide-neutral-100 font-num">
-              <tr><td colspan="5" class="py-4 text-center text-neutral-400">No stored memories yet.</td></tr>
+              <tr><td colspan="5" class="p-3"><div class="skeleton h-4 w-full"></div></td></tr>
+              <tr><td colspan="5" class="p-3"><div class="skeleton h-4 w-5/6"></div></td></tr>
             </tbody>
           </table>
         </div>
@@ -2526,7 +2694,7 @@ requests.post("${origin}/v1/analytics/capture", json={
             </div>
 
             <button type="button" onclick="executeTesterRequest()" id="btnExecuteTester" class="w-full py-2.5 px-4 rounded-xl bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold cursor-pointer transition flex items-center justify-center gap-2 shadow-sm font-num">
-              <svg id="testerSpinner" class="w-4 h-4 text-white animate-spin hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="32" stroke-linecap="round"/></svg>
+              <span id="testerSpinner" class="hidden skeleton-dark h-3.5 w-12 rounded"></span>
               <svg id="testerSendIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               <span>Execute Live Request</span>
             </button>
@@ -3788,7 +3956,7 @@ requests.post("${origin}/v1/analytics/capture", json={
 
     async function loadRealtimeKeyMetrics(manual = false) {
       const spinner = document.getElementById('refreshKeyMetricsSpinner');
-      if (manual && spinner) spinner.classList.add('animate-spin');
+      if (manual && spinner) spinner.classList.add('opacity-40');
 
       try {
         const token = getAuthToken();
@@ -3806,7 +3974,7 @@ requests.post("${origin}/v1/analytics/capture", json={
         console.warn('Realtime key metrics fetch error:', err);
       } finally {
         if (manual && spinner) {
-          setTimeout(() => spinner.classList.remove('animate-spin'), 300);
+          setTimeout(() => spinner.classList.remove('opacity-40'), 300);
         }
       }
     }
@@ -4098,6 +4266,13 @@ requests.post("${origin}/v1/analytics/capture", json={
 
       if (!query) return;
 
+      if (resultsDiv) {
+        resultsDiv.innerHTML = '<div class="space-y-2.5 p-1">' +
+          '<div class="skeleton-card space-y-2"><div class="skeleton h-3 w-32"></div><div class="skeleton h-4 w-5/6"></div></div>' +
+          '<div class="skeleton-card space-y-2"><div class="skeleton h-3 w-28"></div><div class="skeleton h-4 w-4/6"></div></div>' +
+        '</div>';
+      }
+
       const t0 = performance.now();
       try {
         const res = await fetch('/v1/memory/recall?q=' + encodeURIComponent(query), {
@@ -4180,7 +4355,13 @@ requests.post("${origin}/v1/analytics/capture", json={
       if (!query) return;
 
       const t0 = performance.now();
-      if (resultsDiv) resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">Searching edge index & live web...</div>';
+      if (resultsDiv) {
+        resultsDiv.innerHTML = '<div class="space-y-3 p-1">' +
+          '<div class="skeleton h-8 w-48 mb-2"></div>' +
+          '<div class="skeleton-card space-y-2"><div class="skeleton h-4 w-3/4"></div><div class="skeleton h-3 w-full"></div><div class="skeleton h-3 w-5/6"></div></div>' +
+          '<div class="skeleton-card space-y-2"><div class="skeleton h-4 w-2/3"></div><div class="skeleton h-3 w-full"></div><div class="skeleton h-3 w-4/5"></div></div>' +
+        '</div>';
+      }
       try {
         const res = await fetch('/v1/search', {
           method: 'POST',
@@ -4254,7 +4435,11 @@ requests.post("${origin}/v1/analytics/capture", json={
       if (!url) return;
 
       if (box) {
-        box.innerText = 'Crawling and parsing URL into D1 FTS5...';
+        box.innerHTML = '<div class="space-y-2 p-2">' +
+          '<div class="skeleton-dark h-4 w-64"></div>' +
+          '<div class="skeleton-dark h-4 w-80"></div>' +
+          '<div class="skeleton-dark h-4 w-48"></div>' +
+        '</div>';
         box.classList.remove('hidden');
       }
 
@@ -4417,6 +4602,288 @@ requests.post("${origin}/v1/analytics/capture", json={
     window.executeTesterRequest = executeTesterRequest;
     window.copyTesterResponse = copyTesterResponse;
     window.copyTesterCurl = copyTesterCurl;
+
+    // Devin Copilot & Command Deck Logic (Cognition / Devin Minimalism Standard)
+    let devinSessions = JSON.parse(localStorage.getItem('ultrademon_devin_sessions') || '[]');
+
+    function renderDevinSessionsList() {
+      const container = document.getElementById('devinRecentSessionsList');
+      if (!container) return;
+      if (!devinSessions || devinSessions.length === 0) {
+        container.innerHTML = '<div class="px-2 py-1 text-[11px] text-neutral-400 italic">No sessions</div>';
+        return;
+      }
+      container.innerHTML = devinSessions.slice(0, 8).map(s =>
+        '<button type="button" onclick="loadDevinSession(\'' + s.id + '\')" class="w-full text-left px-2 py-1.5 rounded-lg hover:bg-neutral-100 flex items-center justify-between group transition cursor-pointer text-xs">' +
+          '<div class="flex items-center gap-1.5 truncate min-w-0">' +
+            '<span class="w-1.5 h-1.5 rounded-full bg-neutral-400 group-hover:bg-neutral-900 shrink-0"></span>' +
+            '<span class="truncate font-medium text-neutral-700 group-hover:text-neutral-950 font-sans">' + escapeHtml(s.title || s.prompt) + '</span>' +
+          '</div>' +
+          '<span class="text-[9px] font-num text-neutral-400 shrink-0 ml-1">' + (s.mode || 'agent') + '</span>' +
+        '</button>'
+      ).join('');
+    }
+
+    function addDevinSession(prompt, mode, resultSummary) {
+      const title = prompt.length > 28 ? prompt.slice(0, 28) + '...' : prompt;
+      const newSession = {
+        id: 'sess_' + Date.now(),
+        title,
+        prompt,
+        mode,
+        summary: resultSummary,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      devinSessions.unshift(newSession);
+      if (devinSessions.length > 20) devinSessions = devinSessions.slice(0, 20);
+      try {
+        localStorage.setItem('ultrademon_devin_sessions', JSON.stringify(devinSessions));
+      } catch {}
+      renderDevinSessionsList();
+    }
+
+    function loadDevinSession(id) {
+      const s = devinSessions.find(x => x.id === id);
+      if (!s) return;
+      setDevinPrompt(s.prompt, s.mode);
+      if (s.summary) {
+        const feed = document.getElementById('devinActionFeed');
+        if (feed) {
+          feed.innerHTML = s.summary;
+          feed.classList.remove('hidden');
+        }
+      }
+      showAppToast('Loaded session: ' + s.title);
+    }
+
+    function clearDevinSessions() {
+      devinSessions = [];
+      try {
+        localStorage.removeItem('ultrademon_devin_sessions');
+      } catch {}
+      renderDevinSessionsList();
+      showAppToast('Recent sessions cleared');
+    }
+
+    function startNewDevinSession() {
+      const input = document.getElementById('devinPromptInput');
+      if (input) input.value = '';
+      const feed = document.getElementById('devinActionFeed');
+      if (feed) {
+        feed.innerHTML = '';
+        feed.classList.add('hidden');
+      }
+      showAppToast('Started new Copilot session');
+      focusDevinPrompt();
+    }
+
+    function focusDevinPrompt() {
+      setAppView('overview');
+      const input = document.getElementById('devinPromptInput');
+      if (input) {
+        input.focus();
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    function setDevinPrompt(text, mode = 'agent') {
+      setAppView('overview');
+      const input = document.getElementById('devinPromptInput');
+      const modeSelect = document.getElementById('devinModeSelect');
+      if (input) input.value = text;
+      if (modeSelect && mode) modeSelect.value = mode;
+      if (input) {
+        input.focus();
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    function promptDevinTag() {
+      const tag = prompt('Enter memory container tag (e.g. user_101 or project_alpha):');
+      if (!tag) return;
+      const input = document.getElementById('devinPromptInput');
+      if (input) {
+        input.value = '[tag:' + tag.trim() + '] ' + input.value;
+        input.focus();
+      }
+    }
+
+    function toggleDevinCodeSnippet() {
+      const input = document.getElementById('devinPromptInput');
+      if (input) {
+        input.value = 'Recall memory for container user_prod_01 with threshold 0.85';
+        const modeSelect = document.getElementById('devinModeSelect');
+        if (modeSelect) modeSelect.value = 'memory';
+        input.focus();
+      }
+    }
+
+    async function executeDevinCommand() {
+      const input = document.getElementById('devinPromptInput');
+      const modeSelect = document.getElementById('devinModeSelect');
+      const feed = document.getElementById('devinActionFeed');
+
+      if (!input || !input.value.trim()) {
+        showAppToast('Please enter a prompt or command for UltraDemon', true);
+        return;
+      }
+
+      const promptText = input.value.trim();
+      const mode = modeSelect ? modeSelect.value : 'agent';
+      const t0 = performance.now();
+
+      if (feed) {
+        feed.classList.remove('hidden');
+        feed.innerHTML = '<div class="rounded-2xl bg-[#18181c] border border-[#2e2e34] p-4 text-xs space-y-3 shadow-md">' +
+          '<div class="flex items-center justify-between text-[11px] font-num text-neutral-400 border-b border-[#2a2a30] pb-2">' +
+            '<div class="flex items-center gap-2">' +
+              '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>' +
+              '<span class="text-white font-bold font-sans">Autonomous Edge Execution</span>' +
+              '<span class="text-neutral-500 font-num">· Mode: ' + mode.toUpperCase() + '</span>' +
+            '</div>' +
+            '<span class="font-num text-neutral-400">Processing live edge call...</span>' +
+          '</div>' +
+          '<div class="text-neutral-200 font-sans font-medium">"' + escapeHtml(promptText) + '"</div>' +
+          '<div class="space-y-2 pt-1">' +
+            '<div class="skeleton-dark h-3.5 w-3/4"></div>' +
+            '<div class="skeleton-dark h-3.5 w-full"></div>' +
+            '<div class="skeleton-dark h-3.5 w-5/6"></div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      try {
+        let resultHtml = '';
+        if (mode === 'memory') {
+          const res = await fetch('/v1/memory/recall?q=' + encodeURIComponent(promptText), { headers: getAppAuthHeaders('memory') });
+          const data = await res.json();
+          const latency = Math.round(performance.now() - t0);
+          const count = data.memories ? data.memories.length : 0;
+          resultHtml = '<div class="rounded-2xl bg-[#18181c] border border-[#2e2e34] p-4 text-xs space-y-3 shadow-md">' +
+            '<div class="flex items-center justify-between text-[11px] font-num text-neutral-400 border-b border-[#2a2a30] pb-2">' +
+              '<div class="flex items-center gap-2">' +
+                '<span class="w-2 h-2 rounded-full bg-emerald-400"></span>' +
+                '<span class="text-white font-bold font-sans">UltraMemory Recall Complete</span>' +
+                '<span class="text-emerald-400 font-num">' + (data.retrieval_time_ms || latency) + 'ms Edge Latency</span>' +
+              '</div>' +
+              '<span class="font-num text-neutral-400">' + count + ' memories found</span>' +
+            '</div>' +
+            (data.context ? '<div class="p-3 bg-[#111114] rounded-xl border border-[#26262c] text-neutral-300 font-mono text-[11px] whitespace-pre-wrap"><div class="text-[10px] text-neutral-500 font-bold uppercase mb-1 font-num">LLM Context Stream:</div>' + escapeHtml(data.context) + '</div>' : '') +
+            '<div class="space-y-1.5">' +
+              (data.memories && data.memories.length > 0
+                ? data.memories.slice(0, 3).map(m =>
+                    '<div class="p-2.5 rounded-lg bg-[#222228] border border-[#2d2d35] text-neutral-200">' +
+                      '<div class="flex justify-between text-[10px] text-neutral-400 font-num mb-0.5"><span>' + escapeHtml(m.container_tag) + '</span><span>score: ' + (m.score || 1).toFixed(2) + '</span></div>' +
+                      '<div>' + escapeHtml(m.content) + '</div>' +
+                    '</div>'
+                  ).join('')
+                : '<div class="text-neutral-400 italic">No stored memories matching this query. Store one in UltraMemory Lab!</div>') +
+            '</div>' +
+          '</div>';
+        } else if (mode === 'search') {
+          const res = await fetch('/v1/search', {
+            method: 'POST',
+            headers: getAppAuthHeaders('search'),
+            body: JSON.stringify({ query: promptText, mode: 1, num_results: 3 })
+          });
+          const data = await res.json();
+          const latency = Math.round(performance.now() - t0);
+          const results = data.results || [];
+          resultHtml = '<div class="rounded-2xl bg-[#18181c] border border-[#2e2e34] p-4 text-xs space-y-3 shadow-md">' +
+            '<div class="flex items-center justify-between text-[11px] font-num text-neutral-400 border-b border-[#2a2a30] pb-2">' +
+              '<div class="flex items-center gap-2">' +
+                '<span class="w-2 h-2 rounded-full bg-sky-400"></span>' +
+                '<span class="text-white font-bold font-sans">UltraSearch BM25 Complete</span>' +
+                '<span class="text-sky-400 font-num">' + (data.search_time_ms || latency) + 'ms Edge Latency</span>' +
+              '</div>' +
+              '<span class="font-num text-neutral-400">' + results.length + ' indexed matches</span>' +
+            '</div>' +
+            '<div class="space-y-2">' +
+              (results.length > 0
+                ? results.map(r =>
+                    '<div class="p-3 rounded-xl bg-[#222228] border border-[#2d2d35] space-y-1">' +
+                      '<div class="flex justify-between text-[10px] text-neutral-400 font-num truncate"><span>' + escapeHtml(r.url) + '</span><span>score: ' + (r.score || 0.95).toFixed(2) + '</span></div>' +
+                      '<div class="font-bold text-white">' + escapeHtml(r.title) + '</div>' +
+                      '<div class="text-neutral-300 text-[11px]">' + escapeHtml(r.snippet) + '</div>' +
+                    '</div>'
+                  ).join('')
+                : '<div class="text-neutral-400 italic">No indexed pages matching query. Crawl a URL in Crawler view!</div>') +
+            '</div>' +
+          '</div>';
+        } else if (mode === 'crawler') {
+          const isUrl = promptText.startsWith('http://') || promptText.startsWith('https://');
+          const targetUrl = isUrl ? promptText : 'https://' + promptText;
+          const res = await fetch('/v1/crawl', {
+            method: 'POST',
+            headers: getAppAuthHeaders('search'),
+            body: JSON.stringify({ url: targetUrl, depth: 0 })
+          });
+          const data = await res.json();
+          const latency = Math.round(performance.now() - t0);
+          resultHtml = '<div class="rounded-2xl bg-[#18181c] border border-[#2e2e34] p-4 text-xs space-y-3 shadow-md">' +
+            '<div class="flex items-center justify-between text-[11px] font-num text-neutral-400 border-b border-[#2a2a30] pb-2">' +
+              '<div class="flex items-center gap-2">' +
+                '<span class="w-2 h-2 rounded-full bg-emerald-400"></span>' +
+                '<span class="text-white font-bold font-sans">Crawler Ingestion Complete</span>' +
+                '<span class="text-emerald-400 font-num">' + latency + 'ms</span>' +
+              '</div>' +
+              '<span class="font-num text-neutral-400">FTS5 Vectorized</span>' +
+            '</div>' +
+            '<pre class="p-3 bg-[#111114] rounded-xl border border-[#26262c] text-neutral-300 font-mono text-[11px] overflow-x-auto code-scroll">' + escapeHtml(JSON.stringify(data, null, 2)) + '</pre>' +
+          '</div>';
+        } else {
+          // Agent mode: Autonomous synthesis
+          const [searchRes, memRes] = await Promise.allSettled([
+            fetch('/v1/search', { method: 'POST', headers: getAppAuthHeaders('search'), body: JSON.stringify({ query: promptText, mode: 1, num_results: 2 }) }),
+            fetch('/v1/memory/recall?q=' + encodeURIComponent(promptText), { headers: getAppAuthHeaders('memory') })
+          ]);
+          let searchData = null;
+          let memData = null;
+          if (searchRes.status === 'fulfilled' && searchRes.value.ok) searchData = await searchRes.value.json();
+          if (memRes.status === 'fulfilled' && memRes.value.ok) memData = await memRes.value.json();
+          const latency = Math.round(performance.now() - t0);
+
+          resultHtml = '<div class="rounded-2xl bg-[#18181c] border border-[#2e2e34] p-4 text-xs space-y-3 shadow-md">' +
+            '<div class="flex items-center justify-between text-[11px] font-num text-neutral-400 border-b border-[#2a2a30] pb-2">' +
+              '<div class="flex items-center gap-2">' +
+                '<span class="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>' +
+                '<span class="text-white font-bold font-sans">Autonomous Copilot Synthesis</span>' +
+                '<span class="text-purple-400 font-num">' + latency + 'ms Total Edge Roundtrip</span>' +
+              '</div>' +
+              '<span class="font-num text-neutral-400">Multi-Engine</span>' +
+            '</div>' +
+            '<div class="p-3 bg-[#111114] rounded-xl border border-[#26262c] text-neutral-200 leading-relaxed font-sans">' +
+              '<div class="text-[10px] text-neutral-500 font-bold uppercase mb-1 font-num">Copilot Thought &amp; Resolution:</div>' +
+              'Evaluated edge vector state across D1 SQLite FTS5 index and BM25 memory cache. Retrieved ' +
+              (memData?.memories?.length || 0) + ' agent memory nodes and ' +
+              (searchData?.results?.length || 0) + ' edge search entries. Sovereign system ready for downstream execution.' +
+            '</div>' +
+          '</div>';
+        }
+
+        if (feed) feed.innerHTML = resultHtml;
+        addDevinSession(promptText, mode, resultHtml);
+        loadRealtimeKeyMetrics(false);
+      } catch (err) {
+        if (feed) {
+          feed.innerHTML = '<div class="rounded-2xl bg-red-950/60 border border-red-800 p-4 text-xs text-red-200 font-num">' +
+            '<div class="font-bold">Execution Error: ' + escapeHtml(err.message) + '</div>' +
+            '<div class="text-[11px] text-red-400 mt-1 font-sans">Check active API key scope or connectivity.</div>' +
+          '</div>';
+        }
+      }
+    }
+
+    window.renderDevinSessionsList = renderDevinSessionsList;
+    window.addDevinSession = addDevinSession;
+    window.loadDevinSession = loadDevinSession;
+    window.clearDevinSessions = clearDevinSessions;
+    window.startNewDevinSession = startNewDevinSession;
+    window.focusDevinPrompt = focusDevinPrompt;
+    window.setDevinPrompt = setDevinPrompt;
+    window.promptDevinTag = promptDevinTag;
+    window.toggleDevinCodeSnippet = toggleDevinCodeSnippet;
+    window.executeDevinCommand = executeDevinCommand;
 
     // Immediate Synchronous State Hydration (Zero Latency Profile Display)
     function hydrateCachedState() {
@@ -5019,7 +5486,7 @@ requests.post("${origin}/v1/analytics/capture", json={
       const btn = document.getElementById('btnRegenerateIcp');
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = '<svg class="w-3.5 h-3.5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg><span>Synthesizing...</span>';
+        btn.innerHTML = '<span class="skeleton-dark h-3.5 w-16 rounded"></span><span>Synthesizing...</span>';
       }
 
       const token = getAuthToken();
@@ -5206,7 +5673,13 @@ requests.post("${origin}/v1/analytics/capture", json={
 
       if (spinner) spinner.classList.remove('hidden');
       if (sendIcon) sendIcon.classList.add('hidden');
-      if (resPre) resPre.innerText = 'Executing live edge request to ' + endpoint + '...';
+      if (resPre) {
+        resPre.innerHTML = '<div class="space-y-2 p-1">' +
+          '<div class="skeleton-dark h-4 w-48"></div>' +
+          '<div class="skeleton-dark h-4 w-72"></div>' +
+          '<div class="skeleton-dark h-4 w-60"></div>' +
+        '</div>';
+      }
 
       const tStart = performance.now();
       try {
@@ -5758,6 +6231,7 @@ requests.post("${origin}/v1/analytics/capture", json={
       toggleRealtimeAutoRefresh(true);
       updateAllSuiteSnippets();
       renderHelpPresetQuestions();
+      renderDevinSessionsList();
     }
 
     // Execute immediately or on DOM ready
