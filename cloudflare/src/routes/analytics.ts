@@ -427,16 +427,19 @@ async function handleCapture(c: Context<{ Bindings: Env }>) {
 
   // Real-time API key metrics counter increment
   const hashedKey = keyRecord ? keyRecord.hashed_key : 'sandbox_public_guest_hash';
-  c.executionCtx.waitUntil(
-    incrementUsage(c.env, hashedKey, {
-      service: 'metrics',
-      keyId: keyRecord?.key_id,
-      path: c.req.path,
-      method: c.req.method,
-      status: 201,
-      latencyMs: Math.max(1, Date.now() - now),
-    })
-  );
+  const ctx = c.executionCtx as { waitUntil?: (p: Promise<unknown>) => void } | undefined;
+  if (ctx && typeof ctx.waitUntil === 'function') {
+    ctx.waitUntil(
+      incrementUsage(c.env, hashedKey, {
+        service: 'metrics',
+        keyId: keyRecord?.key_id,
+        path: c.req.path,
+        method: c.req.method,
+        status: 201,
+        latencyMs: Math.max(1, Date.now() - now),
+      })
+    );
+  }
 
   return c.json({
     status: 'recorded',

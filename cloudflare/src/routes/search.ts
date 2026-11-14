@@ -65,16 +65,17 @@ searchRouter.post('/', async (c) => {
   c.header('Cache-Control', 'public, max-age=180, s-maxage=300, stale-while-revalidate=600');
 
   // Cache the result (non-blocking)
-  if (useCache) {
-    c.executionCtx.waitUntil(
+  const ctx = c.executionCtx as { waitUntil?: (p: Promise<unknown>) => void } | undefined;
+  if (useCache && ctx && typeof ctx.waitUntil === 'function') {
+    ctx.waitUntil(
       setCachedSearch(c.env, body.query, cacheParams, result)
     );
   }
 
   // Background ingest live results into D1 index
   const liveItems = result.results.filter(r => r.source === 'ultrasearch-live-web');
-  if (liveItems.length > 0) {
-    c.executionCtx.waitUntil(asyncIngestSearchResults(c.env, liveItems));
+  if (liveItems.length > 0 && ctx && typeof ctx.waitUntil === 'function') {
+    ctx.waitUntil(asyncIngestSearchResults(c.env, liveItems));
   }
 
   return c.json(result);
@@ -141,11 +142,14 @@ searchRouter.get('/', async (c) => {
   c.header('Server-Timing', `engine;dur=${tookMs};desc="D1 FTS5 BM25"`);
   c.header('Cache-Control', 'public, max-age=180, s-maxage=300, stale-while-revalidate=600');
 
-  c.executionCtx.waitUntil(setCachedSearch(c.env, query, cacheParams, result));
+  const ctx = c.executionCtx as { waitUntil?: (p: Promise<unknown>) => void } | undefined;
+  if (ctx && typeof ctx.waitUntil === 'function') {
+    ctx.waitUntil(setCachedSearch(c.env, query, cacheParams, result));
+  }
 
   const liveItems = result.results.filter(r => r.source === 'ultrasearch-live-web');
-  if (liveItems.length > 0) {
-    c.executionCtx.waitUntil(asyncIngestSearchResults(c.env, liveItems));
+  if (liveItems.length > 0 && ctx && typeof ctx.waitUntil === 'function') {
+    ctx.waitUntil(asyncIngestSearchResults(c.env, liveItems));
   }
   return c.json(result);
 });

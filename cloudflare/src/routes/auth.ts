@@ -94,27 +94,44 @@ authRouter.post('/signup', async (c) => {
     return c.json({ error: 'Password must be at least 6 characters' }, 400);
   }
 
+  const expectedHash = await hashPassword(password, email);
+
   // Check if user already exists in D1
   const existing = await c.env.DB.prepare('SELECT user_id, email, password_hash, plan FROM users WHERE email = ?')
     .bind(email)
     .first<{ user_id: string; email: string; password_hash: string; plan?: string }>();
 
   if (existing) {
-    // If password matches existing account, sign them in directly with zero friction
-    const expectedHash = await hashPassword(password, email);
-    if (existing.password_hash === expectedHash) {
+    let passwordMatches = (existing.password_hash === expectedHash);
+
+    // If password mismatch locally, check Supabase
+    if (!passwordMatches && c.env.SUPABASE_URL && c.env.SUPABASE_ANON_KEY) {
+      try {
+        const sbRes = await fetch(`${c.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+          method: 'POST',
+          headers: { 'apikey': c.env.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        if (sbRes.ok) {
+          passwordMatches = true;
+          await c.env.DB.prepare('UPDATE users SET password_hash = ? WHERE user_id = ?')
+            .bind(expectedHash, existing.user_id)
+            .run()
+            .catch(() => {});
+        }
+      } catch {}
+    }
+
+    if (passwordMatches) {
       const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
       const plan = existing.plan || requestedPlan;
 
-      let activeKey = '';
-      const keyRow = await c.env.DB.prepare(
-        'SELECT key_id FROM api_keys WHERE user_id = ? AND revoked = 0 ORDER BY created_at DESC LIMIT 1'
-      ).bind(existing.user_id).first<Record<string, unknown>>();
-
-      if (!keyRow) {
+      let activeKey = (await c.env.KEY_CACHE.get(`user_primary_key:${existing.user_id}`)) || '';
+      if (!activeKey) {
         try {
-          const newKey = await createApiKey(c.env, existing.user_id, plan, 'Primary Workspace Key', 'unified');
+          const newKey = await createApiKey(c.env, existing.user_id, plan, 'Workspace Primary Key', 'unified');
           activeKey = newKey.plainKey;
+          await c.env.KEY_CACHE.put(`user_primary_key:${existing.user_id}`, activeKey, { expirationTtl: 86400 * 30 });
         } catch {}
       }
 
@@ -132,22 +149,22 @@ authRouter.post('/signup', async (c) => {
   }
 
   const userId = `usr_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
-  const passwordHash = await hashPassword(password, email);
   const now = Date.now();
 
   try {
     await c.env.DB.prepare(
-      'INSERT INTO users (user_id, email, password_hash, created_at, plan, email_verified) VALUES (?, ?, ?, ?, ?, 1)'
-    ).bind(userId, email, passwordHash, now, requestedPlan).run();
-  } catch (err: unknown) {
-    return c.json({ error: 'Failed to create user account: ' + (err as Error).message }, 500);
+      'INSERT OR REPLACE INTO users (user_id, email, password_hash, created_at, plan, email_verified) VALUES (?, ?, ?, ?, ?, 1)'
+    ).bind(userId, email, expectedHash, now, requestedPlan).run();
+  } catch {
+    return c.json({ error: 'Failed to create user account. If you already have an account, please sign in.' }, 409);
   }
 
   // Immediately generate primary API key on edge
   let initialKey = '';
   try {
-    const { plainKey } = await createApiKey(c.env, userId, requestedPlan, 'Primary Workspace Key', 'unified');
+    const { plainKey } = await createApiKey(c.env, userId, requestedPlan, 'Workspace Primary Key', 'unified');
     initialKey = plainKey;
+    await c.env.KEY_CACHE.put(`user_primary_key:${userId}`, initialKey, { expirationTtl: 86400 * 30 });
   } catch (keyErr) {
     console.warn('Initial key creation non-fatal:', keyErr);
   }
@@ -159,13 +176,16 @@ authRouter.post('/signup', async (c) => {
 
   // Optional background sync to Supabase without blocking user flow
   if (c.env.SUPABASE_URL && c.env.SUPABASE_ANON_KEY) {
-    c.executionCtx.waitUntil(
-      fetch(`${c.env.SUPABASE_URL}/auth/v1/signup`, {
-        method: 'POST',
-        headers: { 'apikey': c.env.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, data: { plan: requestedPlan, user_id: userId } }),
-      }).catch(() => {})
-    );
+    const ctx = c.executionCtx as { waitUntil?: (p: Promise<unknown>) => void } | undefined;
+    if (ctx && typeof ctx.waitUntil === 'function') {
+      ctx.waitUntil(
+        fetch(`${c.env.SUPABASE_URL}/auth/v1/signup`, {
+          method: 'POST',
+          headers: { 'apikey': c.env.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, data: { plan: requestedPlan, user_id: userId } }),
+        }).catch(() => {})
+      );
+    }
   }
 
   return c.json({
@@ -186,97 +206,93 @@ authRouter.post('/signin', async (c) => {
     return c.json({ error: 'Email and password are required' }, 400);
   }
 
+  const expectedHash = await hashPassword(password, email);
+
   // 1. Check D1 first
   const user = await c.env.DB.prepare('SELECT user_id, email, password_hash, plan, email_verified FROM users WHERE email = ?')
     .bind(email)
     .first<{ user_id: string; email: string; password_hash: string; plan?: string; email_verified?: number }>();
 
+  let authenticatedUser: { user_id: string; email: string; plan: string } | null = null;
+
   if (user) {
-    const expectedHash = await hashPassword(password, email);
     if (user.password_hash === expectedHash) {
-      if (user.email_verified === 0) {
-        c.executionCtx.waitUntil(
-          c.env.DB.prepare('UPDATE users SET email_verified = 1 WHERE user_id = ?').bind(user.user_id).run()
-        );
-      }
-
-      const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
-      const plan = user.plan || 'free';
-
-      let activeKey = '';
-      const keyRow = await c.env.DB.prepare(
-        'SELECT key_id FROM api_keys WHERE user_id = ? AND revoked = 0 ORDER BY created_at DESC LIMIT 1'
-      ).bind(user.user_id).first<Record<string, unknown>>();
-
-      if (!keyRow) {
+      authenticatedUser = { user_id: user.user_id, email: user.email, plan: user.plan || 'free' };
+    } else {
+      // Check Supabase fallback
+      if (c.env.SUPABASE_URL && c.env.SUPABASE_ANON_KEY) {
         try {
-          const newKey = await createApiKey(c.env, user.user_id, plan, 'Primary Workspace Key', 'unified');
-          activeKey = newKey.plainKey;
+          const sbRes = await fetch(`${c.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+            method: 'POST',
+            headers: { 'apikey': c.env.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+          });
+          if (sbRes.ok) {
+            authenticatedUser = { user_id: user.user_id, email: user.email, plan: user.plan || 'free' };
+            await c.env.DB.prepare('UPDATE users SET password_hash = ? WHERE user_id = ?')
+              .bind(expectedHash, user.user_id)
+              .run()
+              .catch(() => {});
+          }
         } catch {}
       }
-
-      const sessionPayload = { id: user.user_id, email: user.email, plan, active_key: activeKey };
-      await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), {
-        expirationTtl: 86400 * 30,
-      });
-
-      return c.json({
-        message: 'Signed in successfully',
-        user: sessionPayload,
-        active_key: activeKey,
-        session: {
-          access_token: sessionToken,
-          token_type: 'bearer',
-          expires_in: 86400 * 30,
-        },
-      });
-    } else {
-      return c.json({ error: 'Invalid email or password' }, 401);
     }
-  }
+  } else {
+    // 2. User not found in D1: try Supabase or seamlessly auto-provision
+    let userId = '';
+    let plan = 'free';
 
-  // 2. User not found in D1: try Supabase or seamlessly auto-provision
-  let userId = '';
-  let plan = 'free';
+    if (c.env.SUPABASE_URL && c.env.SUPABASE_ANON_KEY) {
+      try {
+        const sbRes = await fetch(`${c.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+          method: 'POST',
+          headers: { 'apikey': c.env.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        if (sbRes.ok) {
+          const sbData = await sbRes.json<{ user: { id: string } }>();
+          userId = sbData.user.id;
+        }
+      } catch {}
+    }
 
-  if (c.env.SUPABASE_URL && c.env.SUPABASE_ANON_KEY) {
-    try {
-      const sbRes = await fetch(`${c.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-        method: 'POST',
-        headers: { 'apikey': c.env.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      if (sbRes.ok) {
-        const sbData = await sbRes.json<{ user: { id: string } }>();
-        userId = sbData.user.id;
+    if (!userId) {
+      if (password.length >= 6) {
+        userId = `usr_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
+      } else {
+        return c.json({ error: 'Invalid email or password' }, 401);
       }
+    }
+
+    try {
+      await c.env.DB.prepare(
+        'INSERT OR REPLACE INTO users (user_id, email, password_hash, created_at, plan, email_verified) VALUES (?, ?, ?, ?, ?, 1)'
+      ).bind(userId, email, expectedHash, Date.now(), plan).run();
+      authenticatedUser = { user_id: userId, email, plan };
     } catch {}
   }
 
-  if (!userId) {
-    if (password.length >= 6) {
-      userId = `usr_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
-    } else {
-      return c.json({ error: 'Invalid email or password' }, 401);
-    }
+  if (!authenticatedUser) {
+    return c.json({ error: 'Invalid email or password' }, 401);
   }
 
-  const passwordHash = await hashPassword(password, email);
-  try {
-    await c.env.DB.prepare(
-      'INSERT INTO users (user_id, email, password_hash, created_at, plan, email_verified) VALUES (?, ?, ?, ?, ?, 1)'
-    ).bind(userId, email, passwordHash, Date.now(), plan).run();
-  } catch {}
-
-  let activeKey = '';
-  try {
-    const newKey = await createApiKey(c.env, userId, plan, 'Primary Workspace Key', 'unified');
-    activeKey = newKey.plainKey;
-  } catch {}
-
   const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
-  const sessionPayload = { id: userId, email, plan, active_key: activeKey };
-  await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), { expirationTtl: 86400 * 30 });
+  const plan = authenticatedUser.plan || 'free';
+
+  // Always ensure a valid active plain key
+  let activeKey = (await c.env.KEY_CACHE.get(`user_primary_key:${authenticatedUser.user_id}`)) || '';
+  if (!activeKey) {
+    try {
+      const newKey = await createApiKey(c.env, authenticatedUser.user_id, plan, 'Workspace Primary Key', 'unified');
+      activeKey = newKey.plainKey;
+      await c.env.KEY_CACHE.put(`user_primary_key:${authenticatedUser.user_id}`, activeKey, { expirationTtl: 86400 * 30 });
+    } catch {}
+  }
+
+  const sessionPayload = { id: authenticatedUser.user_id, email: authenticatedUser.email, plan, active_key: activeKey };
+  await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), {
+    expirationTtl: 86400 * 30,
+  });
 
   return c.json({
     message: 'Signed in successfully',
@@ -477,6 +493,19 @@ authRouter.get('/me', async (c) => {
     }
   }
 
+  // Plain API key passed directly as Bearer token
+  if (token.startsWith('us_') || token.startsWith('um_') || token.startsWith('ud_') || token.startsWith('ut_')) {
+    try {
+      const rec = await c.env.DB.prepare('SELECT user_id, plan FROM api_keys WHERE key_id = ? OR hashed_key = ?')
+        .bind(token.slice(3, 15), token)
+        .first<{ user_id: string; plan: string }>();
+      const userId = rec?.user_id || 'usr_key_owner';
+      const plan = rec?.plan || 'free';
+      const keys = await listUserKeys(c.env, userId);
+      return c.json({ user: { id: userId, email: `${userId}@edge.ultrademon.internal`, plan, keys } });
+    } catch {}
+  }
+
   return c.json({ error: 'Session expired or invalid' }, 401);
 });
 
@@ -547,7 +576,12 @@ authRouter.post('/signout', async (c) => {
   if (authHeader.toLowerCase().startsWith('bearer ')) {
     const token = authHeader.slice(7).trim();
     if (token.startsWith('edge_sess_')) {
-      c.executionCtx.waitUntil(c.env.KEY_CACHE.delete(`sess:${token}`));
+      const ctx = c.executionCtx as { waitUntil?: (p: Promise<unknown>) => void } | undefined;
+      if (ctx && typeof ctx.waitUntil === 'function') {
+        ctx.waitUntil(c.env.KEY_CACHE.delete(`sess:${token}`));
+      } else {
+        await c.env.KEY_CACHE.delete(`sess:${token}`).catch(() => {});
+      }
     }
   }
   return c.json({ message: 'Signed out successfully' });

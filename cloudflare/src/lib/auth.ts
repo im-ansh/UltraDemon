@@ -78,8 +78,31 @@ export async function authMiddleware(c: Context<{ Bindings: Env }>, next: Next) 
         return c.json({ error: 'Session expired or invalid. Please sign in again.' }, 401);
       }
     }
+  } else if (plainKey.startsWith('eyJ')) {
+    // Case 3: Supabase JWT from web client
+    const sbUser = await getSupabaseUser(c.env, `Bearer ${plainKey}`);
+    if (sbUser && sbUser.id) {
+      const d1User = await c.env.DB.prepare('SELECT user_id, plan FROM users WHERE user_id = ? OR email = ?')
+        .bind(sbUser.id, sbUser.email || '')
+        .first<{ user_id: string; plan?: string }>();
+      const plan = d1User?.plan || 'free';
+      const userId = d1User?.user_id || sbUser.id;
+      record = {
+        hashed_key: `sb_hash_${userId}`,
+        key_id: `key_${userId.slice(0, 12)}`,
+        user_id: userId,
+        plan,
+        key_type: 'unified',
+        label: 'Supabase Session Key',
+        created_at: 1730000000000,
+        revoked: false,
+      };
+      KEY_ISOLATE_CACHE.set(plainKey, { record, cachedAt: Date.now() });
+    } else {
+      return c.json({ error: 'Supabase session expired or invalid. Please sign in again.' }, 401);
+    }
   } else {
-    // Case 3: Standard API key validation
+    // Case 4: Standard API key validation
     try {
       record = await validateApiKey(c.env, plainKey);
     } catch (e: unknown) {
@@ -144,16 +167,19 @@ export async function authMiddleware(c: Context<{ Bindings: Env }>, next: Next) 
 
   // Track usage in D1 (non-blocking — fire and forget)
   const latencyMs = Date.now() - startTime;
-  c.executionCtx.waitUntil(
-    incrementUsage(c.env, record.hashed_key, {
-      service,
-      keyId: record.key_id,
-      path: c.req.path,
-      method: c.req.method,
-      status: c.res.status,
-      latencyMs,
-    })
-  );
+  const ctx = c.executionCtx as { waitUntil?: (p: Promise<unknown>) => void } | undefined;
+  if (ctx && typeof ctx.waitUntil === 'function') {
+    ctx.waitUntil(
+      incrementUsage(c.env, record.hashed_key, {
+        service,
+        keyId: record.key_id,
+        path: c.req.path,
+        method: c.req.method,
+        status: c.res.status,
+        latencyMs,
+      })
+    );
+  }
 
   return response;
 }
