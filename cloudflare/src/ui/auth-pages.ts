@@ -682,10 +682,10 @@ export function renderAuthCallbackPage(origin: string): string {
           The link may have expired or was already used. Please request a new verification link.
         </p>
         <div class="pt-2 flex flex-col gap-2">
-          <a href="/login" class="py-2.5 px-4 bg-black text-white font-semibold text-xs rounded-xl hover:bg-neutral-800 transition">
+          <a href="/?auth=signin" class="py-2.5 px-4 bg-black text-white font-semibold text-xs rounded-xl hover:bg-neutral-800 transition">
             Go to Sign In
           </a>
-          <a href="/signup" class="py-2 px-4 border border-neutral-200 text-neutral-700 font-medium text-xs rounded-xl hover:bg-neutral-50 transition">
+          <a href="/?auth=signup" class="py-2 px-4 border border-neutral-200 text-neutral-700 font-medium text-xs rounded-xl hover:bg-neutral-50 transition">
             Create New Account
           </a>
         </div>

@@ -19,7 +19,7 @@ import { sdkRouter }       from './routes/sdk';
 import { authMiddleware, getSupabaseUser } from './lib/auth';
 import { getUsage, getApiKeyMetrics, hashKey } from './lib/api-keys';
 import { renderLandingPage } from './ui/landing';
-import { renderAuthPage, renderAuthCallbackPage } from './ui/auth-pages';
+import { renderAuthCallbackPage } from './ui/auth-pages';
 import { renderPrivacyPage, renderTermsPage } from './ui/legal-pages';
 import { renderAppDashboard } from './ui/app';
 import { MICHELANGELUS_BOLD_ITALIC_B64 } from './ui/font';
@@ -119,6 +119,174 @@ app.get('/logo.png', (c) => {
   });
 });
 
+// ── World-Class SEO: robots.txt Directive ────────────────────────────────────
+app.get('/robots.txt', (c) => {
+  const robots = `# UltraDemon Robots Policy
+# Primary Canonical Domain: https://ultrademon.site
+User-agent: *
+Allow: /
+Allow: /benchmarks
+Allow: /pricing
+Allow: /privacy
+Allow: /terms
+Allow: /mcp
+Allow: /openapi.json
+Disallow: /app
+Disallow: /dashboard
+Disallow: /console
+Disallow: /v1/keys
+Disallow: /v1/analytics/tracing
+
+# AI Crawlers & Knowledge Indexers
+User-agent: GPTBot
+Allow: /
+User-agent: Claude-Web
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://ultrademon.site/sitemap.xml
+`;
+  return c.text(robots, 200, {
+    'Content-Type': 'text/plain; charset=utf-8',
+    'Cache-Control': 'public, max-age=86400',
+  });
+});
+
+// ── World-Class SEO: sitemap.xml Dynamic Site Index ──────────────────────────
+app.get('/sitemap.xml', (c) => {
+  const now = new Date().toISOString().split('T')[0];
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+  <url>
+    <loc>https://ultrademon.site/</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://ultrademon.site/benchmarks</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://ultrademon.site/pricing</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ultrademon.site/mcp</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ultrademon.site/privacy</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://ultrademon.site/terms</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>`;
+  return new Response(sitemap, {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=86400',
+    },
+  });
+});
+
+// ── World-Class SEO: OpenGraph & Social Preview Banner (/og-image.png) ────────
+app.get('/og-image.png', (c) => {
+  const svg = `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0a0c"/>
+      <stop offset="100%" stop-color="#141418"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#27272a" stroke-width="0.75" stroke-opacity="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- Glowing Accent Border -->
+  <rect x="24" y="24" width="1152" height="582" rx="24" fill="none" stroke="#27272a" stroke-width="1.5"/>
+
+  <!-- Badge -->
+  <g transform="translate(80, 85)">
+    <rect width="360" height="38" rx="19" fill="#18181b" stroke="#3f3f46" stroke-width="1"/>
+    <circle cx="22" cy="19" r="5" fill="#10b981"/>
+    <text x="38" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#e4e4e7" letter-spacing="0.5">330+ ANYCAST POPS · SUB-15MS RECALL</text>
+  </g>
+
+  <!-- Brand Title -->
+  <text x="80" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="64" font-weight="800" fill="#ffffff" letter-spacing="-1.5">
+    ultrademon <tspan font-style="italic" font-weight="400" fill="#a1a1aa">engine</tspan>
+  </text>
+
+  <!-- Headline -->
+  <text x="80" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="34" font-weight="700" fill="#f4f4f5" letter-spacing="-0.5">
+    Sovereign Autonomous Engine for Agent Memory &amp; Edge Search
+  </text>
+
+  <!-- Description lines -->
+  <text x="80" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="400" fill="#a1a1aa">
+    Equip autonomous AI swarms with persistent long-term memory, SQLite FTS5 BM25 edge search,
+  </text>
+  <text x="80" y="395" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="400" fill="#a1a1aa">
+    and kinetic micro-telemetry running on Cloudflare Workers with zero third-party latency.
+  </text>
+
+  <!-- Metric Badges -->
+  <g transform="translate(80, 460)">
+    <rect width="210" height="74" rx="14" fill="#18181b" stroke="#27272a" stroke-width="1"/>
+    <text x="20" y="33" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#71717a">MEDIAN LATENCY</text>
+    <text x="20" y="60" font-family="monospace" font-size="22" font-weight="700" fill="#10b981">11.8ms P50</text>
+  </g>
+
+  <g transform="translate(310, 460)">
+    <rect width="210" height="74" rx="14" fill="#18181b" stroke="#27272a" stroke-width="1"/>
+    <text x="20" y="33" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#71717a">RECALL AT 10</text>
+    <text x="20" y="60" font-family="monospace" font-size="22" font-weight="700" fill="#ffffff">94.8% Rank</text>
+  </g>
+
+  <g transform="translate(540, 460)">
+    <rect width="240" height="74" rx="14" fill="#18181b" stroke="#27272a" stroke-width="1"/>
+    <text x="20" y="33" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#71717a">PAY-AS-YOU-GO</text>
+    <text x="20" y="60" font-family="monospace" font-size="22" font-weight="700" fill="#38bdf8">100k / $20</text>
+  </g>
+
+  <!-- Domain Branding -->
+  <text x="1120" y="525" text-anchor="end" font-family="monospace" font-size="18" font-weight="600" fill="#71717a">
+    https://ultrademon.site
+  </text>
+</svg>`;
+  return new Response(svg, {
+    status: 200,
+    headers: {
+      'Content-Type': 'image/svg+xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=604800, immutable',
+    },
+  });
+});
+
 // Landing Page & Developer Platform UI
 app.get('/', (c) => {
   const accept = c.req.header('accept') || '';
@@ -155,15 +323,14 @@ app.get('/', (c) => {
   });
 });
 
-// Dedicated Auth Pages
+// Dedicated Auth Pages — redirect to unified landing page with auth modal
 app.get('/login', (c) => {
-  const origin = new URL(c.req.url).origin;
-  return c.html(renderAuthPage('login', origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
+  return c.redirect('/?auth=signin');
 });
 
 app.get('/signup', (c) => {
-  const origin = new URL(c.req.url).origin;
-  return c.html(renderAuthPage('signup', origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY));
+  const plan = c.req.query('plan') || '';
+  return c.redirect('/?auth=signup' + (plan ? '&plan=' + encodeURIComponent(plan) : ''));
 });
 
 // Dedicated Pricing Page (Renders Full Landing with Focus on Pricing)

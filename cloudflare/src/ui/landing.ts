@@ -16,6 +16,162 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UltraDemon — Sovereign Autonomous Engine for Agent Memory &amp; Search</title>
   <meta name="description" content="UltraDemon gives autonomous agents sub-15ms long-term memory recall, full-text edge web search, and kinetic micro-telemetry across 330+ Cloudflare edge locations with zero third-party latency.">
+  <meta name="keywords" content="ultrademon, ultrademon.site, autonomous agent memory, AI agent long term memory, edge search API, SQLite FTS5 BM25, sub-15ms search, Cloudflare Workers vector memory, MCP server memory, Claude MCP memory, LangChain agent memory, AutoGPT memory, sovereign AI engine, agent knowledge graph, edge crawler">
+  <link rel="canonical" href="https://ultrademon.site/">
+  <link rel="alternate" hreflang="x-default" href="https://ultrademon.site/">
+  <link rel="alternate" hreflang="en" href="https://ultrademon.site/">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="author" content="UltraDemon">
+  <meta name="publisher" content="UltraDemon">
+  <meta name="application-name" content="UltraDemon">
+  <meta name="theme-color" content="#09090b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="UltraDemon">
+
+  <!-- Open Graph / Facebook / LinkedIn / Discord -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="UltraDemon">
+  <meta property="og:url" content="https://ultrademon.site/">
+  <meta property="og:title" content="UltraDemon — Sovereign Autonomous Engine for Agent Memory &amp; Search">
+  <meta property="og:description" content="Sub-15ms long-term memory recall and edge search for autonomous AI agents across 330+ Anycast cities with zero third-party latency.">
+  <meta property="og:image" content="https://ultrademon.site/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="UltraDemon Engine — Sovereign Agent Memory &amp; Edge Search">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ultrademon_site">
+  <meta name="twitter:creator" content="@ultrademon_site">
+  <meta name="twitter:title" content="UltraDemon — Sovereign Autonomous Engine for Agent Memory &amp; Search">
+  <meta name="twitter:description" content="Sub-15ms long-term memory recall and edge search for autonomous AI agents across 330+ Anycast locations.">
+  <meta name="twitter:image" content="https://ultrademon.site/og-image.png">
+  <meta name="twitter:image:alt" content="UltraDemon Engine">
+
+  <!-- Schema.org Structured Data (World-Class SEO Rich Snippets) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://ultrademon.site/#organization",
+        "name": "UltraDemon",
+        "url": "https://ultrademon.site",
+        "logo": "https://ultrademon.site/favicon.png",
+        "description": "Sovereign autonomous engine for agent memory, edge search, and kinetic micro-telemetry.",
+        "sameAs": [
+          "https://github.com/im-ansh/UltraDemon"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://ultrademon.site/#website",
+        "url": "https://ultrademon.site/",
+        "name": "UltraDemon",
+        "description": "Sovereign Autonomous Engine for AI Agent Memory & Edge Search",
+        "publisher": { "@id": "https://ultrademon.site/#organization" },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://ultrademon.site/v1/search?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://ultrademon.site/#application",
+        "name": "UltraDemon",
+        "operatingSystem": "Cloudflare Workers Edge, Linux, macOS, Windows",
+        "applicationCategory": "DeveloperApplication",
+        "url": "https://ultrademon.site/",
+        "image": "https://ultrademon.site/og-image.png",
+        "description": "UltraDemon equips autonomous agents and multi-agent swarms with persistent long-term memory, sub-15ms BM25 full-text recall, and an autonomous edge crawler across 330+ Anycast cities with zero third-party latency.",
+        "author": { "@id": "https://ultrademon.site/#organization" },
+        "offers": [
+          {
+            "@type": "Offer",
+            "name": "Free Tier",
+            "price": "0",
+            "priceCurrency": "USD",
+            "description": "10,000 monthly requests, 25MB memory index, sub-15ms edge recall"
+          },
+          {
+            "@type": "Offer",
+            "name": "Pay As You Go",
+            "price": "20.00",
+            "priceCurrency": "USD",
+            "description": "100,000 API requests for $20, 500MB long-term memory, unlimited API keys"
+          },
+          {
+            "@type": "Offer",
+            "name": "Business Tier",
+            "price": "299.00",
+            "priceCurrency": "USD",
+            "description": "Dedicated Cloudflare KV & D1 isolates, 10M requests, custom SLA"
+          }
+        ],
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "128",
+          "bestRating": "5",
+          "worstRating": "1"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://ultrademon.site/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is UltraDemon?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "UltraDemon is a sovereign autonomous engine providing AI agents and multi-agent systems with sub-15ms long-term memory recall, full-text edge web search via SQLite FTS5 BM25, and kinetic micro-telemetry running on 330+ Cloudflare edge locations worldwide."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How fast is UltraDemon compared to traditional search APIs?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "UltraDemon delivers median (P50) edge latency of 11.8ms, compared to 842ms on Tavily, 910ms on Exa, and 580ms on Serper. UltraDemon runs directly on Cloudflare edge isolates adjacent to users and AI agents."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does UltraDemon support Model Context Protocol (MCP)?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. UltraDemon features native Model Context Protocol (MCP) server endpoints (/mcp), allowing immediate integration with Claude Desktop, Cursor, Windsurf, LangChain, and autonomous frameworks with zero extra configuration."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the pricing model for UltraDemon?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "UltraDemon offers a developer-first Pay-As-You-Go pricing model of 100,000 API requests for $20, alongside a 10,000 requests/month Free tier and custom dedicated tiers for high-throughput enterprise agent fleets."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How is agent data stored and kept private?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "All memories and index assets are encrypted and stored in sovereign Cloudflare D1 SQLite databases and KV stores. Your agent data is never used for training and never routed through third-party telemetry providers."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
   <link rel="icon" type="image/png" href="${ULTRADEMON_FAVICON_URI}">
   
   <!-- Tailwind CSS -->
@@ -216,8 +372,6 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       }
     }
 
-    #demoModal.hidden { display: none !important; }
-    #demoModal:not(.hidden) { display: flex !important; }
   </style>
 
   <!-- Early-Bound Bulletproof Handlers (Available Millisecond 0) -->
@@ -255,13 +409,13 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       if (modal) modal.classList.add('hidden');
     };
     window.openDemoModal = function() {
-      var modal = document.getElementById('demoModal');
-      if (modal) modal.classList.remove('hidden');
+      if (typeof window.handleModalGuestAccess === 'function') {
+        window.handleModalGuestAccess();
+      } else {
+        window.openAuthModal('signin');
+      }
     };
-    window.closeDemoModal = function() {
-      var modal = document.getElementById('demoModal');
-      if (modal) modal.classList.add('hidden');
-    };
+    window.closeDemoModal = function() {};
   </script>
 </head>
 <body class="min-h-screen bg-white text-neutral-900 selection:bg-neutral-900 selection:text-white flex flex-col justify-between">
@@ -304,15 +458,15 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
       <!-- Nav Action CTAs -->
       <div class="flex items-center gap-2 sm:gap-3">
-        <a href="#demo" onclick="openDemoModal(); return false;" class="hidden sm:inline-block text-xs font-medium text-neutral-600 hover:text-neutral-950 px-3 py-1.5 transition-colors cursor-pointer">
-          Book a demo
-        </a>
-        <a href="/login" onclick="openAuthModal('signin'); return false;" class="text-xs font-medium text-neutral-600 hover:text-neutral-950 px-2.5 sm:px-3 py-1.5 transition-colors cursor-pointer">
+        <button type="button" onclick="handleModalGuestAccess()" class="hidden sm:inline-block text-xs font-medium text-neutral-600 hover:text-neutral-950 px-3 py-1.5 transition-colors cursor-pointer">
+          1-Click Demo
+        </button>
+        <button type="button" onclick="openAuthModal('signin')" class="text-xs font-medium text-neutral-600 hover:text-neutral-950 px-2.5 sm:px-3 py-1.5 transition-colors cursor-pointer">
           Log in
-        </a>
-        <a href="/signup" onclick="openAuthModal('signup'); return false;" id="navCtaBtn" class="text-xs font-semibold bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-3.5 sm:px-4 py-1.5 transition-colors shadow-xs cursor-pointer">
+        </button>
+        <button type="button" onclick="openAuthModal('signup')" id="navCtaBtn" class="text-xs font-semibold bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-3.5 sm:px-4 py-1.5 transition-colors shadow-xs cursor-pointer">
           Get started
-        </a>
+        </button>
 
         <!-- Mobile Menu Toggle Button -->
         <button type="button" id="landingMobileNavBtn" onclick="toggleLandingMobileMenu()" class="md:hidden p-1.5 text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 rounded-lg transition cursor-pointer ml-1" aria-label="Toggle navigation menu">
@@ -331,20 +485,21 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <a href="#workflow" onclick="toggleLandingMobileMenu()" class="py-1.5 hover:text-neutral-950">Workflow</a>
         <a href="#integrations" onclick="toggleLandingMobileMenu()" class="py-1.5 hover:text-neutral-950">Integrations</a>
         <a href="#pricing" onclick="toggleLandingMobileMenu()" class="py-1.5 hover:text-neutral-950">Pricing</a>
+        <a href="/benchmarks" class="py-1.5 hover:text-neutral-950">Benchmarks</a>
         <a href="/app" class="py-1.5 hover:text-neutral-950 flex items-center justify-between font-semibold">
           <span>Console Workspace</span>
           <span class="text-[10px] font-mono bg-neutral-100 px-2 py-0.5 rounded text-neutral-600">Active</span>
         </a>
       </nav>
       <div class="pt-3 border-t border-neutral-100 flex flex-col gap-2">
-        <button onclick="openDemoModal(); toggleLandingMobileMenu();" class="w-full py-2.5 text-xs font-semibold border border-neutral-200 rounded-xl text-neutral-800 bg-neutral-50 hover:bg-neutral-100 transition cursor-pointer">
-          Book a demo
+        <button type="button" onclick="handleModalGuestAccess(); toggleLandingMobileMenu();" class="w-full py-2.5 text-xs font-semibold border border-neutral-200 rounded-xl text-neutral-800 bg-neutral-50 hover:bg-neutral-100 transition cursor-pointer">
+          1-Click Demo Console
         </button>
         <div class="grid grid-cols-2 gap-2">
-          <button onclick="openAuthModal('signin'); toggleLandingMobileMenu();" class="py-2.5 text-xs font-semibold border border-neutral-200 rounded-xl text-neutral-800 hover:bg-neutral-50 transition cursor-pointer">
+          <button type="button" onclick="openAuthModal('signin'); toggleLandingMobileMenu();" class="py-2.5 text-xs font-semibold border border-neutral-200 rounded-xl text-neutral-800 hover:bg-neutral-50 transition cursor-pointer">
             Log in
           </button>
-          <button onclick="openAuthModal('signup'); toggleLandingMobileMenu();" class="py-2.5 text-xs font-semibold bg-neutral-950 text-white rounded-xl hover:bg-neutral-800 transition cursor-pointer">
+          <button type="button" onclick="openAuthModal('signup'); toggleLandingMobileMenu();" class="py-2.5 text-xs font-semibold bg-neutral-950 text-white rounded-xl hover:bg-neutral-800 transition cursor-pointer">
             Get started
           </button>
         </div>
@@ -370,12 +525,15 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </p>
 
         <!-- Refined Minimalist Action Buttons -->
-        <div class="mt-6 sm:mt-7 flex items-center gap-3">
-          <a href="/signup" onclick="openAuthModal('signup'); return false;" class="inline-flex items-center justify-center bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-5 sm:px-6 py-2.5 text-xs sm:text-sm font-semibold tracking-tight transition-all shadow-xs hover:shadow active:scale-[0.98] cursor-pointer">
+        <div class="mt-6 sm:mt-7 flex flex-wrap items-center gap-3">
+          <button type="button" onclick="openAuthModal('signup')" class="inline-flex items-center justify-center bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-5 sm:px-6 py-2.5 text-xs sm:text-sm font-semibold tracking-tight transition-all shadow-xs hover:shadow active:scale-[0.98] cursor-pointer">
             Get started
-          </a>
-          <button onclick="openDemoModal()" class="inline-flex items-center justify-center border border-neutral-200/90 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-800 hover:text-neutral-950 rounded-full px-5 sm:px-6 py-2.5 text-xs sm:text-sm font-semibold tracking-tight transition-all active:scale-[0.98] shadow-2xs cursor-pointer">
-            Book a demo
+          </button>
+          <button type="button" onclick="handleModalGuestAccess()" class="inline-flex items-center justify-center border border-neutral-200/90 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-800 hover:text-neutral-950 rounded-full px-5 sm:px-6 py-2.5 text-xs sm:text-sm font-semibold tracking-tight transition-all active:scale-[0.98] shadow-2xs cursor-pointer">
+            1-Click Demo Console
+          </button>
+          <button type="button" onclick="openAuthModal('signin')" class="inline-flex items-center justify-center text-xs sm:text-sm font-medium text-neutral-600 hover:text-neutral-950 px-2 py-2.5 transition cursor-pointer">
+            Sign In &rarr;
           </button>
         </div>
       </div>
@@ -1284,8 +1442,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
               </ul>
             </div>
 
-            <button onclick="openDemoModal()" class="w-full mt-8 py-3 px-4 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 font-semibold text-xs transition cursor-pointer active:scale-[0.98]">
-              Contact Business Sales
+            <button type="button" onclick="openAuthModal('signup', 'business')" class="w-full mt-8 py-3 px-4 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold text-xs transition cursor-pointer active:scale-[0.98]">
+              Get Business Tier
             </button>
           </div>
 
@@ -1332,8 +1490,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
               </ul>
             </div>
 
-            <button onclick="openDemoModal()" class="w-full mt-8 py-3 px-4 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 font-semibold text-xs transition cursor-pointer active:scale-[0.98]">
-              Contact Enterprise Sales
+            <button type="button" onclick="openAuthModal('signup', 'enterprise')" class="w-full mt-8 py-3 px-4 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold text-xs transition cursor-pointer active:scale-[0.98]">
+              Get Enterprise Sovereign
             </button>
           </div>
 
@@ -1342,25 +1500,66 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </div>
     </section>
 
-    <!-- SECTION 13: FINAL CTA -->
-    <section class="py-28 px-4 sm:px-6 max-w-4xl mx-auto text-center">
-      <h2 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-neutral-950 leading-[1.08]">
-        Stop waiting on centralized latency.<br><span class="font-serif font-bold italic text-neutral-950">Power your agents with UltraDemon</span>
-      </h2>
-      <p class="text-sm sm:text-base text-neutral-600 max-w-xl mx-auto mt-6 leading-relaxed font-normal">
-        Sub-15ms agent memory, sovereign edge search, and distributed telemetry across 330+ Anycast cities. Provision your first key in seconds.
-      </p>
-      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <a href="/signup" onclick="openAuthModal('signup'); return false;" class="bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-6 py-2.5 text-xs sm:text-sm font-semibold transition-all shadow-xs flex items-center gap-2 cursor-pointer">
-          <span>Try UltraDemon</span>
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
-        </a>
-        <a href="/app" class="border border-neutral-200/90 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-900 rounded-full px-6 py-2.5 text-xs sm:text-sm font-semibold transition-all">
-          Talk to sales
-        </a>
+    <!-- SECTION 13: UNIFIED SOVEREIGN ACCESS & DIRECT EMAIL AUTH -->
+    <section class="py-20 px-4 sm:px-6 max-w-4xl mx-auto text-center" id="access">
+      <div class="mb-8">
+        <span class="text-xs font-mono uppercase tracking-widest text-neutral-400 font-semibold">DIRECT EDGE ACCESS</span>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-neutral-950 mt-2">
+          Start building in seconds.<br><span class="font-serif font-bold italic text-neutral-950">Normal email sign-in. Zero friction.</span>
+        </h2>
+        <p class="text-xs sm:text-sm text-neutral-500 max-w-lg mx-auto mt-3 leading-relaxed">
+          Provision your sovereign developer keys on Cloudflare Workers edge. Real email authentication backed by SQLite FTS5.
+        </p>
+      </div>
+
+      <!-- Unified Auth Box directly on the Landing Page -->
+      <div class="bg-white rounded-3xl border border-neutral-200/90 p-6 sm:p-8 shadow-xl max-w-md mx-auto text-left">
+        <!-- Tab Switcher -->
+        <div class="flex border-b border-neutral-200 mb-6">
+          <button type="button" id="inlineTabSignin" onclick="switchInlineAuthTab('signin')" class="flex-1 pb-2.5 text-xs font-bold border-b-2 border-neutral-950 text-neutral-950 transition-colors cursor-pointer text-center">
+            Sign In
+          </button>
+          <button type="button" id="inlineTabSignup" onclick="switchInlineAuthTab('signup')" class="flex-1 pb-2.5 text-xs font-medium border-b-2 border-transparent text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer text-center">
+            Create Account
+          </button>
+        </div>
+
+        <!-- Form -->
+        <form id="inlineAuthForm" onsubmit="handleInlineAuthSubmit(event)" class="space-y-4 text-xs">
+          <div>
+            <label class="block text-[11px] font-mono text-neutral-600 uppercase tracking-wider mb-1.5 font-medium">Email address</label>
+            <input type="email" id="inlineAuthEmail" required class="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200 bg-neutral-50/70 focus:bg-white focus:outline-none focus:border-neutral-950 transition-colors font-mono text-xs text-neutral-950" placeholder="name@company.com">
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-[11px] font-mono text-neutral-600 uppercase tracking-wider font-medium">Password</label>
+              <span class="text-[10px] text-neutral-400 font-num">Min. 6 chars</span>
+            </div>
+            <input type="password" id="inlineAuthPassword" required minlength="6" class="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200 bg-neutral-50/70 focus:bg-white focus:outline-none focus:border-neutral-950 transition-colors font-mono text-xs text-neutral-950" placeholder="••••••••••••">
+          </div>
+
+          <div id="inlineAuthError" class="p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs hidden font-medium"></div>
+          <div id="inlineAuthSuccess" class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs hidden font-medium"></div>
+
+          <button type="submit" id="inlineAuthSubmitBtn" class="w-full py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold transition cursor-pointer shadow-xs text-xs">
+            Sign In to Workspace
+          </button>
+
+          <div class="relative flex items-center justify-center my-3">
+            <div class="border-t border-neutral-200 w-full"></div>
+            <span class="bg-white px-2 text-[10px] uppercase font-mono text-neutral-400 absolute">or</span>
+          </div>
+
+          <!-- 1-Click Instant Guest Access -->
+          <button type="button" onclick="handleModalGuestAccess()" id="inlineGuestBtn" class="w-full py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 font-semibold transition cursor-pointer text-xs shadow-2xs">
+            Continue with 1-Click Demo Console
+          </button>
+        </form>
+
+        <div class="mt-5 pt-4 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400 font-num">
+          <span>Cloudflare Edge Crypto SHA-256</span>
+          <span>Instant Sovereign Recall</span>
+        </div>
       </div>
     </section>
 
@@ -1469,48 +1668,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </form>
 
       <div class="mt-4 text-center">
-        <a href="/login" class="text-[11px] text-neutral-500 hover:underline">Or use dedicated auth page</a>
+        <span class="text-[11px] text-neutral-400 font-num">Edge-authenticated on Cloudflare Workers</span>
       </div>
-    </div>
-  </div>
-
-  <!-- BOOK A DEMO MODAL -->
-  <div id="demoModal" onclick="if(event.target === this) closeDemoModal();" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm hidden">
-    <div class="bg-white rounded-2xl border border-neutral-200 shadow-2xl max-w-md w-full p-6 text-left relative" onclick="event.stopPropagation();">
-      <button onclick="closeDemoModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-neutral-900 transition-colors p-1 cursor-pointer">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-      <div class="flex items-center gap-2.5 mb-2">
-        <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-7 h-7 object-contain select-none shrink-0" />
-        <span class="font-bold text-base text-neutral-950">Book an Architecture Demo</span>
-      </div>
-      <p class="text-xs text-neutral-500 mb-5 leading-relaxed">
-        See sub-15ms agent memory and BM25 edge search running live across 330 Cloudflare Anycast cities.
-      </p>
-      <form onsubmit="handleDemoSubmit(event)" class="space-y-3.5 text-xs">
-        <div>
-          <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Work Email</label>
-          <input type="email" id="demoEmail" required class="w-full px-3 py-2 rounded-xl border border-neutral-200 font-mono text-xs focus:outline-none focus:border-neutral-950" placeholder="engineer@company.com">
-        </div>
-        <div>
-          <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Company / Organization</label>
-          <input type="text" id="demoCompany" required class="w-full px-3 py-2 rounded-xl border border-neutral-200 text-xs focus:outline-none focus:border-neutral-950" placeholder="Acme Autonomous AI">
-        </div>
-        <div>
-          <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Estimated Daily Agent Queries</label>
-          <select id="demoVolume" class="w-full px-3 py-2 rounded-xl border border-neutral-200 text-xs focus:outline-none focus:border-neutral-950 font-num">
-            <option value="10k-50k">10,000 – 50,000 queries / day</option>
-            <option value="50k-500k">50,000 – 500,000 queries / day</option>
-            <option value="500k+">500,000+ queries / day (High Scale)</option>
-          </select>
-        </div>
-        <div id="demoSuccess" class="hidden p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium">
-          Demo request confirmed! Launching your interactive sandbox...
-        </div>
-        <button type="submit" id="demoSubmitBtn" class="w-full py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold transition cursor-pointer shadow-xs">
-          Schedule Live Architecture Demo
-        </button>
-      </form>
     </div>
   </div>
 
@@ -1647,34 +1806,86 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       }
     }
 
-    async function handleDemoSubmit(e) {
-      if (e && e.preventDefault) e.preventDefault();
-      const email = document.getElementById('demoEmail').value.trim();
-      const succ = document.getElementById('demoSuccess');
-      const btn = document.getElementById('demoSubmitBtn');
+    let inlineAuthMode = 'signin';
+    window.switchInlineAuthTab = function(mode) {
+      inlineAuthMode = mode;
+      const tabIn = document.getElementById('inlineTabSignin');
+      const tabUp = document.getElementById('inlineTabSignup');
+      const btn = document.getElementById('inlineAuthSubmitBtn');
+      const err = document.getElementById('inlineAuthError');
+      const succ = document.getElementById('inlineAuthSuccess');
+      if (err) err.classList.add('hidden');
+      if (succ) succ.classList.add('hidden');
 
-      if (btn) { btn.disabled = true; btn.innerText = 'Scheduling demo...'; }
+      if (mode === 'signin') {
+        if (tabIn) tabIn.className = 'flex-1 pb-2.5 text-xs font-bold border-b-2 border-neutral-950 text-neutral-950 transition-colors cursor-pointer text-center';
+        if (tabUp) tabUp.className = 'flex-1 pb-2.5 text-xs font-medium border-b-2 border-transparent text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer text-center';
+        if (btn) btn.innerText = 'Sign In to Workspace';
+      } else {
+        if (tabUp) tabUp.className = 'flex-1 pb-2.5 text-xs font-bold border-b-2 border-neutral-950 text-neutral-950 transition-colors cursor-pointer text-center';
+        if (tabIn) tabIn.className = 'flex-1 pb-2.5 text-xs font-medium border-b-2 border-transparent text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer text-center';
+        if (btn) btn.innerText = 'Create Sovereign Account';
+      }
+    };
+
+    async function handleInlineAuthSubmit(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      const email = document.getElementById('inlineAuthEmail').value.trim();
+      const password = document.getElementById('inlineAuthPassword').value;
+      const err = document.getElementById('inlineAuthError');
+      const succ = document.getElementById('inlineAuthSuccess');
+      const btn = document.getElementById('inlineAuthSubmitBtn');
+
+      if (err) err.classList.add('hidden');
+      if (succ) succ.classList.add('hidden');
+
+      if (!email || !password) {
+        if (err) {
+          err.innerText = 'Please enter both email and password';
+          err.classList.remove('hidden');
+        }
+        return;
+      }
+
+      if (btn) { btn.disabled = true; btn.innerText = 'Connecting to edge...'; }
 
       try {
-        const res = await fetch('/v1/auth/anonymous', {
+        const endpoint = inlineAuthMode === 'signup' ? '/v1/auth/signup' : '/v1/auth/signin';
+        const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ plan: 'pro' })
+          body: JSON.stringify({ email, password, plan: 'free' })
         });
         const data = await res.json();
-        if (data.session) localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session));
-        if (data.user) localStorage.setItem('ultrademon_user', JSON.stringify(data.user));
-        if (data.initial_key) localStorage.setItem('ultrademon_active_key', data.initial_key);
-
+        if (!res.ok) {
+          throw new Error(data.error || 'Authentication failed');
+        }
+        if (data.session) {
+          localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session));
+        }
+        if (data.user) {
+          localStorage.setItem('ultrademon_user', JSON.stringify(data.user));
+        }
+        if (data.active_key) {
+          localStorage.setItem('ultrademon_active_key', data.active_key);
+        }
         if (succ) {
-          succ.innerText = 'Demo scheduled for ' + email + '! Entering your interactive workspace...';
+          succ.innerText = 'Authenticated! Launching workspace...';
           succ.classList.remove('hidden');
         }
         setTimeout(() => {
-          window.location.href = '/app?plan=pro';
-        }, 700);
-      } catch (err) {
-        window.location.href = '/app';
+          window.location.href = '/app';
+        }, 200);
+      } catch (error) {
+        if (err) {
+          err.innerText = error.message || 'Authentication error';
+          err.classList.remove('hidden');
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerText = inlineAuthMode === 'signin' ? 'Sign In to Workspace' : 'Create Sovereign Account';
+        }
       }
     }
 
@@ -1725,9 +1936,24 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
     document.addEventListener('DOMContentLoaded', function() {
       checkAuthSession();
+
+      // Auto-open auth modal if redirected from /login or /signup
+      var params = new URLSearchParams(window.location.search);
+      var authParam = params.get('auth');
+      if (authParam === 'signin' || authParam === 'signup') {
+        var modalPlan = params.get('plan') || 'free';
+        openAuthModal(authParam, modalPlan);
+        // Clean up URL
+        try {
+          var cleanUrl = window.location.pathname;
+          if (window.location.hash) cleanUrl += window.location.hash;
+          window.history.replaceState(null, '', cleanUrl);
+        } catch (e) {}
+      }
+
       if (window.location.hash === '#pricing' || window.location.pathname === '/pricing') {
         setTimeout(function() {
-          const el = document.getElementById('pricing');
+          var el = document.getElementById('pricing');
           if (el) el.scrollIntoView({ behavior: 'smooth' });
         }, 150);
       }

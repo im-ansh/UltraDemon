@@ -74,6 +74,9 @@ export function renderPrivacyPage(origin: string): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Privacy Policy — UltraDemon Sovereign Edge Platform</title>
+  <meta name="description" content="UltraDemon Privacy Policy. Sovereign autonomous engine architecture ensuring zero third-party data leakage and complete data ownership.">
+  <link rel="canonical" href="https://ultrademon.site/privacy">
+  <meta name="robots" content="index, follow">
   <link rel="icon" type="image/png" href="${ULTRADEMON_FAVICON_URI}">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -247,6 +250,9 @@ export function renderTermsPage(origin: string): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Terms of Use — UltraDemon Sovereign Edge Platform</title>
+  <meta name="description" content="UltraDemon Terms of Use and API Service Agreement. Transparent developer billing at $20 per 100,000 API requests.">
+  <link rel="canonical" href="https://ultrademon.site/terms">
+  <meta name="robots" content="index, follow">
   <link rel="icon" type="image/png" href="${ULTRADEMON_FAVICON_URI}">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">

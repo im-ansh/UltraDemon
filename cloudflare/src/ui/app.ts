@@ -13,7 +13,9 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Developer Workspace — UltraDemon Engine</title>
+  <title>${initialView === 'benchmarks' ? 'Edge Search &amp; Memory Benchmarks Audit — UltraDemon' : 'Developer Workspace — UltraDemon Engine'}</title>
+  <meta name="description" content="${initialView === 'benchmarks' ? 'Audited 10,000 real query latency comparisons across 330+ Anycast edge cities: UltraDemon delivers 11.8ms P50 versus 842ms on Tavily and 910ms on Exa.' : 'Sovereign developer workspace for AI agent memory, edge search keys, and real-time micro-telemetry.'}">
+  ${initialView === 'benchmarks' ? '<link rel="canonical" href="https://ultrademon.site/benchmarks"><meta name="robots" content="index, follow, max-image-preview:large"><meta property="og:title" content="Edge Search &amp; Memory Benchmarks Audit — UltraDemon"><meta property="og:description" content="11.8ms P50 edge search versus 842ms legacy cloud providers across 330+ cities."><meta property="og:url" content="https://ultrademon.site/benchmarks"><meta property="og:image" content="https://ultrademon.site/og-image.png">' : '<meta name="robots" content="noindex, nofollow">'}
   <link rel="icon" type="image/png" href="${ULTRADEMON_FAVICON_URI}">
   
   <script src="https://cdn.tailwindcss.com"></script>
@@ -5093,7 +5095,7 @@ requests.post("${origin}/v1/analytics/capture", json={
       localStorage.removeItem('ultrademon_auth_session');
       localStorage.removeItem('ultrademon_user');
       localStorage.removeItem('ultrademon_active_key');
-      window.location.href = '/login';
+      window.location.href = '/?auth=signin';
     }
 
     async function autoProvisionInitialKey(plan) {
