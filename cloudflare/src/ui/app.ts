@@ -143,163 +143,19 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       border-radius: 6px;
     }
 
-    /* ── Harry Potter Ethereal Spellcast & Flow Transitions ── */
-    .magic-flow-out {
-      animation: magicPageFlowOut 0.22s cubic-bezier(0.4, 0, 0.9, 1) forwards !important;
-      pointer-events: none !important;
-      transform-origin: center 25%;
-      will-change: transform, opacity, filter;
-    }
-
-    @keyframes magicPageFlowOut {
-      0% {
-        opacity: 1;
-        transform: translateY(0) scale(1) perspective(1200px) rotateX(0deg);
-        filter: blur(0px);
-      }
-      30% {
-        opacity: 0.9;
-        filter: blur(3px) drop-shadow(0 -4px 18px rgba(212, 175, 55, 0.45));
-        transform: translateY(-5px) scale(0.99) perspective(1200px) rotateX(1.8deg);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(-24px) scale(0.965) perspective(1200px) rotateX(5deg) rotateZ(-0.4deg);
-        filter: blur(12px) drop-shadow(0 -10px 28px rgba(212, 175, 55, 0));
-      }
-    }
-
-    .magic-flow-in {
-      animation: magicPageFlowIn 0.48s cubic-bezier(0.18, 0.9, 0.28, 1) forwards !important;
-      transform-origin: center 25%;
-      will-change: transform, opacity, filter;
-    }
-
-    @keyframes magicPageFlowIn {
-      0% {
-        opacity: 0;
-        transform: translateY(28px) scale(0.965) perspective(1200px) rotateX(-5deg) rotateZ(0.4deg);
-        filter: blur(14px) drop-shadow(0 8px 25px rgba(212, 175, 55, 0.4));
-      }
-      45% {
-        opacity: 0.88;
-        filter: blur(3px) drop-shadow(0 4px 14px rgba(212, 175, 55, 0.22));
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0) scale(1) perspective(1200px) rotateX(0deg) rotateZ(0deg);
-        filter: blur(0px);
-      }
-    }
-
-    .magic-text-flow-out {
-      animation: magicTextFlowOut 0.20s cubic-bezier(0.4, 0, 1, 1) forwards !important;
-      will-change: transform, opacity, filter, letter-spacing;
-    }
-
-    @keyframes magicTextFlowOut {
-      0% {
-        opacity: 1;
-        transform: translateY(0);
-        filter: blur(0px);
-        letter-spacing: normal;
-      }
-      35% {
-        color: #d4af37 !important;
-        text-shadow: 0 0 12px rgba(212, 175, 55, 0.7);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(-16px) scale(1.02);
-        filter: blur(10px);
-        letter-spacing: 2px;
-        color: #d4af37 !important;
-      }
-    }
-
-    .magic-text-flow-in {
-      animation: magicTextFlowIn 0.48s cubic-bezier(0.18, 0.9, 0.28, 1) forwards !important;
-      will-change: transform, opacity, filter, letter-spacing;
-    }
-
-    @keyframes magicTextFlowIn {
-      0% {
-        opacity: 0;
-        transform: translateY(16px) scale(0.97);
-        filter: blur(12px);
-        letter-spacing: 2.5px;
-        color: #d4af37 !important;
-        text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
-      }
-      50% {
-        opacity: 0.92;
-        filter: blur(2px);
-        letter-spacing: 0.5px;
-        color: #171717;
-        text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        filter: blur(0px);
-        letter-spacing: normal;
-        color: inherit;
-        text-shadow: none;
-      }
-    }
-
-    .magic-card-cascade {
-      animation: magicCardFlow 0.48s cubic-bezier(0.18, 0.9, 0.28, 1) both;
-      animation-delay: calc(var(--magic-idx, 0) * 42ms);
-      will-change: transform, opacity, filter;
-    }
-
-    @keyframes magicCardFlow {
-      0% {
-        opacity: 0;
-        transform: translateY(22px) scale(0.975);
-        filter: blur(10px);
-        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-      }
-      60% {
-        filter: blur(1px);
-        box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        filter: blur(0px);
-        box-shadow: none;
-      }
-    }
-
-    .magic-rune-pulse {
-      animation: magicRuneAura 0.7s cubic-bezier(0.18, 0.9, 0.28, 1) forwards;
-    }
-
-    @keyframes magicRuneAura {
-      0% {
-        box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.8), 0 0 12px 2px rgba(212, 175, 55, 0.4);
-        border-color: #d4af37;
-        transform: scale(0.96);
-      }
-      40% {
-        box-shadow: 0 0 22px 6px rgba(212, 175, 55, 0.5), 0 0 28px 4px rgba(245, 158, 11, 0.3);
-        border-color: #f59e0b;
-        transform: scale(1.04);
-      }
-      100% {
-        box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
-        border-color: #e5e5e5;
-        transform: scale(1);
-      }
+    /* ── Clean Divider Line Layout & Devin Minimalist Standards ── */
+    .card-clean, .card-elevated, .devin-card {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      transition: none !important;
     }
   </style>
 </head>
-<body class="min-h-screen bg-[#fafafa] text-neutral-950 flex flex-col lg:flex-row antialiased selection:bg-black selection:text-white">
+<body class="min-h-screen bg-[#ffffff] text-neutral-950 flex flex-col md:flex-row antialiased selection:bg-black selection:text-white">
 
-  <!-- Mobile Top Sticky Navigation Bar (Mobile / Tablet Only) -->
-  <div class="lg:hidden sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-neutral-200/80 px-4 py-2.5 flex items-center justify-between shadow-2xs">
+  <!-- Mobile Top Sticky Navigation Bar (Mobile Only) -->
+  <div class="md:hidden sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-neutral-200/80 px-4 py-2.5 flex items-center justify-between shadow-2xs">
     <div class="flex items-center gap-2.5 min-w-0">
       <a href="/" class="flex items-center gap-2 group shrink-0">
         <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-7 h-7 object-contain" />
@@ -322,7 +178,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
   </div>
 
   <!-- Mobile Quick-Swipe View Pills Bar (Smooth Horizontal Scroll) -->
-  <div class="lg:hidden bg-white/95 border-b border-neutral-200/60 px-3 py-2 overflow-x-auto no-scrollbar flex items-center gap-1.5 whitespace-nowrap z-30 shadow-xs">
+  <div class="md:hidden bg-white/95 border-b border-neutral-200/60 px-3 py-2 overflow-x-auto no-scrollbar flex items-center gap-1.5 whitespace-nowrap z-30 shadow-xs">
     <button type="button" onclick="setAppView('overview', event)" data-mobile-pill="overview" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-semibold bg-neutral-950 text-white shadow-2xs shrink-0 cursor-pointer">Overview</button>
     <button type="button" onclick="setAppView('keys', event)" data-mobile-pill="keys" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 bg-neutral-50 border border-neutral-200/80 shrink-0 cursor-pointer">API Keys</button>
     <button type="button" onclick="setAppView('memory', event)" data-mobile-pill="memory" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 bg-neutral-50 border border-neutral-200/80 shrink-0 cursor-pointer">UltraMemory</button>
@@ -335,7 +191,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
   </div>
 
   <!-- Off-Canvas Mobile Drawer Overlay -->
-  <div id="appMobileDrawer" class="hidden fixed inset-0 z-50 flex lg:hidden">
+  <div id="appMobileDrawer" class="hidden fixed inset-0 z-50 flex md:hidden">
     <!-- Backdrop -->
     <div class="fixed inset-0 bg-neutral-950/60 backdrop-blur-xs transition-opacity" onclick="toggleAppMobileDrawer()"></div>
 
@@ -428,8 +284,8 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     </div>
   </div>
 
-  <!-- Left Sidebar Navigation (Desktop Fixed, Devin Minimalist Standard) -->
-  <aside class="hidden lg:flex lg:w-72 lg:min-h-screen lg:fixed lg:top-0 lg:left-0 lg:border-r border-neutral-200/80 bg-white z-40 flex-col justify-between p-4 shadow-[1px_0_10px_rgba(0,0,0,0.02)]">
+  <!-- Left Sidebar Navigation (Desktop & Tablet Fixed, Devin Minimalist Standard) -->
+  <aside class="hidden md:flex md:w-64 md:min-h-screen md:fixed md:top-0 md:left-0 md:border-r border-neutral-200/80 bg-white z-30 flex-col justify-between p-4 shadow-[1px_0_10px_rgba(0,0,0,0.02)]">
     <div class="space-y-4">
       <!-- Devin Workspace Dropdown & Action Controls (devin.ai layout) -->
       <div class="flex items-center justify-between px-1 py-0.5">
@@ -439,7 +295,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
           <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></svg>
         </div>
         <div class="flex items-center gap-0.5 text-neutral-400">
-          <button type="button" onclick="focusDevinPrompt()" title="Search / Command" class="p-1.5 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition cursor-pointer">
+          <button type="button" onclick="setAppView('search')" title="Search Studio" class="p-1.5 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition cursor-pointer">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
           </button>
           <button type="button" onclick="openHelpBotDrawer()" title="Help &amp; Knowledge" class="p-1.5 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition cursor-pointer">
@@ -449,25 +305,20 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       </div>
 
       <!-- Devin Prominent "+ New session" Button -->
-      <button type="button" onclick="startNewDevinSession()" class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold shadow-xs transition cursor-pointer">
-        <svg class="w-3.5 h-3.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-        <span>New session</span>
+      <button type="button" onclick="setAppView('search')" class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-medium shadow-xs transition cursor-pointer">
+        <svg class="w-3.5 h-3.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        <span>New Search Query</span>
       </button>
 
       <!-- User Profile & Plan Badge -->
-      <div class="p-3 bg-neutral-50/80 border border-neutral-200/90 rounded-xl space-y-1.5">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Workspace</span>
-          </div>
-          <span id="userPlanBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase font-num bg-neutral-950 text-white shadow-2xs">
-            Free
-          </span>
+      <div class="px-3 py-2 bg-neutral-50 border border-neutral-200/80 rounded-lg flex items-center justify-between">
+        <div class="flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Tier</span>
         </div>
-        <div id="userEmailDisplay" class="font-num text-xs font-semibold text-neutral-900 truncate">
-          Active Workspace
-        </div>
+        <span id="userPlanBadge" class="px-2 py-0.5 rounded text-[10px] font-bold uppercase font-num bg-neutral-950 text-white">
+          Free
+        </span>
       </div>
 
       <!-- App Navigation Links -->
@@ -475,42 +326,33 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         <!-- Group 1: Platform -->
         <div class="space-y-0.5">
           <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1">Platform</div>
-          <button type="button" onclick="setAppView('overview', event)" data-view-target="overview" id="nav-overview" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-neutral-950 text-white font-semibold cursor-pointer transition text-left shadow-xs">
+          <button type="button" onclick="setAppView('overview')" data-view-target="overview" id="nav-overview" class="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-neutral-950 text-white font-medium cursor-pointer transition text-left text-xs shadow-xs">
             <div class="flex items-center gap-2.5 min-w-0">
               <svg class="w-4 h-4 shrink-0 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
-              <span class="text-xs font-semibold tracking-tight truncate">Overview</span>
+              <span class="text-xs font-medium tracking-tight truncate">Overview</span>
             </div>
           </button>
-
-          <button type="button" onclick="setAppView('keys', event)" data-view-target="keys" id="nav-keys" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+          <button type="button" onclick="setAppView('keys')" data-view-target="keys" id="nav-keys" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left text-xs">
             <div class="flex items-center gap-2.5 min-w-0">
-              <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+              <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-1.5 1.5L14 9l-1.5-1.5-3 3 1.5 1.5L9 14l-4 4H2v3h3l4-4 2 2 3-3-1.5-1.5 3.5-3.5L21 2z"/></svg>
               <span class="text-xs font-medium tracking-tight truncate">API Keys</span>
             </div>
-            <span id="keysCountBadge" class="font-num text-[10px] text-neutral-400 font-semibold ml-auto shrink-0 pl-2">0</span>
           </button>
-        </div>
-
-        <!-- Group 2: Engines -->
-        <div class="space-y-0.5">
-          <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1">Engines</div>
-          <button type="button" onclick="setAppView('memory', event)" data-view-target="memory" id="nav-memory" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+          <button type="button" onclick="setAppView('memory')" data-view-target="memory" id="nav-memory" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left text-xs">
             <div class="flex items-center gap-2.5 min-w-0">
               <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
               <span class="text-xs font-medium tracking-tight truncate">UltraMemory</span>
             </div>
-            <span class="font-num text-[10px] bg-purple-50 text-purple-700 border border-purple-200/60 px-1.5 py-0.2 rounded-md font-bold ml-auto shrink-0">&lt;15ms</span>
+            <span class="font-num text-[10px] bg-neutral-100 text-neutral-700 px-1.5 py-0.2 rounded font-semibold ml-auto shrink-0">&lt;15ms</span>
           </button>
-
-          <button type="button" onclick="setAppView('search', event)" data-view-target="search" id="nav-search" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+          <button type="button" onclick="setAppView('search')" data-view-target="search" id="nav-search" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left text-xs">
             <div class="flex items-center gap-2.5 min-w-0">
               <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-              <span class="text-xs font-medium tracking-tight truncate">UltraSearch Studio</span>
+              <span class="text-xs font-medium tracking-tight truncate">UltraSearch</span>
             </div>
-            <span class="font-num text-[10px] bg-sky-50 text-sky-700 border border-sky-200/60 px-1.5 py-0.2 rounded-md font-bold ml-auto shrink-0">&lt;40ms</span>
+            <span class="font-num text-[10px] bg-neutral-100 text-neutral-700 px-1.5 py-0.2 rounded font-semibold ml-auto shrink-0">&lt;40ms</span>
           </button>
-
-          <button type="button" onclick="setAppView('crawler', event)" data-view-target="crawler" id="nav-crawler" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+          <button type="button" onclick="setAppView('crawler')" data-view-target="crawler" id="nav-crawler" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left text-xs">
             <div class="flex items-center gap-2.5 min-w-0">
               <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
               <span class="text-xs font-medium tracking-tight truncate">Web Crawler</span>
@@ -518,25 +360,22 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
           </button>
         </div>
 
-        <!-- Group 3: Observability & Protocol -->
+        <!-- Group 2: Observability -->
         <div class="space-y-0.5">
-          <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1">Analytics &amp; ICP</div>
-          <button type="button" onclick="setAppView('analytics', event)" data-view-target="analytics" id="nav-analytics" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+          <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1">Analytics &amp; Usage</div>
+          <button type="button" onclick="setAppView('analytics')" data-view-target="analytics" id="nav-analytics" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left text-xs">
             <div class="flex items-center gap-2.5 min-w-0">
               <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
               <span class="text-xs font-medium tracking-tight truncate">Telemetry &amp; ICP</span>
             </div>
-            <span class="font-num text-[9px] bg-neutral-900 text-white px-1.5 py-0.2 rounded-md font-semibold ml-auto shrink-0">vs PostHog</span>
           </button>
-
-          <button type="button" onclick="setAppView('membership', event)" data-view-target="membership" id="nav-membership" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+          <button type="button" onclick="setAppView('membership')" data-view-target="membership" id="nav-membership" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left text-xs">
             <div class="flex items-center gap-2.5 min-w-0">
               <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
               <span class="text-xs font-medium tracking-tight truncate">Quotas &amp; Top-Ups</span>
             </div>
           </button>
-
-          <button type="button" onclick="setAppView('integrations', event)" data-view-target="integrations" id="nav-integrations" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+          <button type="button" onclick="setAppView('integrations')" data-view-target="integrations" id="nav-integrations" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left text-xs">
             <div class="flex items-center gap-2.5 min-w-0">
               <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
               <span class="text-xs font-medium tracking-tight truncate">Integrations &amp; MCP</span>
@@ -544,42 +383,18 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
           </button>
         </div>
 
-        <!-- Group 4: Developer Workbench & Sandbox -->
+        <!-- Group 3: Workbench -->
         <div class="space-y-0.5">
           <div class="px-3 text-[10px] font-bold font-num text-neutral-400 uppercase tracking-wider mb-1">Developer Workbench</div>
-          <button type="button" onclick="setAppView('tester', event)" data-view-target="tester" id="nav-tester" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left">
+          <button type="button" onclick="setAppView('tester')" data-view-target="tester" id="nav-tester" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left text-xs">
             <div class="flex items-center gap-2.5 min-w-0">
               <svg class="w-4 h-4 shrink-0 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
               <span class="text-xs font-medium tracking-tight truncate">API Sandbox</span>
             </div>
-            <span class="font-num text-[9px] bg-emerald-50 text-emerald-800 border border-emerald-200/60 px-1.5 py-0.2 rounded-md font-semibold ml-auto shrink-0">Live</span>
+            <span class="font-num text-[9px] bg-emerald-50 text-emerald-800 border border-emerald-200/60 px-1.5 py-0.2 rounded font-semibold ml-auto shrink-0">Live</span>
           </button>
         </div>
       </nav>
-
-      <!-- Devin Sessions Drawer (devin.ai Sessions List) -->
-      <div class="pt-2 border-t border-neutral-100 space-y-1.5">
-        <div class="flex items-center justify-between px-2 text-[11px] font-semibold text-neutral-500 font-num">
-          <span class="tracking-tight uppercase text-[10px] text-neutral-400 font-bold">Sessions</span>
-          <div class="flex items-center gap-1">
-            <button type="button" onclick="startNewDevinSession()" class="p-1 hover:bg-neutral-100 rounded text-neutral-400 hover:text-neutral-950 cursor-pointer" title="New Session">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-            </button>
-            <button type="button" onclick="clearDevinSessions()" class="p-1 hover:bg-neutral-100 rounded text-neutral-400 hover:text-neutral-950 cursor-pointer" title="Clear Sessions">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-            </button>
-          </div>
-        </div>
-        <div class="px-2">
-          <div class="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 font-num mb-1 flex items-center gap-1.5">
-            <svg class="w-3 h-3 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span>Recent</span>
-          </div>
-          <div id="devinRecentSessionsList" class="space-y-0.5 text-xs text-neutral-600 font-sans max-h-32 overflow-y-auto">
-            <div class="px-2 py-1 text-[11px] text-neutral-400 italic">No sessions</div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- Bottom Actions -->
@@ -603,7 +418,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
   </aside>
 
   <!-- Main Content Workspace Area -->
-  <main class="flex-1 lg:ml-72 p-3.5 sm:p-8 lg:p-12 max-w-6xl w-full min-w-0">
+  <main class="flex-1 md:ml-64 p-3.5 sm:p-8 lg:p-12 max-w-6xl w-full min-w-0">
     
     <!-- Top Bar -->
     <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8 pb-4 sm:pb-5 border-b border-neutral-200/80">
@@ -772,120 +587,43 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
     <!-- SECTION 1: OVERVIEW -->
     <section id="view-overview" class="space-y-6">
-      <!-- Devin-Inspired Command Deck & Copilot Chatbot (Cognition Minimalism Standard) -->
-      <div id="devinCommandDeck" class="rounded-3xl bg-[#131316] text-white border border-[#27272a] p-5 sm:p-7 shadow-xl space-y-4 relative overflow-hidden">
-        <!-- Top Status Bar -->
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-7 h-7 object-contain" />
+      <!-- Section 01: System Status & Quick Actions -->
+      <div class="border-b border-neutral-200/80 pb-8">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="space-y-1.5">
             <div class="flex items-center gap-2">
-              <span class="font-serif font-bold text-base tracking-tight text-white">UltraDemon</span>
-              <span class="text-[9px] font-num uppercase tracking-wider font-bold px-2 py-0.5 rounded-full bg-white/10 text-neutral-300 border border-white/15">Copilot</span>
+              <span class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">01 / SYSTEM STATUS</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="text-xs font-mono text-neutral-600 font-medium">Anycast Connected (&lt;15ms)</span>
             </div>
+            <h2 class="text-xl sm:text-2xl font-normal tracking-tight text-neutral-950">
+              Sovereign Edge Infrastructure
+            </h2>
+            <p class="text-xs text-neutral-500 max-w-2xl leading-relaxed">
+              UltraSearch sub-15ms BM25 ranking, long-term vector memory recall, and full-spectrum kinetic telemetry operating directly on Cloudflare Workers and D1 SQLite.
+            </p>
           </div>
-          <div class="flex items-center gap-2 text-xs font-num text-neutral-400">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span class="hidden sm:inline">Edge Node: Connected</span>
-            <span class="text-white font-bold">&lt;15ms</span>
-          </div>
-        </div>
 
-        <!-- Conversational Prompt Box (Matching Devin app.devin.ai) -->
-        <div class="relative bg-[#1c1c20] border border-[#2e2e34] rounded-2xl p-3.5 sm:p-4 focus-within:border-neutral-400 focus-within:ring-1 focus-within:ring-neutral-400 transition-all shadow-inner">
-          <textarea
-            id="devinPromptInput"
-            rows="3"
-            placeholder="Ask UltraDemon to search edge index, recall agent memory, crawl docs, or test APIs..."
-            class="w-full bg-transparent text-xs sm:text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none resize-none font-sans leading-relaxed"
-            onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); executeDevinCommand(); }"
-          ></textarea>
-
-          <!-- Bottom Control Bar inside Prompt Box -->
-          <div class="flex items-center justify-between pt-2.5 border-t border-[#2a2a30] mt-2 text-xs">
-            <!-- Left Tools & Mode -->
-            <div class="flex items-center gap-1.5 sm:gap-2">
-              <button type="button" onclick="promptDevinTag()" title="Attach memory container tag" class="p-1.5 text-neutral-400 hover:text-white hover:bg-white/10 rounded-lg transition cursor-pointer">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-              </button>
-              <button type="button" onclick="toggleDevinCodeSnippet()" title="Insert DDL or JSON snippet" class="p-1.5 text-neutral-400 hover:text-white hover:bg-white/10 rounded-lg transition cursor-pointer">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-              </button>
-              <!-- Mode Selector Pill -->
-              <div class="relative">
-                <select id="devinModeSelect" class="bg-[#26262c] hover:bg-[#2d2d34] text-neutral-200 border border-[#383842] rounded-lg px-2.5 py-1 text-[11px] font-semibold cursor-pointer focus:outline-none appearance-none pr-6 font-num transition">
-                  <option value="agent">Agent</option>
-                  <option value="memory">UltraMemory</option>
-                  <option value="search">UltraSearch</option>
-                  <option value="crawler">Web Crawler</option>
-                </select>
-                <svg class="w-3 h-3 text-neutral-400 absolute right-1.5 top-2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-              </div>
-            </div>
-
-            <!-- Right Controls: Speed and Send -->
-            <div class="flex items-center gap-2">
-              <span class="text-[11px] font-num text-neutral-400 hidden sm:inline">Edge Fast</span>
-              <button type="button" onclick="executeDevinCommand()" id="btnDevinSend" title="Send request (Enter)" class="w-8 h-8 rounded-xl bg-white text-neutral-950 hover:bg-neutral-200 flex items-center justify-center font-bold transition cursor-pointer shadow-md">
-                <svg class="w-4 h-4 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19.5v-15m-6 6 6-6 6 6"/></svg>
-              </button>
-            </div>
+          <div class="flex items-center gap-2 shrink-0 flex-wrap">
+            <button type="button" onclick="setAppView('search')" class="px-3.5 py-2 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-medium transition cursor-pointer shadow-xs flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span>Search Studio</span>
+            </button>
+            <button type="button" onclick="setAppView('memory')" class="px-3.5 py-2 rounded-lg bg-white hover:bg-neutral-50 border border-neutral-300 text-neutral-900 text-xs font-medium transition cursor-pointer flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+              <span>Memory Lab</span>
+            </button>
+            <button type="button" onclick="setAppView('tester')" class="px-3.5 py-2 rounded-lg bg-white hover:bg-neutral-50 border border-neutral-300 text-neutral-900 text-xs font-medium transition cursor-pointer flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+              <span>API Sandbox</span>
+            </button>
           </div>
         </div>
-
-        <!-- Suggestion Chips -->
-        <div class="flex flex-wrap items-center gap-2 pt-1 text-xs">
-          <span class="text-[10px] uppercase font-num font-bold text-neutral-500">Suggestions:</span>
-          <button type="button" onclick="setDevinPrompt('Recall agent memories for active container', 'memory')" class="px-2.5 py-1 rounded-full bg-[#1c1c20] hover:bg-[#26262c] text-neutral-300 border border-[#2e2e36] text-[11px] transition cursor-pointer">
-            Recall agent memories
-          </button>
-          <button type="button" onclick="setDevinPrompt('Search edge index: sub-15ms BM25 ranking for sqlite vector', 'search')" class="px-2.5 py-1 rounded-full bg-[#1c1c20] hover:bg-[#26262c] text-neutral-300 border border-[#2e2e36] text-[11px] transition cursor-pointer">
-            Search edge index
-          </button>
-          <button type="button" onclick="setDevinPrompt('Crawl https://developers.cloudflare.com/workers and index documentation', 'crawler')" class="px-2.5 py-1 rounded-full bg-[#1c1c20] hover:bg-[#26262c] text-neutral-300 border border-[#2e2e36] text-[11px] transition cursor-pointer">
-            Crawl documentation
-          </button>
-          <button type="button" onclick="setDevinPrompt('Inspect combined API request volume and real-time telemetry', 'agent')" class="px-2.5 py-1 rounded-full bg-[#1c1c20] hover:bg-[#26262c] text-neutral-300 border border-[#2e2e36] text-[11px] transition cursor-pointer">
-            Inspect real-time telemetry
-          </button>
-        </div>
-
-        <!-- Live Streaming / Execution Feed -->
-        <div id="devinActionFeed" class="hidden space-y-3 pt-2">
-          <!-- Dynamically populated with shimmering skeletons during queries and rendered Devin output cards upon resolution -->
-        </div>
-      </div>
-
-      <!-- Welcome Hero Banner -->
-      <div class="relative overflow-hidden p-6 sm:p-7 rounded-3xl bg-neutral-950 text-white border border-neutral-800 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div class="space-y-1.5 z-10">
-          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/10 text-white border border-white/15 text-[10px] font-num font-bold uppercase tracking-wider">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Edge Engine Connected · Sub-15ms BM25</span>
-          </div>
-          <h2 class="text-xl sm:text-2xl font-normal tracking-tight text-white">
-            Welcome to <span class="font-bold text-white">UltraDemon Workspace</span>
-          </h2>
-          <p class="text-xs text-neutral-400 max-w-xl leading-relaxed">
-            Sovereign edge search, long-term agent memory recall, and full-spectrum kinetic telemetry running on Cloudflare Workers and D1 SQLite.
-          </p>
-        </div>
-
-        <div class="flex items-center gap-2.5 z-10 flex-wrap">
-          <button type="button" onclick="switchSuite('search')" class="px-3.5 py-2 rounded-xl bg-white text-neutral-950 hover:bg-neutral-100 text-xs font-semibold transition cursor-pointer shadow-xs flex items-center gap-1.5">
-            <svg class="w-3.5 h-3.5 text-neutral-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <span>Search Studio</span>
-          </button>
-          <button type="button" onclick="switchSuite('memory')" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 backdrop-blur-xs">
-            <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
-            <span>Memory Lab</span>
-          </button>
-        </div>
-
-        <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
       </div>
 
       <!-- Dedicated Minimalist Sovereign Knowledge Card (Abundant Whitespace & Dropdowns) -->
-      <div class="card-clean p-6 sm:p-7 rounded-3xl bg-white border border-neutral-200/90 shadow-xs space-y-4">
+      <div class="border-b border-neutral-200/80 pb-8 space-y-4">
+        <span class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">03 / KNOWLEDGE &amp; PRESETS</span>
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-100 pb-4">
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-2xl bg-neutral-950 text-white flex items-center justify-center font-bold font-num text-xs shadow-xs">
@@ -948,71 +686,55 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </div>
       </div>
 
-      <!-- 4 Top Metric Cards (Card Design Skill with Shimmering Skeleton Defaults) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <!-- Daily Requests -->
-        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Daily Requests</span>
-            <div class="w-8 h-8 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white transition-all">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      <!-- Section 02: Core Metrics (Divider Grid) -->
+      <div class="border-b border-neutral-200/80 pb-8">
+        <div class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest mb-4">02 / CORE METRICS</div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-neutral-200/80 border-y border-neutral-200/80 py-6">
+          <!-- Metric 1: Total Calls -->
+          <div class="p-4 sm:px-6 flex flex-col justify-between">
+            <span class="text-[11px] font-mono uppercase tracking-wider text-neutral-500 font-medium">Daily API Usage</span>
+            <div class="mt-3 flex items-baseline gap-2">
+              <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricUsed"><span class="skeleton h-8 w-14"></span></div>
+              <span class="text-xs text-neutral-400 font-num">/ <span class="font-bold text-neutral-900" id="metricLimit">100</span></span>
             </div>
+            <span class="text-[10px] text-neutral-400 mt-2 font-mono">Resets midnight UTC</span>
           </div>
-          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="metricUsed"><span class="skeleton h-8 w-16"></span></div>
-          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
-            <span>Quota Limit</span>
-            <span class="font-bold text-neutral-900" id="metricLimit">100</span>
-          </div>
-        </div>
 
-        <!-- Active Keys -->
-        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Active Keys</span>
-            <div class="w-8 h-8 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white transition-all">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 2-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-1.5 1.5L7 8l-1.5 1.5L4 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2v2h2v2h2l4-4 1.5 1.5 1.5-1.5 1.5 1.5 1.5-1.5 2-2z"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+          <!-- Metric 2: Active Keys -->
+          <div class="p-4 sm:px-6 flex flex-col justify-between">
+            <span class="text-[11px] font-mono uppercase tracking-wider text-neutral-500 font-medium">Active API Keys</span>
+            <div class="mt-3 flex items-baseline gap-2">
+              <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricKeys"><span class="skeleton h-8 w-8"></span></div>
+              <span class="text-xs text-neutral-500 font-num">SHA-256</span>
             </div>
+            <span class="text-[10px] text-emerald-600 mt-2 font-mono">Zero raw key storage</span>
           </div>
-          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="metricKeys"><span class="skeleton h-8 w-12"></span></div>
-          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
-            <span>Edge Bound</span>
-            <span class="font-bold text-neutral-900">D1 SQLite</span>
-          </div>
-        </div>
 
-        <!-- Stored Memories -->
-        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Stored Memories</span>
-            <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white transition-all">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+          <!-- Metric 3: Stored Memories -->
+          <div class="p-4 sm:px-6 flex flex-col justify-between">
+            <span class="text-[11px] font-mono uppercase tracking-wider text-neutral-500 font-medium">Agent Memories</span>
+            <div class="mt-3 flex items-baseline gap-2">
+              <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricMemories"><span class="skeleton h-8 w-10"></span></div>
+              <span class="text-xs text-neutral-500 font-num">Vectors</span>
             </div>
+            <span class="text-[10px] text-neutral-400 mt-2 font-mono">D1 SQLite FTS5 Indexed</span>
           </div>
-          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="metricMemories"><span class="skeleton h-8 w-14"></span></div>
-          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
-            <span>Recall Latency</span>
-            <span class="font-bold text-emerald-600">&lt;15ms</span>
-          </div>
-        </div>
 
-        <!-- Indexed Pages -->
-        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Indexed Pages</span>
-            <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white transition-all">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+          <!-- Metric 4: Documents Indexed -->
+          <div class="p-4 sm:px-6 flex flex-col justify-between">
+            <span class="text-[11px] font-mono uppercase tracking-wider text-neutral-500 font-medium">Indexed Corpus</span>
+            <div class="mt-3 flex items-baseline gap-2">
+              <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricIndexed"><span class="skeleton h-8 w-12"></span></div>
+              <span class="text-xs text-neutral-500 font-num">Docs</span>
             </div>
-          </div>
-          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="metricIndexed"><span class="skeleton h-8 w-12"></span></div>
-          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
-            <span>Algorithm</span>
-            <span class="font-bold text-neutral-900">BM25 Edge</span>
+            <span class="text-[10px] text-neutral-400 mt-2 font-mono">Edge Search Database</span>
           </div>
         </div>
       </div>
 
-      <!-- Real-Time Request & Daily Call Telemetry Dashboard -->
-      <div class="card-clean p-6 sm:p-8 rounded-3xl border-2 border-neutral-900 bg-white space-y-6 shadow-sm">
+      <!-- Section 04: Real-Time Telemetry Matrix (Divider Section) -->
+      <div class="border-b border-neutral-200/80 pb-8 space-y-6">
+        <span class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">04 / REAL-TIME TELEMETRY</span>
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-100 pb-5">
           <div>
             <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-neutral-900 text-white text-[10px] font-num font-bold tracking-wider uppercase mb-2">
@@ -1197,8 +919,9 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </div>
       </div>
 
-      <!-- Cross-Engine Deep Telemetry Matrix (Search vs Memory vs Metrics) -->
-      <div class="card-clean p-6 sm:p-8 rounded-3xl space-y-6">
+      <!-- Section 05: Active API Suites (Divider Section) -->
+      <div class="border-b border-neutral-200/80 pb-8 space-y-6">
+        <span class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">05 / API SUITES</span>
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-100 pb-5">
           <div>
             <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-neutral-900 text-white text-[10px] font-num font-bold tracking-wider uppercase mb-2">
@@ -1382,8 +1105,9 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </div>
       </div>
 
-      <!-- Quick Start Snippet Card -->
-      <div class="card-clean p-6 rounded-2xl space-y-4">
+      <!-- Section 06: Quick Start cURL Test -->
+      <div class="pb-8 space-y-4">
+        <span class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">06 / VERIFICATION</span>
         <div class="flex items-center justify-between">
           <h2 class="text-sm font-bold text-neutral-950">Quick Start: Sovereign cURL Test</h2>
           <span class="text-[10px] bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded font-num text-neutral-700">Sub-15ms Recall</span>
@@ -3054,174 +2778,44 @@ requests.post("${origin}/v1/analytics/capture", json={
       }
     }
 
-    // ── Harry Potter Wand Sparks Particle Engine ──────────────────────────
-    let sparkCanvas = null;
-    let sparkCtx = null;
-    let sparkParticles = [];
-    let sparkAnimId = null;
-
-    function initSparkCanvas() {
-      if (sparkCanvas) return;
-      sparkCanvas = document.getElementById('magicWandCanvas');
-      if (!sparkCanvas) {
-        sparkCanvas = document.createElement('canvas');
-        sparkCanvas.id = 'magicWandCanvas';
-        sparkCanvas.className = 'fixed inset-0 pointer-events-none z-50 w-full h-full';
-        sparkCanvas.style.display = 'none';
-        document.body.appendChild(sparkCanvas);
-      }
-      sparkCtx = sparkCanvas.getContext('2d');
-      resizeSparkCanvas();
-      window.addEventListener('resize', resizeSparkCanvas);
-    }
-
-    function resizeSparkCanvas() {
-      if (!sparkCanvas) return;
-      sparkCanvas.width = window.innerWidth;
-      sparkCanvas.height = window.innerHeight;
-    }
-
-    function triggerMagicWandSparks(originX, originY) {
-      try {
-        initSparkCanvas();
-        if (!sparkCanvas || !sparkCtx) return;
-
-        sparkCanvas.style.display = 'block';
-        const x = typeof originX === 'number' && originX > 0 ? originX : (window.innerWidth / 2);
-        const y = typeof originY === 'number' && originY > 0 ? originY : Math.min(220, window.innerHeight * 0.3);
-
-        const colors = [
-          '#fef08a', // starlight yellow
-          '#d4af37', // metallic gold
-          '#f59e0b', // amber wand spark
-          '#ffffff', // bright glint
-          '#93c5fd', // ethereal silver-blue
-          '#fde047'  // enchanted gold
-        ];
-
-        const count = 38;
-        for (let i = 0; i < count; i++) {
-          const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.6;
-          const speed = 2.0 + Math.random() * 4.0;
-          sparkParticles.push({
-            x: x + (Math.random() - 0.5) * 20,
-            y: y + (Math.random() - 0.5) * 16,
-            vx: Math.cos(angle) * speed,
-            vy: Math.sin(angle) * speed * 0.65 - 1.2, // upward drift like rising wand embers
-            size: 1.8 + Math.random() * 2.6,
-            color: colors[Math.floor(Math.random() * colors.length)],
-            alpha: 1.0,
-            decay: 0.02 + Math.random() * 0.025, // cinematic drift
-            wobble: Math.random() * Math.PI * 2,
-            wobbleSpeed: 0.15 + Math.random() * 0.1,
-          });
-        }
-
-        if (!sparkAnimId) {
-          sparkAnimId = requestAnimationFrame(renderSparks);
-        }
-      } catch (err) {
-        console.warn('Sparks non-fatal:', err);
-      }
-    }
-
-    function renderSparks() {
-      if (!sparkCtx || !sparkCanvas) {
-        sparkAnimId = null;
-        return;
-      }
-
-      sparkCtx.clearRect(0, 0, sparkCanvas.width, sparkCanvas.height);
-
-      for (let i = sparkParticles.length - 1; i >= 0; i--) {
-        const p = sparkParticles[i];
-        p.vx *= 0.96; // silky aerodynamic drag
-        p.vy *= 0.96;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.wobble += p.wobbleSpeed;
-        p.vx += Math.sin(p.wobble) * 0.08;
-        p.vy += 0.025;
-        p.alpha -= p.decay;
-
-        if (p.alpha <= 0) {
-          sparkParticles.splice(i, 1);
-          continue;
-        }
-
-        sparkCtx.save();
-        sparkCtx.globalAlpha = Math.max(0, p.alpha);
-        sparkCtx.shadowBlur = p.size * 3.5;
-        sparkCtx.shadowColor = p.color;
-        sparkCtx.fillStyle = p.color;
-
-        sparkCtx.beginPath();
-        sparkCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        sparkCtx.fill();
-
-        if (p.size > 2.8 && p.alpha > 0.4) {
-          sparkCtx.strokeStyle = '#ffffff';
-          sparkCtx.lineWidth = 0.8;
-          sparkCtx.beginPath();
-          sparkCtx.moveTo(p.x - p.size * 1.8, p.y);
-          sparkCtx.lineTo(p.x + p.size * 1.8, p.y);
-          sparkCtx.moveTo(p.x, p.y - p.size * 1.8);
-          sparkCtx.lineTo(p.x, p.y + p.size * 1.8);
-          sparkCtx.stroke();
-        }
-        sparkCtx.restore();
-      }
-
-      if (sparkParticles.length > 0) {
-        sparkAnimId = requestAnimationFrame(renderSparks);
-      } else {
-        sparkAnimId = null;
-        sparkCtx.clearRect(0, 0, sparkCanvas.width, sparkCanvas.height);
-        sparkCanvas.style.display = 'none';
-      }
-    }
-
-    function applyMagicCardCascade(container) {
-      if (!container) return;
-      const cards = container.querySelectorAll('.card-elevated, .card-clean, .relative.overflow-hidden, section > div');
-      cards.forEach((card, idx) => {
-        card.style.setProperty('--magic-idx', Math.min(idx, 8));
-        card.classList.remove('magic-card-cascade');
-        void card.offsetWidth;
-        card.classList.add('magic-card-cascade');
-      });
-    }
-
+    // ── Instant & Deterministic View Navigation (Devin Standard) ──
     let currentAppViewId = 'overview';
-    let isViewTransitioning = null;
 
-    function switchSuite(suite, event) {
-      if (suite === 'overview') setAppView('overview', event);
-      else if (suite === 'search') setAppView('search', event);
-      else if (suite === 'memory') setAppView('memory', event);
-      else if (suite === 'metrics') setAppView('analytics', event);
-      else if (suite === 'tester') setAppView('tester', event);
+    function switchSuite(suite) {
+      if (suite === 'overview') setAppView('overview');
+      else if (suite === 'search') setAppView('search');
+      else if (suite === 'memory') setAppView('memory');
+      else if (suite === 'metrics') setAppView('analytics');
+      else if (suite === 'tester') setAppView('tester');
     }
 
-    function updateSuiteSwitcher(suite) {
+    function updateSuiteSwitcher(viewId) {
+      const suiteMap = {
+        overview: 'overview',
+        search: 'search',
+        crawler: 'search',
+        memory: 'memory',
+        analytics: 'metrics',
+        tester: 'tester'
+      };
+      const activeSuite = suiteMap[viewId] || null;
       const suites = ['overview', 'search', 'memory', 'metrics', 'tester'];
       suites.forEach(s => {
         const btn = document.getElementById('suiteBtn-' + s);
         if (!btn) return;
-        if (s === suite) {
-          btn.className = 'suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer bg-white text-neutral-950 shadow-xs border border-neutral-300';
-          const svg = btn.querySelector('svg');
+        const svg = btn.querySelector('svg');
+        if (s === activeSuite) {
+          btn.className = 'suite-tab-btn flex-1 py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer bg-white text-neutral-950 shadow-xs border border-neutral-300';
           if (svg) svg.className = 'w-3.5 h-3.5 text-neutral-950';
         } else {
-          btn.className = 'suite-tab-btn flex-1 py-2.5 px-3 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent';
-          const svg = btn.querySelector('svg');
+          btn.className = 'suite-tab-btn flex-1 py-2 px-3 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 transition cursor-pointer text-neutral-600 hover:text-black hover:bg-white/60 border border-transparent';
           if (svg) svg.className = 'w-3.5 h-3.5 text-neutral-400';
         }
       });
       const mainDropdown = document.getElementById('mainSuiteDropdown');
       if (mainDropdown) {
-        if (suite === 'analytics') mainDropdown.value = 'metrics';
-        else mainDropdown.value = suite;
+        if (viewId === 'analytics') mainDropdown.value = 'metrics';
+        else mainDropdown.value = viewId;
       }
     }
 
@@ -3244,19 +2838,16 @@ requests.post("${origin}/v1/analytics/capture", json={
       }
     };
 
-    function setAppView(viewId, triggerEvent = null) {
+    function setAppView(viewId) {
       const views = ['overview', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations', 'analytics', 'tester'];
       if (!views.includes(viewId)) return;
-
-      const isForced = triggerEvent && triggerEvent.isForced;
-      if (viewId === currentAppViewId && !isForced) {
-        return;
-      }
+      currentAppViewId = viewId;
 
       // Close mobile navigation drawer if open
       const drawer = document.getElementById('appMobileDrawer');
       if (drawer && !drawer.classList.contains('hidden')) {
-        toggleAppMobileDrawer();
+        drawer.classList.add('hidden');
+        document.body.style.overflow = '';
       }
 
       // Update mobile top active view badge
@@ -3280,145 +2871,74 @@ requests.post("${origin}/v1/analytics/capture", json={
         }
       });
 
-      if (isViewTransitioning) {
-        clearTimeout(isViewTransitioning);
-        isViewTransitioning = null;
-      }
+      // Switch view visibility instantly with zero delay, zero opacity glitches, zero pointer-events locking
+      views.forEach(id => {
+        const v = document.getElementById('view-' + id);
+        if (v) {
+          if (id === viewId) {
+            v.classList.remove('hidden', 'magic-flow-out', 'magic-flow-in');
+            v.style.display = 'block';
+            v.style.opacity = '1';
+            v.style.pointerEvents = 'auto';
+          } else {
+            v.classList.add('hidden');
+            v.classList.remove('magic-flow-out', 'magic-flow-in');
+            v.style.display = 'none';
+          }
+        }
+      });
 
-      // Spark source coordinates
-      let sparkX = window.innerWidth / 2;
-      let sparkY = 180;
-      if (triggerEvent && typeof triggerEvent.clientX === 'number') {
-        sparkX = triggerEvent.clientX;
-        sparkY = triggerEvent.clientY;
-      }
-      if (typeof triggerMagicWandSparks === 'function') {
-        triggerMagicWandSparks(sparkX, sparkY);
-      }
-
-      const prevViewId = currentAppViewId;
-      const prevViewEl = document.getElementById('view-' + prevViewId);
-      const nextViewEl = document.getElementById('view-' + viewId);
-      const titleEl = document.getElementById('viewHeaderTitle');
-      const descEl = document.getElementById('viewHeaderDesc');
-
-      // 1. Update Nav Buttons with clean left-aligned typography
+      // Update Desktop and Mobile Navigation Buttons
       views.forEach(id => {
         const navBtn = document.getElementById('nav-' + id);
         if (navBtn) {
           const svg = navBtn.querySelector('svg');
           if (id === viewId) {
-            navBtn.className = 'w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-neutral-950 text-white font-semibold cursor-pointer transition text-left shadow-xs';
+            navBtn.className = 'w-full flex items-center justify-between px-3 py-2 rounded-lg bg-neutral-950 text-white font-medium cursor-pointer transition text-left text-xs shadow-xs';
             if (svg) {
               svg.classList.remove('text-neutral-400');
               svg.classList.add('text-white');
             }
           } else {
-            navBtn.className = 'w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left';
+            navBtn.className = 'w-full flex items-center justify-between px-3 py-2 rounded-lg text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left text-xs';
             if (svg) {
               svg.classList.add('text-neutral-400');
               svg.classList.remove('text-white');
             }
           }
         }
+        const mobileNavBtn = document.getElementById('mobile-nav-' + id);
+        if (mobileNavBtn) {
+          if (id === viewId) {
+            mobileNavBtn.className = 'w-full flex items-center gap-3 px-3 py-2 rounded-lg bg-neutral-950 text-white font-medium cursor-pointer transition text-left text-xs';
+          } else {
+            mobileNavBtn.className = 'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-neutral-700 hover:bg-neutral-100 font-medium cursor-pointer transition text-left text-xs';
+          }
+        }
       });
 
-      // 2. Update Suite switchers
-      if (viewId === 'overview') updateSuiteSwitcher('overview');
-      else if (viewId === 'search' || viewId === 'crawler') updateSuiteSwitcher('search');
-      else if (viewId === 'memory') updateSuiteSwitcher('memory');
-      else if (viewId === 'analytics') updateSuiteSwitcher('metrics');
-      else if (viewId === 'tester') updateSuiteSwitcher('tester');
-      else updateSuiteSwitcher(null);
+      // Update Suite tabs & header titles
+      updateSuiteSwitcher(viewId);
+      updateHeaderTitles(viewId);
 
-      // Fast fallback if element not ready or initial view setup
-      if (!prevViewEl || prevViewId === viewId) {
-        currentAppViewId = viewId;
-        views.forEach(id => {
-          const v = document.getElementById('view-' + id);
-          if (v) {
-            if (id === viewId) {
-              v.classList.remove('hidden', 'magic-flow-out');
-              v.style.display = 'block';
-              v.style.opacity = '1';
-              v.style.pointerEvents = 'auto';
-              if (typeof applyMagicCardCascade === 'function') applyMagicCardCascade(v);
-            } else {
-              v.classList.add('hidden');
-              v.classList.remove('magic-flow-out', 'magic-flow-in');
-              v.style.display = 'none';
-            }
-          }
-        });
-        updateHeaderTitles(viewId);
-        return;
+      // URL history synchronization
+      try {
+        const u = new URL(window.location.href);
+        u.searchParams.set('tab', viewId);
+        window.history.replaceState(null, '', u.toString());
+      } catch {}
+
+      if (viewId === 'analytics') {
+        loadAnalyticsDashboard();
+      } else if (viewId === 'keys' || viewId === 'overview') {
+        loadRealtimeKeyMetrics(false);
       }
 
-      // ── PHASE 1: Flow Away Outgoing Page Text and Cards (Ethereal Dissolve Animation) ──
-      prevViewEl.classList.remove('magic-flow-in');
-      prevViewEl.classList.add('magic-flow-out');
-      if (titleEl) {
-        titleEl.classList.remove('magic-text-flow-in');
-        titleEl.classList.add('magic-text-flow-out');
+      updateAllSuiteSnippets();
+
+      if (window.innerWidth < 768) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
-      if (descEl) {
-        descEl.classList.remove('magic-text-flow-in');
-        descEl.classList.add('magic-text-flow-out');
-      }
-
-      isViewTransitioning = setTimeout(() => {
-        // ── PHASE 2: Reconstitute & Flow In Next Page Text and Cards ──
-        prevViewEl.classList.add('hidden');
-        prevViewEl.style.display = 'none';
-        prevViewEl.classList.remove('magic-flow-out');
-
-        currentAppViewId = viewId;
-        updateHeaderTitles(viewId);
-
-        if (nextViewEl) {
-          nextViewEl.classList.remove('hidden');
-          nextViewEl.style.display = 'block';
-          nextViewEl.classList.remove('magic-flow-out');
-          nextViewEl.classList.add('magic-flow-in');
-          if (typeof applyMagicCardCascade === 'function') applyMagicCardCascade(nextViewEl);
-        }
-
-        if (titleEl) {
-          titleEl.classList.remove('magic-text-flow-out');
-          titleEl.classList.add('magic-text-flow-in');
-        }
-        if (descEl) {
-          descEl.classList.remove('magic-text-flow-out');
-          descEl.classList.add('magic-text-flow-in');
-        }
-
-        try {
-          const u = new URL(window.location.href);
-          u.searchParams.set('tab', viewId);
-          window.history.replaceState(null, '', u.toString());
-        } catch {}
-
-        if (viewId === 'analytics') {
-          loadAnalyticsDashboard();
-        } else if (viewId === 'keys' || viewId === 'overview') {
-          loadRealtimeKeyMetrics(false);
-        }
-
-        updateAllSuiteSnippets();
-
-        if (window.innerWidth < 1024) {
-          document.querySelector('main')?.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        setTimeout(() => {
-          if (nextViewEl) {
-            nextViewEl.classList.remove('magic-flow-in');
-            nextViewEl.style.opacity = '1';
-            nextViewEl.style.pointerEvents = 'auto';
-          }
-          isViewTransitioning = null;
-        }, 480);
-      }, 180);
     }
 
     function updateHeaderTitles(viewId) {
@@ -4264,7 +3784,7 @@ requests.post("${origin}/v1/analytics/capture", json={
       const resultsDiv = document.getElementById('appMemResults');
       const timer = document.getElementById('appRecallTimer');
 
-      if (!query) return;
+      if (!query) { showAppToast('Please enter a query to recall memory', true); return; }
 
       if (resultsDiv) {
         resultsDiv.innerHTML = '<div class="space-y-2.5 p-1">' +
@@ -4352,7 +3872,7 @@ requests.post("${origin}/v1/analytics/capture", json={
       const mode = parseInt(document.getElementById('appSearchModeSelect')?.value || document.querySelector('input[name="appSearchMode"]:checked')?.value || '1', 10);
       const resultsDiv = document.getElementById('appSearchResults');
 
-      if (!query) return;
+      if (!query) { showAppToast('Please enter a search query', true); return; }
 
       const t0 = performance.now();
       if (resultsDiv) {
@@ -4603,288 +4123,7 @@ requests.post("${origin}/v1/analytics/capture", json={
     window.copyTesterResponse = copyTesterResponse;
     window.copyTesterCurl = copyTesterCurl;
 
-    // Devin Copilot & Command Deck Logic (Cognition / Devin Minimalism Standard)
-    let devinSessions = JSON.parse(localStorage.getItem('ultrademon_devin_sessions') || '[]');
-
-    function renderDevinSessionsList() {
-      const container = document.getElementById('devinRecentSessionsList');
-      if (!container) return;
-      if (!devinSessions || devinSessions.length === 0) {
-        container.innerHTML = '<div class="px-2 py-1 text-[11px] text-neutral-400 italic">No sessions</div>';
-        return;
-      }
-      container.innerHTML = devinSessions.slice(0, 8).map(s =>
-        '<button type="button" onclick="loadDevinSession(\'' + s.id + '\')" class="w-full text-left px-2 py-1.5 rounded-lg hover:bg-neutral-100 flex items-center justify-between group transition cursor-pointer text-xs">' +
-          '<div class="flex items-center gap-1.5 truncate min-w-0">' +
-            '<span class="w-1.5 h-1.5 rounded-full bg-neutral-400 group-hover:bg-neutral-900 shrink-0"></span>' +
-            '<span class="truncate font-medium text-neutral-700 group-hover:text-neutral-950 font-sans">' + escapeHtml(s.title || s.prompt) + '</span>' +
-          '</div>' +
-          '<span class="text-[9px] font-num text-neutral-400 shrink-0 ml-1">' + (s.mode || 'agent') + '</span>' +
-        '</button>'
-      ).join('');
-    }
-
-    function addDevinSession(prompt, mode, resultSummary) {
-      const title = prompt.length > 28 ? prompt.slice(0, 28) + '...' : prompt;
-      const newSession = {
-        id: 'sess_' + Date.now(),
-        title,
-        prompt,
-        mode,
-        summary: resultSummary,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      devinSessions.unshift(newSession);
-      if (devinSessions.length > 20) devinSessions = devinSessions.slice(0, 20);
-      try {
-        localStorage.setItem('ultrademon_devin_sessions', JSON.stringify(devinSessions));
-      } catch {}
-      renderDevinSessionsList();
-    }
-
-    function loadDevinSession(id) {
-      const s = devinSessions.find(x => x.id === id);
-      if (!s) return;
-      setDevinPrompt(s.prompt, s.mode);
-      if (s.summary) {
-        const feed = document.getElementById('devinActionFeed');
-        if (feed) {
-          feed.innerHTML = s.summary;
-          feed.classList.remove('hidden');
-        }
-      }
-      showAppToast('Loaded session: ' + s.title);
-    }
-
-    function clearDevinSessions() {
-      devinSessions = [];
-      try {
-        localStorage.removeItem('ultrademon_devin_sessions');
-      } catch {}
-      renderDevinSessionsList();
-      showAppToast('Recent sessions cleared');
-    }
-
-    function startNewDevinSession() {
-      const input = document.getElementById('devinPromptInput');
-      if (input) input.value = '';
-      const feed = document.getElementById('devinActionFeed');
-      if (feed) {
-        feed.innerHTML = '';
-        feed.classList.add('hidden');
-      }
-      showAppToast('Started new Copilot session');
-      focusDevinPrompt();
-    }
-
-    function focusDevinPrompt() {
-      setAppView('overview');
-      const input = document.getElementById('devinPromptInput');
-      if (input) {
-        input.focus();
-        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }
-
-    function setDevinPrompt(text, mode = 'agent') {
-      setAppView('overview');
-      const input = document.getElementById('devinPromptInput');
-      const modeSelect = document.getElementById('devinModeSelect');
-      if (input) input.value = text;
-      if (modeSelect && mode) modeSelect.value = mode;
-      if (input) {
-        input.focus();
-        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }
-
-    function promptDevinTag() {
-      const tag = prompt('Enter memory container tag (e.g. user_101 or project_alpha):');
-      if (!tag) return;
-      const input = document.getElementById('devinPromptInput');
-      if (input) {
-        input.value = '[tag:' + tag.trim() + '] ' + input.value;
-        input.focus();
-      }
-    }
-
-    function toggleDevinCodeSnippet() {
-      const input = document.getElementById('devinPromptInput');
-      if (input) {
-        input.value = 'Recall memory for container user_prod_01 with threshold 0.85';
-        const modeSelect = document.getElementById('devinModeSelect');
-        if (modeSelect) modeSelect.value = 'memory';
-        input.focus();
-      }
-    }
-
-    async function executeDevinCommand() {
-      const input = document.getElementById('devinPromptInput');
-      const modeSelect = document.getElementById('devinModeSelect');
-      const feed = document.getElementById('devinActionFeed');
-
-      if (!input || !input.value.trim()) {
-        showAppToast('Please enter a prompt or command for UltraDemon', true);
-        return;
-      }
-
-      const promptText = input.value.trim();
-      const mode = modeSelect ? modeSelect.value : 'agent';
-      const t0 = performance.now();
-
-      if (feed) {
-        feed.classList.remove('hidden');
-        feed.innerHTML = '<div class="rounded-2xl bg-[#18181c] border border-[#2e2e34] p-4 text-xs space-y-3 shadow-md">' +
-          '<div class="flex items-center justify-between text-[11px] font-num text-neutral-400 border-b border-[#2a2a30] pb-2">' +
-            '<div class="flex items-center gap-2">' +
-              '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>' +
-              '<span class="text-white font-bold font-sans">Autonomous Edge Execution</span>' +
-              '<span class="text-neutral-500 font-num">· Mode: ' + mode.toUpperCase() + '</span>' +
-            '</div>' +
-            '<span class="font-num text-neutral-400">Processing live edge call...</span>' +
-          '</div>' +
-          '<div class="text-neutral-200 font-sans font-medium">"' + escapeHtml(promptText) + '"</div>' +
-          '<div class="space-y-2 pt-1">' +
-            '<div class="skeleton-dark h-3.5 w-3/4"></div>' +
-            '<div class="skeleton-dark h-3.5 w-full"></div>' +
-            '<div class="skeleton-dark h-3.5 w-5/6"></div>' +
-          '</div>' +
-        '</div>';
-      }
-
-      try {
-        let resultHtml = '';
-        if (mode === 'memory') {
-          const res = await fetch('/v1/memory/recall?q=' + encodeURIComponent(promptText), { headers: getAppAuthHeaders('memory') });
-          const data = await res.json();
-          const latency = Math.round(performance.now() - t0);
-          const count = data.memories ? data.memories.length : 0;
-          resultHtml = '<div class="rounded-2xl bg-[#18181c] border border-[#2e2e34] p-4 text-xs space-y-3 shadow-md">' +
-            '<div class="flex items-center justify-between text-[11px] font-num text-neutral-400 border-b border-[#2a2a30] pb-2">' +
-              '<div class="flex items-center gap-2">' +
-                '<span class="w-2 h-2 rounded-full bg-emerald-400"></span>' +
-                '<span class="text-white font-bold font-sans">UltraMemory Recall Complete</span>' +
-                '<span class="text-emerald-400 font-num">' + (data.retrieval_time_ms || latency) + 'ms Edge Latency</span>' +
-              '</div>' +
-              '<span class="font-num text-neutral-400">' + count + ' memories found</span>' +
-            '</div>' +
-            (data.context ? '<div class="p-3 bg-[#111114] rounded-xl border border-[#26262c] text-neutral-300 font-mono text-[11px] whitespace-pre-wrap"><div class="text-[10px] text-neutral-500 font-bold uppercase mb-1 font-num">LLM Context Stream:</div>' + escapeHtml(data.context) + '</div>' : '') +
-            '<div class="space-y-1.5">' +
-              (data.memories && data.memories.length > 0
-                ? data.memories.slice(0, 3).map(m =>
-                    '<div class="p-2.5 rounded-lg bg-[#222228] border border-[#2d2d35] text-neutral-200">' +
-                      '<div class="flex justify-between text-[10px] text-neutral-400 font-num mb-0.5"><span>' + escapeHtml(m.container_tag) + '</span><span>score: ' + (m.score || 1).toFixed(2) + '</span></div>' +
-                      '<div>' + escapeHtml(m.content) + '</div>' +
-                    '</div>'
-                  ).join('')
-                : '<div class="text-neutral-400 italic">No stored memories matching this query. Store one in UltraMemory Lab!</div>') +
-            '</div>' +
-          '</div>';
-        } else if (mode === 'search') {
-          const res = await fetch('/v1/search', {
-            method: 'POST',
-            headers: getAppAuthHeaders('search'),
-            body: JSON.stringify({ query: promptText, mode: 1, num_results: 3 })
-          });
-          const data = await res.json();
-          const latency = Math.round(performance.now() - t0);
-          const results = data.results || [];
-          resultHtml = '<div class="rounded-2xl bg-[#18181c] border border-[#2e2e34] p-4 text-xs space-y-3 shadow-md">' +
-            '<div class="flex items-center justify-between text-[11px] font-num text-neutral-400 border-b border-[#2a2a30] pb-2">' +
-              '<div class="flex items-center gap-2">' +
-                '<span class="w-2 h-2 rounded-full bg-sky-400"></span>' +
-                '<span class="text-white font-bold font-sans">UltraSearch BM25 Complete</span>' +
-                '<span class="text-sky-400 font-num">' + (data.search_time_ms || latency) + 'ms Edge Latency</span>' +
-              '</div>' +
-              '<span class="font-num text-neutral-400">' + results.length + ' indexed matches</span>' +
-            '</div>' +
-            '<div class="space-y-2">' +
-              (results.length > 0
-                ? results.map(r =>
-                    '<div class="p-3 rounded-xl bg-[#222228] border border-[#2d2d35] space-y-1">' +
-                      '<div class="flex justify-between text-[10px] text-neutral-400 font-num truncate"><span>' + escapeHtml(r.url) + '</span><span>score: ' + (r.score || 0.95).toFixed(2) + '</span></div>' +
-                      '<div class="font-bold text-white">' + escapeHtml(r.title) + '</div>' +
-                      '<div class="text-neutral-300 text-[11px]">' + escapeHtml(r.snippet) + '</div>' +
-                    '</div>'
-                  ).join('')
-                : '<div class="text-neutral-400 italic">No indexed pages matching query. Crawl a URL in Crawler view!</div>') +
-            '</div>' +
-          '</div>';
-        } else if (mode === 'crawler') {
-          const isUrl = promptText.startsWith('http://') || promptText.startsWith('https://');
-          const targetUrl = isUrl ? promptText : 'https://' + promptText;
-          const res = await fetch('/v1/crawl', {
-            method: 'POST',
-            headers: getAppAuthHeaders('search'),
-            body: JSON.stringify({ url: targetUrl, depth: 0 })
-          });
-          const data = await res.json();
-          const latency = Math.round(performance.now() - t0);
-          resultHtml = '<div class="rounded-2xl bg-[#18181c] border border-[#2e2e34] p-4 text-xs space-y-3 shadow-md">' +
-            '<div class="flex items-center justify-between text-[11px] font-num text-neutral-400 border-b border-[#2a2a30] pb-2">' +
-              '<div class="flex items-center gap-2">' +
-                '<span class="w-2 h-2 rounded-full bg-emerald-400"></span>' +
-                '<span class="text-white font-bold font-sans">Crawler Ingestion Complete</span>' +
-                '<span class="text-emerald-400 font-num">' + latency + 'ms</span>' +
-              '</div>' +
-              '<span class="font-num text-neutral-400">FTS5 Vectorized</span>' +
-            '</div>' +
-            '<pre class="p-3 bg-[#111114] rounded-xl border border-[#26262c] text-neutral-300 font-mono text-[11px] overflow-x-auto code-scroll">' + escapeHtml(JSON.stringify(data, null, 2)) + '</pre>' +
-          '</div>';
-        } else {
-          // Agent mode: Autonomous synthesis
-          const [searchRes, memRes] = await Promise.allSettled([
-            fetch('/v1/search', { method: 'POST', headers: getAppAuthHeaders('search'), body: JSON.stringify({ query: promptText, mode: 1, num_results: 2 }) }),
-            fetch('/v1/memory/recall?q=' + encodeURIComponent(promptText), { headers: getAppAuthHeaders('memory') })
-          ]);
-          let searchData = null;
-          let memData = null;
-          if (searchRes.status === 'fulfilled' && searchRes.value.ok) searchData = await searchRes.value.json();
-          if (memRes.status === 'fulfilled' && memRes.value.ok) memData = await memRes.value.json();
-          const latency = Math.round(performance.now() - t0);
-
-          resultHtml = '<div class="rounded-2xl bg-[#18181c] border border-[#2e2e34] p-4 text-xs space-y-3 shadow-md">' +
-            '<div class="flex items-center justify-between text-[11px] font-num text-neutral-400 border-b border-[#2a2a30] pb-2">' +
-              '<div class="flex items-center gap-2">' +
-                '<span class="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>' +
-                '<span class="text-white font-bold font-sans">Autonomous Copilot Synthesis</span>' +
-                '<span class="text-purple-400 font-num">' + latency + 'ms Total Edge Roundtrip</span>' +
-              '</div>' +
-              '<span class="font-num text-neutral-400">Multi-Engine</span>' +
-            '</div>' +
-            '<div class="p-3 bg-[#111114] rounded-xl border border-[#26262c] text-neutral-200 leading-relaxed font-sans">' +
-              '<div class="text-[10px] text-neutral-500 font-bold uppercase mb-1 font-num">Copilot Thought &amp; Resolution:</div>' +
-              'Evaluated edge vector state across D1 SQLite FTS5 index and BM25 memory cache. Retrieved ' +
-              (memData?.memories?.length || 0) + ' agent memory nodes and ' +
-              (searchData?.results?.length || 0) + ' edge search entries. Sovereign system ready for downstream execution.' +
-            '</div>' +
-          '</div>';
-        }
-
-        if (feed) feed.innerHTML = resultHtml;
-        addDevinSession(promptText, mode, resultHtml);
-        loadRealtimeKeyMetrics(false);
-      } catch (err) {
-        if (feed) {
-          feed.innerHTML = '<div class="rounded-2xl bg-red-950/60 border border-red-800 p-4 text-xs text-red-200 font-num">' +
-            '<div class="font-bold">Execution Error: ' + escapeHtml(err.message) + '</div>' +
-            '<div class="text-[11px] text-red-400 mt-1 font-sans">Check active API key scope or connectivity.</div>' +
-          '</div>';
-        }
-      }
-    }
-
-    window.renderDevinSessionsList = renderDevinSessionsList;
-    window.addDevinSession = addDevinSession;
-    window.loadDevinSession = loadDevinSession;
-    window.clearDevinSessions = clearDevinSessions;
-    window.startNewDevinSession = startNewDevinSession;
-    window.focusDevinPrompt = focusDevinPrompt;
-    window.setDevinPrompt = setDevinPrompt;
-    window.promptDevinTag = promptDevinTag;
-    window.toggleDevinCodeSnippet = toggleDevinCodeSnippet;
-    window.executeDevinCommand = executeDevinCommand;
-
+    // (Devin copilot mockup removed - dashboard functioning preserved)
     // Immediate Synchronous State Hydration (Zero Latency Profile Display)
     function hydrateCachedState() {
       // 1. Direct user profile
@@ -6231,8 +5470,7 @@ requests.post("${origin}/v1/analytics/capture", json={
       toggleRealtimeAutoRefresh(true);
       updateAllSuiteSnippets();
       renderHelpPresetQuestions();
-      renderDevinSessionsList();
-    }
+      }
 
     // Execute immediately or on DOM ready
     if (document.readyState === 'loading') {
