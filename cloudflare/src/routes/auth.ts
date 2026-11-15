@@ -102,50 +102,36 @@ authRouter.post('/signup', async (c) => {
     .first<{ user_id: string; email: string; password_hash: string; plan?: string }>();
 
   if (existing) {
-    let passwordMatches = (existing.password_hash === expectedHash);
+    // If the account already exists, update its password hash, verify status, and requested plan
+    try {
+      await c.env.DB.prepare('UPDATE users SET password_hash = ?, plan = COALESCE(NULLIF(plan, ""), ?), email_verified = 1 WHERE user_id = ?')
+        .bind(expectedHash, requestedPlan, existing.user_id)
+        .run();
+    } catch (updateErr) {
+      console.warn('Update existing user non-fatal:', updateErr);
+    }
 
-    // If password mismatch locally, check Supabase
-    if (!passwordMatches && c.env.SUPABASE_URL && c.env.SUPABASE_ANON_KEY) {
+    const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
+    const plan = existing.plan || requestedPlan;
+
+    let activeKey = (await c.env.KEY_CACHE.get(`user_primary_key:${existing.user_id}`)) || '';
+    if (!activeKey) {
       try {
-        const sbRes = await fetch(`${c.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-          method: 'POST',
-          headers: { 'apikey': c.env.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
-        });
-        if (sbRes.ok) {
-          passwordMatches = true;
-          await c.env.DB.prepare('UPDATE users SET password_hash = ? WHERE user_id = ?')
-            .bind(expectedHash, existing.user_id)
-            .run()
-            .catch(() => {});
-        }
+        const newKey = await createApiKey(c.env, existing.user_id, plan, 'Workspace Primary Key', 'unified');
+        activeKey = newKey.plainKey;
+        await c.env.KEY_CACHE.put(`user_primary_key:${existing.user_id}`, activeKey, { expirationTtl: 86400 * 30 });
       } catch {}
     }
 
-    if (passwordMatches) {
-      const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
-      const plan = existing.plan || requestedPlan;
+    const sessionPayload = { id: existing.user_id, email: existing.email, plan, active_key: activeKey };
+    await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), { expirationTtl: 86400 * 30 });
 
-      let activeKey = (await c.env.KEY_CACHE.get(`user_primary_key:${existing.user_id}`)) || '';
-      if (!activeKey) {
-        try {
-          const newKey = await createApiKey(c.env, existing.user_id, plan, 'Workspace Primary Key', 'unified');
-          activeKey = newKey.plainKey;
-          await c.env.KEY_CACHE.put(`user_primary_key:${existing.user_id}`, activeKey, { expirationTtl: 86400 * 30 });
-        } catch {}
-      }
-
-      const sessionPayload = { id: existing.user_id, email: existing.email, plan, active_key: activeKey };
-      await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), { expirationTtl: 86400 * 30 });
-
-      return c.json({
-        message: 'Signed in successfully',
-        user: sessionPayload,
-        active_key: activeKey,
-        session: { access_token: sessionToken, token_type: 'bearer', expires_in: 86400 * 30 }
-      }, 200);
-    }
-    return c.json({ error: 'An account with this email already exists. Please sign in.' }, 409);
+    return c.json({
+      message: 'Account configured and signed in successfully',
+      user: sessionPayload,
+      active_key: activeKey,
+      session: { access_token: sessionToken, token_type: 'bearer', expires_in: 86400 * 30 }
+    }, 200);
   }
 
   const userId = `usr_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
@@ -153,10 +139,11 @@ authRouter.post('/signup', async (c) => {
 
   try {
     await c.env.DB.prepare(
-      'INSERT OR REPLACE INTO users (user_id, email, password_hash, created_at, plan, email_verified) VALUES (?, ?, ?, ?, ?, 1)'
+      'INSERT INTO users (user_id, email, password_hash, created_at, plan, email_verified) VALUES (?, ?, ?, ?, ?, 1)'
     ).bind(userId, email, expectedHash, now, requestedPlan).run();
-  } catch {
-    return c.json({ error: 'Failed to create user account. If you already have an account, please sign in.' }, 409);
+  } catch (err: unknown) {
+    console.error('Insert new user failed:', err);
+    return c.json({ error: 'Failed to create user account. Please try again.' }, 500);
   }
 
   // Immediately generate primary API key on edge
@@ -220,6 +207,7 @@ authRouter.post('/signin', async (c) => {
       authenticatedUser = { user_id: user.user_id, email: user.email, plan: user.plan || 'free' };
     } else {
       // Check Supabase fallback
+      let sbMatched = false;
       if (c.env.SUPABASE_URL && c.env.SUPABASE_ANON_KEY) {
         try {
           const sbRes = await fetch(`${c.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
@@ -228,13 +216,22 @@ authRouter.post('/signin', async (c) => {
             body: JSON.stringify({ email, password }),
           });
           if (sbRes.ok) {
-            authenticatedUser = { user_id: user.user_id, email: user.email, plan: user.plan || 'free' };
-            await c.env.DB.prepare('UPDATE users SET password_hash = ? WHERE user_id = ?')
-              .bind(expectedHash, user.user_id)
-              .run()
-              .catch(() => {});
+            sbMatched = true;
           }
         } catch {}
+      }
+
+      if (sbMatched) {
+        authenticatedUser = { user_id: user.user_id, email: user.email, plan: user.plan || 'free' };
+        await c.env.DB.prepare('UPDATE users SET password_hash = ?, email_verified = 1 WHERE user_id = ?')
+          .bind(expectedHash, user.user_id)
+          .run()
+          .catch(() => {});
+      } else {
+        return c.json({
+          error: 'Incorrect password for this account. If you forgot your password, switch to Create Account / Sign Up to set a new password instantly.',
+          can_reset: true
+        }, 401);
       }
     }
   } else {
@@ -260,16 +257,28 @@ authRouter.post('/signin', async (c) => {
       if (password.length >= 6) {
         userId = `usr_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
       } else {
-        return c.json({ error: 'Invalid email or password' }, 401);
+        return c.json({ error: 'Password must be at least 6 characters' }, 400);
       }
     }
 
     try {
       await c.env.DB.prepare(
-        'INSERT OR REPLACE INTO users (user_id, email, password_hash, created_at, plan, email_verified) VALUES (?, ?, ?, ?, ?, 1)'
+        'INSERT INTO users (user_id, email, password_hash, created_at, plan, email_verified) VALUES (?, ?, ?, ?, ?, 1)'
       ).bind(userId, email, expectedHash, Date.now(), plan).run();
       authenticatedUser = { user_id: userId, email, plan };
-    } catch {}
+    } catch {
+      // If unique constraint failed on email race, fetch existing and update
+      const existingUser = await c.env.DB.prepare('SELECT user_id, email, plan FROM users WHERE email = ?')
+        .bind(email)
+        .first<{ user_id: string; email: string; plan?: string }>();
+      if (existingUser) {
+        await c.env.DB.prepare('UPDATE users SET password_hash = ?, email_verified = 1 WHERE user_id = ?')
+          .bind(expectedHash, existingUser.user_id)
+          .run()
+          .catch(() => {});
+        authenticatedUser = { user_id: existingUser.user_id, email: existingUser.email, plan: existingUser.plan || 'free' };
+      }
+    }
   }
 
   if (!authenticatedUser) {
@@ -303,6 +312,59 @@ authRouter.post('/signin', async (c) => {
       token_type: 'bearer',
       expires_in: 86400 * 30,
     },
+  });
+});
+
+// ── POST /v1/auth/reset-password — Direct Password Reset ──────────────────────
+authRouter.post('/reset-password', async (c) => {
+  const body = await c.req.json<{ email?: string; password?: string }>().catch(() => ({} as { email?: string; password?: string }));
+  const email = (body.email || '').trim().toLowerCase();
+  const password = body.password || '';
+
+  if (!email || !email.includes('@')) {
+    return c.json({ error: 'Valid email address is required' }, 400);
+  }
+  if (!password || password.length < 6) {
+    return c.json({ error: 'Password must be at least 6 characters' }, 400);
+  }
+
+  const expectedHash = await hashPassword(password, email);
+  const existing = await c.env.DB.prepare('SELECT user_id, email, plan FROM users WHERE email = ?')
+    .bind(email)
+    .first<{ user_id: string; email: string; plan?: string }>();
+
+  let userId = existing?.user_id;
+  let plan = existing?.plan || 'free';
+
+  if (existing) {
+    await c.env.DB.prepare('UPDATE users SET password_hash = ?, email_verified = 1 WHERE user_id = ?')
+      .bind(expectedHash, existing.user_id)
+      .run();
+  } else {
+    userId = `usr_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
+    await c.env.DB.prepare(
+      'INSERT INTO users (user_id, email, password_hash, created_at, plan, email_verified) VALUES (?, ?, ?, ?, ?, 1)'
+    ).bind(userId, email, expectedHash, Date.now(), plan).run();
+  }
+
+  let activeKey = (await c.env.KEY_CACHE.get(`user_primary_key:${userId}`)) || '';
+  if (!activeKey) {
+    try {
+      const newKey = await createApiKey(c.env, userId!, plan, 'Workspace Primary Key', 'unified');
+      activeKey = newKey.plainKey;
+      await c.env.KEY_CACHE.put(`user_primary_key:${userId}`, activeKey, { expirationTtl: 86400 * 30 });
+    } catch {}
+  }
+
+  const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
+  const sessionPayload = { id: userId, email, plan, active_key: activeKey };
+  await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), { expirationTtl: 86400 * 30 });
+
+  return c.json({
+    message: 'Password updated and signed in successfully',
+    user: sessionPayload,
+    active_key: activeKey,
+    session: { access_token: sessionToken, token_type: 'bearer', expires_in: 86400 * 30 }
   });
 });
 

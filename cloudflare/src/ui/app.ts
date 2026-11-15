@@ -62,9 +62,13 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     .hidden {
       display: none !important;
     }
-    body, input, textarea, button, select {
+    body {
       font-family: 'NB International Pro', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #ffffff;
+      background-color: #f8f8f8;
+      color: #09090b;
+    }
+    input, textarea, button, select {
+      font-family: 'NB International Pro', -apple-system, BlinkMacSystemFont, sans-serif;
       color: #09090b;
     }
     .font-serif {
@@ -154,7 +158,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     }
   </style>
 </head>
-<body class="min-h-screen bg-[#ffffff] text-neutral-950 flex flex-col md:flex-row antialiased selection:bg-black selection:text-white">
+<body class="min-h-screen bg-[#f8f8f8] text-neutral-950 flex flex-col md:flex-row antialiased selection:bg-black selection:text-white">
 
   <!-- Cloudflare Global Top Navigation Bar (Fixed across entire window) -->
   <header class="fixed top-0 left-0 right-0 h-13 z-50 bg-white border-b border-neutral-200/80 px-3 sm:px-4 flex items-center justify-between shadow-2xs select-none">
@@ -170,7 +174,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
       <!-- Account Selector Dropdown -->
       <div class="flex items-center gap-1 cursor-pointer hover:bg-neutral-100 rounded-md px-2 py-1 transition text-xs font-medium text-neutral-800">
-        <span id="userEmailTopDisplay" class="truncate max-w-[120px] sm:max-w-[180px]">aaronvanoss@gmail.com</span>
+        <span id="userEmailTopDisplay" class="truncate max-w-[120px] sm:max-w-[180px]">Workspace</span>
         <svg class="w-3.5 h-3.5 text-neutral-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
       </div>
 
@@ -507,7 +511,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </span>
         <span>Account</span>
         <span class="text-neutral-300">/</span>
-        <span id="userEmailDisplay" class="text-neutral-700 font-semibold truncate max-w-[160px]">aaronvanoss@gmail.com</span>
+        <span id="userEmailDisplay" class="text-neutral-700 font-semibold truncate max-w-[160px]">Workspace</span>
         <span class="text-neutral-300">/</span>
         <span class="text-neutral-900 font-bold">ultrademon.site</span>
         <span class="text-neutral-300">/</span>
@@ -3416,22 +3420,34 @@ requests.post("${origin}/v1/analytics/capture", json={
       }
       if (userCached) {
         currentUser = userCached;
-        const emailEl = document.getElementById('userEmailDisplay');
-        const planEl = document.getElementById('userPlanBadge');
-        if (emailEl) emailEl.innerText = userCached.email || userCached.id || 'Active Workspace';
-        if (planEl && userCached.plan) planEl.innerText = (userCached.plan || 'free').toUpperCase();
+        updateUserProfileUI(currentUser);
       }
     } catch {}
+
+    function updateUserProfileUI(u) {
+      if (!u) return;
+      const emailText = u.email || u.id || 'Active Workspace';
+      const emailEl = document.getElementById('userEmailDisplay');
+      const topEmailEl = document.getElementById('userEmailTopDisplay');
+      const planEl = document.getElementById('userPlanBadge');
+      const topPlanEl = document.getElementById('userPlanBadgeTop');
+      const avatarEl = document.getElementById('userAvatarLetter');
+      if (emailEl) emailEl.innerText = emailText;
+      if (topEmailEl) topEmailEl.innerText = emailText;
+      if (planEl && u.plan) planEl.innerText = (u.plan || 'free').toUpperCase();
+      if (topPlanEl && u.plan) topPlanEl.innerText = (u.plan || 'free').toLowerCase();
+      if (avatarEl) {
+        const char = (u.email && u.email.length > 0) ? u.email.charAt(0).toUpperCase() : 'W';
+        avatarEl.innerText = char;
+      }
+    }
 
     // Immediate synchronous hydration from local storage (<0.5ms)
     try {
       const userCached = JSON.parse(localStorage.getItem('ultrademon_user') || 'null');
       if (userCached) {
         currentUser = userCached;
-        const emailEl = document.getElementById('userEmailDisplay');
-        const planEl = document.getElementById('userPlanBadge');
-        if (emailEl) emailEl.innerText = userCached.email || userCached.id || 'Active Workspace';
-        if (planEl && userCached.plan) planEl.innerText = userCached.plan.toUpperCase();
+        updateUserProfileUI(currentUser);
       }
     } catch {}
 
@@ -3543,10 +3559,7 @@ requests.post("${origin}/v1/analytics/capture", json={
             localStorage.setItem('ultrademon_saved_plain_keys', JSON.stringify(saved));
           }
           currentUser = data.user;
-          const emailDisplay = document.getElementById('userEmailDisplay');
-          const planBadge = document.getElementById('userPlanBadge');
-          if (emailDisplay) emailDisplay.innerText = data.user.email || data.user.id || 'Active Workspace';
-          if (planBadge) planBadge.innerText = (data.user.plan || 'free').toUpperCase();
+          updateUserProfileUI(currentUser);
           return data.session.access_token;
         }
       } catch (err) {
@@ -5217,18 +5230,7 @@ requests.post("${origin}/v1/analytics/capture", json={
         } catch {}
       }
 
-      const emailDisplay = document.getElementById('userEmailDisplay');
-      const planBadge = document.getElementById('userPlanBadge');
-      if (emailDisplay) {
-        if (currentUser && (currentUser.email || currentUser.id)) {
-          emailDisplay.innerText = currentUser.email || currentUser.id;
-        } else {
-          emailDisplay.innerText = 'Active Workspace';
-        }
-      }
-      if (planBadge) {
-        planBadge.innerText = ((currentUser && currentUser.plan) || 'free').toUpperCase();
-      }
+      updateUserProfileUI(currentUser);
 
       const activeKey = getActiveKey();
       const topLabel = document.getElementById('topActiveKeyLabel');
@@ -6488,10 +6490,7 @@ requests.post("${origin}/v1/analytics/capture", json={
             const data = await res.json();
             currentUser = data.user;
             localStorage.setItem('ultrademon_user', JSON.stringify(currentUser));
-            const emailDisplay = document.getElementById('userEmailDisplay');
-            const planBadge = document.getElementById('userPlanBadge');
-            if (emailDisplay) emailDisplay.innerText = currentUser.email || currentUser.id || 'Active Workspace';
-            if (planBadge) planBadge.innerText = (currentUser.plan || 'free').toUpperCase();
+            updateUserProfileUI(currentUser);
             if (data.user && Array.isArray(data.user.keys) && data.user.keys.length > 0) {
               const saved = JSON.parse(localStorage.getItem('ultrademon_saved_plain_keys') || '{}');
               const activePlain = localStorage.getItem('ultrademon_active_key') || '';
@@ -6510,14 +6509,7 @@ requests.post("${origin}/v1/analytics/capture", json={
         }
       }
 
-      const emailDisplay = document.getElementById('userEmailDisplay');
-      if (emailDisplay) {
-        if (currentUser && (currentUser.email || currentUser.id)) {
-          emailDisplay.innerText = currentUser.email || currentUser.id;
-        } else if (!emailDisplay.innerText || emailDisplay.innerText === 'Loading...') {
-          emailDisplay.innerText = 'Active Workspace';
-        }
-      }
+      updateUserProfileUI(currentUser);
 
       const targetPlan = (urlParams.get('plan') || urlParams.get('upgrade') || '').toLowerCase();
       if (targetPlan && ['free', 'payg', 'pro', 'business', 'ultra', 'enterprise'].includes(targetPlan)) {

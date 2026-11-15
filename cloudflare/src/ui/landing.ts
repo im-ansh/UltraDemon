@@ -1769,6 +1769,14 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         if (err) {
           err.innerText = error.message || 'Authentication error';
           err.classList.remove('hidden');
+          if (error.message && error.message.includes('switch to Create Account')) {
+            const switchBtn = document.createElement('button');
+            switchBtn.type = 'button';
+            switchBtn.className = 'block mt-2 underline font-semibold text-neutral-900 cursor-pointer';
+            switchBtn.innerText = 'Click here to Switch to Create Account';
+            switchBtn.onclick = function() { switchAuthTab('signup'); };
+            err.appendChild(switchBtn);
+          }
         }
       } finally {
         if (btn) {
@@ -1880,6 +1888,14 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         if (err) {
           err.innerText = error.message || 'Authentication error';
           err.classList.remove('hidden');
+          if (error.message && error.message.includes('switch to Create Account')) {
+            const switchBtn = document.createElement('button');
+            switchBtn.type = 'button';
+            switchBtn.className = 'block mt-2 underline font-semibold text-neutral-900 cursor-pointer';
+            switchBtn.innerText = 'Click here to Switch to Create Account';
+            switchBtn.onclick = function() { switchAuthTab('signup'); };
+            err.appendChild(switchBtn);
+          }
         }
       } finally {
         if (btn) {

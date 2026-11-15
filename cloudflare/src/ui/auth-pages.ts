@@ -415,6 +415,14 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
         alertBox.className = 'p-3 rounded-xl text-xs font-medium bg-neutral-100 border border-neutral-300 text-red-600';
         alertBox.innerText = err.message || 'Authentication error';
         alertBox.classList.remove('hidden');
+        if (err.message && err.message.includes('switch to Create Account')) {
+          const switchBtn = document.createElement('button');
+          switchBtn.type = 'button';
+          switchBtn.className = 'block mt-2 underline font-semibold text-neutral-900 cursor-pointer';
+          switchBtn.innerText = 'Click here to Switch to Create Account';
+          switchBtn.onclick = function() { setAuthMode('signup'); };
+          alertBox.appendChild(switchBtn);
+        }
       } finally {
         spinner.classList.add('hidden');
         submitBtn.disabled = false;
