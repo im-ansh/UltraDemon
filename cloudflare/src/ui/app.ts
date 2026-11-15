@@ -1,5 +1,5 @@
 // UltraDemon — Dedicated Developer Workspace Application UI (/app & /dashboard)
-// Pure White (#ffffff) & Monochrome. Zero gradients, zero purple/pink.
+// Light Canvas (#f7f7f7) & Monochrome. Zero gradients, zero purple/pink.
 // Typography: Michelangelus Bold Italic (WOFF2 Data URI), Geist Sans, Geist Mono.
 // Strict Design Rule: NO EMOJIS ANYWHERE. Minimalist grey SVGs only.
 
@@ -64,7 +64,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     }
     body {
       font-family: 'NB International Pro', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #f8f8f8;
+      background-color: #f7f7f7;
       color: #09090b;
     }
     input, textarea, button, select {
@@ -158,7 +158,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     }
   </style>
 </head>
-<body class="min-h-screen bg-[#f8f8f8] text-neutral-950 flex flex-col md:flex-row antialiased selection:bg-black selection:text-white">
+<body class="min-h-screen bg-[#f7f7f7] text-neutral-950 flex flex-col md:flex-row antialiased selection:bg-black selection:text-white">
 
   <!-- Cloudflare Global Top Navigation Bar (Fixed across entire window) -->
   <header class="fixed top-0 left-0 right-0 h-13 z-50 bg-white border-b border-neutral-200/80 px-3 sm:px-4 flex items-center justify-between shadow-2xs select-none">

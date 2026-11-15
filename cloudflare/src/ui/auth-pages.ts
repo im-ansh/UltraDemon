@@ -1,5 +1,5 @@
 // UltraDemon — Dedicated Login, Sign-Up & Verification Callback UI
-// Pure White (#ffffff) & Monochrome. Zero gradients.
+// Light Canvas (#f7f7f7) & Monochrome. Zero gradients.
 // Typography: Michelangelus Bold Italic (WOFF2 Data URI), Geist Sans, Geist Mono.
 // Strict Design Rule: NO EMOJIS ANYWHERE. Minimalist grey SVGs only.
 
@@ -62,9 +62,13 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
     .hidden {
       display: none !important;
     }
-    body, input, textarea, button, select {
+    body {
       font-family: 'NB International Pro', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #ffffff;
+      background-color: #f7f7f7;
+      color: #09090b;
+    }
+    input, textarea, button, select {
+      font-family: 'NB International Pro', -apple-system, BlinkMacSystemFont, sans-serif;
       color: #09090b;
     }
     .font-serif {
@@ -98,7 +102,7 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
     ${CUSTOM_CURSORS_CSS}
   </style>
 </head>
-<body class="min-h-screen bg-white text-neutral-950 flex flex-col justify-between selection:bg-black selection:text-white">
+<body class="min-h-screen bg-[#f7f7f7] text-neutral-950 flex flex-col justify-between selection:bg-black selection:text-white">
 
   <!-- Top Simple Navigation -->
   <header class="p-6 border-b border-neutral-100 flex items-center justify-between max-w-5xl mx-auto w-full">
@@ -619,9 +623,13 @@ export function renderAuthCallbackPage(origin: string): string {
       font-weight: 400;
       font-style: normal;
     }
-    body, input, textarea, button, select {
+    body {
       font-family: 'NB International Pro', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #ffffff;
+      background-color: #f7f7f7;
+      color: #09090b;
+    }
+    input, textarea, button, select {
+      font-family: 'NB International Pro', -apple-system, BlinkMacSystemFont, sans-serif;
       color: #09090b;
     }
     .font-serif {
@@ -633,7 +641,7 @@ export function renderAuthCallbackPage(origin: string): string {
     ${CUSTOM_CURSORS_CSS}
   </style>
 </head>
-<body class="min-h-screen bg-white text-neutral-950 flex flex-col justify-between selection:bg-black selection:text-white">
+<body class="min-h-screen bg-[#f7f7f7] text-neutral-950 flex flex-col justify-between selection:bg-black selection:text-white">
 
   <!-- Simple Header -->
   <header class="p-6 border-b border-neutral-100 flex items-center justify-between max-w-5xl mx-auto w-full">
