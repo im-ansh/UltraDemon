@@ -10,7 +10,7 @@ export const keysRouter = new Hono<{ Bindings: Env }>();
 interface CreateKeyBody {
   plan?: string;
   label?: string;
-  key_type?: 'unified' | 'memory' | 'search' | 'telemetry';
+  key_type?: 'unified' | 'memory' | 'search' | 'telemetry' | 'mcp' | 'summon';
 }
 
 // ── POST /v1/keys — create a new key ────────────────────────────────────────
@@ -30,7 +30,8 @@ keysRouter.post('/', async (c) => {
   }
 
   const body: CreateKeyBody = await c.req.json<CreateKeyBody>().catch(() => ({}));
-  const keyType = (['unified', 'memory', 'search', 'telemetry'].includes(body.key_type || '') ? body.key_type : 'unified') as 'unified' | 'memory' | 'search' | 'telemetry';
+  const validTypes = ['unified', 'memory', 'search', 'telemetry', 'mcp', 'summon'];
+  const keyType = (validTypes.includes(body.key_type || '') ? body.key_type : 'unified') as 'unified' | 'memory' | 'search' | 'telemetry' | 'mcp' | 'summon';
 
   try {
     const defaultLabel = keyType === 'memory' 
@@ -39,7 +40,11 @@ keysRouter.post('/', async (c) => {
         ? 'UltraSearch API Key' 
         : keyType === 'telemetry'
           ? 'UltraMetrics Telemetry Key'
-          : (sbUser.email ? `Unified Key for ${sbUser.email}` : 'Unified Key');
+          : keyType === 'mcp'
+            ? 'Custom MCP Sovereign Key'
+            : keyType === 'summon'
+              ? 'Seamless Summoning Edge Key'
+              : (sbUser.email ? `Unified Key for ${sbUser.email}` : 'Unified Key');
 
     const { plainKey, record } = await createApiKey(
       c.env,

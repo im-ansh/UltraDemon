@@ -120,15 +120,37 @@ export async function createApiKey(
   userId: string,
   plan: string = 'free',
   label: string = '',
-  keyType: 'unified' | 'memory' | 'search' | 'telemetry' = 'unified',
+  keyType: 'unified' | 'memory' | 'search' | 'telemetry' | 'mcp' | 'summon' = 'unified',
 ): Promise<{ plainKey: string; record: ApiKeyRecord }> {
   const planSpec = getPlanSpec(plan);
 
-  const prefix = keyType === 'memory' ? 'um_' : keyType === 'telemetry' ? 'ut_' : keyType === 'unified' ? 'ud_' : KEY_PREFIX;
+  const prefix = keyType === 'memory' 
+    ? 'um_' 
+    : keyType === 'telemetry' 
+      ? 'ut_' 
+      : keyType === 'mcp'
+        ? 'ud_mcp_'
+        : keyType === 'summon'
+          ? 'ud_summon_'
+          : keyType === 'unified' 
+            ? 'ud_' 
+            : KEY_PREFIX;
   const plainKey = `${prefix}${randomB62(KEY_BODY_LEN)}`;
   const hashedKey = await hashKey(plainKey, env.ULTRASEARCH_SECRET);
   const keyId = randomHex(16);
   const now = Date.now();
+
+  const defaultLabel = keyType === 'memory' 
+    ? 'UltraMemory API Key' 
+    : keyType === 'search' 
+      ? 'UltraSearch API Key' 
+      : keyType === 'telemetry'
+        ? 'UltraMetrics Telemetry Key'
+        : keyType === 'mcp'
+          ? 'Custom MCP Sovereign Key'
+          : keyType === 'summon'
+            ? 'Seamless Summoning Edge Key'
+            : 'Unified Sovereign Key';
 
   const record: ApiKeyRecord = {
     hashed_key: hashedKey,
@@ -136,7 +158,7 @@ export async function createApiKey(
     user_id:    userId,
     plan:       planSpec.plan_id,
     key_type:   keyType,
-    label:      label || `${keyType === 'memory' ? 'UltraMemory' : keyType === 'search' ? 'UltraSearch' : keyType === 'telemetry' ? 'UltraMetrics' : 'Unified'} key`,
+    label:      label || defaultLabel,
     created_at: now,
     revoked:    false,
   };

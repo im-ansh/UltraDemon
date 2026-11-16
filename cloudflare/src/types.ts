@@ -69,7 +69,7 @@ export interface ApiKeyRecord {
   key_id: string;
   user_id: string;
   plan: string;
-  key_type?: 'unified' | 'memory' | 'search' | 'telemetry';
+  key_type?: 'unified' | 'memory' | 'search' | 'telemetry' | 'mcp' | 'summon';
   label: string;
   created_at: number;
   revoked: boolean;
