@@ -1514,14 +1514,20 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
       <!-- Unified Auth Box directly on the Landing Page -->
       <div class="bg-white rounded-3xl border border-neutral-200/90 p-6 sm:p-8 shadow-xl max-w-md mx-auto text-left">
-        <!-- Tab Switcher -->
-        <div class="flex border-b border-neutral-200 mb-6">
-          <button type="button" id="inlineTabSignin" onclick="switchInlineAuthTab('signin')" class="flex-1 pb-2.5 text-xs font-bold border-b-2 border-neutral-950 text-neutral-950 transition-colors cursor-pointer text-center">
+        <!-- Segmented Tab Switcher -->
+        <div class="grid grid-cols-2 p-1 bg-neutral-100 rounded-xl mb-5 text-xs font-semibold">
+          <button type="button" id="inlineTabSignin" onclick="switchInlineAuthTab('signin')" class="py-2.5 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs text-center">
             Sign In
           </button>
-          <button type="button" id="inlineTabSignup" onclick="switchInlineAuthTab('signup')" class="flex-1 pb-2.5 text-xs font-medium border-b-2 border-transparent text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer text-center">
+          <button type="button" id="inlineTabSignup" onclick="switchInlineAuthTab('signup')" class="py-2.5 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black text-center">
             Create Account
           </button>
+        </div>
+
+        <!-- Dynamic Header & Subtitle -->
+        <div class="mb-5">
+          <h3 id="inlineAuthHeading" class="text-base font-bold text-neutral-950 font-sans">Sign In to UltraDemon</h3>
+          <p id="inlineAuthSubtitle" class="text-xs text-neutral-500 mt-0.5">Enter your email and password to access your sovereign developer console</p>
         </div>
 
         <!-- Form -->
@@ -1536,6 +1542,11 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
               <span class="text-[10px] text-neutral-400 font-num">Min. 6 chars</span>
             </div>
             <input type="password" id="inlineAuthPassword" required minlength="6" class="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200 bg-neutral-50/70 focus:bg-white focus:outline-none focus:border-neutral-950 transition-colors font-mono text-xs text-neutral-950" placeholder="••••••••••••">
+          </div>
+
+          <div id="inlineConfirmPasswordRow" class="hidden">
+            <label class="block text-[11px] font-mono text-neutral-600 uppercase tracking-wider mb-1.5 font-medium">Confirm Password</label>
+            <input type="password" id="inlineAuthConfirmPassword" minlength="6" class="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200 bg-neutral-50/70 focus:bg-white focus:outline-none focus:border-neutral-950 transition-colors font-mono text-xs text-neutral-950" placeholder="••••••••••••">
           </div>
 
           <div id="inlineAuthError" class="p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs hidden font-medium"></div>
@@ -1555,6 +1566,14 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             Continue with 1-Click Demo Console
           </button>
         </form>
+
+        <!-- Bottom Mode Toggle Prompt -->
+        <div class="mt-4 text-center text-xs text-neutral-500" id="inlineAuthToggleContainer">
+          <span id="inlineAuthTogglePrompt">Don't have an account?</span>
+          <button type="button" id="inlineAuthToggleBtn" onclick="switchInlineAuthTab(inlineAuthMode === 'signin' ? 'signup' : 'signin')" class="font-semibold text-neutral-950 hover:underline cursor-pointer ml-1">
+            Create Account
+          </button>
+        </div>
 
         <div class="mt-5 pt-4 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400 font-num">
           <span>Cloudflare Edge Crypto SHA-256</span>
@@ -1623,30 +1642,43 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </button>
 
       <!-- Modal Header -->
-      <div class="flex items-center gap-2.5 mb-4">
+      <div class="flex items-center gap-2.5 mb-2">
         <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-7 h-7 object-contain select-none shrink-0" />
-        <span class="font-bold text-base text-neutral-950">UltraDemon OS</span>
+        <span class="font-bold text-base text-neutral-950 font-sans">UltraDemon OS</span>
       </div>
+      <h3 id="modalAuthHeading" class="text-base font-bold text-neutral-950 font-sans">Sign In to UltraDemon</h3>
+      <p id="modalAuthSubtitle" class="text-xs text-neutral-500 mt-0.5">Enter your email and password to access your workspace</p>
 
-      <!-- Tab Switcher -->
-      <div class="flex border-b border-neutral-200 mb-5">
-        <button id="modalTabSignin" onclick="switchAuthTab('signin')" class="flex-1 pb-2 text-xs font-bold border-b-2 border-neutral-950 text-neutral-950 transition-colors cursor-pointer">
+      <!-- Segmented Tab Switcher -->
+      <div class="grid grid-cols-2 p-1 bg-neutral-100 rounded-xl my-4 text-xs font-semibold">
+        <button type="button" id="modalTabSignin" onclick="switchAuthTab('signin')" class="py-2 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs">
           Sign In
         </button>
-        <button id="modalTabSignup" onclick="switchAuthTab('signup')" class="flex-1 pb-2 text-xs font-medium border-b-2 border-transparent text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer">
+        <button type="button" id="modalTabSignup" onclick="switchAuthTab('signup')" class="py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black">
           Create Account
         </button>
       </div>
 
+      <!-- Plan Indicator (If Selected) -->
+      <div id="modalPlanIndicator" class="hidden p-2 rounded-lg bg-neutral-50 border border-neutral-200 text-xs mb-3 flex items-center justify-between font-mono">
+        <span class="text-neutral-500">Tier:</span>
+        <span id="modalPlanName" class="font-bold text-neutral-900 uppercase">FREE</span>
+      </div>
+
       <!-- Auth Form -->
-      <form id="authModalForm" onsubmit="handleAuthModalSubmit(event)" class="space-y-4 text-xs">
+      <form id="authModalForm" onsubmit="handleAuthModalSubmit(event)" class="space-y-3.5 text-xs">
         <div>
-          <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Email</label>
+          <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Email address</label>
           <input type="email" id="modalAuthEmail" required class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-mono" placeholder="agent@company.com">
         </div>
         <div>
           <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Password</label>
           <input type="password" id="modalAuthPassword" required minlength="6" class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-mono" placeholder="••••••••">
+        </div>
+
+        <div id="modalConfirmPasswordRow" class="hidden">
+          <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Confirm Password</label>
+          <input type="password" id="modalAuthConfirmPassword" minlength="6" class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-mono" placeholder="••••••••">
         </div>
 
         <div id="modalAuthError" class="text-red-600 text-[11px] hidden font-mono"></div>
@@ -1656,7 +1688,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           Sign In
         </button>
 
-        <div class="relative flex items-center justify-center my-3">
+        <div class="relative flex items-center justify-center my-2.5">
           <div class="border-t border-neutral-200 w-full"></div>
           <span class="bg-white px-2 text-[10px] uppercase font-mono text-neutral-400 absolute">or</span>
         </div>
@@ -1666,6 +1698,14 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           Continue with 1-Click Demo Console
         </button>
       </form>
+
+      <!-- Bottom Switcher Prompt -->
+      <div class="mt-4 text-center text-xs text-neutral-500" id="modalAuthToggleContainer">
+        <span id="modalAuthTogglePrompt">Don't have an account?</span>
+        <button type="button" id="modalAuthToggleBtn" onclick="switchAuthTab(authMode === 'signin' ? 'signup' : 'signin')" class="font-semibold text-neutral-950 hover:underline cursor-pointer ml-1">
+          Create Account
+        </button>
+      </div>
 
       <div class="mt-4 text-center">
         <span class="text-[11px] text-neutral-400 font-num">Edge-authenticated on Cloudflare Workers</span>
@@ -1696,23 +1736,47 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     }
 
     window.switchAuthTab = function(mode) {
-      authMode = mode;
+      authMode = mode === 'signup' ? 'signup' : 'signin';
+      const isSign = authMode === 'signin';
       const tabIn = document.getElementById('modalTabSignin');
       const tabUp = document.getElementById('modalTabSignup');
+      const heading = document.getElementById('modalAuthHeading');
+      const subtitle = document.getElementById('modalAuthSubtitle');
+      const confirmRow = document.getElementById('modalConfirmPasswordRow');
       const btn = document.getElementById('modalAuthSubmitBtn');
+      const prompt = document.getElementById('modalAuthTogglePrompt');
+      const toggleBtn = document.getElementById('modalAuthToggleBtn');
       const err = document.getElementById('modalAuthError');
       const succ = document.getElementById('modalAuthSuccess');
+      const planInd = document.getElementById('modalPlanIndicator');
+      const planName = document.getElementById('modalPlanName');
+
       if (err) err.classList.add('hidden');
       if (succ) succ.classList.add('hidden');
 
-      if (mode === 'signin') {
-        if (tabIn) tabIn.className = 'flex-1 pb-2 text-xs font-bold border-b-2 border-neutral-950 text-neutral-950 transition-colors cursor-pointer';
-        if (tabUp) tabUp.className = 'flex-1 pb-2 text-xs font-medium border-b-2 border-transparent text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer';
+      if (isSign) {
+        if (tabIn) tabIn.className = 'py-2 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs';
+        if (tabUp) tabUp.className = 'py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black';
+        if (heading) heading.innerText = 'Sign In to UltraDemon';
+        if (subtitle) subtitle.innerText = 'Enter your credentials to access your developer console';
+        if (confirmRow) confirmRow.classList.add('hidden');
         if (btn) btn.innerText = 'Sign In';
+        if (prompt) prompt.innerText = "Don't have an account?";
+        if (toggleBtn) toggleBtn.innerText = 'Create Account';
+        if (planInd) planInd.classList.add('hidden');
       } else {
-        if (tabUp) tabUp.className = 'flex-1 pb-2 text-xs font-bold border-b-2 border-neutral-950 text-neutral-950 transition-colors cursor-pointer';
-        if (tabIn) tabIn.className = 'flex-1 pb-2 text-xs font-medium border-b-2 border-transparent text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer';
+        if (tabIn) tabIn.className = 'py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black';
+        if (tabUp) tabUp.className = 'py-2 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs';
+        if (heading) heading.innerText = 'Create Sovereign Account';
+        if (subtitle) subtitle.innerText = 'Instant edge account setup across 330+ Cloudflare PoPs';
+        if (confirmRow) confirmRow.classList.remove('hidden');
         if (btn) btn.innerText = 'Create Account';
+        if (prompt) prompt.innerText = 'Already have an account?';
+        if (toggleBtn) toggleBtn.innerText = 'Sign In';
+        if (planInd && window.selectedModalPlan) {
+          if (planName) planName.innerText = String(window.selectedModalPlan).toUpperCase();
+          planInd.classList.remove('hidden');
+        }
       }
     };
 
@@ -1720,6 +1784,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       if (e && e.preventDefault) e.preventDefault();
       const email = document.getElementById('modalAuthEmail').value.trim();
       const password = document.getElementById('modalAuthPassword').value;
+      const confirmEl = document.getElementById('modalAuthConfirmPassword');
+      const confirmPassword = confirmEl ? confirmEl.value : '';
       const err = document.getElementById('modalAuthError');
       const succ = document.getElementById('modalAuthSuccess');
       const btn = document.getElementById('modalAuthSubmitBtn');
@@ -1730,6 +1796,14 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       if (!email || !password) {
         if (err) {
           err.innerText = 'Please provide both email and password';
+          err.classList.remove('hidden');
+        }
+        return;
+      }
+
+      if (authMode === 'signup' && confirmPassword && password !== confirmPassword) {
+        if (err) {
+          err.innerText = 'Passwords do not match';
           err.classList.remove('hidden');
         }
         return;
@@ -1816,23 +1890,40 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
     let inlineAuthMode = 'signin';
     window.switchInlineAuthTab = function(mode) {
-      inlineAuthMode = mode;
+      inlineAuthMode = mode === 'signup' ? 'signup' : 'signin';
+      const isSign = inlineAuthMode === 'signin';
       const tabIn = document.getElementById('inlineTabSignin');
       const tabUp = document.getElementById('inlineTabSignup');
+      const heading = document.getElementById('inlineAuthHeading');
+      const subtitle = document.getElementById('inlineAuthSubtitle');
+      const confirmRow = document.getElementById('inlineConfirmPasswordRow');
       const btn = document.getElementById('inlineAuthSubmitBtn');
+      const prompt = document.getElementById('inlineAuthTogglePrompt');
+      const toggleBtn = document.getElementById('inlineAuthToggleBtn');
       const err = document.getElementById('inlineAuthError');
       const succ = document.getElementById('inlineAuthSuccess');
+
       if (err) err.classList.add('hidden');
       if (succ) succ.classList.add('hidden');
 
-      if (mode === 'signin') {
-        if (tabIn) tabIn.className = 'flex-1 pb-2.5 text-xs font-bold border-b-2 border-neutral-950 text-neutral-950 transition-colors cursor-pointer text-center';
-        if (tabUp) tabUp.className = 'flex-1 pb-2.5 text-xs font-medium border-b-2 border-transparent text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer text-center';
+      if (isSign) {
+        if (tabIn) tabIn.className = 'py-2.5 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs text-center';
+        if (tabUp) tabUp.className = 'py-2.5 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black text-center';
+        if (heading) heading.innerText = 'Sign In to UltraDemon';
+        if (subtitle) subtitle.innerText = 'Enter your email and password to access your sovereign developer console';
+        if (confirmRow) confirmRow.classList.add('hidden');
         if (btn) btn.innerText = 'Sign In to Workspace';
+        if (prompt) prompt.innerText = "Don't have an account?";
+        if (toggleBtn) toggleBtn.innerText = 'Create Account';
       } else {
-        if (tabUp) tabUp.className = 'flex-1 pb-2.5 text-xs font-bold border-b-2 border-neutral-950 text-neutral-950 transition-colors cursor-pointer text-center';
-        if (tabIn) tabIn.className = 'flex-1 pb-2.5 text-xs font-medium border-b-2 border-transparent text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer text-center';
+        if (tabIn) tabIn.className = 'py-2.5 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black text-center';
+        if (tabUp) tabUp.className = 'py-2.5 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs text-center';
+        if (heading) heading.innerText = 'Create Sovereign Account';
+        if (subtitle) subtitle.innerText = 'Instant edge account setup across 330+ Cloudflare PoPs';
+        if (confirmRow) confirmRow.classList.remove('hidden');
         if (btn) btn.innerText = 'Create Sovereign Account';
+        if (prompt) prompt.innerText = 'Already have an account?';
+        if (toggleBtn) toggleBtn.innerText = 'Sign In';
       }
     };
 
@@ -1840,6 +1931,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       if (e && e.preventDefault) e.preventDefault();
       const email = document.getElementById('inlineAuthEmail').value.trim();
       const password = document.getElementById('inlineAuthPassword').value;
+      const confirmEl = document.getElementById('inlineAuthConfirmPassword');
+      const confirmPassword = confirmEl ? confirmEl.value : '';
       const err = document.getElementById('inlineAuthError');
       const succ = document.getElementById('inlineAuthSuccess');
       const btn = document.getElementById('inlineAuthSubmitBtn');
@@ -1850,6 +1943,14 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       if (!email || !password) {
         if (err) {
           err.innerText = 'Please enter both email and password';
+          err.classList.remove('hidden');
+        }
+        return;
+      }
+
+      if (inlineAuthMode === 'signup' && confirmPassword && password !== confirmPassword) {
+        if (err) {
+          err.innerText = 'Passwords do not match';
           err.classList.remove('hidden');
         }
         return;

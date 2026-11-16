@@ -265,6 +265,17 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
           />
         </div>
 
+        <div id="confirmPasswordRow" class="${isLogin ? 'hidden' : ''}">
+          <label class="block text-xs font-medium text-neutral-700 mb-1.5">Confirm Password</label>
+          <input 
+            type="password" 
+            id="authConfirmPassword" 
+            placeholder="••••••••••••" 
+            minlength="6"
+            class="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-950 text-xs placeholder-neutral-400 focus:outline-none focus:bg-white focus:border-black transition"
+          />
+        </div>
+
         <!-- Alert Notification -->
         <div id="authAlert" class="hidden p-3 rounded-xl text-xs font-medium"></div>
 
@@ -345,17 +356,21 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
 
       const tabIn = document.getElementById('tabSignIn');
       const tabUp = document.getElementById('tabSignUp');
+      const confirmRow = document.getElementById('confirmPasswordRow');
       if (isSign) {
         tabIn.className = 'py-2 rounded-lg transition cursor-pointer bg-black text-white shadow-xs';
         tabUp.className = 'py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black';
+        if (confirmRow) confirmRow.classList.add('hidden');
       } else {
         tabIn.className = 'py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black';
         tabUp.className = 'py-2 rounded-lg transition cursor-pointer bg-black text-white shadow-xs';
+        if (confirmRow) confirmRow.classList.remove('hidden');
       }
       document.getElementById('authAlert').classList.add('hidden');
       document.getElementById('verifyNoticeCard').classList.add('hidden');
       document.getElementById('authForm').classList.remove('hidden');
     }
+    window.setAuthMode = setAuthMode;
 
     async function handleFormSubmit(e) {
       if (e && e.preventDefault) e.preventDefault();

@@ -173,7 +173,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       </a>
 
       <!-- Account Selector Dropdown -->
-      <div class="flex items-center gap-1 cursor-pointer hover:bg-neutral-100 rounded-md px-2 py-1 transition text-xs font-medium text-neutral-800">
+      <div onclick="toggleAppAccountMenu(event)" id="userAccountSelectorBtn" class="flex items-center gap-1 cursor-pointer hover:bg-neutral-100 rounded-md px-2 py-1 transition text-xs font-medium text-neutral-800" title="Click to view account or switch login">
         <span id="userEmailTopDisplay" class="truncate max-w-[120px] sm:max-w-[180px]">Workspace</span>
         <svg class="w-3.5 h-3.5 text-neutral-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
       </div>
@@ -228,7 +228,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
       <!-- User Avatar Profile Circle -->
       <div class="flex items-center gap-1.5 pl-1">
-        <div class="w-7 h-7 rounded-full bg-neutral-900 text-white flex items-center justify-center text-xs font-bold font-mono uppercase cursor-pointer hover:bg-neutral-800 transition" onclick="handleAppSignOut()" title="Click to Sign Out">
+        <div class="w-7 h-7 rounded-full bg-neutral-900 text-white flex items-center justify-center text-xs font-bold font-mono uppercase cursor-pointer hover:bg-neutral-800 transition" onclick="toggleAppAccountMenu(event)" title="Account &amp; Workspace">
           <span id="userAvatarLetter">A</span>
         </div>
       </div>
@@ -348,6 +348,10 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
       <!-- Drawer Bottom Actions -->
       <div class="pt-4 border-t border-neutral-100 space-y-2">
+        <button type="button" onclick="openAppAuthModal('signin'); toggleAppMobileDrawer();" class="w-full py-2 px-3 text-xs text-neutral-700 hover:text-black hover:bg-neutral-100 rounded-lg transition flex items-center gap-2 cursor-pointer">
+          <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          <span>Switch Account / Sign In</span>
+        </button>
         <a href="/" class="w-full py-2 px-3 text-xs text-neutral-600 hover:text-black hover:bg-neutral-100 rounded-lg transition flex items-center gap-2">
           <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m15 19-7-7 7-7"/></svg>
           <span>Back to Landing Page</span>
@@ -489,6 +493,10 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </div>
         <span class="text-neutral-900 font-semibold">&lt;15ms</span>
       </div>
+      <button type="button" onclick="openAppAuthModal('signin')" class="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-neutral-700 hover:text-black hover:bg-neutral-100 rounded-md transition text-left cursor-pointer">
+        <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        <span>Switch Account / Sign In</span>
+      </button>
       <button type="button" onclick="setAppView('membership')" class="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-neutral-600 hover:text-black hover:bg-neutral-100 rounded-md transition text-left cursor-pointer">
         <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         <span>Manage account</span>
@@ -3374,6 +3382,107 @@ requests.post("${origin}/v1/analytics/capture", json={
 
   </aside>
 
+  <!-- Top Bar Account Popover Menu (Cloudflare Standard) -->
+  <div id="appAccountPopover" class="hidden fixed top-13 left-4 sm:left-14 w-68 bg-white border border-neutral-200 rounded-xl shadow-xl p-3 z-50 font-sans">
+    <div class="px-2 py-1.5 border-b border-neutral-100 mb-2">
+      <div class="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">Active Workspace</div>
+      <div id="popoverUserEmail" class="text-xs font-semibold text-neutral-900 truncate">Workspace</div>
+      <div class="mt-1 flex items-center gap-1.5">
+        <span id="popoverUserPlan" class="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-neutral-100 text-neutral-700 border border-neutral-300 uppercase">FREE</span>
+        <span class="text-[10px] text-emerald-600 font-mono font-medium">Anycast Connected</span>
+      </div>
+    </div>
+    <div class="space-y-1 text-xs">
+      <button type="button" onclick="closeAppAccountMenu(); openAppAuthModal('signin');" class="w-full text-left px-2 py-1.5 rounded-md text-neutral-700 hover:bg-neutral-100 hover:text-black font-medium transition cursor-pointer flex items-center gap-2">
+        <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        <span>Sign In / Switch Account</span>
+      </button>
+      <button type="button" onclick="closeAppAccountMenu(); openAppAuthModal('signup');" class="w-full text-left px-2 py-1.5 rounded-md text-neutral-700 hover:bg-neutral-100 hover:text-black font-medium transition cursor-pointer flex items-center gap-2">
+        <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+        <span>Create New Account</span>
+      </button>
+      <div class="border-t border-neutral-100 my-1"></div>
+      <button type="button" onclick="closeAppAccountMenu(); handleAppSignOut();" class="w-full text-left px-2 py-1.5 rounded-md text-red-600 hover:bg-red-50 font-medium transition cursor-pointer flex items-center gap-2">
+        <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+        <span>Sign Out</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- In-App Authentication & Account Switcher Modal (Cloudflare Standard) -->
+  <div id="appAuthModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs hidden">
+    <div class="relative w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl border border-neutral-100 font-sans">
+      <!-- Close Button -->
+      <button onclick="closeAppAuthModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-neutral-900 transition-colors p-1 cursor-pointer">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <!-- Modal Brand & Dynamic Heading -->
+      <div class="flex items-center gap-2.5 mb-2">
+        <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-7 h-7 object-contain select-none shrink-0" />
+        <span class="font-bold text-base text-neutral-950 font-sans">UltraDemon OS</span>
+      </div>
+      <h3 id="appAuthHeading" class="text-base font-bold text-neutral-950">Sign In to UltraDemon</h3>
+      <p id="appAuthSubtitle" class="text-xs text-neutral-500 mt-0.5">Enter your email and password to access your workspace</p>
+
+      <!-- Segmented Tab Switcher (Smooth Pill Design) -->
+      <div class="grid grid-cols-2 p-1 bg-neutral-100 rounded-xl my-4 text-xs font-semibold">
+        <button type="button" id="appModalTabSignin" onclick="switchAppAuthTab('signin')" class="py-2 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs">
+          Sign In
+        </button>
+        <button type="button" id="appModalTabSignup" onclick="switchAppAuthTab('signup')" class="py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black">
+          Create Account
+        </button>
+      </div>
+
+      <!-- Auth Form -->
+      <form id="appAuthModalForm" onsubmit="handleAppAuthModalSubmit(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Email address</label>
+          <input type="email" id="appModalAuthEmail" required class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-mono" placeholder="agent@company.com">
+        </div>
+        <div>
+          <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Password</label>
+          <input type="password" id="appModalAuthPassword" required minlength="6" class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-mono" placeholder="••••••••">
+        </div>
+
+        <div id="appModalConfirmPasswordRow" class="hidden">
+          <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Confirm Password</label>
+          <input type="password" id="appModalAuthConfirmPassword" minlength="6" class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-mono" placeholder="••••••••">
+        </div>
+
+        <div id="appModalAuthError" class="text-red-600 text-[11px] hidden font-mono"></div>
+        <div id="appModalAuthSuccess" class="text-emerald-700 text-[11px] hidden font-mono"></div>
+
+        <button type="submit" id="appModalAuthSubmitBtn" class="w-full py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold transition-colors cursor-pointer shadow-xs text-xs">
+          Sign In
+        </button>
+
+        <div class="relative flex items-center justify-center my-2.5">
+          <div class="border-t border-neutral-200 w-full"></div>
+          <span class="bg-white px-2 text-[10px] uppercase font-mono text-neutral-400 absolute">or</span>
+        </div>
+
+        <!-- 1-Click Instant Guest Access -->
+        <button type="button" onclick="handleAppGuestAccess()" id="appModalGuestBtn" class="w-full py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 font-semibold transition cursor-pointer text-xs shadow-2xs">
+          Continue with 1-Click Demo Console
+        </button>
+      </form>
+
+      <!-- Bottom Switcher Link -->
+      <div class="mt-4 text-center text-xs text-neutral-500" id="appModalAuthToggleContainer">
+        <span id="appModalAuthTogglePrompt">Don't have an account?</span>
+        <button type="button" id="appModalAuthToggleBtn" onclick="switchAppAuthTab(appAuthMode === 'signin' ? 'signup' : 'signin')" class="font-semibold text-neutral-950 hover:underline cursor-pointer ml-1">
+          Create Account
+        </button>
+      </div>
+
+      <div class="mt-4 text-center">
+        <span class="text-[11px] text-neutral-400 font-num">Cloudflare Workers Edge SHA-256 Authentication</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Floating Help Launcher Button -->
   <button id="helpBotToggleBtn" type="button" onclick="toggleHelpBotDrawer()" class="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-3 rounded-full bg-neutral-950 hover:bg-neutral-800 text-white shadow-xl hover:shadow-2xl transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer border border-neutral-800 group" title="Open Sovereign Help Assistant">
     <div class="relative">
@@ -3429,13 +3538,17 @@ requests.post("${origin}/v1/analytics/capture", json={
       const emailText = u.email || u.id || 'Active Workspace';
       const emailEl = document.getElementById('userEmailDisplay');
       const topEmailEl = document.getElementById('userEmailTopDisplay');
+      const popoverEmailEl = document.getElementById('popoverUserEmail');
       const planEl = document.getElementById('userPlanBadge');
       const topPlanEl = document.getElementById('userPlanBadgeTop');
+      const popoverPlanEl = document.getElementById('popoverUserPlan');
       const avatarEl = document.getElementById('userAvatarLetter');
       if (emailEl) emailEl.innerText = emailText;
       if (topEmailEl) topEmailEl.innerText = emailText;
+      if (popoverEmailEl) popoverEmailEl.innerText = emailText;
       if (planEl && u.plan) planEl.innerText = (u.plan || 'free').toUpperCase();
       if (topPlanEl && u.plan) topPlanEl.innerText = (u.plan || 'free').toLowerCase();
+      if (popoverPlanEl && u.plan) popoverPlanEl.innerText = (u.plan || 'free').toUpperCase();
       if (avatarEl) {
         const char = (u.email && u.email.length > 0) ? u.email.charAt(0).toUpperCase() : 'W';
         avatarEl.innerText = char;
@@ -5111,6 +5224,220 @@ requests.post("${origin}/v1/analytics/capture", json={
       window.location.href = '/?auth=signin';
     }
 
+    let appAuthMode = 'signin';
+
+    function openAppAccountMenu(e) {
+      if (e) { e.stopPropagation(); }
+      const popover = document.getElementById('appAccountPopover');
+      if (popover) {
+        popover.classList.remove('hidden');
+      }
+    }
+
+    function closeAppAccountMenu() {
+      const popover = document.getElementById('appAccountPopover');
+      if (popover) popover.classList.add('hidden');
+    }
+
+    function toggleAppAccountMenu(e) {
+      if (e) { e.stopPropagation(); }
+      const popover = document.getElementById('appAccountPopover');
+      if (popover) {
+        if (popover.classList.contains('hidden')) {
+          openAppAccountMenu(e);
+        } else {
+          closeAppAccountMenu();
+        }
+      }
+    }
+
+    document.addEventListener('click', function(e) {
+      const popover = document.getElementById('appAccountPopover');
+      const selector = document.getElementById('userAccountSelectorBtn');
+      if (popover && !popover.classList.contains('hidden')) {
+        if (!popover.contains(e.target) && (!selector || !selector.contains(e.target))) {
+          closeAppAccountMenu();
+        }
+      }
+    });
+
+    function openAppAuthModal(mode) {
+      closeAppAccountMenu();
+      const modal = document.getElementById('appAuthModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        switchAppAuthTab(mode || 'signin');
+      }
+    }
+
+    function closeAppAuthModal() {
+      const modal = document.getElementById('appAuthModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function switchAppAuthTab(mode) {
+      appAuthMode = mode === 'signup' ? 'signup' : 'signin';
+      const isSign = appAuthMode === 'signin';
+      const tabIn = document.getElementById('appModalTabSignin');
+      const tabUp = document.getElementById('appModalTabSignup');
+      const heading = document.getElementById('appAuthHeading');
+      const subtitle = document.getElementById('appAuthSubtitle');
+      const confirmRow = document.getElementById('appModalConfirmPasswordRow');
+      const btn = document.getElementById('appModalAuthSubmitBtn');
+      const prompt = document.getElementById('appModalAuthTogglePrompt');
+      const toggleBtn = document.getElementById('appModalAuthToggleBtn');
+      const err = document.getElementById('appModalAuthError');
+      const succ = document.getElementById('appModalAuthSuccess');
+
+      if (err) err.classList.add('hidden');
+      if (succ) succ.classList.add('hidden');
+
+      if (isSign) {
+        if (tabIn) tabIn.className = 'py-2 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs';
+        if (tabUp) tabUp.className = 'py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black';
+        if (heading) heading.innerText = 'Sign In to UltraDemon';
+        if (subtitle) subtitle.innerText = 'Enter your email and password to access your workspace';
+        if (confirmRow) confirmRow.classList.add('hidden');
+        if (btn) btn.innerText = 'Sign In';
+        if (prompt) prompt.innerText = "Don't have an account?";
+        if (toggleBtn) toggleBtn.innerText = 'Create Account';
+      } else {
+        if (tabIn) tabIn.className = 'py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black';
+        if (tabUp) tabUp.className = 'py-2 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs';
+        if (heading) heading.innerText = 'Create Sovereign Account';
+        if (subtitle) subtitle.innerText = 'Instant edge account setup across 330+ Cloudflare PoPs';
+        if (confirmRow) confirmRow.classList.remove('hidden');
+        if (btn) btn.innerText = 'Create Account';
+        if (prompt) prompt.innerText = 'Already have an account?';
+        if (toggleBtn) toggleBtn.innerText = 'Sign In';
+      }
+    }
+
+    async function handleAppAuthModalSubmit(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      const email = document.getElementById('appModalAuthEmail').value.trim();
+      const password = document.getElementById('appModalAuthPassword').value;
+      const confirmEl = document.getElementById('appModalAuthConfirmPassword');
+      const confirmPassword = confirmEl ? confirmEl.value : '';
+      const err = document.getElementById('appModalAuthError');
+      const succ = document.getElementById('appModalAuthSuccess');
+      const btn = document.getElementById('appModalAuthSubmitBtn');
+
+      if (err) err.classList.add('hidden');
+      if (succ) succ.classList.add('hidden');
+
+      if (!email || !password) {
+        if (err) {
+          err.innerText = 'Please provide both email and password';
+          err.classList.remove('hidden');
+        }
+        return;
+      }
+
+      if (appAuthMode === 'signup' && confirmPassword && password !== confirmPassword) {
+        if (err) {
+          err.innerText = 'Passwords do not match';
+          err.classList.remove('hidden');
+        }
+        return;
+      }
+
+      if (btn) { btn.disabled = true; btn.innerText = 'Connecting to edge...'; }
+
+      try {
+        const endpoint = appAuthMode === 'signup' ? '/v1/auth/signup' : '/v1/auth/signin';
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, plan: 'free' })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || 'Authentication failed');
+        }
+        if (data.session) {
+          localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session));
+        }
+        if (data.user) {
+          localStorage.setItem('ultrademon_user', JSON.stringify(data.user));
+          currentUser = data.user;
+          updateUserProfileUI(currentUser);
+        }
+        if (data.active_key) {
+          localStorage.setItem('ultrademon_active_key', data.active_key);
+          activeApiKey = data.active_key;
+        }
+
+        if (succ) {
+          succ.innerText = 'Successfully authenticated! Updating workspace...';
+          succ.classList.remove('hidden');
+        }
+
+        showAppToast('Authenticated as ' + email);
+        setTimeout(() => {
+          closeAppAuthModal();
+          if (typeof loadAppKeys === 'function') loadAppKeys();
+          if (typeof refreshTelemetry === 'function') refreshTelemetry();
+        }, 300);
+      } catch (error) {
+        if (err) {
+          err.innerText = error.message || 'Authentication error';
+          err.classList.remove('hidden');
+          if (error.message && error.message.includes('switch to Create Account')) {
+            const switchBtn = document.createElement('button');
+            switchBtn.type = 'button';
+            switchBtn.className = 'block mt-2 underline font-semibold text-neutral-900 cursor-pointer';
+            switchBtn.innerText = 'Click here to Switch to Create Account';
+            switchBtn.onclick = function() { switchAppAuthTab('signup'); };
+            err.appendChild(switchBtn);
+          }
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerText = appAuthMode === 'signin' ? 'Sign In' : 'Create Account';
+        }
+      }
+    }
+
+    async function handleAppGuestAccess() {
+      const btn = document.getElementById('appModalGuestBtn');
+      if (btn) { btn.disabled = true; btn.innerText = 'Creating demo session...'; }
+      try {
+        const res = await fetch('/v1/auth/anonymous', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan: 'free' })
+        });
+        const data = await res.json();
+        if (data.session) localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session));
+        if (data.user) {
+          localStorage.setItem('ultrademon_user', JSON.stringify(data.user));
+          currentUser = data.user;
+          updateUserProfileUI(currentUser);
+        }
+        if (data.initial_key) {
+          localStorage.setItem('ultrademon_active_key', data.initial_key);
+          activeApiKey = data.initial_key;
+        }
+        closeAppAuthModal();
+        showAppToast('Guest demo workspace initialized');
+        if (typeof loadAppKeys === 'function') loadAppKeys();
+        if (typeof refreshTelemetry === 'function') refreshTelemetry();
+      } catch (e) {
+        const err = document.getElementById('appModalAuthError');
+        if (err) {
+          err.innerText = 'Failed to init demo: ' + e.message;
+          err.classList.remove('hidden');
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerText = 'Continue with 1-Click Demo Console';
+        }
+      }
+    }
+
     async function autoProvisionInitialKey(plan) {
       let token = getAuthToken();
       if (!token) token = await initGuestSession();
@@ -5158,6 +5485,14 @@ requests.post("${origin}/v1/analytics/capture", json={
     window.upgradeTier = upgradeTier;
     window.refreshTelemetry = refreshTelemetry;
     window.handleAppSignOut = handleAppSignOut;
+    window.openAppAccountMenu = openAppAccountMenu;
+    window.closeAppAccountMenu = closeAppAccountMenu;
+    window.toggleAppAccountMenu = toggleAppAccountMenu;
+    window.openAppAuthModal = openAppAuthModal;
+    window.closeAppAuthModal = closeAppAuthModal;
+    window.switchAppAuthTab = switchAppAuthTab;
+    window.handleAppAuthModalSubmit = handleAppAuthModalSubmit;
+    window.handleAppGuestAccess = handleAppGuestAccess;
     window.showAppToast = showAppToast;
     window.quickCreateSuiteKey = quickCreateSuiteKey;
     window.copySnippetCode = copySnippetCode;
