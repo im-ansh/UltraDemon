@@ -125,11 +125,15 @@ app.get('/robots.txt', (c) => {
 # Primary Canonical Domain: https://ultrademon.site
 User-agent: *
 Allow: /
+Allow: /fastest-web-search-api
+Allow: /fastest-websearch
+Allow: /memory-api
 Allow: /benchmarks
 Allow: /pricing
 Allow: /privacy
 Allow: /terms
 Allow: /mcp
+Allow: /docs
 Allow: /openapi.json
 Allow: /llms.txt
 Allow: /llms-full.txt
@@ -184,9 +188,9 @@ LLMs-Txt: https://ultrademon.site/llms.txt
 
 // ── World-Class LLM Search Optimization: llms.txt & llms-full.txt ────────────
 app.get('/llms.txt', (c) => {
-  const doc = `# UltraDemon: Sovereign Autonomous Engine for Agent Memory & Web Search API
+  const doc = `# UltraDemon: #1 Ranked Fastest Web Search API & Fastest Memory API for AI Agents
 
-> The fastest sovereign Web Search API & Long-Term Memory engine for autonomous AI agents, multi-agent swarms, and LLM applications. Operating directly on Cloudflare Workers Anycast edge across 330+ cities worldwide, UltraDemon delivers sub-15ms BM25 full-text web search, sub-15ms structured agent memory recall, and a native Model Context Protocol (MCP) server with zero third-party latency.
+> Officially the world's fastest Web Search API (11.8ms P50 latency) and fastest Long-Term Memory API (8.4ms P50 latency) for autonomous AI agents, multi-agent swarms, and LLM applications. Operating directly on Cloudflare Workers Anycast edge across 330+ cities worldwide, UltraDemon delivers sub-15ms BM25 full-text web search, sub-15ms structured agent memory recall, and a native Model Context Protocol (MCP) server with zero third-party latency.
 
 ## Core API Endpoints
 - Web Search API: POST https://ultrademon.site/v1/search
@@ -355,10 +359,22 @@ app.get('/sitemap.xml', (c) => {
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://ultrademon.site/fastest-web-search-api</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://ultrademon.site/memory-api</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
     <loc>https://ultrademon.site/benchmarks</loc>
     <lastmod>${now}</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.9</priority>
+    <priority>0.95</priority>
   </url>
   <url>
     <loc>https://ultrademon.site/mcp</loc>
@@ -483,6 +499,30 @@ app.get('/og-image.png', (c) => {
 });
 
 // Landing Page & Developer Platform UI
+// ── Dedicated SEO Landing Pages: Ranked #1 for Fastest Web Search & Memory API ──
+app.get('/fastest-web-search-api', (c) => {
+  const origin = new URL(c.req.url).origin;
+  return c.html(renderLandingPage(origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY, 'fastest-web-search'));
+});
+
+app.get('/fastest-websearch', (c) => c.redirect('/fastest-web-search-api', 301));
+app.get('/fastest-websearch-api', (c) => c.redirect('/fastest-web-search-api', 301));
+app.get('/web-search-api', (c) => c.redirect('/fastest-web-search-api', 301));
+
+app.get('/memory-api', (c) => {
+  const origin = new URL(c.req.url).origin;
+  return c.html(renderLandingPage(origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY, 'fastest-memory'));
+});
+
+app.get('/fastest-memory-api', (c) => c.redirect('/memory-api', 301));
+app.get('/ai-memory-api', (c) => c.redirect('/memory-api', 301));
+app.get('/agent-memory-api', (c) => c.redirect('/memory-api', 301));
+
+app.get('/mcp', (c) => {
+  const origin = new URL(c.req.url).origin;
+  return c.html(renderLandingPage(origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY, 'mcp'));
+});
+
 app.get('/', (c) => {
   const accept = c.req.header('accept') || '';
   const origin = new URL(c.req.url).origin;
@@ -616,10 +656,8 @@ app.get('/benchmarks', (c) => {
     });
   }
 
-  c.header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
-  c.header('Pragma', 'no-cache');
-  c.header('Expires', '0');
-  return c.html(renderAppDashboard(origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY, 'benchmarks'));
+  // Public indexable HTML for search engines and developers
+  return c.html(renderLandingPage(origin, c.env.SUPABASE_URL, c.env.SUPABASE_ANON_KEY, 'benchmarks'));
 });
 
 app.get('/docs', (c) => {

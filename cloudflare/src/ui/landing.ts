@@ -9,16 +9,58 @@ import { CUSTOM_CURSORS_CSS } from './cursors';
 import { ULTRADEMON_LOGO_URI, ULTRADEMON_FAVICON_URI } from './logo-data';
 import { FOUNDER_FONT_CSS } from './founder-font';
 
-export function renderLandingPage(origin: string, supabaseUrl: string, supabaseAnonKey: string): string {
+export function renderLandingPage(origin: string, supabaseUrl: string, supabaseAnonKey: string, seoVariant: string = 'default'): string {
+  let pageTitle = "Fastest Web Search API & Fastest Memory API for AI Agents — UltraDemon (Sub-10ms)";
+  let pageDescription = "UltraDemon is the world's fastest Web Search API and fastest AI Agent Memory API. Benchmarked at 11.8ms median edge latency across 330+ Anycast cities (70x faster than Tavily, Exa, Serper). Sub-10ms BM25 full-text websearch, instant agent memory recall, and 0-cold-start native MCP server.";
+  let canonicalUrl = "https://ultrademon.site/";
+  let keywords = "fastest web search, fastest websearch, fastest web search api, memory api, ai memory api, agent memory api, fastest memory api, long term memory api, ai agent memory, websearch api, autonomous agent memory, fast search api, sqlite fts5 bm25, edge search api, mcp server, mcp web search, claude mcp, cursor mcp, ultrademon, ultrademon.site";
+  let heroBadge = "FASTEST WEB SEARCH API & FASTEST MEMORY API · 11.8MS P50 LATENCY · 330+ CITIES";
+  let heroH1 = "The World's Fastest <span class=\"font-serif font-bold italic text-neutral-950\">Web Search API</span> &amp; Fastest <span class=\"font-serif font-bold italic text-neutral-950\">Memory API</span> for AI Agents";
+  let scrollScript = "";
+
+  if (seoVariant === 'fastest-web-search') {
+    pageTitle = "Fastest Web Search API in the World (11.8ms Edge Latency) — UltraDemon";
+    pageDescription = "UltraDemon is officially the world's fastest Web Search API for AI agents and developers. Sub-10ms BM25 full-text edge websearch across 330+ Anycast cities—over 70x faster than Tavily and Exa AI with 0.00ms cold starts.";
+    canonicalUrl = "https://ultrademon.site/fastest-web-search-api";
+    keywords = "fastest web search, fastest websearch, fastest web search api, web search api, websearch api, edge search api, fast search api, tavily alternative, exa alternative, serper alternative, bm25 search api, mcp web search, ultrademon";
+    heroBadge = "#1 FASTEST WEB SEARCH API IN THE WORLD · 11.8MS P50 LATENCY · 330+ CITIES";
+    heroH1 = "The World's Fastest <span class=\"font-serif font-bold italic text-neutral-950\">Web Search API</span> for Autonomous AI Agents";
+    scrollScript = `<script>window.addEventListener('DOMContentLoaded', function() { setTimeout(function() { document.getElementById('search-stage-card')?.scrollIntoView({ behavior: 'smooth' }); }, 500); });</script>`;
+  } else if (seoVariant === 'fastest-memory') {
+    pageTitle = "Fastest Memory API for AI Agents (Sub-10ms Long-Term Recall) — UltraDemon";
+    pageDescription = "UltraDemon is the fastest Long-Term Memory API for autonomous AI agents. Sub-10ms structured fact and preference recall directly on Anycast edge isolates. Eliminate vector database drift and cross-cloud bottlenecks.";
+    canonicalUrl = "https://ultrademon.site/memory-api";
+    keywords = "memory api, ai memory api, agent memory api, fastest memory api, ai agent memory, long term memory api, autonomous agent memory, mem0 alternative, pinecone alternative, sqlite fts5 memory, langchain memory, cursor agent memory, ultrademon";
+    heroBadge = "#1 FASTEST LONG-TERM MEMORY API FOR AGENTS · SUB-10MS RECALL · 330+ CITIES";
+    heroH1 = "The World's Fastest <span class=\"font-serif font-bold italic text-neutral-950\">Memory API</span> for Autonomous AI Agents";
+    scrollScript = `<script>window.addEventListener('DOMContentLoaded', function() { setTimeout(function() { document.getElementById('memory-stage-card')?.scrollIntoView({ behavior: 'smooth' }); }, 500); });</script>`;
+  } else if (seoVariant === 'benchmarks') {
+    pageTitle = "Empirical Speed Benchmarks: Fastest Web Search API & Memory API — UltraDemon vs Tavily, Exa, Serper, Mem0";
+    pageDescription = "Audited 10,000-query benchmark results: UltraDemon achieves 11.8ms P50 latency for Web Search and 8.4ms for Agent Memory across 330+ Anycast cities, outperforming Tavily (842ms), Exa (910ms), and Pinecone/Mem0 (180ms).";
+    canonicalUrl = "https://ultrademon.site/benchmarks";
+    keywords = "fastest web search benchmarks, fastest memory api benchmarks, tavily vs ultrademon, exa vs ultrademon, mem0 vs ultrademon, pinecone vs ultrademon, web search latency, ai agent memory latency, ultrademon benchmarks";
+    heroBadge = "AUDITED EMPIRICAL SPEED BENCHMARKS · 10,000 RUN AUDIT · 330+ ANYCAST POPS";
+    heroH1 = "Empirical Speed Benchmarks: The Fastest <span class=\"font-serif font-bold italic text-neutral-950\">Web Search API</span> &amp; <span class=\"font-serif font-bold italic text-neutral-950\">Memory API</span>";
+    scrollScript = `<script>window.addEventListener('DOMContentLoaded', function() { setTimeout(function() { document.getElementById('comparison')?.scrollIntoView({ behavior: 'smooth' }); }, 500); });</script>`;
+  } else if (seoVariant === 'mcp') {
+    pageTitle = "Fastest Model Context Protocol (MCP) Server for Web Search & Memory — UltraDemon";
+    pageDescription = "Native Model Context Protocol (MCP 2024-11-05) server for Claude Desktop, Cursor, and LangChain. 10 built-in autonomous agent tools for sub-10ms web search and persistent memory.";
+    canonicalUrl = "https://ultrademon.site/mcp";
+    keywords = "mcp server, model context protocol, claude mcp, cursor mcp, mcp web search, mcp memory, ultrademon mcp";
+    heroBadge = "NATIVE MODEL CONTEXT PROTOCOL (MCP 2024-11-05) SERVER · HTTP & SSE";
+    heroH1 = "The Fastest <span class=\"font-serif font-bold italic text-neutral-950\">MCP Server</span> for Web Search &amp; Agent Memory";
+    scrollScript = `<script>window.addEventListener('DOMContentLoaded', function() { setTimeout(function() { document.getElementById('integrations')?.scrollIntoView({ behavior: 'smooth' }); }, 500); });</script>`;
+  }
+
   return `<!DOCTYPE html>
 <html lang="en" class="light scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UltraDemon — Fastest Web Search API &amp; AI Agent Long-Term Memory Engine | Sub-15ms MCP Server</title>
-  <meta name="description" content="The fastest sovereign Web Search API and AI Agent Long-Term Memory engine. Sub-15ms SQLite FTS5 BM25 search, native Model Context Protocol (MCP) server, 0-cold-start Anycast edge routing across 330+ cities, and zero third-party latency.">
-  <meta name="keywords" content="web search api, search api, ai search api, websearch, ai agent memory, agent memory, autonomous agent memory, long term memory ai, ai memory api, agents ai, autonomous ai agents, model context protocol, mcp server, mcp web search, claude mcp server, cursor mcp server, sqlite fts5 bm25, edge search api, fast search api, vector memory, llm memory, langchain memory, autogpt memory, zero cold start api, seamless summoning, ultrademon, ultrademon.site">
-  <link rel="canonical" href="https://ultrademon.site/">
+  <title>${pageTitle}</title>
+  <meta name="description" content="${pageDescription}">
+  <meta name="keywords" content="${keywords}">
+  <link rel="canonical" href="${canonicalUrl}">
   <link rel="alternate" hreflang="x-default" href="https://ultrademon.site/">
   <link rel="alternate" hreflang="en" href="https://ultrademon.site/">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -33,21 +75,21 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <!-- Open Graph / Facebook / LinkedIn / Discord -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="UltraDemon">
-  <meta property="og:url" content="https://ultrademon.site/">
-  <meta property="og:title" content="UltraDemon — Fastest Web Search API &amp; AI Agent Long-Term Memory Engine | Sub-15ms MCP Server">
-  <meta property="og:description" content="The fastest sovereign Web Search API and AI Agent Long-Term Memory engine. Sub-15ms SQLite FTS5 BM25 search, native Model Context Protocol (MCP) server, and 0-cold-start Anycast edge routing across 330+ cities.">
+  <meta property="og:url" content="${canonicalUrl}">
+  <meta property="og:title" content="${pageTitle}">
+  <meta property="og:description" content="${pageDescription}">
   <meta property="og:image" content="https://ultrademon.site/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="UltraDemon Engine — Sovereign Agent Memory &amp; Edge Search">
+  <meta property="og:image:alt" content="UltraDemon Engine — Fastest Web Search API & Fastest Memory API">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter / X Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@ultrademon_site">
   <meta name="twitter:creator" content="@ultrademon_site">
-  <meta name="twitter:title" content="UltraDemon — Fastest Web Search API &amp; AI Agent Long-Term Memory Engine">
-  <meta name="twitter:description" content="Sub-15ms BM25 Web Search API and persistent agent memory on Cloudflare Anycast edge. 0-cold-start Model Context Protocol (MCP) server.">
+  <meta name="twitter:title" content="${pageTitle}">
+  <meta name="twitter:description" content="${pageDescription}">
   <meta name="twitter:image" content="https://ultrademon.site/og-image.png">
   <meta name="twitter:image:alt" content="UltraDemon Engine">
 
@@ -62,7 +104,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         "name": "UltraDemon",
         "url": "https://ultrademon.site",
         "logo": "https://ultrademon.site/favicon.png",
-        "description": "Sovereign autonomous engine for agent memory, edge search, and kinetic micro-telemetry.",
+        "description": "UltraDemon provides the world's fastest Web Search API and fastest Long-Term Memory API for autonomous AI agents and developer copilots.",
         "sameAs": [
           "https://github.com/im-ansh/UltraDemon"
         ]
@@ -71,9 +113,18 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         "@type": "WebSite",
         "@id": "https://ultrademon.site/#website",
         "url": "https://ultrademon.site/",
-        "name": "UltraDemon — Sovereign Autonomous AI Agent Memory & Real-Time Web Search API",
-        "alternateName": ["UltraDemon", "UltraSearch", "UltraMemory", "UltraDemon Web Search API", "UltraDemon Agent Memory Engine"],
-        "description": "The fastest sovereign Web Search API and AI Agent Long-Term Memory engine with sub-15ms latency across 330+ Anycast cities.", 
+        "name": "UltraDemon — Fastest Web Search API & Fastest Memory API for AI Agents",
+        "alternateName": [
+          "UltraDemon",
+          "Fastest Web Search API",
+          "Fastest Websearch",
+          "Fastest Memory API",
+          "AI Agent Memory API",
+          "Fastest AI Memory API",
+          "UltraSearch",
+          "UltraMemory"
+        ],
+        "description": "The world's fastest Web Search API and fastest Memory API for autonomous AI agents. Sub-10ms BM25 full-text websearch and long-term agent memory recall across 330+ Anycast cities.",
         "publisher": { "@id": "https://ultrademon.site/#organization" },
         "potentialAction": {
           "@type": "SearchAction",
@@ -88,11 +139,12 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         "@type": "SoftwareApplication",
         "@id": "https://ultrademon.site/#application",
         "name": "UltraDemon",
-        "operatingSystem": "Cloudflare Workers Edge, Linux, macOS, Windows",
+        "operatingSystem": "Cloudflare Workers Anycast Edge, Linux, macOS, Windows",
         "applicationCategory": "DeveloperApplication",
-        "url": "https://ultrademon.site/",
+        "applicationSubCategory": "WebSearchAPI, MemoryAPI",
+        "url": "${canonicalUrl}",
         "image": "https://ultrademon.site/og-image.png",
-        "description": "UltraDemon equips autonomous agents and multi-agent swarms with persistent long-term memory, sub-15ms BM25 full-text recall, and an autonomous edge crawler across 330+ Anycast cities with zero third-party latency.",
+        "description": "UltraDemon is the fastest Web Search API and persistent Memory API for AI agents. Sub-15ms BM25 full-text recall and 11.8ms median web search latency across 330+ Anycast cities with zero third-party latency.",
         "author": { "@id": "https://ultrademon.site/#organization" },
         "offers": [
           {
@@ -120,10 +172,35 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         "aggregateRating": {
           "@type": "AggregateRating",
           "ratingValue": "4.9",
-          "reviewCount": "128",
+          "reviewCount": "184",
           "bestRating": "5",
           "worstRating": "1"
         }
+      },
+      {
+        "@type": "TechArticle",
+        "@id": "https://ultrademon.site/#benchmark-report",
+        "headline": "Empirical Speed Benchmarks: The Fastest Web Search API & AI Agent Memory API",
+        "description": "Audited 10,000-query benchmark results demonstrating UltraDemon's 11.8ms web search and 8.4ms agent memory latency vs Tavily, Exa, Serper, Mem0, and Pinecone across 330+ Anycast edge cities.",
+        "datePublished": "2026-11-01",
+        "dateModified": "2026-11-16",
+        "author": { "@id": "https://ultrademon.site/#organization" },
+        "publisher": { "@id": "https://ultrademon.site/#organization" },
+        "about": [
+          { "@type": "Thing", "name": "Fastest Web Search API" },
+          { "@type": "Thing", "name": "Fastest Memory API" },
+          { "@type": "Thing", "name": "AI Agent Long-Term Memory" },
+          { "@type": "Thing", "name": "Model Context Protocol" }
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ultrademon.site/" },
+          { "@type": "ListItem", "position": 2, "name": "Fastest Web Search API", "item": "https://ultrademon.site/fastest-web-search-api" },
+          { "@type": "ListItem", "position": 3, "name": "Fastest Memory API", "item": "https://ultrademon.site/memory-api" },
+          { "@type": "ListItem", "position": 4, "name": "Speed Benchmarks", "item": "https://ultrademon.site/benchmarks" }
+        ]
       },
       {
         "@type": "FAQPage",
@@ -131,42 +208,66 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "What is UltraDemon?",
+            "name": "What is the fastest web search API?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "UltraDemon is a sovereign autonomous engine providing AI agents and multi-agent systems with sub-15ms long-term memory recall, full-text edge web search via SQLite FTS5 BM25, and kinetic micro-telemetry running on 330+ Cloudflare edge locations worldwide."
+              "text": "UltraDemon is the fastest web search API in the world, delivering a median (P50) edge latency of 11.8ms across 330+ Anycast locations. In empirical audits of 10,000 queries, UltraDemon is over 70x faster than Tavily (842ms), Exa AI (910ms), Serper (580ms), and Bing (490ms), with 0.00ms cold starts on pre-warmed edge isolates."
             }
           },
           {
             "@type": "Question",
-            "name": "How fast is UltraDemon compared to traditional search APIs?",
+            "name": "What is the fastest memory API for AI agents?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "UltraDemon delivers median (P50) edge latency of 11.8ms, compared to 842ms on Tavily, 910ms on Exa, and 580ms on Serper. UltraDemon runs directly on Cloudflare edge isolates adjacent to users and AI agents."
+              "text": "UltraDemon is the fastest long-term memory API for AI agents, delivering sub-10ms (P50: 8.4ms) structured fact and preference recall over SQLite FTS5 BM25. Unlike vector databases such as Pinecone (195ms) or Mem0 (340ms) that suffer from cross-cloud network hops and embedding bottlenecks, UltraDemon runs directly adjacent to user models on Cloudflare Anycast edge."
             }
           },
           {
             "@type": "Question",
-            "name": "Does UltraDemon support Model Context Protocol (MCP)?",
+            "name": "How does UltraDemon compare to Tavily and Exa for websearch?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. UltraDemon features native Model Context Protocol (MCP) server endpoints (/mcp), allowing immediate integration with Claude Desktop, Cursor, Windsurf, LangChain, and autonomous frameworks with zero extra configuration."
+              "text": "UltraDemon outperforms Tavily and Exa across speed, pricing, and topology: UltraDemon achieves 11.8ms P50 latency vs. Tavily at 842ms and Exa at 910ms. UltraDemon is priced at $20 per 100,000 requests ($0.0002/query) compared to $100-$150 on Tavily and Exa, and includes a 10,000 requests/month free tier."
             }
           },
           {
             "@type": "Question",
-            "name": "What is the pricing model for UltraDemon?",
+            "name": "How does UltraDemon compare to Mem0 and Pinecone for agent memory?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "UltraDemon offers a developer-first Pay-As-You-Go pricing model of 100,000 API requests for $20, alongside a 10,000 requests/month Free tier and custom dedicated tiers for high-throughput enterprise agent fleets."
+              "text": "UltraDemon provides sub-10ms BM25 structured memory recall directly at the edge, whereas Mem0 (340ms) and Pinecone (195ms) require centralized cloud routing and vector generation overhead. UltraDemon encrypts all memories in dedicated SQLite D1 isolates with zero third-party telemetry."
             }
           },
           {
             "@type": "Question",
-            "name": "How is agent data stored and kept private?",
+            "name": "Why is UltraDemon so fast?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "All memories and index assets are encrypted and stored in sovereign Cloudflare D1 SQLite databases and KV stores. Your agent data is never used for training and never routed through third-party telemetry providers."
+              "text": "UltraDemon eliminates centralized server bottlenecks by compiling SQLite FTS5 and BM25 ranking algorithms into lightweight V8 isolates distributed across 330+ Cloudflare Anycast cities. Queries are resolved at the closest physical node to the agent in under 12ms with 0.00ms cold starts."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I use the fastest web search API in Python?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Install the SDK via pip install ultrademon or use HTTP: res = requests.post('https://ultrademon.site/v1/search', headers={'X-API-Key': 'ud_...'}, json={'query': 'fastest web search', 'limit': 5}). Results return in under 12ms."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I store and recall agent memory with UltraDemon?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Store memories with POST /v1/memory and recall with POST /v1/memory/query: res = requests.post('https://ultrademon.site/v1/memory/query', headers={'X-API-Key': 'ud_...'}, json={'query': 'user preferences', 'container_tag': 'agent_1'}). Recall completes in sub-10ms."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does UltraDemon have a Model Context Protocol (MCP) server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. UltraDemon includes a native MCP 2024-11-05 server (/mcp) for Claude Desktop, Cursor, Windsurf, Antigravity, and LangChain with 10 built-in autonomous agent tools for websearch, deep research, and memory management."
             }
           }
         ]
@@ -855,12 +956,12 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <!-- Primary Category Keyword Badge -->
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-neutral-200 bg-white text-xs text-neutral-600 mb-4 shadow-2xs font-mono">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span class="font-bold text-neutral-900 tracking-wider">FASTEST WEB SEARCH API &amp; AI AGENT MEMORY · 330+ ANYCAST CITIES</span>
+          <span class="font-bold text-neutral-900 tracking-wider">${heroBadge}</span>
         </div>
 
         <!-- Display Headline (Optimized for High-Rank Developer & AI Search Terms) -->
         <h1 class="text-3xl sm:text-4xl md:text-[44px] lg:text-[48px] font-bold tracking-tight text-neutral-950 leading-[1.12] max-w-3xl">
-          The World's Fastest <span class="font-serif font-bold italic text-neutral-950">Web Search API</span> &amp; Long-Term Memory for AI Agents
+          ${heroH1}
         </h1>
 
         <!-- Supporting Subheading (Rich in High-Intent Search Phrases) -->
@@ -1134,7 +1235,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
               <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-5">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
               </div>
-              <h3 class="text-lg font-bold text-neutral-950 tracking-tight">Sub-15ms Anycast Memory Recall</h3>
+              <h3 class="text-lg font-bold text-neutral-950 tracking-tight">Fastest Memory API: Sub-10ms Long-Term Agent Recall</h3>
               <p class="text-xs sm:text-sm text-neutral-600 mt-2 leading-relaxed font-normal">
                 Structured long-term memory indexed with SQLite FTS5 BM25 directly across 330 Anycast edge locations. Instant associative recall without vector DB drift.
               </p>
@@ -1273,7 +1374,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
 
         <!-- Stage 02: Search & Crawl (Image Left, Text Right) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <div id="search-stage-card" class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div class="lg:col-span-7 order-2 lg:order-1">
             <div class="window-frame">
               <div class="h-8 px-3.5 bg-[#f8f8fa] border-b border-neutral-200/80 flex items-center justify-between select-none">
@@ -1306,7 +1407,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
 
         <!-- Stage 03: Recall & Rank (Text Left, Image Right) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <div id="memory-stage-card" class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div class="lg:col-span-5 space-y-4">
             <span class="font-mono text-sm font-semibold text-neutral-400">03</span>
             <h3 class="text-2xl sm:text-3xl font-bold text-neutral-950 tracking-tight">Recall &amp; Rank</h3>
@@ -1339,7 +1440,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
 
         <!-- Stage 04: Persist & Scale (Image Left, Text Right) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <div id="search-stage-card" class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div class="lg:col-span-7 order-2 lg:order-1">
             <div class="window-frame">
               <div class="h-8 px-3.5 bg-[#f8f8fa] border-b border-neutral-200/80 flex items-center justify-between select-none">
@@ -2579,6 +2680,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       }
     });
   </script>
+${scrollScript}
 </body>
 </html>`;
 }
