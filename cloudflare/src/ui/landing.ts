@@ -2309,9 +2309,6 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
               <div class="text-xs font-mono text-neutral-500 mt-1">
                 Founder &amp; Architect, UltraDemon OS
               </div>
-              <div class="text-[11px] font-mono text-neutral-400 mt-0.5">
-                anshbhardwaj.student@gmail.com
-              </div>
             </div>
 
             <div class="flex items-center gap-3">
