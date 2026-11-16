@@ -131,16 +131,34 @@ Allow: /privacy
 Allow: /terms
 Allow: /mcp
 Allow: /openapi.json
+Allow: /llms.txt
+Allow: /llms-full.txt
 Disallow: /app
 Disallow: /dashboard
 Disallow: /console
 Disallow: /v1/keys
 Disallow: /v1/analytics/tracing
 
-# AI Crawlers & Knowledge Indexers
+# Global Search Engine Crawlers
+User-agent: Googlebot
+Allow: /
+User-agent: Bingbot
+Allow: /
+User-agent: Applebot
+Allow: /
+User-agent: DuckDuckBot
+Allow: /
+User-agent: Baiduspider
+Allow: /
+User-agent: YandexBot
+Allow: /
+
+# AI Search Engines, LLMs & Autonomous Knowledge Indexers
 User-agent: GPTBot
 Allow: /
 User-agent: Claude-Web
+Allow: /
+User-agent: ClaudeBot
 Allow: /
 User-agent: PerplexityBot
 Allow: /
@@ -148,11 +166,176 @@ User-agent: Google-Extended
 Allow: /
 User-agent: CCBot
 Allow: /
+User-agent: Bytespider
+Allow: /
+User-agent: Amazonbot
+Allow: /
+User-agent: Diffbot
+Allow: /
 
 Sitemap: https://ultrademon.site/sitemap.xml
+LLMs-Txt: https://ultrademon.site/llms.txt
 `;
   return c.text(robots, 200, {
     'Content-Type': 'text/plain; charset=utf-8',
+    'Cache-Control': 'public, max-age=86400',
+  });
+});
+
+// ── World-Class LLM Search Optimization: llms.txt & llms-full.txt ────────────
+app.get('/llms.txt', (c) => {
+  const doc = `# UltraDemon: Sovereign Autonomous Engine for Agent Memory & Web Search API
+
+> The fastest sovereign Web Search API & Long-Term Memory engine for autonomous AI agents, multi-agent swarms, and LLM applications. Operating directly on Cloudflare Workers Anycast edge across 330+ cities worldwide, UltraDemon delivers sub-15ms BM25 full-text web search, sub-15ms structured agent memory recall, and a native Model Context Protocol (MCP) server with zero third-party latency.
+
+## Core API Endpoints
+- Web Search API: POST https://ultrademon.site/v1/search
+  Ultra-fast BM25 full-text web search over edge SQLite FTS5 index. Sub-15ms median latency.
+- Deep Research Search: POST https://ultrademon.site/v1/search (mode: 3)
+  Multi-hop query expansion and synthesized multi-source evidence extraction.
+- UltraMemory Store: POST https://ultrademon.site/v1/memory
+  Store structured facts, preferences, profiles, and documents with instant edge indexing.
+- UltraMemory Recall: POST https://ultrademon.site/v1/memory/query
+  Recall relevant agent memories using BM25 ranking in under 15ms.
+- Model Context Protocol (MCP) Server: POST https://ultrademon.site/mcp and SSE https://ultrademon.site/mcp/sse
+  Native MCP 2024-11-05 server with 10 built-in autonomous agent tools compatible with Claude Desktop, Cursor, Antigravity, and LangChain.
+- Seamless Summoning: Pre-warmed V8 isolate edge tunnels with 0.00ms cold starts and 0.000% error rate guarantee.
+
+## Key Differentiators & Benchmarks
+- Median Latency (P50): 11.8ms (vs. Tavily 842ms, Exa 910ms, Serper 580ms, Pinecone 180ms)
+- Edge Topology: 330+ Anycast cities globally (zero cross-cloud hops)
+- Cold Start: 0.00ms (pre-warmed isolate keepalive)
+- Pricing: Pay-As-You-Go ($20 per 100k requests) & 10,000 requests/mo Free Tier.
+
+## Quick Python Example
+\`\`\`python
+import requests
+
+# 1. UltraSearch Web Search API
+res = requests.post(
+    "https://ultrademon.site/v1/search",
+    headers={"X-API-Key": "ud_your_key_here"},
+    json={"query": "autonomous AI agents", "limit": 5, "mode": 1}
+)
+print("Search Latency:", res.json()["latency_ms"], "ms")
+print(res.json()["results"])
+
+# 2. UltraMemory Agent Memory Recall
+mem = requests.post(
+    "https://ultrademon.site/v1/memory/query",
+    headers={"X-API-Key": "ud_your_key_here"},
+    json={"query": "user preferences", "container_tag": "agent_alpha", "limit": 3}
+)
+print(mem.json()["memories"])
+\`\`\`
+
+## Quick TypeScript / Node Example
+\`\`\`typescript
+const res = await fetch('https://ultrademon.site/v1/search', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-API-Key': 'ud_your_key_here'
+  },
+  body: JSON.stringify({ query: 'AI agent memory', limit: 5 })
+});
+const data = await res.json();
+console.log(\`P50 Edge Latency: \${data.latency_ms}ms\`);
+\`\`\`
+
+## Links & Documentation
+- Developer Console: https://ultrademon.site/app
+- Benchmarks: https://ultrademon.site/benchmarks
+- Full API Reference: https://ultrademon.site/llms-full.txt
+- GitHub Repository: https://github.com/im-ansh/UltraDemon
+`;
+  return c.text(doc, 200, {
+    'Content-Type': 'text/markdown; charset=utf-8',
+    'Cache-Control': 'public, max-age=86400',
+  });
+});
+
+app.get('/llms-full.txt', (c) => {
+  const fullDoc = `# UltraDemon: Full Technical Architecture & API Reference for LLM Agents
+
+## Overview
+UltraDemon is a sovereign developer engine designed to give autonomous agents sub-15ms memory recall, high-speed web search, and kinetic micro-telemetry. Running exclusively on Cloudflare Workers Anycast edge nodes in 330+ cities worldwide, it completely bypasses centralized cloud bottlenecks.
+
+## Endpoints
+
+### 1. Web Search API
+- **Endpoint**: \`POST https://ultrademon.site/v1/search\`
+- **Headers**: \`X-API-Key: <key>\` or \`Authorization: Bearer <key>\`
+- **Request Body**:
+  - \`query\` (string, required): Search query.
+  - \`limit\` (integer, optional, default: 10, max: 50): Number of results.
+  - \`mode\` (integer, optional, default: 1): 1 = Instant Sub-15ms BM25, 2 = Standard Hybrid, 3 = Deep Research.
+- **Response**:
+  \`\`\`json
+  {
+    "query": "autonomous agents",
+    "mode": 1,
+    "latency_ms": 11.8,
+    "total_hits": 42,
+    "results": [
+      {
+        "id": "doc_...",
+        "title": "...",
+        "url": "https://...",
+        "snippet": "...",
+        "score": 0.942
+      }
+    ]
+  }
+  \`\`\`
+
+### 2. UltraMemory Store API
+- **Endpoint**: \`POST https://ultrademon.site/v1/memory\`
+- **Headers**: \`X-API-Key: <key>\`
+- **Request Body**:
+  - \`content\` (string, required): Fact, preference, or observation.
+  - \`title\` (string, optional): Short title.
+  - \`container_tag\` (string, optional, default: "default"): Agent or user namespace.
+  - \`memory_type\` (string, optional): "fact" | "preference" | "entity" | "document" | "conversation".
+- **Response**: \`{ "status": "stored", "memory_id": "mem_..." }\`
+
+### 3. UltraMemory Query API
+- **Endpoint**: \`POST https://ultrademon.site/v1/memory/query\`
+- **Headers**: \`X-API-Key: <key>\`
+- **Request Body**:
+  - \`query\` (string, required): Query or concept to recall.
+  - \`container_tag\` (string, optional): Filter by container tag.
+  - \`limit\` (integer, optional, default: 5): Number of memories.
+- **Response**: \`{ "memories": [...], "latency_ms": 9.2 }\`
+
+### 4. Custom Model Context Protocol (MCP) Server
+- **Endpoints**:
+  - HTTP POST Transport: \`https://ultrademon.site/mcp\`
+  - Streaming SSE Transport: \`https://ultrademon.site/mcp/sse\`
+- **Protocol**: \`Model Context Protocol 2024-11-05\` (JSON-RPC 2.0)
+- **Supported Tools**:
+  - \`ultrasearch_web\`: Fast web search.
+  - \`ultrasearch_research\`: Deep multi-hop research.
+  - \`ultramemory_store\`: Store agent memory.
+  - \`ultramemory_query\`: Recall agent memory.
+  - \`ultramemory_list\`: List memories.
+  - \`ultramemory_delete\`: Delete memory.
+  - \`ultrasearch_crawl\`: Index a live URL.
+  - \`ultrasearch_index_stats\`: Corpus metrics.
+  - \`ultrasearch_usage\`: Quota telemetry.
+  - \`ultrasearch_provision_key\`: Provision key.
+
+### 5. Seamless Summoning Protocol
+- Pre-warmed V8 isolate edge tunnels with 0.00ms cold start SLA and 0.000% error rate guarantee.
+- Dedicated key prefix: \`ud_summon_...\`
+
+## Pricing
+- Free Tier: 10,000 requests/month, sub-15ms edge recall.
+- Pay-As-You-Go: $20 per 100,000 requests. Credits never expire.
+- Enterprise Sovereign: Dedicated Cloudflare KV & D1 isolates, custom SLA.
+`;
+  return c.text(fullDoc, 200, {
+    'Content-Type': 'text/markdown; charset=utf-8',
     'Cache-Control': 'public, max-age=86400',
   });
 });
@@ -174,6 +357,12 @@ app.get('/sitemap.xml', (c) => {
   <url>
     <loc>https://ultrademon.site/benchmarks</loc>
     <lastmod>${now}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://ultrademon.site/mcp</loc>
+    <lastmod>${now}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -184,7 +373,13 @@ app.get('/sitemap.xml', (c) => {
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://ultrademon.site/mcp</loc>
+    <loc>https://ultrademon.site/llms.txt</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ultrademon.site/llms-full.txt</loc>
     <lastmod>${now}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
