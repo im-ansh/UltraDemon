@@ -163,13 +163,9 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
   <!-- Cloudflare Global Top Navigation Bar (Fixed across entire window) -->
   <header class="fixed top-0 left-0 right-0 h-13 z-50 bg-white border-b border-neutral-200/80 px-3 sm:px-4 flex items-center justify-between shadow-2xs select-none">
     <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
-      <!-- Cloudflare Orange Cloud Logo -->
+      <!-- UltraDemon Brand Logo in Top Corner -->
       <a href="/" class="flex items-center gap-2 group shrink-0" title="UltraDemon Sovereign Engine">
-        <span class="inline-flex items-center justify-center w-7 h-7 rounded bg-[#f6821f]/10 text-[#f6821f]">
-          <svg class="w-5 h-5 text-[#f6821f]" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/>
-          </svg>
-        </span>
+        <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-7 h-7 object-contain select-none shrink-0 transition-transform group-hover:scale-105" />
       </a>
 
       <!-- Account Selector Dropdown -->
@@ -266,11 +262,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         <!-- Brand Logo & Close Button -->
         <div class="flex items-center justify-between pb-3 border-b border-neutral-100">
           <a href="/" class="flex items-center gap-2 group">
-            <span class="inline-flex items-center justify-center w-7 h-7 rounded bg-[#f6821f]/10 text-[#f6821f]">
-              <svg class="w-5 h-5 text-[#f6821f]" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/>
-              </svg>
-            </span>
+            <img src="${ULTRADEMON_LOGO_URI}" alt="UltraDemon Logo" class="w-7 h-7 object-contain select-none shrink-0" />
             <span class="font-serif font-bold italic text-base text-neutral-950">UltraDemon OS</span>
           </a>
           <button type="button" onclick="toggleAppMobileDrawer()" class="p-1.5 text-neutral-500 hover:text-black rounded-lg hover:bg-neutral-100 cursor-pointer">
