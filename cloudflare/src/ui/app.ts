@@ -470,6 +470,10 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       return _nativeFetch.call(this, resource, init);
     };
 
+    window.triggerMagicWandSparks = function(x, y) {};
+    window.executeTesterQuery = function() { if (typeof executeTesterRequest === 'function') executeTesterRequest(); };
+    window.summonNewEdgeKey = function() { if (typeof summonFastestKey === 'function') summonFastestKey(); };
+    window.runAllBenchmarks = function() { if (typeof runLiveBenchmarks === 'function') runLiveBenchmarks(); };
     window.appAuthMode = 'signin';
     window.isAppModalSubmitting = false;
     window.currentAppViewId = 'overview';
@@ -568,7 +572,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
           title: 'API Sandbox Tester',
           desc: 'Interactive real-time test bench for UltraSearch, UltraMemory, and UltraMetrics endpoints with live latency metrics.',
           breadcrumb: 'API Sandbox',
-          action: '<button type="button" onclick="if(typeof executeTesterQuery===\'function\') executeTesterQuery();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>Run API Test</span></button>'
+          action: '<button type="button" onclick="if(typeof executeTesterRequest===\'function\') executeTesterRequest();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>Run API Test</span></button>'
         },
         keys: {
           title: 'API Keys & Custom MCP Server',
@@ -580,7 +584,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
           title: 'Seamless Summoning Protocol',
           desc: 'Zero-Cold-Start Anycast Edge Tunnel with Zero-Error Dual-Tier Resilience and Fastest Edge API Keys.',
           breadcrumb: 'Seamless Summon',
-          action: '<button type="button" onclick="if(typeof summonNewEdgeKey===\'function\') summonNewEdgeKey();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>Summon Edge Key</span></button>'
+          action: '<button type="button" onclick="if(typeof summonFastestKey===\'function\') summonFastestKey();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>Summon Edge Key</span></button>'
         },
         integrations: {
           title: 'MCP Protocol & SDKs',
@@ -592,7 +596,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
           title: 'Edge Performance Benchmarks',
           desc: '10,000 real query runs executed across Cloudflare Anycast edge nodes in 330+ cities worldwide.',
           breadcrumb: 'Benchmarks',
-          action: '<button type="button" onclick="if(typeof runAllBenchmarks===\'function\') runAllBenchmarks();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Run Benchmarks</span></button>'
+          action: '<button type="button" onclick="if(typeof runLiveBenchmarks===\'function\') runLiveBenchmarks();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Run Benchmarks</span></button>'
         },
         analytics: {
           title: 'Telemetry & Observability',
@@ -5385,7 +5389,9 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
       // Trigger wand sparks from click location
       const sparkX = event?.clientX || (pill ? pill.getBoundingClientRect().left + 40 : window.innerWidth / 2);
       const sparkY = event?.clientY || (pill ? pill.getBoundingClientRect().top + 15 : 120);
-      triggerMagicWandSparks(sparkX, sparkY);
+      if (typeof window.triggerMagicWandSparks === 'function') {
+        try { window.triggerMagicWandSparks(sparkX, sparkY); } catch (e) {}
+      }
 
       renderAppKeysTable();
       updateAllSuiteSnippets();
