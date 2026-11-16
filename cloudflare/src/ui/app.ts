@@ -204,8 +204,32 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       font-weight: 400;
       font-style: normal;
     }
-    .hidden {
+    section[id^="view-"].hidden,
+    div[id$="Modal"].hidden,
+    #topKeyMenuPopover.hidden,
+    #appMobileDrawer.hidden,
+    #inlineHelpAnswerBox.hidden,
+    #summonKeyRevealBox.hidden,
+    #appMobileCloseIcon.hidden,
+    #topCopyBtn.hidden,
+    .force-hidden {
       display: none !important;
+    }
+
+    /* Fixed Left Sidebar & Main Content Geometry */
+    @media (min-width: 768px) {
+      #appSidebar {
+        display: flex !important;
+        position: fixed !important;
+        top: 52px !important;
+        left: 0 !important;
+        width: 240px !important;
+        height: calc(100vh - 52px) !important;
+        z-index: 40 !important;
+      }
+      .app-main-wrapper {
+        padding-left: 240px !important;
+      }
     }
     * {
       -webkit-font-smoothing: antialiased;
@@ -706,7 +730,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 <body class="min-h-screen bg-[#f7f7f7] text-neutral-950 flex flex-col md:flex-row antialiased selection:bg-black selection:text-white">
 
   <!-- Cloudflare Global Top Navigation Bar (Fixed across entire window) -->
-  <header class="fixed top-0 left-0 right-0 h-13 z-50 bg-white border-b border-neutral-200/80 px-3 sm:px-4 flex items-center justify-between shadow-2xs select-none">
+  <header class="fixed top-0 left-0 right-0 h-[52px] z-50 bg-white border-b border-neutral-200/80 px-3 sm:px-4 flex items-center justify-between shadow-2xs select-none">
     <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
       <!-- UltraDemon Brand Logo in Top Corner -->
       <a href="/" class="flex items-center gap-2 group shrink-0" title="UltraDemon Sovereign Engine">
@@ -783,7 +807,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
   </header>
 
   <!-- Mobile Quick-Swipe View Pills Bar (Smooth Horizontal Scroll) -->
-  <div class="md:hidden fixed top-13 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-neutral-200/80 px-3 py-2 overflow-x-auto no-scrollbar flex items-center gap-1.5 whitespace-nowrap z-40 shadow-xs">
+  <div class="md:hidden fixed top-[52px] left-0 right-0 bg-white/95 backdrop-blur-md border-b border-neutral-200/80 px-3 py-2 overflow-x-auto no-scrollbar flex items-center gap-1.5 whitespace-nowrap z-40 shadow-xs">
     <button type="button" onclick="setAppView('overview', event)" data-mobile-pill="overview" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-semibold bg-neutral-950 text-white shadow-2xs shrink-0 cursor-pointer">Overview</button>
     <button type="button" onclick="setAppView('summoning', event)" data-mobile-pill="summoning" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-medium text-emerald-700 hover:text-emerald-950 hover:bg-emerald-50 bg-emerald-50/60 border border-emerald-200 shrink-0 cursor-pointer">Summon</button>
     <button type="button" onclick="setAppView('benchmarks', event)" data-mobile-pill="benchmarks" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 bg-neutral-50 border border-neutral-200/80 shrink-0 cursor-pointer">Benchmarks</button>
@@ -916,7 +940,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
   </div>
 
   <!-- Left Sidebar Navigation (Desktop & Tablet Fixed, Authentic Cloudflare Dashboard Standard) -->
-  <aside class="hidden md:flex md:w-60 md:h-[calc(100vh-52px)] md:fixed md:top-13 md:left-0 md:border-r border-neutral-200/80 bg-white z-40 flex-col justify-between p-3.5 shadow-xs select-none overflow-y-auto">
+  <aside id="appSidebar" class="max-md:!hidden md:flex w-60 h-[calc(100vh-52px)] fixed top-[52px] left-0 border-r border-neutral-200/80 bg-white z-40 flex-col justify-between p-3.5 shadow-xs select-none overflow-y-auto">
     <div class="space-y-3">
       <!-- Quick Search Box (Cmd+K) -->
       <div class="relative">
@@ -1060,7 +1084,8 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
   </aside>
 
   <!-- Main Content Workspace Area (Placed below fixed header and offset for sidebar) -->
-  <main class="flex-1 md:ml-60 pt-16 pb-16 px-3.5 sm:px-8 max-w-7xl w-full min-w-0 mx-auto">
+  <div class="app-main-wrapper flex-1 md:pl-60 pt-[52px] min-h-screen w-full flex flex-col">
+    <main class="flex-1 py-6 px-3.5 sm:px-8 max-w-7xl w-full min-w-0 mx-auto">
 
     <!-- Sovereign Engine Breadcrumb & Status Bar -->
     <div class="border-b border-neutral-200/80 pb-3 mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -4151,7 +4176,8 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
       </div>
     </section>
 
-  </main>
+    </main>
+  </div>
 
   <!-- Help Bot Backdrop Overlay -->
   <div id="helpBotBackdrop" onclick="closeHelpBotDrawer()" class="fixed inset-0 bg-neutral-900/30 backdrop-blur-xs z-40 hidden transition-opacity"></div>
