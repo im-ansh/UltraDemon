@@ -217,6 +217,9 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     }
 
     /* Fixed Left Sidebar & Main Content Geometry */
+    #appSidebar {
+      display: none;
+    }
     @media (min-width: 768px) {
       #appSidebar {
         display: flex !important;
@@ -226,6 +229,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         width: 240px !important;
         height: calc(100vh - 52px) !important;
         z-index: 40 !important;
+        background-color: #ffffff !important;
       }
       .app-main-wrapper {
         padding-left: 240px !important;
@@ -457,6 +461,275 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
   <script>
     window.appAuthMode = 'signin';
     window.isAppModalSubmitting = false;
+    window.currentAppViewId = 'overview';
+    window.isViewTransitioning = null;
+
+    // Toast notification available millisecond 0
+    window.showAppToast = function(msg, isError) {
+      try {
+        var container = document.getElementById('appToastContainer');
+        if (!container) return;
+        var toast = document.createElement('div');
+        toast.className = 'px-4 py-2.5 rounded-xl text-xs font-semibold shadow-xl border pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 ' +
+          (isError ? 'bg-neutral-900 text-red-400 border-red-900' : 'bg-neutral-950 text-white border-neutral-800');
+        toast.innerText = msg;
+        container.appendChild(toast);
+        setTimeout(function() {
+          toast.classList.remove('translate-y-2', 'opacity-0');
+        }, 16);
+        setTimeout(function() {
+          toast.classList.add('opacity-0', 'translate-y-2');
+          setTimeout(function() { toast.remove(); }, 300);
+        }, 2600);
+      } catch (e) {
+        console.log(msg);
+      }
+    };
+
+    // Copy to clipboard available millisecond 0
+    window.copyToClipboard = function(text) {
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text);
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+      } catch (e) {}
+    };
+
+    // Update Header Titles available millisecond 0
+    window.updateHeaderTitles = function(viewId) {
+      var titles = {
+        overview: ['ultrademon.site', 'Sovereign Autonomous Memory, Full-Text Edge Search, and Custom Model Context Protocol (MCP) across 330+ Anycast edge locations.'],
+        summoning: ['Seamless Summoning Protocol', 'Zero-Cold-Start Anycast Edge Tunnel with Zero-Error Dual-Tier Resilience and Fastest Edge API Keys.'],
+        benchmarks: ['Edge Performance Benchmarks & Independent Telemetry', '10,000 real query runs executed across Cloudflare Anycast edge nodes in 330+ cities worldwide. Zero cold starts, sub-15ms BM25 full-text search, and autonomous sub-15ms memory recall.'],
+        keys: ['API Keys & Custom MCP Server', 'Create sovereign API keys, summon pre-warmed edge tunnels, and configure native Model Context Protocol tools for AI agents.'],
+        memory: ['UltraMemory Lab', 'Store, query, and browse agent structured long-term memory with sub-15ms edge recall.'],
+        search: ['UltraSearch Studio', 'Test live BM25 web search and multi-hop research queries embedded at Cloudflare edge.'],
+        crawler: ['Web Crawler Control', 'Dispatch edge crawler tasks directly into D1 SQLite FTS5 index tables.'],
+        membership: ['Memberships & Quotas', 'Manage your subscription tier and upgrade daily limits.'],
+        integrations: ['Integrations & MCP Protocol', 'Connect UltraDemon to Claude Desktop, Cursor, and autonomous agent frameworks.'],
+        analytics: ['Telemetry & ICP Engine', 'PostHog-competitive edge analytics with autonomous Ideal Customer Profile synthesis.'],
+        tester: ['API Sandbox Tester', 'Interactive real-time test bench for UltraSearch, UltraMemory, and UltraMetrics endpoints with live latency metrics.']
+      };
+      if (titles[viewId]) {
+        var t = document.getElementById('viewHeaderTitle');
+        var d = document.getElementById('viewHeaderDesc');
+        if (t) t.innerHTML = titles[viewId][0];
+        if (d) d.innerText = titles[viewId][1];
+      }
+    };
+
+    // Card cascade effect available millisecond 0
+    window.applyMagicCardCascade = function(container) {
+      if (!container) return;
+      try {
+        var cards = container.querySelectorAll('.card-clean, .card-elevated, div > .p-4, div > .p-5, div > .p-6, div > .space-y-4');
+        cards.forEach(function(card, idx) {
+          card.style.setProperty('--magic-idx', Math.min(idx, 8));
+          card.classList.remove('magic-card-cascade');
+          void card.offsetWidth;
+          card.classList.add('magic-card-cascade');
+        });
+      } catch (e) {}
+    };
+
+    // Primary Sovereign View Switching Router available millisecond 0
+    window.setAppView = function(viewId, event) {
+      if (event && event.preventDefault) event.preventDefault();
+      var views = ['overview', 'summoning', 'benchmarks', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations', 'analytics', 'tester'];
+      if (!views.includes(viewId)) return;
+      var prevViewId = window.currentAppViewId || 'overview';
+
+      // Close mobile navigation drawer if open
+      try {
+        var drawer = document.getElementById('appMobileDrawer');
+        if (drawer && !drawer.classList.contains('hidden')) {
+          drawer.classList.add('hidden');
+          if (document.body) document.body.style.overflow = '';
+          var hIcon = document.getElementById('appMobileHamburgerIcon');
+          var cIcon = document.getElementById('appMobileCloseIcon');
+          if (hIcon) hIcon.classList.remove('hidden');
+          if (cIcon) cIcon.classList.add('hidden');
+        }
+      } catch(e) {}
+
+      // Update mobile active view badge
+      try {
+        var mobileBadge = document.getElementById('mobileActiveViewBadge');
+        if (mobileBadge) {
+          var viewNames = {
+            overview: 'Overview', summoning: 'Seamless Summon', benchmarks: 'Benchmarks',
+            keys: 'API Keys & Custom MCP', memory: 'UltraMemory',
+            search: 'UltraSearch', crawler: 'Crawler', analytics: 'Telemetry',
+            membership: 'Quotas', integrations: 'MCP & SDK', tester: 'Sandbox'
+          };
+          mobileBadge.textContent = viewNames[viewId] || viewId;
+        }
+      } catch(e) {}
+
+      // Update Desktop and Mobile Navigation Buttons
+      try {
+        views.forEach(function(id) {
+          var navBtn = document.getElementById('nav-' + id);
+          if (navBtn) {
+            var svg = navBtn.querySelector('svg');
+            if (id === viewId) {
+              navBtn.className = 'w-full flex items-center justify-between px-2.5 py-1.5 rounded-md bg-neutral-950 text-white font-medium cursor-pointer transition text-left shadow-xs';
+              if (svg) {
+                svg.classList.remove('text-neutral-400');
+                svg.classList.add('text-white');
+              }
+            } else {
+              navBtn.className = 'w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group';
+              if (svg) {
+                svg.classList.add('text-neutral-400');
+                svg.classList.remove('text-white');
+              }
+            }
+          }
+          var mobileNavBtn = document.getElementById('mobile-nav-' + id);
+          if (mobileNavBtn) {
+            if (id === viewId) {
+              mobileNavBtn.className = 'w-full flex items-center gap-3 px-3 py-2 rounded-lg bg-neutral-950 text-white font-medium cursor-pointer transition text-left text-xs';
+            } else {
+              mobileNavBtn.className = 'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-neutral-700 hover:bg-neutral-100 font-medium cursor-pointer transition text-left text-xs';
+            }
+          }
+        });
+      } catch(e) {}
+
+      var prevViewEl = document.getElementById('view-' + prevViewId);
+      var nextViewEl = document.getElementById('view-' + viewId);
+      var titleEl = document.getElementById('viewHeaderTitle');
+      var descEl = document.getElementById('viewHeaderDesc');
+
+      if (prevViewEl && nextViewEl && prevViewId !== viewId) {
+        if (window.isViewTransitioning) {
+          clearTimeout(window.isViewTransitioning);
+          window.isViewTransitioning = null;
+          views.forEach(function(id) {
+            var v = document.getElementById('view-' + id);
+            if (v && id !== viewId) {
+              v.classList.add('hidden');
+              v.classList.remove('magic-flow-out', 'magic-flow-in');
+              v.style.display = 'none';
+            }
+          });
+        }
+
+        // PHASE 1: Text flies off and outgoing view departs smoothly
+        prevViewEl.classList.remove('magic-flow-in');
+        prevViewEl.classList.add('magic-flow-out');
+        if (titleEl) {
+          titleEl.classList.remove('magic-text-flow-in');
+          titleEl.classList.add('magic-text-flow-out');
+        }
+        if (descEl) {
+          descEl.classList.remove('magic-text-flow-in');
+          descEl.classList.add('magic-text-flow-out');
+        }
+
+        window.isViewTransitioning = setTimeout(function() {
+          // PHASE 2: Hide outgoing, show incoming with smooth flow
+          prevViewEl.classList.add('hidden');
+          prevViewEl.style.display = 'none';
+          prevViewEl.classList.remove('magic-flow-out');
+
+          window.currentAppViewId = viewId;
+          if (typeof window.updateHeaderTitles === 'function') window.updateHeaderTitles(viewId);
+          if (typeof window.updateSuiteSwitcher === 'function') window.updateSuiteSwitcher(viewId);
+
+          nextViewEl.classList.remove('hidden');
+          nextViewEl.style.display = 'block';
+          nextViewEl.classList.remove('magic-flow-out');
+          nextViewEl.classList.add('magic-flow-in');
+          if (typeof window.applyMagicCardCascade === 'function') window.applyMagicCardCascade(nextViewEl);
+
+          if (titleEl) {
+            titleEl.classList.remove('magic-text-flow-out');
+            titleEl.classList.add('magic-text-flow-in');
+          }
+          if (descEl) {
+            descEl.classList.remove('magic-text-flow-out');
+            descEl.classList.add('magic-text-flow-in');
+          }
+
+          try {
+            if (viewId === 'analytics' && typeof window.loadAnalyticsDashboard === 'function') {
+              window.loadAnalyticsDashboard();
+            } else if ((viewId === 'keys' || viewId === 'overview') && typeof window.loadRealtimeKeyMetrics === 'function') {
+              window.loadRealtimeKeyMetrics(false);
+            }
+            if (typeof window.updateAllSuiteSnippets === 'function') window.updateAllSuiteSnippets();
+            if (typeof window.updateOverviewSnippets === 'function') window.updateOverviewSnippets();
+          } catch(e) {}
+
+          // Clean up animation classes after transition completes
+          setTimeout(function() {
+            if (nextViewEl) nextViewEl.classList.remove('magic-flow-in');
+            if (titleEl) titleEl.classList.remove('magic-text-flow-in');
+            if (descEl) descEl.classList.remove('magic-text-flow-in');
+          }, 380);
+
+          // Auto-focus relevant inputs on destination views
+          if (viewId === 'keys') {
+            setTimeout(function() {
+              var keyLabelIn = document.getElementById('appKeyLabel');
+              if (keyLabelIn) keyLabelIn.focus();
+            }, 200);
+          } else if (viewId === 'tester') {
+            setTimeout(function() {
+              var queryIn = document.getElementById('testerQueryInput') || document.getElementById('testerBodyInput');
+              if (queryIn) queryIn.focus();
+            }, 200);
+          }
+
+          window.isViewTransitioning = null;
+        }, 160);
+      } else {
+        // Direct fallback / initial load
+        views.forEach(function(id) {
+          var v = document.getElementById('view-' + id);
+          if (v) {
+            if (id === viewId) {
+              v.classList.remove('hidden', 'magic-flow-out');
+              v.style.display = 'block';
+              v.style.opacity = '1';
+              v.style.pointerEvents = 'auto';
+              if (typeof window.applyMagicCardCascade === 'function') window.applyMagicCardCascade(v);
+            } else {
+              v.classList.add('hidden');
+              v.classList.remove('magic-flow-out', 'magic-flow-in');
+              v.style.display = 'none';
+            }
+          }
+        });
+        window.currentAppViewId = viewId;
+        if (typeof window.updateHeaderTitles === 'function') window.updateHeaderTitles(viewId);
+        if (typeof window.updateSuiteSwitcher === 'function') window.updateSuiteSwitcher(viewId);
+        try {
+          if (typeof window.updateAllSuiteSnippets === 'function') window.updateAllSuiteSnippets();
+          if (typeof window.updateOverviewSnippets === 'function') window.updateOverviewSnippets();
+        } catch(e) {}
+      }
+
+      // URL history synchronization
+      try {
+        var u = new URL(window.location.href);
+        u.searchParams.set('tab', viewId);
+        window.history.replaceState(null, '', u.toString());
+      } catch(e) {}
+
+      if (window.innerWidth < 768) {
+        try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e) {}
+      }
+    };
 
     window.openAppAuthModal = function(mode) {
       if (typeof window.closeAppAccountMenu === 'function') window.closeAppAccountMenu();
@@ -940,7 +1213,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
   </div>
 
   <!-- Left Sidebar Navigation (Desktop & Tablet Fixed, Authentic Cloudflare Dashboard Standard) -->
-  <aside id="appSidebar" class="max-md:!hidden md:flex w-60 h-[calc(100vh-52px)] fixed top-[52px] left-0 border-r border-neutral-200/80 bg-white z-40 flex-col justify-between p-3.5 shadow-xs select-none overflow-y-auto">
+  <aside id="appSidebar" class="w-60 h-[calc(100vh-52px)] fixed top-[52px] left-0 border-r border-neutral-200/80 bg-white z-40 flex-col justify-between p-3.5 shadow-xs select-none overflow-y-auto">
     <div class="space-y-3">
       <!-- Quick Search Box (Cmd+K) -->
       <div class="relative">
@@ -4677,7 +4950,7 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
     }
 
     // ── Instant & Deterministic View Navigation (Devin Standard) ──
-    let currentAppViewId = 'overview';
+    window.currentAppViewId = window.currentAppViewId || 'overview';
 
     function switchSuite(suite) {
       if (suite === 'overview') setAppView('overview');
@@ -5249,10 +5522,13 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
       }
     }
 
-    function setAppView(viewId) {
+    const setAppView = function(viewId, event) {
+      return window.setAppView(viewId, event);
+    };
+    function _legacyInternalSetAppView(viewId) {
       const views = ['overview', 'summoning', 'benchmarks', 'keys', 'memory', 'search', 'crawler', 'membership', 'integrations', 'analytics', 'tester'];
       if (!views.includes(viewId)) return;
-      const prevViewId = currentAppViewId;
+      const prevViewId = window.currentAppViewId || 'overview';
 
       // Close mobile navigation drawer if open
       const drawer = document.getElementById('appMobileDrawer');
@@ -6765,7 +7041,7 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
     }
 
     // Export all global handlers to window immediately
-    window.setAppView = setAppView;
+    // window.setAppView already bound early
     window.selectActiveAppKey = selectActiveAppKey;
     window.toggleActiveKeyMenu = toggleActiveKeyMenu;
     window.selectTesterPreset = selectTesterPreset;
@@ -6825,6 +7101,15 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
     window.loadRealtimeKeyMetrics = loadRealtimeKeyMetrics;
     window.toggleRealtimeAutoRefresh = toggleRealtimeAutoRefresh;
     window.testLiveRequest = testLiveRequest;
+    window.runLiveBenchmarks = runLiveBenchmarks;
+    window.exportBenchmarkJson = exportBenchmarkJson;
+    window.copyBenchmarkMarkdown = copyBenchmarkMarkdown;
+    window.purgeEdgeCache = purgeEdgeCache;
+    window.handleTesterMethodChange = handleTesterMethodChange;
+    window.onPresetDropdownSelected = onPresetDropdownSelected;
+    window.executeTesterRequest = executeTesterRequest;
+    window.summonFastestKey = summonFastestKey;
+    window.copyMcpConfig = copyMcpConfig;
 
     function handleTesterKeySelect(val) {
       const activeKey = getActiveKey();
