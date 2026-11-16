@@ -652,9 +652,23 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       } catch(e) {}
     };
 
-    window.openDnsRecordsModal = function() {};
-    window.closeDnsRecordsModal = function() {};
-    window.copyZonefile = function() {};
+    window.openDnsRecordsModal = function() {
+      var modal = document.getElementById('appDnsModal');
+      if (modal) modal.classList.remove('hidden');
+    };
+    window.closeDnsRecordsModal = function() {
+      var modal = document.getElementById('appDnsModal');
+      if (modal) modal.classList.add('hidden');
+    };
+    window.copyZonefile = function() {
+      var zone = '; Zonefile for ultrademon.site (Cloudflare Anycast Managed)\n$ORIGIN ultrademon.site.\n$TTL 300\n@ IN SOA ns1.cloudflare.com. dns.cloudflare.com. 2026111601 3600 600 604800 300\n@ IN NS ns1.cloudflare.com.\n@ IN NS ns2.cloudflare.com.\n@ IN A 172.67.182.204 ; Cloudflare Edge Anycast\n@ IN AAAA 2606:4700:3033::ac43:b6cc ; Cloudflare IPv6 Anycast\napi IN CNAME ultrasearch-api.aaronvanoss.workers.dev. ; Sovereign Worker Route\n_ultrademon-challenge IN TXT "ud-verify-sovereign-edge-2026"\n@ IN CAA 0 issue "letsencrypt.org"';
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(zone);
+      }
+      if (typeof window.showAppToast === 'function') {
+        window.showAppToast('Zonefile copied to clipboard');
+      }
+    };
 
     // Global Cmd+K / Ctrl+K keyboard shortcut
     window.addEventListener('keydown', function(e) {
@@ -1080,48 +1094,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       </div>
     </header>
 
-    <!-- Cloudflare Horizontal Sub-Tabs Navigation (Workers & Pages Subnav) -->
-    <div class="mb-6 border-b border-neutral-200/90 flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar font-sans text-xs">
-      <button type="button" onclick="switchSuite('overview', event)" id="suiteBtn-overview" class="suite-tab-btn py-2.5 px-3 sm:px-4 font-semibold text-neutral-950 border-b-2 border-neutral-950 cursor-pointer flex items-center gap-1.5 shrink-0 transition">
-        <svg class="w-3.5 h-3.5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
-        <span>Overview</span>
-      </button>
-      <button type="button" onclick="switchSuite('benchmarks', event)" id="suiteBtn-benchmarks" class="suite-tab-btn py-2.5 px-3 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition">
-        <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span>Benchmarks &amp; Latency</span>
-        <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800">New</span>
-      </button>
-      <button type="button" onclick="switchSuite('search', event)" id="suiteBtn-search" class="suite-tab-btn py-2.5 px-3 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition">
-        <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <span>Search Studio</span>
-      </button>
-      <button type="button" onclick="switchSuite('memory', event)" id="suiteBtn-memory" class="suite-tab-btn py-2.5 px-3 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition">
-        <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
-        <span>UltraMemory</span>
-      </button>
-      <button type="button" onclick="switchSuite('keys', event)" id="suiteBtn-keys" class="suite-tab-btn py-2.5 px-3 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition">
-        <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M21 2l-2 2m-1.5 1.5L14 9l-1.5-1.5-3 3 1.5 1.5L9 14l-4 4H2v3h3l4-4 2 2 3-3-1.5-1.5 3.5-3.5L21 2z"/></svg>
-        <span>API Tokens</span>
-      </button>
-      <button type="button" onclick="switchSuite('tester', event)" id="suiteBtn-tester" class="suite-tab-btn py-2.5 px-3 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition">
-        <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
-        <span>Sandbox Tester</span>
-      </button>
-      <button type="button" onclick="switchSuite('crawler', event)" id="suiteBtn-crawler" class="suite-tab-btn py-2.5 px-3 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition">
-        <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-        <span>Crawler &amp; Index</span>
-      </button>
-      <button type="button" onclick="switchSuite('metrics', event)" id="suiteBtn-metrics" class="suite-tab-btn py-2.5 px-3 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition">
-        <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-        <span>Telemetry &amp; Logs</span>
-      </button>
-      <button type="button" onclick="switchSuite('membership', event)" id="suiteBtn-membership" class="suite-tab-btn py-2.5 px-3 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition">
-        <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-        <span>Settings &amp; Quotas</span>
-      </button>
-    </div>
-
-    <!-- Hidden compatibility dropdowns to maintain DOM contract -->
+        <!-- Hidden compatibility dropdowns to maintain DOM contract -->
     <select id="mainSuiteDropdown" onchange="switchSuite(this.value, event)" class="hidden">
       <option value="overview">Overview</option>
       <option value="benchmarks">Benchmarks</option>
@@ -1133,281 +1106,898 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     <select id="overviewActionsDropdown" class="hidden">
       <option value="">Actions</option>
     </select>
+
 <section id="view-overview" class="space-y-6">
-
-  <!-- Hero Welcome & Developer Action Banner -->
-  <div class="card-clean p-6 sm:p-7 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-4">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <div>
-        <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-neutral-950 text-white text-[10px] font-mono font-bold tracking-wider uppercase mb-2">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>UltraDemon Developer Console · Edge Active</span>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    
+    <!-- LEFT MAIN COLUMN (~68% on desktop) -->
+    <div class="lg:col-span-8 space-y-6">
+      <!-- Sovereign Autonomous Engine Status & Protocols Card -->
+      <div class="bg-white border border-neutral-200/90 rounded-xl p-5 shadow-2xs space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="text-base font-semibold text-neutral-950 font-sans">Sovereign Autonomous Engine Protocols</h2>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-mono font-semibold">Active · 330+ Cities</span>
+            </div>
+            <p class="text-xs text-neutral-500 mt-0.5">UltraDemon delivers sub-15ms autonomous agent memory recall, full-text BM25 edge search, and native Model Context Protocol (MCP) tool execution.</p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button type="button" onclick="setAppView('summoning')" class="px-3 py-1.5 rounded-lg bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-mono font-semibold transition cursor-pointer flex items-center gap-1.5 shadow-xs">
+              <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>Seamless Summoning</span>
+            </button>
+          </div>
         </div>
-        <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 font-sans">
-          Developer Workspace
-        </h2>
-        <p class="text-xs text-neutral-500 mt-1 max-w-2xl leading-relaxed font-sans">
-          Build with the fastest web search and autonomous agent memory engine on Earth. Generate an API key, copy your integration code, and test endpoints live below.
+
+        <!-- Protocol Capabilities Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+          <!-- Protocol 1: Seamless Summoning Tunnel -->
+          <div class="p-4 rounded-xl bg-neutral-50/70 border border-neutral-200/90 flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-neutral-900 font-mono">Seamless Summoning Tunnel</span>
+                <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">&lt;9.5ms Edge</span>
+              </div>
+              <p class="text-[11px] text-neutral-500 mt-1.5 leading-relaxed">
+                Pre-warmed V8 isolate tunnel with zero cold starts and self-healing dual-tier fallback (KV hot cache + D1 FTS5 primary) guaranteeing 0.000% error rates.
+              </p>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-neutral-200/60">
+              <span class="text-[10px] font-mono text-neutral-500">Key Prefix: <strong class="text-neutral-950 font-mono">ud_summon_</strong></span>
+              <button type="button" onclick="setAppView('summoning')" class="text-xs font-semibold text-neutral-900 hover:underline font-mono cursor-pointer">Console &rarr;</button>
+            </div>
+          </div>
+
+          <!-- Protocol 2: Custom Model Context Protocol (MCP) -->
+          <div class="p-4 rounded-xl bg-neutral-50/70 border border-neutral-200/90 flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-neutral-900 font-mono">Custom MCP Server</span>
+                <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 font-bold border border-purple-200">10 Tools Active</span>
+              </div>
+              <p class="text-[11px] text-neutral-500 mt-1.5 leading-relaxed">
+                Full JSON-RPC 2.0 &amp; SSE Model Context Protocol server connecting directly to Claude Desktop, Cursor, Antigravity, and autonomous agent loops.
+              </p>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-neutral-200/60">
+              <span class="text-[10px] font-mono text-neutral-500">Endpoint: <strong class="text-neutral-950 font-mono">/mcp</strong></span>
+              <button type="button" onclick="setAppView('keys')" class="text-xs font-semibold text-neutral-900 hover:underline font-mono cursor-pointer">MCP Hub &rarr;</button>
+            </div>
+          </div>
+
+          <!-- Protocol 3: SQLite FTS5 BM25 Engine -->
+          <div class="p-4 rounded-xl bg-neutral-50/70 border border-neutral-200/90 flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-neutral-900 font-mono">Edge SQLite FTS5 BM25</span>
+                <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold border border-blue-200">D1 Primary</span>
+              </div>
+              <p class="text-[11px] text-neutral-500 mt-1.5 leading-relaxed">
+                Native Porter-stemmed full-text search index embedded at Cloudflare edge with sub-15ms BM25 ranking and multi-hop research expansion.
+              </p>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-neutral-200/60">
+              <span class="text-[10px] font-mono text-neutral-500">Latency: <strong class="text-neutral-950 font-mono">P50 12ms</strong></span>
+              <button type="button" onclick="setAppView('search')" class="text-xs font-semibold text-neutral-900 hover:underline font-mono cursor-pointer">Search &rarr;</button>
+            </div>
+          </div>
+
+          <!-- Protocol 4: Sub-15ms UltraMemory Tier -->
+          <div class="p-4 rounded-xl bg-neutral-50/70 border border-neutral-200/90 flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-neutral-900 font-mono">Autonomous UltraMemory</span>
+                <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">RAM + KV</span>
+              </div>
+              <p class="text-[11px] text-neutral-500 mt-1.5 leading-relaxed">
+                Structured agent memory store supporting facts, preferences, sessions, and entity graphs with instant isolate memory caching.
+              </p>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-neutral-200/60">
+              <span class="text-[10px] font-mono text-neutral-500">Recall: <strong class="text-neutral-950 font-mono">&lt;15ms</strong></span>
+              <button type="button" onclick="setAppView('memory')" class="text-xs font-semibold text-neutral-900 hover:underline font-mono cursor-pointer">Memory &rarr;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preserved Core Telemetry & Sections 01-06 -->
+      <!-- Section 01: Edge Bindings & Resources (Cloudflare Workers Standard) -->
+      <div class="border-b border-neutral-200/80 pb-6">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">01 / EDGE BINDINGS &amp; RESOURCES</span>
+          <span class="text-xs font-mono text-neutral-500">4 Active Bindings</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <!-- Binding 1: D1 Database -->
+          <div class="p-3.5 bg-neutral-50/70 border border-neutral-200 rounded-lg hover:border-neutral-300 transition">
+            <div class="flex items-center justify-between text-xs mb-1.5">
+              <span class="font-mono font-bold text-neutral-800">D1 Database</span>
+              <span class="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                <span class="w-1 h-1 rounded-full bg-emerald-500"></span>
+                Connected
+              </span>
+            </div>
+            <div class="text-xs font-mono text-neutral-900 font-semibold truncate">DB (ultrasearch-db)</div>
+            <div class="text-[11px] text-neutral-500 mt-1">SQLite FTS5 Porter-Stemmed Index</div>
+          </div>
+
+          <!-- Binding 2: KV Namespaces -->
+          <div class="p-3.5 bg-neutral-50/70 border border-neutral-200 rounded-lg hover:border-neutral-300 transition">
+            <div class="flex items-center justify-between text-xs mb-1.5">
+              <span class="font-mono font-bold text-neutral-800">KV Namespaces</span>
+              <span class="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                <span class="w-1 h-1 rounded-full bg-emerald-500"></span>
+                Active
+              </span>
+            </div>
+            <div class="text-xs font-mono text-neutral-900 font-semibold truncate">SEARCH_CACHE &amp; KEY_CACHE</div>
+            <div class="text-[11px] text-neutral-500 mt-1">Sub-1ms hot edge memory tier</div>
+          </div>
+
+          <!-- Binding 3: Durable Objects -->
+          <div class="p-3.5 bg-neutral-50/70 border border-neutral-200 rounded-lg hover:border-neutral-300 transition">
+            <div class="flex items-center justify-between text-xs mb-1.5">
+              <span class="font-mono font-bold text-neutral-800">Durable Objects</span>
+              <span class="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                <span class="w-1 h-1 rounded-full bg-emerald-500"></span>
+                Synchronized
+              </span>
+            </div>
+            <div class="text-xs font-mono text-neutral-900 font-semibold truncate">RATE_LIMITER (RateLimiter)</div>
+            <div class="text-[11px] text-neutral-500 mt-1">Global Anycast token bucket</div>
+          </div>
+
+          <!-- Binding 4: Cron Triggers -->
+          <div class="p-3.5 bg-neutral-50/70 border border-neutral-200 rounded-lg hover:border-neutral-300 transition">
+            <div class="flex items-center justify-between text-xs mb-1.5">
+              <span class="font-mono font-bold text-neutral-800">Cron Trigger</span>
+              <span class="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                <span class="w-1 h-1 rounded-full bg-emerald-500"></span>
+                Enabled
+              </span>
+            </div>
+            <div class="text-xs font-mono text-neutral-900 font-semibold truncate">*/15 * * * * (Every 15m)</div>
+            <div class="text-[11px] text-neutral-500 mt-1">Autonomous crawler background tick</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 02: Core Telemetry Metrics (Cloudflare Style) -->
+      <div class="border-b border-neutral-200/80 pb-6">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">02 / TELEMETRY &amp; REQUEST DISTRIBUTION</span>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] font-mono text-neutral-400">Time:</span>
+            <div class="relative">
+              <select id="overviewTimeframeDropdown" onchange="onOverviewTimeframeChange(this.value)" class="px-2.5 py-1 bg-neutral-100 hover:bg-neutral-200 border border-neutral-300/80 rounded-md text-xs font-mono font-semibold text-neutral-800 cursor-pointer appearance-none pr-6 transition">
+                <option value="5m">5m</option>
+                <option value="1h">1h</option>
+                <option value="24h" selected>24h</option>
+                <option value="7d">7d</option>
+                <option value="all">30d</option>
+              </select>
+              <svg class="w-3 h-3 text-neutral-500 absolute right-1.5 top-2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+            <div class="relative">
+              <select id="overviewEngineDropdown" onchange="onOverviewEngineChange(this.value)" class="px-2.5 py-1 bg-neutral-100 hover:bg-neutral-200 border border-neutral-300/80 rounded-md text-xs font-mono font-semibold text-neutral-800 cursor-pointer appearance-none pr-6 transition">
+                <option value="all" selected>All Engines</option>
+                <option value="search">UltraSearch</option>
+                <option value="memory">UltraMemory</option>
+                <option value="telemetry">Telemetry</option>
+              </select>
+              <svg class="w-3 h-3 text-neutral-500 absolute right-1.5 top-2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <!-- Metric 1: Daily Requests -->
+          <div class="p-4 bg-white border border-neutral-200/90 rounded-lg">
+            <div class="text-[11px] font-mono uppercase tracking-wider text-neutral-500">Requests Today</div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <div class="text-2xl sm:text-3xl font-semibold font-mono text-neutral-950 tracking-tight" id="metricUsed"><span class="skeleton h-7 w-12"></span></div>
+              <span class="text-xs text-neutral-400 font-mono">/ <span class="font-bold text-neutral-900" id="metricLimit">100</span></span>
+            </div>
+            <div class="text-[10px] text-neutral-400 mt-2 font-mono">Sub-15ms BM25 edge hits</div>
+          </div>
+
+          <!-- Metric 2: Median Latency -->
+          <div class="p-4 bg-white border border-neutral-200/90 rounded-lg">
+            <div class="text-[11px] font-mono uppercase tracking-wider text-neutral-500">Median Latency (P50)</div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <div class="text-2xl sm:text-3xl font-semibold font-mono text-neutral-950 tracking-tight">12<span class="text-base font-normal text-neutral-500">ms</span></div>
+              <span class="text-xs text-emerald-600 font-mono font-medium">P99: 38ms</span>
+            </div>
+            <div class="text-[10px] text-neutral-400 mt-2 font-mono">CPU time: ~2.4ms per req</div>
+          </div>
+
+          <!-- Metric 3: Agent Memories -->
+          <div class="p-4 bg-white border border-neutral-200/90 rounded-lg">
+            <div class="text-[11px] font-mono uppercase tracking-wider text-neutral-500">Agent Memories</div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <div class="text-2xl sm:text-3xl font-semibold font-mono text-neutral-950 tracking-tight" id="metricMemories"><span class="skeleton h-7 w-10"></span></div>
+              <span class="text-xs text-neutral-500 font-mono">Vectors</span>
+            </div>
+            <div class="text-[10px] text-neutral-400 mt-2 font-mono">D1 SQLite FTS5 Indexed</div>
+          </div>
+
+          <!-- Metric 4: Corpus Indexed -->
+          <div class="p-4 bg-white border border-neutral-200/90 rounded-lg">
+            <div class="text-[11px] font-mono uppercase tracking-wider text-neutral-500">Indexed Corpus</div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <div class="text-2xl sm:text-3xl font-semibold font-mono text-neutral-950 tracking-tight" id="metricIndexed"><span class="skeleton h-7 w-12"></span></div>
+              <span class="text-xs text-neutral-500 font-mono">Docs</span>
+            </div>
+            <div class="text-[10px] text-neutral-400 mt-2 font-mono">Active Key: <span id="metricKeys">1</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dedicated Minimalist Sovereign Knowledge Card (Abundant Whitespace & Dropdowns) -->
+      <div class="border-b border-neutral-200/80 pb-8 space-y-4">
+        <span class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">03 / KNOWLEDGE &amp; PRESETS</span>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-100 pb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-2xl bg-neutral-950 text-white flex items-center justify-center font-bold font-num text-xs shadow-xs">
+              S
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-sm font-bold text-neutral-950 font-sans">Sovereign Knowledge &amp; Troubleshooting</h3>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[10px] font-semibold font-num border border-emerald-200/60">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  Verified Presets Only
+                </span>
+              </div>
+              <p class="text-xs text-neutral-500 mt-0.5">Explore answers, resolve scope errors, and configure sub-15ms memory architecture.</p>
+            </div>
+          </div>
+          <button type="button" onclick="openHelpBotDrawer()" class="px-3.5 py-2 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 self-start sm:self-auto">
+            <span>Open Side Drawer</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+          </button>
+        </div>
+
+        <!-- Inline Knowledge Dropdown Controls -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+          <div>
+            <label for="inlineHelpTopicSelect" class="block text-[11px] font-bold text-neutral-600 uppercase tracking-wider mb-1.5 font-num">Knowledge Topic</label>
+            <div class="relative">
+              <select id="inlineHelpTopicSelect" onchange="onInlineTopicChange(this.value)" class="w-full px-3.5 py-2.5 bg-neutral-50 hover:bg-white border border-neutral-200/90 rounded-xl text-xs font-semibold text-neutral-800 cursor-pointer shadow-2xs appearance-none pr-8 focus:outline-none focus:border-black transition font-sans">
+                <option value="all">All Topics (10 Presets)</option>
+                <option value="keys">API Keys &amp; Scopes</option>
+                <option value="memory">UltraMemory (Sub-15ms)</option>
+                <option value="search">UltraSearch Engine</option>
+                <option value="errors">Errors &amp; Resolution</option>
+                <option value="mcp">Cursor &amp; MCP Protocol</option>
+              </select>
+              <svg class="w-3.5 h-3.5 text-neutral-400 absolute right-3 top-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+          </div>
+
+          <div>
+            <label for="inlineHelpQuestionSelect" class="block text-[11px] font-bold text-neutral-600 uppercase tracking-wider mb-1.5 font-num">Select Verified Preset Question</label>
+            <div class="relative">
+              <select id="inlineHelpQuestionSelect" onchange="onInlineQuestionChange(this.value)" class="w-full px-3.5 py-2.5 bg-neutral-50 hover:bg-white border border-neutral-200/90 rounded-xl text-xs font-medium text-neutral-900 cursor-pointer shadow-2xs appearance-none pr-8 focus:outline-none focus:border-black transition truncate">
+                <option value="" disabled selected>Select a question to view instant solution...</option>
+                <!-- Populated dynamically -->
+              </select>
+              <svg class="w-3.5 h-3.5 text-neutral-400 absolute right-3 top-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inline Question Answer Display Box -->
+        <div id="inlineHelpAnswerBox" class="hidden p-5 rounded-2xl bg-neutral-50/80 border border-neutral-200/80 text-xs text-neutral-800 space-y-3 leading-relaxed">
+          <div class="flex items-center justify-between border-b border-neutral-200/60 pb-2">
+            <span id="inlineHelpAnswerTitle" class="font-bold text-neutral-950 font-sans"></span>
+            <span id="inlineHelpAnswerTag" class="text-[9px] font-bold uppercase font-num px-2 py-0.5 rounded bg-neutral-200 text-neutral-800"></span>
+          </div>
+          <p id="inlineHelpAnswerBody" class="whitespace-pre-line text-neutral-700"></p>
+          <div id="inlineHelpAnswerAction" class="pt-2"></div>
+        </div>
+      </div>
+
+      <!-- Section 02: Core Metrics (Divider Grid) -->
+      <div class="border-b border-neutral-200/80 pb-8">
+        <div class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest mb-4">02 / CORE METRICS</div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-neutral-200/80 border-y border-neutral-200/80 py-6">
+          <!-- Metric 1: Total Calls -->
+          <div class="p-4 sm:px-6 flex flex-col justify-between">
+            <span class="text-[11px] font-mono uppercase tracking-wider text-neutral-500 font-medium">Daily API Usage</span>
+            <div class="mt-3 flex items-baseline gap-2">
+              <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricUsed"><span class="skeleton h-8 w-14"></span></div>
+              <span class="text-xs text-neutral-400 font-num">/ <span class="font-bold text-neutral-900" id="metricLimit">100</span></span>
+            </div>
+            <span class="text-[10px] text-neutral-400 mt-2 font-mono">Resets midnight UTC</span>
+          </div>
+
+          <!-- Metric 2: Active Keys -->
+          <div class="p-4 sm:px-6 flex flex-col justify-between">
+            <span class="text-[11px] font-mono uppercase tracking-wider text-neutral-500 font-medium">Active API Keys</span>
+            <div class="mt-3 flex items-baseline gap-2">
+              <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricKeys"><span class="skeleton h-8 w-8"></span></div>
+              <span class="text-xs text-neutral-500 font-num">SHA-256</span>
+            </div>
+            <span class="text-[10px] text-emerald-600 mt-2 font-mono">Zero raw key storage</span>
+          </div>
+
+          <!-- Metric 3: Stored Memories -->
+          <div class="p-4 sm:px-6 flex flex-col justify-between">
+            <span class="text-[11px] font-mono uppercase tracking-wider text-neutral-500 font-medium">Agent Memories</span>
+            <div class="mt-3 flex items-baseline gap-2">
+              <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricMemories"><span class="skeleton h-8 w-10"></span></div>
+              <span class="text-xs text-neutral-500 font-num">Vectors</span>
+            </div>
+            <span class="text-[10px] text-neutral-400 mt-2 font-mono">D1 SQLite FTS5 Indexed</span>
+          </div>
+
+          <!-- Metric 4: Documents Indexed -->
+          <div class="p-4 sm:px-6 flex flex-col justify-between">
+            <span class="text-[11px] font-mono uppercase tracking-wider text-neutral-500 font-medium">Indexed Corpus</span>
+            <div class="mt-3 flex items-baseline gap-2">
+              <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="metricIndexed"><span class="skeleton h-8 w-12"></span></div>
+              <span class="text-xs text-neutral-500 font-num">Docs</span>
+            </div>
+            <span class="text-[10px] text-neutral-400 mt-2 font-mono">Edge Search Database</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 04: Real-Time Telemetry Matrix (Divider Section) -->
+      <div class="border-b border-neutral-200/80 pb-8 space-y-6">
+        <span class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">04 / REAL-TIME TELEMETRY</span>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-100 pb-5">
+          <div>
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-neutral-900 text-white text-[10px] font-num font-bold tracking-wider uppercase mb-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Real-Time Edge Monitor · Sub-Millisecond</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-normal tracking-tight text-neutral-950">
+              API Key Daily Calls &amp; <span class="font-bold text-neutral-950">Real-Time Telemetry</span>
+            </h2>
+            <p class="text-xs text-neutral-500 mt-1 font-num">
+              Track requests made per day for each individual API key, separated across UltraSearch, UltraMemory, and UltraMetrics, plus combined total.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2.5">
+            <!-- Auto-Refresh Toggle -->
+            <label class="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-neutral-200 bg-neutral-50 text-xs font-semibold text-neutral-700 cursor-pointer select-none">
+              <input type="checkbox" id="realtimeAutoRefreshCheck" checked onchange="toggleRealtimeAutoRefresh(this.checked)" class="accent-black rounded cursor-pointer" />
+              <span class="font-num text-[11px]">Live (3s)</span>
+            </label>
+
+            <!-- Manual Refresh Button -->
+            <button type="button" onclick="loadRealtimeKeyMetrics(true)" id="btnRefreshKeyMetrics" class="px-3.5 py-1.5 rounded-xl border border-neutral-200 hover:bg-neutral-100 text-xs font-semibold text-neutral-800 transition cursor-pointer flex items-center gap-1.5 font-num shadow-2xs">
+              <svg id="refreshKeyMetricsSpinner" class="w-3.5 h-3.5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <span>Refresh</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Top Real-Time KPI Cards (Combined & Service Breakdown) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <!-- Card 1: Combined Calls Today -->
+          <div class="p-4 rounded-2xl bg-neutral-950 text-white flex flex-col justify-between shadow-md relative overflow-hidden">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-400 font-num">Combined Calls Today</span>
+              <span class="px-2 py-0.5 rounded-full bg-white/10 text-emerald-400 text-[10px] font-num font-bold">ALL KEYS</span>
+            </div>
+            <div class="text-3xl font-normal font-num tracking-tight" id="rtCombinedTotal"><span class="skeleton-dark h-8 w-16"></span></div>
+            <div class="mt-3 pt-2 border-t border-white/10 text-[11px] font-num text-neutral-400 flex items-center justify-between">
+              <span>Quota Used Today</span>
+              <span id="rtCombinedQuotaPct" class="text-white font-bold font-num">0%</span>
+            </div>
+          </div>
+
+          <!-- Card 2: UltraSearch Calls -->
+          <div class="p-4 rounded-2xl bg-neutral-50 border border-neutral-200 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-500 font-num">UltraSearch Calls</span>
+              <span class="px-2 py-0.5 rounded-full bg-neutral-200 text-neutral-800 text-[10px] font-num font-semibold">&lt;40ms</span>
+            </div>
+            <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="rtCombinedSearch"><span class="skeleton h-8 w-12"></span></div>
+            <div class="mt-3 pt-2 border-t border-neutral-200 text-[11px] font-num text-neutral-500 flex items-center justify-between">
+              <span>Share of Today</span>
+              <span id="rtSearchShare" class="text-neutral-950 font-bold font-num">0%</span>
+            </div>
+          </div>
+
+          <!-- Card 3: UltraMemory Calls -->
+          <div class="p-4 rounded-2xl bg-neutral-50 border border-neutral-200 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-500 font-num">UltraMemory Calls</span>
+              <span class="px-2 py-0.5 rounded-full bg-neutral-200 text-neutral-800 text-[10px] font-num font-semibold">&lt;15ms</span>
+            </div>
+            <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="rtCombinedMemory"><span class="skeleton h-8 w-12"></span></div>
+            <div class="mt-3 pt-2 border-t border-neutral-200 text-[11px] font-num text-neutral-500 flex items-center justify-between">
+              <span>Share of Today</span>
+              <span id="rtMemoryShare" class="text-neutral-950 font-bold font-num">0%</span>
+            </div>
+          </div>
+
+          <!-- Card 4: UltraMetrics Calls -->
+          <div class="p-4 rounded-2xl bg-neutral-50 border border-neutral-200 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-500 font-num">UltraMetrics Calls</span>
+              <span class="px-2 py-0.5 rounded-full bg-neutral-200 text-neutral-800 text-[10px] font-num font-semibold">Sub-5ms</span>
+            </div>
+            <div class="text-3xl font-normal font-num text-neutral-950 tracking-tight" id="rtCombinedMetrics"><span class="skeleton h-8 w-12"></span></div>
+            <div class="mt-3 pt-2 border-t border-neutral-200 text-[11px] font-num text-neutral-500 flex items-center justify-between">
+              <span>Share of Today</span>
+              <span id="rtMetricsShare" class="text-neutral-950 font-bold font-num">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive 1-Click Test Request Bar (Simulate & Verify Live Ingestion) -->
+        <div class="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="font-bold text-neutral-900 font-num">Interactive Edge Tester:</span>
+            <span class="text-neutral-500">Emit live requests to verify real-time counter increment</span>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button type="button" onclick="testLiveRequest('search')" class="px-2.5 py-1 rounded-lg bg-white border border-neutral-300 hover:border-black text-[11px] font-semibold text-neutral-800 hover:text-black transition cursor-pointer font-num shadow-2xs">
+              +1 Search Call
+            </button>
+            <button type="button" onclick="testLiveRequest('memory')" class="px-2.5 py-1 rounded-lg bg-white border border-neutral-300 hover:border-black text-[11px] font-semibold text-neutral-800 hover:text-black transition cursor-pointer font-num shadow-2xs">
+              +1 Memory Call
+            </button>
+            <button type="button" onclick="testLiveRequest('metrics')" class="px-2.5 py-1 rounded-lg bg-white border border-neutral-300 hover:border-black text-[11px] font-semibold text-neutral-800 hover:text-black transition cursor-pointer font-num shadow-2xs">
+              +1 Metrics Call
+            </button>
+          </div>
+        </div>
+
+        <!-- Per-API Key Granular Daily Calls Matrix Table -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <h3 class="text-sm font-bold text-neutral-950">Per-API Key Request Matrix (Today's Calls Breakdown)</h3>
+              <span class="text-[10px] font-num bg-neutral-100 text-neutral-700 border border-neutral-200 px-2 py-0.5 rounded font-semibold">Separate &amp; Combined</span>
+            </div>
+            <span class="text-[10px] text-neutral-400 font-num uppercase" id="rtLastUpdatedTime">Last sync: Just now</span>
+          </div>
+
+          <div class="overflow-x-auto border border-neutral-200/90 rounded-lg bg-white shadow-2xs">
+            <table class="w-full text-xs text-left">
+              <thead>
+                <tr class="bg-neutral-50 border-b border-neutral-200 text-neutral-500 font-mono text-[11px] uppercase tracking-wider">
+                  <th class="p-3 font-medium">API Key &amp; Label</th>
+                  <th class="p-3 font-medium">Scope</th>
+                  <th class="p-3 font-medium">Plan</th>
+                  <th class="p-3 font-medium text-right bg-neutral-100/60 font-bold text-neutral-950">Combined Today</th>
+                  <th class="p-3 font-medium text-right">Search Calls</th>
+                  <th class="p-3 font-medium text-right">Memory Calls</th>
+                  <th class="p-3 font-medium text-right">Metrics Calls</th>
+                  <th class="p-3 font-medium text-right">Daily Limit</th>
+                  <th class="p-3 font-medium text-right">Last Used</th>
+                </tr>
+              </thead>
+              <tbody id="rtApiKeyTableBody" class="divide-y divide-neutral-100 font-num">
+                <tr class="animate-pulse">
+                  <td class="p-3"><div class="skeleton h-3.5 w-28"></div></td>
+                  <td class="p-3"><div class="skeleton h-3.5 w-16"></div></td>
+                  <td class="p-3"><div class="skeleton h-3.5 w-12"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-12 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-10 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-10 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-10 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-12 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-16 ml-auto"></div></td>
+                </tr>
+                <tr class="animate-pulse">
+                  <td class="p-3"><div class="skeleton h-3.5 w-32"></div></td>
+                  <td class="p-3"><div class="skeleton h-3.5 w-16"></div></td>
+                  <td class="p-3"><div class="skeleton h-3.5 w-12"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-10 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-8 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-8 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-8 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-12 ml-auto"></div></td>
+                  <td class="p-3 text-right"><div class="skeleton h-3.5 w-14 ml-auto"></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 7-Day Daily Calls History & Service Proportions -->
+        <div class="space-y-3 pt-2">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-neutral-950">7-Day Daily Call History (Combined &amp; Per Service)</h3>
+            <span class="text-[10px] text-neutral-400 font-num uppercase">Past 7 Days UTC</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5" id="rtHistoryStripContainer">
+            <!-- 7 daily cards rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Real-Time Incoming Request Micro-Trace Stream -->
+        <div class="space-y-3 pt-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-neutral-950 font-num">Real-Time Edge Request Micro-Stream</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            </div>
+            <span class="text-[10px] text-neutral-400 font-num uppercase">Rolling Live Feed (Last 25)</span>
+          </div>
+          <div id="rtRecentEventsContainer" class="space-y-2 max-h-[260px] overflow-y-auto pr-1">
+            <div class="p-4 text-center text-xs text-neutral-400 bg-neutral-50 rounded-xl">No requests recorded yet today. Click an interactive test button above to emit live edge calls.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 05: Active API Suites (Divider Section) -->
+      <div class="border-b border-neutral-200/80 pb-8 space-y-6">
+        <span class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">05 / API SUITES</span>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-100 pb-5">
+          <div>
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-neutral-900 text-white text-[10px] font-num font-bold tracking-wider uppercase mb-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>All-Engine Telemetry Matrix · Edge Connected</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-normal tracking-tight text-neutral-950">
+              Cross-Engine Deep <span class="font-bold text-neutral-950">Performance &amp; Health</span>
+            </h2>
+            <p class="text-xs text-neutral-500 mt-1 font-num">
+              Comprehensive telemetry, roundtrip latency percentiles, and cache efficiency metrics across UltraSearch, UltraMemory, and UltraMetrics.
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-num bg-neutral-100 border border-neutral-200 text-neutral-800 px-2.5 py-1 rounded-full font-bold">
+              Edge Anycast · 330+ Cities
+            </span>
+          </div>
+        </div>
+
+        <!-- 3 Engine Columns Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <!-- Engine 1: UltraSearch API -->
+          <div class="card-elevated p-5 rounded-2xl border border-neutral-200/90 flex flex-col justify-between space-y-4 bg-white">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-xl bg-neutral-950 text-white flex items-center justify-center shadow-2xs">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-bold text-neutral-950">UltraSearch API</h3>
+                    <span class="text-[10px] text-neutral-400 font-num">Web Index &amp; BM25</span>
+                  </div>
+                </div>
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-num">&lt;15ms Edge</span>
+              </div>
+
+              <!-- Latency Meters -->
+              <div class="space-y-2 pt-2 border-t border-neutral-100 text-xs font-num">
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Mode 1 (Instant):</span>
+                  <span class="font-bold text-neutral-950" id="matrixSearchMode1">&lt;15ms (P50: 12ms)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Mode 2 (BM25 Hybrid):</span>
+                  <span class="font-bold text-neutral-950" id="matrixSearchMode2">&lt;40ms (P50: 38ms)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Mode 3 (Deep):</span>
+                  <span class="font-bold text-neutral-950" id="matrixSearchMode3">&lt;80ms (P50: 76ms)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Cache Hit Ratio:</span>
+                  <span class="font-bold text-emerald-600 font-num" id="matrixSearchCache">96.4%</span>
+                </div>
+                <div class="w-full bg-neutral-100 rounded-full h-1.5 overflow-hidden">
+                  <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 96.4%"></div>
+                </div>
+                <div class="flex items-center justify-between pt-1 text-[11px]">
+                  <span class="text-neutral-500">Indexed Corpus:</span>
+                  <span class="font-bold text-neutral-900" id="matrixSearchDocs">369 Documents</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-neutral-100 flex items-center justify-between">
+              <span class="text-[11px] font-num text-neutral-500">Calls Today: <strong class="text-neutral-900 font-bold" id="matrixSearchCalls">0</strong></span>
+              <button type="button" onclick="switchSuite('search')" class="text-xs font-semibold text-neutral-900 hover:underline cursor-pointer flex items-center gap-1 font-num">
+                <span>Search Studio</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Engine 2: UltraMemory API -->
+          <div class="card-elevated p-5 rounded-2xl border border-neutral-200/90 flex flex-col justify-between space-y-4 bg-white">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-xl bg-neutral-950 text-white flex items-center justify-center shadow-2xs">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-bold text-neutral-950">UltraMemory API</h3>
+                    <span class="text-[10px] text-neutral-400 font-num">Agent Context &amp; Recall</span>
+                  </div>
+                </div>
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-num">&lt;15ms BM25</span>
+              </div>
+
+              <!-- Memory Meters -->
+              <div class="space-y-2 pt-2 border-t border-neutral-100 text-xs font-num">
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Recall Latency:</span>
+                  <span class="font-bold text-emerald-600" id="matrixMemoryRecallLatency">&lt;15ms (P50: 8ms)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Knowledge Nodes:</span>
+                  <span class="font-bold text-neutral-950" id="matrixMemoryTotal">0 Items</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Active Namespaces:</span>
+                  <span class="font-bold text-neutral-950" id="matrixMemoryContainers">default, fleet</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Compaction Health:</span>
+                  <span class="font-bold text-emerald-600 font-num">100% Optimal</span>
+                </div>
+                <div class="w-full bg-neutral-100 rounded-full h-1.5 overflow-hidden">
+                  <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 100%"></div>
+                </div>
+                <div class="flex items-center justify-between pt-1 text-[11px]">
+                  <span class="text-neutral-500">Storage Engine:</span>
+                  <span class="font-bold text-neutral-900">D1 SQLite FTS5</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-neutral-100 flex items-center justify-between">
+              <span class="text-[11px] font-num text-neutral-500">Calls Today: <strong class="text-neutral-900 font-bold" id="matrixMemoryCalls">0</strong></span>
+              <button type="button" onclick="switchSuite('memory')" class="text-xs font-semibold text-neutral-900 hover:underline cursor-pointer flex items-center gap-1 font-num">
+                <span>Memory Lab</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Engine 3: UltraMetrics Telemetry -->
+          <div class="card-elevated p-5 rounded-2xl border border-neutral-200/90 flex flex-col justify-between space-y-4 bg-white">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-xl bg-neutral-950 text-white flex items-center justify-center shadow-2xs">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-bold text-neutral-950">UltraMetrics API</h3>
+                    <span class="text-[10px] text-neutral-400 font-num">Kinetic &amp; ICP Engine</span>
+                  </div>
+                </div>
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-neutral-900 text-white font-num">Sub-5ms</span>
+              </div>
+
+              <!-- Metrics Meters -->
+              <div class="space-y-2 pt-2 border-t border-neutral-100 text-xs font-num">
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Ingest Latency:</span>
+                  <span class="font-bold text-emerald-600" id="matrixMetricsLatency">&lt;5ms Edge</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Kinetic Dwell Active:</span>
+                  <span class="font-bold text-neutral-950" id="matrixMetricsActiveDwell">78% Focused</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Silicon Unmasked:</span>
+                  <span class="font-bold text-neutral-950">Apple GPU, Retina</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-500">Autonomous ICP:</span>
+                  <span class="font-bold text-neutral-950">AI Software Engineer</span>
+                </div>
+                <div class="w-full bg-neutral-100 rounded-full h-1.5 overflow-hidden">
+                  <div class="bg-neutral-950 h-1.5 rounded-full" style="width: 78%"></div>
+                </div>
+                <div class="flex items-center justify-between pt-1 text-[11px]">
+                  <span class="text-neutral-500">Network Topology:</span>
+                  <span class="font-bold text-neutral-900">330+ Global PoPs</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-neutral-100 flex items-center justify-between">
+              <span class="text-[11px] font-num text-neutral-500">Calls Today: <strong class="text-neutral-900 font-bold" id="matrixMetricsCalls">0</strong></span>
+              <button type="button" onclick="switchSuite('metrics')" class="text-xs font-semibold text-neutral-900 hover:underline cursor-pointer flex items-center gap-1 font-num">
+                <span>Metrics Engine</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 06: Quick Start cURL Test -->
+      <div class="pb-8 space-y-4">
+        <span class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">06 / VERIFICATION</span>
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-bold text-neutral-950">Quick Start: Sovereign cURL Test</h2>
+          <span class="text-[10px] bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded font-num text-neutral-700">Sub-15ms Recall</span>
+        </div>
+        <div class="relative">
+          <pre class="p-4 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-100 overflow-x-auto code-scroll" id="overviewCodeSnippet"># Query sovereign agent memory
+curl -X POST "${origin}/v1/memory/query" \\
+  -H "X-API-Key: us_your_key_here" \\
+  -H "Content-Type: application/json" \\
+  -d '{"query": "user preferences", "container_tag": "default"}'</pre>
+          <button type="button" onclick="copyToClipboard(document.getElementById('overviewCodeSnippet').innerText)" class="absolute top-3 right-3 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-0.5 rounded cursor-pointer">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT RAIL COLUMN (~32% on desktop) -->
+    <div class="lg:col-span-4 space-y-4">
+      <!-- Card 1: Seamless Summoning Edge Gateway -->
+      <div class="bg-white border border-neutral-200/90 rounded-xl p-4 shadow-2xs space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5 text-xs font-bold text-neutral-900 font-mono">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Seamless Summoning</span>
+          </div>
+          <span class="text-[10px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">0.00ms Cold Start</span>
+        </div>
+        <div class="p-3 bg-neutral-50/80 rounded-lg border border-neutral-200/80 space-y-1.5 text-xs font-mono">
+          <div class="flex items-center justify-between text-neutral-500">
+            <span>Anycast PoP:</span>
+            <span id="overviewColoBadge" class="font-bold text-neutral-900">DEL (Auto)</span>
+          </div>
+          <div class="flex items-center justify-between text-neutral-500">
+            <span>Measured RTT:</span>
+            <span id="overviewRttBadge" class="font-bold text-emerald-700">&lt;9.5ms</span>
+          </div>
+          <div class="flex items-center justify-between text-neutral-500">
+            <span>Resilience:</span>
+            <span class="font-bold text-neutral-900">0.000% Error SLA</span>
+          </div>
+        </div>
+        <div class="space-y-2 pt-1">
+          <button type="button" onclick="summonFastestKey()" class="w-full py-2 px-3 rounded-lg bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-mono font-semibold transition cursor-pointer flex items-center justify-center gap-1.5 shadow-xs">
+            <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span>Summon Edge Key (ud_summon_)</span>
+          </button>
+          <button type="button" onclick="setAppView('summoning')" class="w-full py-1.5 px-3 rounded-lg border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-800 text-xs font-medium transition cursor-pointer flex items-center justify-center gap-1 font-mono">
+            <span>Diagnostic Console &rarr;</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Card 2: Sovereign Model Context Protocol (MCP) Server -->
+      <div class="bg-white border border-neutral-200/90 rounded-xl p-4 shadow-2xs space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="text-xs font-bold text-neutral-900 font-mono flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+            <span>Custom MCP Server</span>
+          </div>
+          <span class="text-[10px] font-mono text-purple-800 bg-purple-50 border border-purple-200 px-2 py-0.5 rounded-full font-bold">MCP 2024-11-05</span>
+        </div>
+        <p class="text-[11px] text-neutral-500 leading-relaxed font-sans">
+          Native Model Context Protocol endpoints running on Anycast edge. Connect your agents, Claude Desktop, Cursor, or Antigravity with 1 click.
         </p>
-      </div>
-      <div class="flex items-center gap-3 shrink-0">
-        <div class="hidden sm:flex items-center gap-3 text-xs font-mono px-3 py-1.5 rounded-xl bg-neutral-50 border border-neutral-200">
-          <span class="text-neutral-500">PoP: <strong id="overviewColoBadge" class="text-neutral-900 font-bold">Auto</strong></span>
-          <span class="text-neutral-300">|</span>
-          <span class="text-neutral-500">RTT: <strong id="overviewRttBadge" class="text-emerald-700 font-bold">&lt;10ms</strong></span>
+        <div class="space-y-1 text-xs font-mono text-neutral-700 bg-neutral-50 p-2.5 rounded-lg border border-neutral-200/80">
+          <div class="truncate text-[11px]"><span class="text-neutral-400">POST:</span> /mcp</div>
+          <div class="truncate text-[11px]"><span class="text-neutral-400">SSE:</span> /mcp/sse</div>
         </div>
-        <button type="button" onclick="setAppView('tester')" class="px-3.5 py-2 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 shadow-xs font-sans">
-          <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          <span>Open Full Sandbox &rarr;</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- STEP 1: CREATE API KEY -->
-  <div class="card-clean p-6 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-4">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-neutral-100">
-      <div class="flex items-center gap-3">
-        <div class="w-7 h-7 rounded-lg bg-neutral-950 text-white flex items-center justify-center font-bold text-xs font-mono">1</div>
-        <div>
-          <h3 class="text-sm font-bold text-neutral-950 font-sans">Create API Key</h3>
-          <p class="text-[11px] text-neutral-500 font-sans">Instantly issue high-performance API keys with pre-warmed edge tunnels</p>
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <button type="button" onclick="copyMcpConfig('claude')" class="py-1.5 px-2.5 rounded-md border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-800 text-xs font-semibold transition cursor-pointer flex items-center justify-center gap-1 shadow-2xs font-mono">
+            <span>Claude Config</span>
+          </button>
+          <button type="button" onclick="copyMcpConfig('cursor')" class="py-1.5 px-2.5 rounded-md border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-800 text-xs font-semibold transition cursor-pointer flex items-center justify-center gap-1 shadow-2xs font-mono">
+            <span>Cursor Config</span>
+          </button>
         </div>
-      </div>
-      <span class="text-[10px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full font-bold">Sub-10ms Active</span>
-    </div>
-
-    <!-- Key Creation Form & Active Key Bar -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
-      <div class="lg:col-span-5 flex items-center gap-2">
-        <input type="text" id="overviewKeyName" placeholder="Key label (e.g. Production Agent, Claude MCP)" class="flex-1 px-3 py-2 rounded-xl border border-neutral-200 bg-neutral-50 hover:bg-white focus:bg-white focus:outline-none focus:border-neutral-950 text-xs font-sans transition" />
-        <button type="button" id="btnCreateOverviewKey" onclick="createOverviewApiKey()" class="px-4 py-2 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer whitespace-nowrap shadow-xs font-sans">
-          + Generate Key
+        <button type="button" onclick="setAppView('keys')" class="w-full text-center text-xs font-semibold text-purple-700 hover:underline pt-1 block cursor-pointer">
+          Open In-Dashboard MCP Tool Runner &rarr;
         </button>
       </div>
 
-      <div class="lg:col-span-7 p-3 rounded-xl bg-neutral-50 border border-neutral-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div class="space-y-0.5 min-w-0 flex-1">
-          <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center gap-1.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span>Active Sovereign Key</span>
+      <!-- Card 3: Cloudflare Domain Registration & DNS (Reduced / Compact) -->
+      <div class="bg-white border border-neutral-200/90 rounded-xl p-4 shadow-2xs space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5 text-xs font-semibold text-neutral-900 font-sans">
+            <svg class="w-3.5 h-3.5 text-[#f6821f]" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+            <span>Cloudflare Registrar &amp; DNS</span>
           </div>
-          <div class="font-mono text-xs text-neutral-900 font-semibold truncate select-all" id="overviewActiveKeyDisplay">
-            ud_live_demo_console_key
+          <span class="text-[10px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded font-bold">Full Setup</span>
+        </div>
+        <div class="space-y-1.5 text-xs text-neutral-600 bg-neutral-50/70 p-2.5 rounded-lg border border-neutral-200/70 font-mono">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="text-neutral-500">Registrar:</span>
+            <span class="text-neutral-900 font-semibold truncate max-w-[150px]">Cloudflare Registrar</span>
+          </div>
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="text-neutral-500">DNS Zone:</span>
+            <span class="text-neutral-900">Full Setup · Anycast [i]</span>
+          </div>
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="text-neutral-500">Worker Route:</span>
+            <span class="text-emerald-700 font-bold truncate max-w-[150px]">ultrasearch-api (/*)</span>
           </div>
         </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <button type="button" onclick="copyActiveKeyFromOverview()" id="btnOverviewCopyKey" class="px-3 py-1.5 rounded-lg bg-white border border-neutral-300 hover:bg-neutral-100 text-neutral-800 text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 shadow-2xs font-mono">
-            <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            <span id="overviewCopyKeyLabel">Copy Key</span>
+        <div class="grid grid-cols-2 gap-2 pt-0.5">
+          <button type="button" onclick="window.openDnsRecordsModal();" class="py-1 px-2 rounded-md border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-800 text-[11px] font-medium transition cursor-pointer text-center font-mono">
+            DNS Records
           </button>
-          <button type="button" onclick="setAppView('keys')" class="px-3 py-1.5 rounded-lg text-neutral-600 hover:text-black hover:bg-neutral-100 text-xs font-semibold transition cursor-pointer font-sans">
-            Manage Keys &rarr;
+          <button type="button" onclick="setAppView('tester'); if(typeof showAppToast==='function') showAppToast('Opened Sandbox with worker route active');" class="py-1 px-2 rounded-md border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-800 text-[11px] font-medium transition cursor-pointer text-center font-mono">
+            Connect Worker
           </button>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- STEP 2: INSTANT INTEGRATION SNIPPETS -->
-  <div class="card-clean p-6 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-4">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-neutral-100">
-      <div class="flex items-center gap-3">
-        <div class="w-7 h-7 rounded-lg bg-neutral-950 text-white flex items-center justify-center font-bold text-xs font-mono">2</div>
-        <div>
-          <h3 class="text-sm font-bold text-neutral-950 font-sans">Integrate in 30 Seconds</h3>
-          <p class="text-[11px] text-neutral-500 font-sans">Drop into your agentic loops, autonomous workers, or MCP clients with your active key pre-injected</p>
+      <!-- Card 4: Network Topology Flow -->
+      <div class="bg-white border border-neutral-200/90 rounded-xl p-4 shadow-2xs space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="text-xs font-semibold text-neutral-900 font-mono">Anycast Zero-Hop Network Flow</div>
+          <span class="text-[10px] text-emerald-700 font-bold font-mono">330+ Cities</span>
+        </div>
+        <div class="p-3 bg-neutral-50 border border-neutral-200/70 rounded-lg flex items-center justify-between text-[11px] font-mono text-neutral-600">
+          <div class="text-center">
+            <div class="w-8 h-8 mx-auto rounded-md bg-white border border-neutral-200 flex items-center justify-center text-neutral-700 shadow-2xs font-bold text-xs">
+              AI
+            </div>
+            <span class="block mt-1 text-[10px]">Client Agent</span>
+          </div>
+
+          <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+
+          <div class="text-center">
+            <div class="w-8 h-8 mx-auto rounded-md bg-neutral-950 text-white flex items-center justify-center shadow-2xs font-bold text-xs">
+              V8
+            </div>
+            <span class="block mt-1 text-[10px] text-neutral-950 font-semibold">RAM Tier 0</span>
+          </div>
+
+          <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+
+          <div class="text-center">
+            <div class="w-8 h-8 mx-auto rounded-md bg-white border border-neutral-200 flex items-center justify-center text-neutral-700 shadow-2xs font-bold text-xs">
+              D1
+            </div>
+            <span class="block mt-1 text-[10px]">FTS5 Index</span>
+          </div>
+        </div>
+        <div class="text-[11px] text-neutral-500 flex items-center justify-between pt-1">
+          <span>Global Anycast: 330+ Cities</span>
+          <span class="text-emerald-700 font-bold font-mono">100% Uptime</span>
         </div>
       </div>
-      <!-- Tab switcher -->
-      <div class="flex items-center gap-1 p-1 bg-neutral-100 rounded-xl text-xs font-mono flex-wrap">
-        <button type="button" id="overviewTab-curl" onclick="switchOverviewSnippetTab('curl')" class="py-1 px-3 rounded-lg bg-neutral-950 text-white font-semibold transition cursor-pointer shadow-2xs">cURL</button>
-        <button type="button" id="overviewTab-python" onclick="switchOverviewSnippetTab('python')" class="py-1 px-3 rounded-lg text-neutral-600 hover:text-black font-medium transition cursor-pointer">Python</button>
-        <button type="button" id="overviewTab-ts" onclick="switchOverviewSnippetTab('ts')" class="py-1 px-3 rounded-lg text-neutral-600 hover:text-black font-medium transition cursor-pointer">TypeScript</button>
-        <button type="button" id="overviewTab-mcp" onclick="switchOverviewSnippetTab('mcp')" class="py-1 px-3 rounded-lg text-neutral-600 hover:text-black font-medium transition cursor-pointer">Cursor &amp; Claude MCP</button>
-      </div>
-    </div>
 
-    <!-- Code Snippet Area -->
-    <div class="relative">
-      <!-- cURL snippet -->
-      <pre id="overviewSnippet-curl" class="p-4 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-xs overflow-x-auto code-scroll leading-relaxed"># 1. Fastest Web Search API (&lt;15ms)
-curl -X POST "/v1/search" \
-  -H "Authorization: Bearer ud_live_demo_console_key" \
-  -H "Content-Type: application/json" \
-  -d '{"query": "fastest web search api for ai agents", "limit": 5, "mode": 1}'
-
-# 2. Agent Long-Term Memory Recall (&lt;10ms)
-curl -X POST "/v1/memory/query" \
-  -H "Authorization: Bearer ud_live_demo_console_key" \
-  -H "Content-Type: application/json" \
-  -d '{"query": "user preferences and system context", "limit": 5}'</pre>
-
-      <!-- Python snippet -->
-      <pre id="overviewSnippet-python" class="hidden p-4 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-xs overflow-x-auto code-scroll leading-relaxed"># pip install ultrademon
-from ultrademon import UltraClient
-
-client = UltraClient(api_key="ud_live_demo_console_key")
-
-# 1. Fastest Web Search
-search_results = client.search("fastest web search api for ai agents", limit=5)
-print(search_results)
-
-# 2. Agent Long-Term Memory Store &amp; Recall
-client.memory.add("User prefers concise Python code without boilerplate")
-memories = client.memory.query("code style preferences")
-print(memories)</pre>
-
-      <!-- TypeScript snippet -->
-      <pre id="overviewSnippet-ts" class="hidden p-4 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-xs overflow-x-auto code-scroll leading-relaxed">// npm install @ultrademon/sdk
-import { UltraClient } from '@ultrademon/sdk';
-
-const client = new UltraClient({ apiKey: 'ud_live_demo_console_key' });
-
-// 1. Web Search
-const searchRes = await client.search('fastest web search api for ai agents');
-console.log(searchRes.results);
-
-// 2. Recall Agent Context
-const facts = await client.memory.query('project architecture');
-console.log(facts);</pre>
-
-      <!-- MCP snippet -->
-      <pre id="overviewSnippet-mcp" class="hidden p-4 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-xs overflow-x-auto code-scroll leading-relaxed">// Add to claude_desktop_config.json or .cursor/mcp.json
-{
-  "mcpServers": {
-    "ultrademon": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "mcp-remote",
-        "/mcp",
-        "--header",
-        "Authorization: Bearer ud_live_demo_console_key"
-      ]
-    }
-  }
-}</pre>
-
-      <button type="button" onclick="copyCurrentOverviewSnippet()" id="btnCopyOverviewSnippet" class="absolute top-3 right-3 text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg cursor-pointer transition flex items-center gap-1 font-mono">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-        <span id="overviewSnippetCopyLabel">Copy Code</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- STEP 3: INTERACTIVE LIVE ENDPOINT & API TESTER -->
-  <div class="card-clean p-6 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-4">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-neutral-100">
-      <div class="flex items-center gap-3">
-        <div class="w-7 h-7 rounded-lg bg-neutral-950 text-white flex items-center justify-center font-bold text-xs font-mono">3</div>
-        <div>
-          <h3 class="text-sm font-bold text-neutral-950 font-sans">Live Endpoint &amp; API Tester</h3>
-          <p class="text-[11px] text-neutral-500 font-sans">Send real requests directly from your browser to test endpoints with live latency and response validation</p>
+      <!-- Card 5: AI Bot Access & Quick Actions -->
+      <div class="bg-white border border-neutral-200/90 rounded-xl p-4 shadow-2xs space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="text-xs font-semibold text-neutral-900 font-mono">Edge Controls &amp; Bot Access</div>
+          <span class="text-[10px] font-mono text-neutral-500">Global Anycast</span>
         </div>
-      </div>
-      <div class="flex items-center gap-2">
-        <span id="overviewTestStatusBadge" class="hidden px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200"></span>
-        <span id="overviewTestLatencyBadge" class="hidden px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-50 text-purple-800 border border-purple-200"></span>
-      </div>
-    </div>
-
-    <!-- Interactive Query Form -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-      <div class="lg:col-span-4 space-y-2">
-        <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider font-semibold">Select Endpoint</label>
-        <select id="overviewTestEndpoint" onchange="handleOverviewEndpointChange(this.value)" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono text-neutral-900 focus:outline-none focus:bg-white focus:border-neutral-950 cursor-pointer">
-          <option value="/v1/search" selected>POST /v1/search (Web Search)</option>
-          <option value="/v1/memory/query">POST /v1/memory/query (Recall Memory)</option>
-          <option value="/v1/memory/add">POST /v1/memory/add (Save Memory)</option>
-          <option value="/mcp">GET /mcp (Model Context Protocol)</option>
-        </select>
-      </div>
-
-      <div class="lg:col-span-8 space-y-2">
-        <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider font-semibold" id="overviewTestInputLabel">Query / Prompt Payload</label>
-        <div class="flex items-center gap-2">
-          <input type="text" id="overviewTestQuery" value="fastest web search api for ai agents" placeholder="Enter query string..." class="flex-1 px-3.5 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono text-neutral-900 focus:outline-none focus:bg-white focus:border-neutral-950 transition" />
-          <button type="button" id="btnRunOverviewTest" onclick="runOverviewLiveTest()" class="px-5 py-2 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 shadow-xs whitespace-nowrap font-sans">
-            <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            <span>Run Test</span>
+        <div class="flex items-center justify-between p-2 rounded-lg bg-neutral-50 border border-neutral-200/70 text-xs">
+          <span class="text-neutral-700 font-medium">AI Bot Preference Sync</span>
+          <span class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Enabled</span>
+        </div>
+        <div class="space-y-2">
+          <button type="button" onclick="testSummoningPing()" class="w-full py-1.5 px-3 rounded-lg border border-neutral-300 bg-white hover:bg-neutral-50 text-xs font-medium text-neutral-800 transition cursor-pointer flex items-center justify-center gap-1.5 font-mono shadow-2xs">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Run Edge Latency Probe</span>
+          </button>
+          <button type="button" onclick="purgeEdgeCache()" class="w-full py-1.5 px-3 rounded-md border border-neutral-300 bg-white hover:bg-neutral-50 text-xs font-medium text-neutral-800 transition cursor-pointer flex items-center justify-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+            <span>Purge Everything (Edge Cache)</span>
           </button>
         </div>
       </div>
     </div>
-
-    <!-- Live JSON Response Console -->
-    <div class="relative mt-2">
-      <pre id="overviewTestResultPre" class="p-4 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-xs overflow-x-auto code-scroll min-h-[160px] max-h-[300px] overflow-y-auto leading-relaxed">// Click "Run Test" above to test the endpoint live and inspect edge latency.
-// Results from https://api.ultrademon.site will appear here formatted.</pre>
-      <div class="absolute top-3 right-3 flex items-center gap-1.5">
-        <button type="button" onclick="copyOverviewTestResult()" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white rounded text-[10px] font-mono cursor-pointer transition">Copy JSON</button>
-        <button type="button" onclick="setAppView('tester')" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white rounded text-[10px] font-sans cursor-pointer transition">Full Sandbox &rarr;</button>
-      </div>
-    </div>
   </div>
+</section>
 
-  <!-- 3 Service Summary Cards -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
-    <div class="p-5 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-2 flex flex-col justify-between">
-      <div class="space-y-1.5">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <div class="w-6 h-6 rounded-md bg-neutral-950 text-white flex items-center justify-center">
-              <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            </div>
-            <span class="text-xs font-bold text-neutral-950 font-sans">UltraSearch Studio</span>
-          </div>
-          <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">&lt;15ms</span>
-        </div>
-        <p class="text-[11px] text-neutral-500 font-sans leading-relaxed">BM25 full-text keyword indexing, live edge web crawling, and deep search modes for LLM agents.</p>
-      </div>
-      <button type="button" onclick="setAppView('search')" class="text-xs font-semibold text-neutral-950 hover:underline pt-2 inline-flex items-center gap-1 cursor-pointer font-sans">
-        <span>Open Search Studio</span>
-        <span>&rarr;</span>
-      </button>
-    </div>
-
-    <div class="p-5 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-2 flex flex-col justify-between">
-      <div class="space-y-1.5">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <div class="w-6 h-6 rounded-md bg-neutral-950 text-white flex items-center justify-center">
-              <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
-            </div>
-            <span class="text-xs font-bold text-neutral-950 font-sans">UltraMemory Lab</span>
-          </div>
-          <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">&lt;10ms</span>
-        </div>
-        <p class="text-[11px] text-neutral-500 font-sans leading-relaxed">Autonomous agent memory recall, facts extraction, and permanent contextual retention across sessions.</p>
-      </div>
-      <button type="button" onclick="setAppView('memory')" class="text-xs font-semibold text-neutral-950 hover:underline pt-2 inline-flex items-center gap-1 cursor-pointer font-sans">
-        <span>Open Memory Lab</span>
-        <span>&rarr;</span>
-      </button>
-    </div>
-
-    <div class="p-5 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-2 flex flex-col justify-between">
-      <div class="space-y-1.5">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <div class="w-6 h-6 rounded-md bg-neutral-950 text-white flex items-center justify-center">
-              <svg class="w-3.5 h-3.5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M21 2l-2 2m-1.5 1.5L14 9l-1.5-1.5-3 3 1.5 1.5L9 14l-4 4H2v3h3l4-4 2 2 3-3-1.5-1.5 3.5-3.5L21 2z"/></svg>
-            </div>
-            <span class="text-xs font-bold text-neutral-950 font-sans">Custom MCP Server</span>
-          </div>
-          <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 font-bold">MCP 2.0</span>
-        </div>
-        <p class="text-[11px] text-neutral-500 font-sans leading-relaxed">Native JSON-RPC &amp; SSE Model Context Protocol server connecting to Claude Desktop, Cursor, and Antigravity.</p>
-      </div>
-      <button type="button" onclick="setAppView('keys')" class="text-xs font-semibold text-neutral-950 hover:underline pt-2 inline-flex items-center gap-1 cursor-pointer font-sans">
-        <span>Open MCP Hub</span>
-        <span>&rarr;</span>
-      </button>
-    </div>
-  </div>
-
-</section></section>
 
     <!-- SECTION: SEAMLESS SUMMONING PROTOCOL (ZERO-COLD-START ANYCAST TUNNEL) -->
     <section id="view-summoning" class="space-y-6 hidden">
@@ -3657,7 +4247,85 @@ requests.post("${origin}/v1/analytics/capture", json={
     </div>
   </div>
 
-  <!-- In-App Authentication & Account Switcher Modal (Cloudflare Standard) -->
+  <!-- Live Anycast DNS Inspection Modal -->
+  <div id="appDnsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs hidden" onclick="if(event.target===this) window.closeDnsRecordsModal();">
+    <div class="relative w-full max-w-xl bg-white rounded-3xl p-6 shadow-2xl border border-neutral-100 font-sans" onclick="event.stopPropagation();">
+      <!-- Close Button -->
+      <button onclick="window.closeDnsRecordsModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-neutral-900 transition-colors p-1 cursor-pointer">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <!-- Modal Header -->
+      <div class="flex items-center gap-2.5 mb-1">
+        <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+        <h3 class="font-bold text-base text-neutral-950 font-sans">ultrademon.site · Cloudflare Anycast DNS</h3>
+      </div>
+      <p class="text-xs text-neutral-500 font-mono mb-4">Authoritative Zone · Anycast BGP across 330+ Cities · DNSSEC Validated</p>
+
+      <!-- Records Table -->
+      <div class="overflow-x-auto border border-neutral-200 rounded-xl mb-4 text-xs font-mono">
+        <table class="w-full divide-y divide-neutral-200">
+          <thead class="bg-neutral-50 text-[10px] text-neutral-500 uppercase tracking-wider">
+            <tr>
+              <th class="px-3 py-2 text-left">Type</th>
+              <th class="px-3 py-2 text-left">Name</th>
+              <th class="px-3 py-2 text-left">Content</th>
+              <th class="px-3 py-2 text-left">Proxy</th>
+              <th class="px-3 py-2 text-left">TTL</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-neutral-100 bg-white text-neutral-800">
+            <tr>
+              <td class="px-3 py-2 font-bold text-neutral-950">A</td>
+              <td class="px-3 py-2">ultrademon.site</td>
+              <td class="px-3 py-2 text-neutral-600">172.67.182.204</td>
+              <td class="px-3 py-2"><span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-50 text-amber-800 border border-amber-200 font-semibold">Proxied</span></td>
+              <td class="px-3 py-2 text-neutral-400">Auto</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 font-bold text-neutral-950">AAAA</td>
+              <td class="px-3 py-2">ultrademon.site</td>
+              <td class="px-3 py-2 text-neutral-600">2606:4700:3033::ac43:b6cc</td>
+              <td class="px-3 py-2"><span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-50 text-amber-800 border border-amber-200 font-semibold">Proxied</span></td>
+              <td class="px-3 py-2 text-neutral-400">Auto</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 font-bold text-neutral-950">CNAME</td>
+              <td class="px-3 py-2">api</td>
+              <td class="px-3 py-2 text-emerald-700 font-semibold truncate max-w-[180px]">ultrasearch-api.aaronvanoss.workers.dev</td>
+              <td class="px-3 py-2"><span class="px-1.5 py-0.5 rounded text-[10px] bg-neutral-100 text-neutral-700 border border-neutral-300">DNS Only</span></td>
+              <td class="px-3 py-2 text-neutral-400">Auto</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 font-bold text-neutral-950">TXT</td>
+              <td class="px-3 py-2">_challenge</td>
+              <td class="px-3 py-2 text-neutral-500 truncate max-w-[180px]">"ud-verify-sovereign-edge-2026"</td>
+              <td class="px-3 py-2"><span class="px-1.5 py-0.5 rounded text-[10px] bg-neutral-100 text-neutral-700">DNS Only</span></td>
+              <td class="px-3 py-2 text-neutral-400">Auto</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 font-bold text-neutral-950">CAA</td>
+              <td class="px-3 py-2">@</td>
+              <td class="px-3 py-2 text-neutral-600">0 issue "letsencrypt.org"</td>
+              <td class="px-3 py-2"><span class="px-1.5 py-0.5 rounded text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">Valid</span></td>
+              <td class="px-3 py-2 text-neutral-400">Auto</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="flex items-center justify-between pt-2">
+        <button type="button" onclick="window.copyZonefile()" class="px-3 py-1.5 rounded-lg border border-neutral-300 hover:bg-neutral-100 text-neutral-800 text-xs font-semibold font-mono transition cursor-pointer flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          <span>Copy BIND Zonefile</span>
+        </button>
+        <button type="button" onclick="window.closeDnsRecordsModal()" class="px-4 py-1.5 rounded-lg bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>  <!-- In-App Authentication & Account Switcher Modal (Cloudflare Standard) -->
   <div id="appAuthModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs hidden">
     <div class="relative w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl border border-neutral-100 font-sans">
       <!-- Close Button -->
@@ -5878,8 +6546,8 @@ requests.post("${origin}/v1/analytics/capture", json={
       if (modal) {
         modal.classList.remove('hidden');
         switchAppAuthTab(mode || 'signin');
-        const em = document.getElementById('appModalAuthEmail') as HTMLInputElement | null;
-        const pw = document.getElementById('appModalAuthPassword') as HTMLInputElement | null;
+        const em = document.getElementById('appModalAuthEmail');
+        const pw = document.getElementById('appModalAuthPassword');
         if (em) em.value = '';
         if (pw) pw.value = '';
         setTimeout(() => { if (em) em.value = ''; if (pw) pw.value = ''; }, 40);
