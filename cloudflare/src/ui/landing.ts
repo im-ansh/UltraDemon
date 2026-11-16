@@ -183,9 +183,6 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Supabase JS Client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
     tailwind.config = {
@@ -380,6 +377,9 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
   <!-- Early-Bound Bulletproof Handlers (Available Millisecond 0) -->
   <script>
+    window.authMode = 'signin';
+    window.isModalSubmitting = false;
+
     window.toggleLandingMobileMenu = function() {
       var m = document.getElementById('landingMobileMenu');
       var hIcon = document.getElementById('landingHamburgerIcon');
@@ -396,22 +396,198 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         if (cIcon) cIcon.classList.add('hidden');
       }
     };
+
     window.openAuthModal = function(mode, plan) {
       window.selectedModalPlan = plan || 'free';
       var modal = document.getElementById('authModal');
       if (modal) {
         modal.classList.remove('hidden');
-        if (typeof window.switchAuthTab === 'function') {
-          window.switchAuthTab(mode === 'signin' ? 'signin' : 'signup');
-        }
+        window.switchAuthTab(mode === 'signup' ? 'signup' : 'signin');
       } else {
         window.location.href = mode === 'signin' ? '/login' : ('/signup' + (plan ? '?plan=' + encodeURIComponent(plan) : ''));
       }
     };
+
     window.closeAuthModal = function() {
       var modal = document.getElementById('authModal');
       if (modal) modal.classList.add('hidden');
     };
+
+    window.switchAuthTab = function(mode) {
+      window.authMode = (mode === 'signup') ? 'signup' : 'signin';
+      var isSign = window.authMode === 'signin';
+      var tabIn = document.getElementById('modalTabSignin');
+      var tabUp = document.getElementById('modalTabSignup');
+      var heading = document.getElementById('modalAuthHeading');
+      var subtitle = document.getElementById('modalAuthSubtitle');
+      var confirmRow = document.getElementById('modalConfirmPasswordRow');
+      var btn = document.getElementById('modalAuthSubmitBtn');
+      var prompt = document.getElementById('modalAuthTogglePrompt');
+      var toggleBtn = document.getElementById('modalAuthToggleBtn');
+      var err = document.getElementById('modalAuthError');
+      var succ = document.getElementById('modalAuthSuccess');
+      var planInd = document.getElementById('modalPlanIndicator');
+      var planName = document.getElementById('modalPlanName');
+
+      if (err) { err.innerText = ''; err.classList.add('hidden'); }
+      if (succ) { succ.innerText = ''; succ.classList.add('hidden'); }
+
+      if (isSign) {
+        if (tabIn) tabIn.className = 'py-2 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs';
+        if (tabUp) tabUp.className = 'py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black';
+        if (heading) heading.innerText = 'Sign In to UltraDemon';
+        if (subtitle) subtitle.innerText = 'Enter your email and password to access your workspace';
+        if (confirmRow) confirmRow.classList.add('hidden');
+        if (btn) btn.innerText = 'Sign In';
+        if (prompt) prompt.innerText = "Don't have an account?";
+        if (toggleBtn) toggleBtn.innerText = 'Create Account';
+        if (planInd) planInd.classList.add('hidden');
+      } else {
+        if (tabIn) tabIn.className = 'py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black';
+        if (tabUp) tabUp.className = 'py-2 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs';
+        if (heading) heading.innerText = 'Create Sovereign Account';
+        if (subtitle) subtitle.innerText = 'Instant edge account setup across 330+ Cloudflare PoPs';
+        if (confirmRow) confirmRow.classList.remove('hidden');
+        if (btn) btn.innerText = 'Create Account';
+        if (prompt) prompt.innerText = 'Already have an account?';
+        if (toggleBtn) toggleBtn.innerText = 'Sign In';
+        if (planInd && window.selectedModalPlan) {
+          if (planName) planName.innerText = String(window.selectedModalPlan).toUpperCase();
+          planInd.classList.remove('hidden');
+        }
+      }
+    };
+
+    window.toggleAuthTab = function() {
+      window.switchAuthTab(window.authMode === 'signin' ? 'signup' : 'signin');
+    };
+
+    window.handleAuthModalSubmit = async function(e) {
+      if (e) {
+        if (typeof e.preventDefault === 'function') e.preventDefault();
+        if (typeof e.stopPropagation === 'function') e.stopPropagation();
+      }
+      if (window.isModalSubmitting) return;
+      window.isModalSubmitting = true;
+
+      var emailEl = document.getElementById('modalAuthEmail');
+      var passEl = document.getElementById('modalAuthPassword');
+      var confirmEl = document.getElementById('modalAuthConfirmPassword');
+      var err = document.getElementById('modalAuthError');
+      var succ = document.getElementById('modalAuthSuccess');
+      var btn = document.getElementById('modalAuthSubmitBtn');
+
+      if (err) { err.innerText = ''; err.classList.add('hidden'); }
+      if (succ) { succ.innerText = ''; succ.classList.add('hidden'); }
+
+      var email = emailEl ? emailEl.value.trim() : '';
+      var password = passEl ? passEl.value : '';
+      var confirmPassword = confirmEl ? confirmEl.value : '';
+
+      if (!email || !password) {
+        if (err) {
+          err.innerText = 'Please provide both email and password';
+          err.classList.remove('hidden');
+        }
+        window.isModalSubmitting = false;
+        return;
+      }
+
+      if (window.authMode === 'signup' && confirmPassword && password !== confirmPassword) {
+        if (err) {
+          err.innerText = 'Passwords do not match';
+          err.classList.remove('hidden');
+        }
+        window.isModalSubmitting = false;
+        return;
+      }
+
+      if (btn) { btn.disabled = true; btn.innerText = 'Connecting to edge...'; }
+
+      try {
+        var endpoint = (window.authMode === 'signup') ? '/v1/auth/signup' : '/v1/auth/signin';
+        var plan = window.selectedModalPlan || 'free';
+        var res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, password: password, plan: plan })
+        });
+        var data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || 'Authentication failed');
+        }
+        if (data.session) {
+          try { localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session)); } catch(e) {}
+        }
+        if (data.user) {
+          try { localStorage.setItem('ultrademon_user', JSON.stringify(data.user)); } catch(e) {}
+        }
+        if (data.active_key) {
+          try { localStorage.setItem('ultrademon_active_key', data.active_key); } catch(e) {}
+        }
+        if (succ) {
+          succ.innerText = 'Authenticated! Opening workspace...';
+          succ.classList.remove('hidden');
+        }
+        setTimeout(function() {
+          window.location.href = '/app' + (plan ? '?plan=' + encodeURIComponent(plan) : '');
+        }, 200);
+      } catch (error) {
+        if (err) {
+          err.innerText = error.message || 'Authentication error';
+          err.classList.remove('hidden');
+          if (error.message && (error.message.includes('switch to Create Account') || error.message.includes('Incorrect password') || error.message.includes('not found') || error.message.includes('password'))) {
+            var switchBtn = document.createElement('button');
+            switchBtn.type = 'button';
+            switchBtn.className = 'block mt-2 underline font-semibold text-neutral-900 cursor-pointer';
+            switchBtn.innerText = 'Click here to Switch to Create Account / Set Password';
+            switchBtn.onclick = function() { window.switchAuthTab('signup'); };
+            err.appendChild(switchBtn);
+          }
+        }
+      } finally {
+        window.isModalSubmitting = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.innerText = (window.authMode === 'signin') ? 'Sign In' : 'Create Account';
+        }
+      }
+    };
+
+    window.handleModalGuestAccess = async function() {
+      var btn = document.getElementById('modalGuestBtn');
+      var err = document.getElementById('modalAuthError');
+      if (btn) { btn.disabled = true; btn.innerText = 'Initializing demo workspace...'; }
+      try {
+        var plan = window.selectedModalPlan || 'free';
+        var res = await fetch('/v1/auth/anonymous', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan: plan })
+        });
+        var data = await res.json();
+        if (data.session) {
+          try { localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session)); } catch(e) {}
+        }
+        if (data.user) {
+          try { localStorage.setItem('ultrademon_user', JSON.stringify(data.user)); } catch(e) {}
+        }
+        if (data.initial_key) {
+          try { localStorage.setItem('ultrademon_active_key', data.initial_key); } catch(e) {}
+        }
+        window.location.href = '/app' + (plan ? '?plan=' + encodeURIComponent(plan) : '');
+      } catch (e) {
+        if (err) {
+          err.innerText = 'Failed to init demo: ' + e.message;
+          err.classList.remove('hidden');
+        }
+        if (btn) {
+          btn.disabled = false;
+          btn.innerText = 'Continue with 1-Click Demo Console';
+        }
+      }
+    };
+
     window.openDemoModal = function() {
       if (typeof window.handleModalGuestAccess === 'function') {
         window.handleModalGuestAccess();
@@ -1963,10 +2139,10 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
       <!-- Segmented Tab Switcher -->
       <div class="grid grid-cols-2 p-1 bg-neutral-100 rounded-xl my-4 text-xs font-semibold">
-        <button type="button" id="modalTabSignin" onclick="switchAuthTab('signin')" class="py-2 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs">
+        <button type="button" id="modalTabSignin" onclick="window.switchAuthTab('signin')" class="py-2 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs">
           Sign In
         </button>
-        <button type="button" id="modalTabSignup" onclick="switchAuthTab('signup')" class="py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black">
+        <button type="button" id="modalTabSignup" onclick="window.switchAuthTab('signup')" class="py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black">
           Create Account
         </button>
       </div>
@@ -1978,7 +2154,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </div>
 
       <!-- Auth Form -->
-      <form id="authModalForm" onsubmit="event.preventDefault(); handleAuthModalSubmit(event); return false;" class="space-y-3.5 text-xs">
+      <form id="authModalForm" onsubmit="event.preventDefault(); window.handleAuthModalSubmit(event); return false;" class="space-y-3.5 text-xs">
         <div>
           <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Email address</label>
           <input type="email" id="modalAuthEmail" required class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-mono" placeholder="agent@company.com">
@@ -1996,7 +2172,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <div id="modalAuthError" class="text-red-600 text-[11px] hidden font-mono"></div>
         <div id="modalAuthSuccess" class="text-emerald-700 text-[11px] hidden font-mono"></div>
 
-        <button type="button" onclick="handleAuthModalSubmit(event)" id="modalAuthSubmitBtn" class="w-full py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold transition-colors cursor-pointer shadow-xs">
+        <button type="button" onclick="window.handleAuthModalSubmit(event)" id="modalAuthSubmitBtn" class="w-full py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold transition-colors cursor-pointer shadow-xs">
           Sign In
         </button>
 
@@ -2006,7 +2182,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
 
         <!-- 1-Click Instant Guest Access -->
-        <button type="button" onclick="handleModalGuestAccess()" id="modalGuestBtn" class="w-full py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 font-semibold transition cursor-pointer text-xs shadow-2xs">
+        <button type="button" onclick="window.handleModalGuestAccess()" id="modalGuestBtn" class="w-full py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 font-semibold transition cursor-pointer text-xs shadow-2xs">
           Continue with 1-Click Demo Console
         </button>
       </form>
@@ -2014,7 +2190,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       <!-- Bottom Switcher Prompt -->
       <div class="mt-4 text-center text-xs text-neutral-500" id="modalAuthToggleContainer">
         <span id="modalAuthTogglePrompt">Don't have an account?</span>
-        <button type="button" id="modalAuthToggleBtn" onclick="switchAuthTab(authMode === 'signin' ? 'signup' : 'signin')" class="font-semibold text-neutral-950 hover:underline cursor-pointer ml-1">
+        <button type="button" id="modalAuthToggleBtn" onclick="window.toggleAuthTab()" class="font-semibold text-neutral-950 hover:underline cursor-pointer ml-1">
           Create Account
         </button>
       </div>
@@ -2027,15 +2203,14 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
   <!-- Client-Side Runtime Script -->
   <script>
-    let authMode = 'signin';
     let currentUser = null;
 
     // Check existing session in localStorage
     function checkAuthSession() {
-      const sess = localStorage.getItem('ultrademon_auth_session');
-      const usr = localStorage.getItem('ultrademon_user');
-      if (sess && usr) {
-        try {
+      try {
+        const sess = localStorage.getItem('ultrademon_auth_session');
+        const usr = localStorage.getItem('ultrademon_user');
+        if (sess && usr) {
           currentUser = JSON.parse(usr);
           window.currentUser = currentUser;
           const navCta = document.getElementById('navCtaBtn');
@@ -2043,173 +2218,9 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
             navCta.innerText = 'Open Console';
             navCta.onclick = function() { window.location.href = '/app'; };
           }
-        } catch (err) {}
-      }
+        }
+      } catch (err) {}
     }
-
-    window.switchAuthTab = function(mode) {
-      authMode = mode === 'signup' ? 'signup' : 'signin';
-      const isSign = authMode === 'signin';
-      const tabIn = document.getElementById('modalTabSignin');
-      const tabUp = document.getElementById('modalTabSignup');
-      const heading = document.getElementById('modalAuthHeading');
-      const subtitle = document.getElementById('modalAuthSubtitle');
-      const confirmRow = document.getElementById('modalConfirmPasswordRow');
-      const btn = document.getElementById('modalAuthSubmitBtn');
-      const prompt = document.getElementById('modalAuthTogglePrompt');
-      const toggleBtn = document.getElementById('modalAuthToggleBtn');
-      const err = document.getElementById('modalAuthError');
-      const succ = document.getElementById('modalAuthSuccess');
-      const planInd = document.getElementById('modalPlanIndicator');
-      const planName = document.getElementById('modalPlanName');
-
-      if (err) err.classList.add('hidden');
-      if (succ) succ.classList.add('hidden');
-
-      if (isSign) {
-        if (tabIn) tabIn.className = 'py-2 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs';
-        if (tabUp) tabUp.className = 'py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black';
-        if (heading) heading.innerText = 'Sign In to UltraDemon';
-        if (subtitle) subtitle.innerText = 'Enter your credentials to access your developer console';
-        if (confirmRow) confirmRow.classList.add('hidden');
-        if (btn) btn.innerText = 'Sign In';
-        if (prompt) prompt.innerText = "Don't have an account?";
-        if (toggleBtn) toggleBtn.innerText = 'Create Account';
-        if (planInd) planInd.classList.add('hidden');
-      } else {
-        if (tabIn) tabIn.className = 'py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black';
-        if (tabUp) tabUp.className = 'py-2 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs';
-        if (heading) heading.innerText = 'Create Sovereign Account';
-        if (subtitle) subtitle.innerText = 'Instant edge account setup across 330+ Cloudflare PoPs';
-        if (confirmRow) confirmRow.classList.remove('hidden');
-        if (btn) btn.innerText = 'Create Account';
-        if (prompt) prompt.innerText = 'Already have an account?';
-        if (toggleBtn) toggleBtn.innerText = 'Sign In';
-        if (planInd && window.selectedModalPlan) {
-          if (planName) planName.innerText = String(window.selectedModalPlan).toUpperCase();
-          planInd.classList.remove('hidden');
-        }
-      }
-    };
-
-    let isModalSubmitting = false;
-    async function handleAuthModalSubmit(e) {
-      if (e) {
-        if (typeof e.preventDefault === 'function') e.preventDefault();
-        if (typeof e.stopPropagation === 'function') e.stopPropagation();
-      }
-      if (isModalSubmitting) return;
-      isModalSubmitting = true;
-      const email = document.getElementById('modalAuthEmail').value.trim();
-      const password = document.getElementById('modalAuthPassword').value;
-      const confirmEl = document.getElementById('modalAuthConfirmPassword');
-      const confirmPassword = confirmEl ? confirmEl.value : '';
-      const err = document.getElementById('modalAuthError');
-      const succ = document.getElementById('modalAuthSuccess');
-      const btn = document.getElementById('modalAuthSubmitBtn');
-
-      if (err) err.classList.add('hidden');
-      if (succ) succ.classList.add('hidden');
-
-      if (!email || !password) {
-        if (err) {
-          err.innerText = 'Please provide both email and password';
-          err.classList.remove('hidden');
-        }
-        isModalSubmitting = false;
-        return;
-      }
-
-      if (authMode === 'signup' && confirmPassword && password !== confirmPassword) {
-        if (err) {
-          err.innerText = 'Passwords do not match';
-          err.classList.remove('hidden');
-        }
-        isModalSubmitting = false;
-        return;
-      }
-
-      if (btn) { btn.disabled = true; btn.innerText = 'Connecting to edge...'; }
-
-      try {
-        const endpoint = authMode === 'signup' ? '/v1/auth/signup' : '/v1/auth/signin';
-        const plan = window.selectedModalPlan || 'free';
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, plan })
-        });
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.error || 'Authentication failed');
-        }
-        if (data.session) {
-          localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session));
-        }
-        if (data.user) {
-          localStorage.setItem('ultrademon_user', JSON.stringify(data.user));
-        }
-        if (data.active_key) {
-          localStorage.setItem('ultrademon_active_key', data.active_key);
-        }
-        if (succ) {
-          succ.innerText = 'Authenticated! Opening workspace...';
-          succ.classList.remove('hidden');
-        }
-        setTimeout(() => {
-          window.location.href = '/app' + (plan ? '?plan=' + encodeURIComponent(plan) : '');
-        }, 200);
-      } catch (error) {
-        if (err) {
-          err.innerText = error.message || 'Authentication error';
-          err.classList.remove('hidden');
-          if (error.message && (error.message.includes('switch to Create Account') || error.message.includes('Incorrect password') || error.message.includes('not found') || error.message.includes('password'))) {
-            const switchBtn = document.createElement('button');
-            switchBtn.type = 'button';
-            switchBtn.className = 'block mt-2 underline font-semibold text-neutral-900 cursor-pointer';
-            switchBtn.innerText = 'Click here to Switch to Create Account / Set Password';
-            switchBtn.onclick = function() { switchAuthTab('signup'); };
-            err.appendChild(switchBtn);
-          }
-        }
-      } finally {
-        isModalSubmitting = false;
-        if (btn) {
-          btn.disabled = false;
-          btn.innerText = authMode === 'signin' ? 'Sign In' : 'Create Account';
-        }
-      }
-    }
-    window.handleAuthModalSubmit = handleAuthModalSubmit;
-
-    async function handleModalGuestAccess() {
-      const btn = document.getElementById('modalGuestBtn');
-      const err = document.getElementById('modalAuthError');
-      if (btn) { btn.disabled = true; btn.innerText = 'Initializing demo workspace...'; }
-      try {
-        const plan = window.selectedModalPlan || 'free';
-        const res = await fetch('/v1/auth/anonymous', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ plan })
-        });
-        const data = await res.json();
-        if (data.session) localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session));
-        if (data.user) localStorage.setItem('ultrademon_user', JSON.stringify(data.user));
-        if (data.initial_key) localStorage.setItem('ultrademon_active_key', data.initial_key);
-        window.location.href = '/app' + (plan ? '?plan=' + encodeURIComponent(plan) : '');
-      } catch (e) {
-        if (err) {
-          err.innerText = 'Failed to init demo: ' + e.message;
-          err.classList.remove('hidden');
-        }
-        if (btn) {
-          btn.disabled = false;
-          btn.innerText = 'Continue with 1-Click Demo Console';
-        }
-      }
-    }
-    window.handleModalGuestAccess = handleModalGuestAccess;
 
     let inlineAuthMode = 'signin';
     window.switchInlineAuthTab = function(mode) {
@@ -2378,12 +2389,24 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     document.addEventListener('DOMContentLoaded', function() {
       checkAuthSession();
 
+      // Dual-defense button event binding for modal
+      var tabIn = document.getElementById('modalTabSignin');
+      if (tabIn) tabIn.addEventListener('click', function(e) { if (e && e.preventDefault) e.preventDefault(); window.switchAuthTab('signin'); });
+      var tabUp = document.getElementById('modalTabSignup');
+      if (tabUp) tabUp.addEventListener('click', function(e) { if (e && e.preventDefault) e.preventDefault(); window.switchAuthTab('signup'); });
+      var toggleBtn = document.getElementById('modalAuthToggleBtn');
+      if (toggleBtn) toggleBtn.addEventListener('click', function(e) { if (e && e.preventDefault) e.preventDefault(); window.toggleAuthTab(); });
+      var submitBtn = document.getElementById('modalAuthSubmitBtn');
+      if (submitBtn) submitBtn.addEventListener('click', function(e) { if (e && e.preventDefault) e.preventDefault(); window.handleAuthModalSubmit(e); });
+      var guestBtn = document.getElementById('modalGuestBtn');
+      if (guestBtn) guestBtn.addEventListener('click', function(e) { if (e && e.preventDefault) e.preventDefault(); window.handleModalGuestAccess(); });
+
       // Auto-open auth modal if redirected from /login or /signup
       var params = new URLSearchParams(window.location.search);
       var authParam = params.get('auth');
       if (authParam === 'signin' || authParam === 'signup') {
         var modalPlan = params.get('plan') || 'free';
-        openAuthModal(authParam, modalPlan);
+        window.openAuthModal(authParam, modalPlan);
         // Clean up URL
         try {
           var cleanUrl = window.location.pathname;

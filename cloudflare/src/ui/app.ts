@@ -157,6 +157,254 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       transition: none !important;
     }
   </style>
+
+  <!-- Early-Bound Sovereign App Handlers (Available Millisecond 0) -->
+  <script>
+    window.appAuthMode = 'signin';
+    window.isAppModalSubmitting = false;
+
+    window.openAppAuthModal = function(mode) {
+      if (typeof window.closeAppAccountMenu === 'function') window.closeAppAccountMenu();
+      var modal = document.getElementById('appAuthModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        window.switchAppAuthTab(mode || 'signin');
+      }
+    };
+
+    window.closeAppAuthModal = function() {
+      var modal = document.getElementById('appAuthModal');
+      if (modal) modal.classList.add('hidden');
+    };
+
+    window.switchAppAuthTab = function(mode) {
+      window.appAuthMode = (mode === 'signup') ? 'signup' : 'signin';
+      var isSign = window.appAuthMode === 'signin';
+      var tabIn = document.getElementById('appModalTabSignin');
+      var tabUp = document.getElementById('appModalTabSignup');
+      var heading = document.getElementById('appAuthHeading');
+      var subtitle = document.getElementById('appAuthSubtitle');
+      var confirmRow = document.getElementById('appModalConfirmPasswordRow');
+      var btn = document.getElementById('appModalAuthSubmitBtn');
+      var prompt = document.getElementById('appModalAuthTogglePrompt');
+      var toggleBtn = document.getElementById('appModalAuthToggleBtn');
+      var err = document.getElementById('appModalAuthError');
+      var succ = document.getElementById('appModalAuthSuccess');
+
+      if (err) { err.innerText = ''; err.classList.add('hidden'); }
+      if (succ) { succ.innerText = ''; succ.classList.add('hidden'); }
+
+      if (isSign) {
+        if (tabIn) tabIn.className = 'py-2 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs';
+        if (tabUp) tabUp.className = 'py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black';
+        if (heading) heading.innerText = 'Sign In to UltraDemon';
+        if (subtitle) subtitle.innerText = 'Enter your email and password to access your workspace';
+        if (confirmRow) confirmRow.classList.add('hidden');
+        if (btn) btn.innerText = 'Sign In';
+        if (prompt) prompt.innerText = "Don't have an account?";
+        if (toggleBtn) toggleBtn.innerText = 'Create Account';
+      } else {
+        if (tabIn) tabIn.className = 'py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black';
+        if (tabUp) tabUp.className = 'py-2 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs';
+        if (heading) heading.innerText = 'Create Sovereign Account';
+        if (subtitle) subtitle.innerText = 'Instant edge account setup across 330+ Cloudflare PoPs';
+        if (confirmRow) confirmRow.classList.remove('hidden');
+        if (btn) btn.innerText = 'Create Account';
+        if (prompt) prompt.innerText = 'Already have an account?';
+        if (toggleBtn) toggleBtn.innerText = 'Sign In';
+      }
+    };
+
+    window.toggleAppAuthTab = function() {
+      window.switchAppAuthTab(window.appAuthMode === 'signin' ? 'signup' : 'signin');
+    };
+
+    window.handleAppAuthModalSubmit = async function(e) {
+      if (e) {
+        if (typeof e.preventDefault === 'function') e.preventDefault();
+        if (typeof e.stopPropagation === 'function') e.stopPropagation();
+      }
+      if (window.isAppModalSubmitting) return;
+      window.isAppModalSubmitting = true;
+
+      var emailEl = document.getElementById('appModalAuthEmail');
+      var passEl = document.getElementById('appModalAuthPassword');
+      var confirmEl = document.getElementById('appModalAuthConfirmPassword');
+      var err = document.getElementById('appModalAuthError');
+      var succ = document.getElementById('appModalAuthSuccess');
+      var btn = document.getElementById('appModalAuthSubmitBtn');
+
+      if (err) { err.innerText = ''; err.classList.add('hidden'); }
+      if (succ) { succ.innerText = ''; succ.classList.add('hidden'); }
+
+      var email = emailEl ? emailEl.value.trim() : '';
+      var password = passEl ? passEl.value : '';
+      var confirmPassword = confirmEl ? confirmEl.value : '';
+
+      if (!email || !password) {
+        if (err) {
+          err.innerText = 'Please provide both email and password';
+          err.classList.remove('hidden');
+        }
+        window.isAppModalSubmitting = false;
+        return;
+      }
+
+      if (window.appAuthMode === 'signup' && confirmPassword && password !== confirmPassword) {
+        if (err) {
+          err.innerText = 'Passwords do not match';
+          err.classList.remove('hidden');
+        }
+        window.isAppModalSubmitting = false;
+        return;
+      }
+
+      if (btn) { btn.disabled = true; btn.innerText = 'Connecting to edge...'; }
+
+      try {
+        var endpoint = (window.appAuthMode === 'signup') ? '/v1/auth/signup' : '/v1/auth/signin';
+        var res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, password: password, plan: 'free' })
+        });
+        var data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || 'Authentication failed');
+        }
+        if (data.session) {
+          try { localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session)); } catch(e) {}
+        }
+        if (data.user) {
+          try { localStorage.setItem('ultrademon_user', JSON.stringify(data.user)); } catch(e) {}
+          window.currentUser = data.user;
+          if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI(data.user);
+        }
+        if (data.active_key) {
+          try { localStorage.setItem('ultrademon_active_key', data.active_key); } catch(e) {}
+          window.activeApiKey = data.active_key;
+        }
+
+        if (succ) {
+          succ.innerText = 'Successfully authenticated! Updating workspace...';
+          succ.classList.remove('hidden');
+        }
+
+        if (typeof window.showAppToast === 'function') window.showAppToast('Authenticated as ' + email);
+        setTimeout(function() {
+          window.closeAppAuthModal();
+          if (typeof window.loadAppKeys === 'function') window.loadAppKeys();
+          if (typeof window.refreshTelemetry === 'function') window.refreshTelemetry();
+        }, 300);
+      } catch (error) {
+        if (err) {
+          err.innerText = error.message || 'Authentication error';
+          err.classList.remove('hidden');
+          if (error.message && (error.message.includes('switch to Create Account') || error.message.includes('Incorrect password') || error.message.includes('not found') || error.message.includes('password'))) {
+            var switchBtn = document.createElement('button');
+            switchBtn.type = 'button';
+            switchBtn.className = 'block mt-2 underline font-semibold text-neutral-900 cursor-pointer';
+            switchBtn.innerText = 'Click here to Switch to Create Account / Set Password';
+            switchBtn.onclick = function() { window.switchAppAuthTab('signup'); };
+            err.appendChild(switchBtn);
+          }
+        }
+      } finally {
+        window.isAppModalSubmitting = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.innerText = (window.appAuthMode === 'signin') ? 'Sign In' : 'Create Account';
+        }
+      }
+    };
+
+    window.handleAppGuestAccess = async function() {
+      var btn = document.getElementById('appModalGuestBtn');
+      if (btn) { btn.disabled = true; btn.innerText = 'Creating demo session...'; }
+      try {
+        var res = await fetch('/v1/auth/anonymous', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan: 'free' })
+        });
+        var data = await res.json();
+        if (data.session) {
+          try { localStorage.setItem('ultrademon_auth_session', JSON.stringify(data.session)); } catch(e) {}
+        }
+        if (data.user) {
+          try { localStorage.setItem('ultrademon_user', JSON.stringify(data.user)); } catch(e) {}
+          window.currentUser = data.user;
+          if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI(data.user);
+        }
+        if (data.initial_key) {
+          try { localStorage.setItem('ultrademon_active_key', data.initial_key); } catch(e) {}
+          window.activeApiKey = data.initial_key;
+        }
+        if (typeof window.showAppToast === 'function') window.showAppToast('Instant demo session activated');
+        window.closeAppAuthModal();
+        if (typeof window.loadAppKeys === 'function') window.loadAppKeys();
+      } catch (err) {
+        if (typeof window.showAppToast === 'function') window.showAppToast('Failed to create demo session: ' + err.message);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerText = 'Continue with 1-Click Demo Console';
+        }
+      }
+    };
+
+    window.toggleFavoriteDomain = function(btn) {
+      try {
+        var isFav = localStorage.getItem('ultrademon_favorite_domain') === 'true';
+        var next = !isFav;
+        localStorage.setItem('ultrademon_favorite_domain', next ? 'true' : 'false');
+        var svg = btn ? btn.querySelector('svg') : null;
+        if (svg) {
+          if (next) {
+            svg.setAttribute('fill', 'currentColor');
+            btn.classList.add('text-amber-500');
+            btn.classList.remove('text-neutral-400');
+          } else {
+            svg.setAttribute('fill', 'none');
+            btn.classList.remove('text-amber-500');
+            btn.classList.add('text-neutral-400');
+          }
+        }
+        if (typeof window.showAppToast === 'function') {
+          window.showAppToast(next ? 'ultrademon.site pinned to favorites' : 'Domain unpinned from favorites');
+        }
+      } catch(e) {}
+    };
+
+    window.openDnsRecordsModal = function() {
+      var modal = document.getElementById('appDnsModal');
+      if (modal) modal.classList.remove('hidden');
+    };
+
+    window.closeDnsRecordsModal = function() {
+      var modal = document.getElementById('appDnsModal');
+      if (modal) modal.classList.add('hidden');
+    };
+
+    window.copyZonefile = function() {
+      var zone = '; Zonefile for ultrademon.site (Cloudflare Anycast Managed)\\n$ORIGIN ultrademon.site.\\n$TTL 300\\n@ IN SOA ns1.cloudflare.com. dns.cloudflare.com. 2026111601 3600 600 604800 300\\n@ IN NS ns1.cloudflare.com.\\n@ IN NS ns2.cloudflare.com.\\n@ IN A 172.67.182.204 ; Cloudflare Edge Anycast\\n@ IN AAAA 2606:4700:3033::ac43:b6cc ; Cloudflare IPv6 Anycast\\napi IN CNAME ultrasearch-api.aaronvanoss.workers.dev. ; Sovereign Worker Route\\n_ultrademon-challenge IN TXT "ud-verify-sovereign-edge-2026"\\n@ IN CAA 0 issue "letsencrypt.org"';
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(zone);
+      }
+      if (typeof window.showAppToast === 'function') {
+        window.showAppToast('Zonefile copied to clipboard');
+      }
+    };
+
+    // Global Cmd+K / Ctrl+K keyboard shortcut
+    window.addEventListener('keydown', function(e) {
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        var el = document.getElementById('sidebarQuickSearch');
+        if (el) { el.focus(); el.select(); }
+      }
+    });
+  </script>
 </head>
 <body class="min-h-screen bg-[#f7f7f7] text-neutral-950 flex flex-col md:flex-row antialiased selection:bg-black selection:text-white">
 
@@ -178,11 +426,11 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
       <!-- Star & Domain & Plan Pill -->
       <div class="hidden sm:flex items-center gap-2 min-w-0">
-        <button type="button" class="text-neutral-400 hover:text-amber-500 transition cursor-pointer" title="Favorite domain">
+        <button type="button" id="btnFavoriteDomain" onclick="window.toggleFavoriteDomain(this)" class="text-neutral-400 hover:text-amber-500 transition cursor-pointer" title="Pin domain to favorites">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         </button>
-        <span class="font-semibold text-neutral-900 text-xs font-mono">ultrademon.site</span>
-        <span id="userPlanBadgeTop" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-neutral-100 text-neutral-700 border border-neutral-300">free</span>
+        <button type="button" onclick="setAppView('overview')" class="font-semibold text-neutral-900 text-xs font-mono hover:underline cursor-pointer">ultrademon.site</button>
+        <button type="button" onclick="setAppView('membership')" id="userPlanBadgeTop" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-neutral-100 text-neutral-700 border border-neutral-300 hover:bg-neutral-200 transition cursor-pointer" title="Click to view Membership Quotas">free</button>
         <svg class="w-3 h-3 text-neutral-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
       </div>
     </div>
@@ -240,6 +488,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
   <!-- Mobile Quick-Swipe View Pills Bar (Smooth Horizontal Scroll) -->
   <div class="md:hidden fixed top-13 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-neutral-200/80 px-3 py-2 overflow-x-auto no-scrollbar flex items-center gap-1.5 whitespace-nowrap z-40 shadow-xs">
     <button type="button" onclick="setAppView('overview', event)" data-mobile-pill="overview" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-semibold bg-neutral-950 text-white shadow-2xs shrink-0 cursor-pointer">Overview</button>
+    <button type="button" onclick="setAppView('summoning', event)" data-mobile-pill="summoning" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-medium text-emerald-700 hover:text-emerald-950 hover:bg-emerald-50 bg-emerald-50/60 border border-emerald-200 shrink-0 cursor-pointer">Summon</button>
     <button type="button" onclick="setAppView('benchmarks', event)" data-mobile-pill="benchmarks" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 bg-neutral-50 border border-neutral-200/80 shrink-0 cursor-pointer">Benchmarks</button>
     <button type="button" onclick="setAppView('keys', event)" data-mobile-pill="keys" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 bg-neutral-50 border border-neutral-200/80 shrink-0 cursor-pointer">API Keys</button>
     <button type="button" onclick="setAppView('memory', event)" data-mobile-pill="memory" class="mobile-nav-pill px-3 py-1 rounded-full text-xs font-medium text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 bg-neutral-50 border border-neutral-200/80 shrink-0 cursor-pointer">UltraMemory</button>
@@ -341,6 +590,13 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
             <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             <span>Quotas &amp; Top-Ups</span>
           </button>
+          <button type="button" id="mobile-nav-integrations" onclick="setAppView('integrations', event); toggleAppMobileDrawer();" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+            <div class="flex items-center gap-3">
+              <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="8" height="8" x="2" y="2" rx="2"/><rect width="8" height="8" x="14" y="2" rx="2"/><rect width="8" height="8" x="14" y="14" rx="2"/><rect width="8" height="8" x="2" y="14" rx="2"/></svg>
+              <span>MCP &amp; SDK Client Libraries</span>
+            </div>
+            <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-700">Docs</span>
+          </button>
         </nav>
       </div>
 
@@ -367,9 +623,9 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     <div class="space-y-3">
       <!-- Quick Search Box (Cmd+K) -->
       <div class="relative">
-        <input type="text" placeholder="Quick search..." onkeydown="if(event.key==='Enter') setAppView('search')" class="w-full pl-8 pr-14 py-1.5 rounded-md border border-neutral-200/90 bg-neutral-50 hover:bg-white text-xs text-neutral-800 focus:outline-none focus:border-neutral-400 font-sans transition placeholder:text-neutral-400" />
+        <input type="text" id="sidebarQuickSearch" placeholder="Quick search..." onkeydown="if(event.key==='Enter'){ const q = this.value.trim(); if(q){ const searchIn = document.getElementById('appSearchQuery'); if(searchIn) searchIn.value = q; setAppView('search'); if(typeof handleAppSearch==='function') handleAppSearch(); } else { setAppView('search'); } }" class="w-full pl-8 pr-14 py-1.5 rounded-md border border-neutral-200/90 bg-neutral-50 hover:bg-white text-xs text-neutral-800 focus:outline-none focus:border-neutral-400 font-sans transition placeholder:text-neutral-400" />
         <svg class="w-3.5 h-3.5 text-neutral-400 absolute left-2.5 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <kbd class="absolute right-2 top-2 px-1 py-0.2 rounded bg-neutral-200/70 text-neutral-600 text-[10px] font-mono border border-neutral-300 pointer-events-none">Cmd+K</kbd>
+        <kbd class="absolute right-2 top-2 px-1 py-0.2 rounded bg-neutral-200/70 text-neutral-600 text-[10px] font-mono border border-neutral-300 pointer-events-none cursor-pointer" onclick="document.getElementById('sidebarQuickSearch')?.focus();">Cmd+K</kbd>
       </div>
 
       <!-- Back to Domains Link -->
@@ -469,6 +725,15 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
             <span class="truncate">Quotas &amp; Top-Ups</span>
           </div>
           <svg class="w-3 h-3 text-neutral-300 group-hover:text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+
+        <!-- Integrations & SDKs -->
+        <button type="button" onclick="setAppView('integrations')" data-view-target="integrations" id="nav-integrations" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
+          <div class="flex items-center gap-2 truncate">
+            <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="8" height="8" x="2" y="2" rx="2"/><rect width="8" height="8" x="14" y="2" rx="2"/><rect width="8" height="8" x="14" y="14" rx="2"/><rect width="8" height="8" x="2" y="14" rx="2"/></svg>
+            <span class="truncate">MCP &amp; SDKs</span>
+          </div>
+          <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-700 border border-neutral-200">Docs</span>
         </button>
       </nav>
     </div>
@@ -1427,10 +1692,10 @@ curl -X POST "${origin}/v1/memory/query" \\
           </div>
         </div>
         <div class="grid grid-cols-2 gap-2 pt-0.5">
-          <a href="#dns" onclick="showAppToast('DNS zone managed on Cloudflare Anycast edge'); return false;" class="py-1 px-2 rounded-md border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-800 text-[11px] font-medium transition cursor-pointer text-center font-mono">
+          <button type="button" onclick="window.openDnsRecordsModal();" class="py-1 px-2 rounded-md border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-800 text-[11px] font-medium transition cursor-pointer text-center font-mono">
             DNS Records
-          </a>
-          <button type="button" onclick="showAppToast('Worker route linked to ultrademon.site/*');" class="py-1 px-2 rounded-md border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-800 text-[11px] font-medium transition cursor-pointer text-center font-mono">
+          </button>
+          <button type="button" onclick="setAppView('tester'); if(typeof showAppToast==='function') showAppToast('Opened Sandbox with worker route active');" class="py-1 px-2 rounded-md border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-800 text-[11px] font-medium transition cursor-pointer text-center font-mono">
             Connect Worker
           </button>
         </div>
@@ -3765,16 +4030,16 @@ requests.post("${origin}/v1/analytics/capture", json={
 
       <!-- Segmented Tab Switcher (Smooth Pill Design) -->
       <div class="grid grid-cols-2 p-1 bg-neutral-100 rounded-xl my-4 text-xs font-semibold">
-        <button type="button" id="appModalTabSignin" onclick="switchAppAuthTab('signin')" class="py-2 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs">
+        <button type="button" id="appModalTabSignin" onclick="window.switchAppAuthTab('signin')" class="py-2 rounded-lg transition cursor-pointer bg-neutral-950 text-white shadow-xs">
           Sign In
         </button>
-        <button type="button" id="appModalTabSignup" onclick="switchAppAuthTab('signup')" class="py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black">
+        <button type="button" id="appModalTabSignup" onclick="window.switchAppAuthTab('signup')" class="py-2 rounded-lg transition cursor-pointer text-neutral-600 hover:text-black">
           Create Account
         </button>
       </div>
 
       <!-- Auth Form -->
-      <form id="appAuthModalForm" onsubmit="handleAppAuthModalSubmit(event)" class="space-y-3.5 text-xs">
+      <form id="appAuthModalForm" onsubmit="event.preventDefault(); window.handleAppAuthModalSubmit(event); return false;" class="space-y-3.5 text-xs">
         <div>
           <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Email address</label>
           <input type="email" id="appModalAuthEmail" required class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-mono" placeholder="agent@company.com">
@@ -3792,7 +4057,7 @@ requests.post("${origin}/v1/analytics/capture", json={
         <div id="appModalAuthError" class="text-red-600 text-[11px] hidden font-mono"></div>
         <div id="appModalAuthSuccess" class="text-emerald-700 text-[11px] hidden font-mono"></div>
 
-        <button type="button" onclick="handleAppAuthModalSubmit(event)" id="appModalAuthSubmitBtn" class="w-full py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold transition-colors cursor-pointer shadow-xs text-xs">
+        <button type="button" onclick="window.handleAppAuthModalSubmit(event)" id="appModalAuthSubmitBtn" class="w-full py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold transition-colors cursor-pointer shadow-xs text-xs">
           Sign In
         </button>
 
@@ -3802,7 +4067,7 @@ requests.post("${origin}/v1/analytics/capture", json={
         </div>
 
         <!-- 1-Click Instant Guest Access -->
-        <button type="button" onclick="handleAppGuestAccess()" id="appModalGuestBtn" class="w-full py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 font-semibold transition cursor-pointer text-xs shadow-2xs">
+        <button type="button" onclick="window.handleAppGuestAccess()" id="appModalGuestBtn" class="w-full py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-200 font-semibold transition cursor-pointer text-xs shadow-2xs">
           Continue with 1-Click Demo Console
         </button>
       </form>
@@ -3810,13 +4075,93 @@ requests.post("${origin}/v1/analytics/capture", json={
       <!-- Bottom Switcher Link -->
       <div class="mt-4 text-center text-xs text-neutral-500" id="appModalAuthToggleContainer">
         <span id="appModalAuthTogglePrompt">Don't have an account?</span>
-        <button type="button" id="appModalAuthToggleBtn" onclick="switchAppAuthTab(appAuthMode === 'signin' ? 'signup' : 'signin')" class="font-semibold text-neutral-950 hover:underline cursor-pointer ml-1">
+        <button type="button" id="appModalAuthToggleBtn" onclick="window.toggleAppAuthTab()" class="font-semibold text-neutral-950 hover:underline cursor-pointer ml-1">
           Create Account
         </button>
       </div>
 
       <div class="mt-4 text-center">
         <span class="text-[11px] text-neutral-400 font-num">Cloudflare Workers Edge SHA-256 Authentication</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Anycast DNS Inspection Modal -->
+  <div id="appDnsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs hidden" onclick="if(event.target===this) window.closeDnsRecordsModal();">
+    <div class="relative w-full max-w-xl bg-white rounded-3xl p-6 shadow-2xl border border-neutral-100 font-sans" onclick="event.stopPropagation();">
+      <!-- Close Button -->
+      <button onclick="window.closeDnsRecordsModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-neutral-900 transition-colors p-1 cursor-pointer">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <!-- Modal Header -->
+      <div class="flex items-center gap-2.5 mb-1">
+        <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+        <h3 class="font-bold text-base text-neutral-950 font-sans">ultrademon.site · Cloudflare Anycast DNS</h3>
+      </div>
+      <p class="text-xs text-neutral-500 font-mono mb-4">Authoritative Zone · Anycast BGP across 330+ Cities · DNSSEC Validated</p>
+
+      <!-- Records Table -->
+      <div class="overflow-x-auto border border-neutral-200 rounded-xl mb-4 text-xs font-mono">
+        <table class="w-full divide-y divide-neutral-200">
+          <thead class="bg-neutral-50 text-[10px] text-neutral-500 uppercase tracking-wider">
+            <tr>
+              <th class="px-3 py-2 text-left">Type</th>
+              <th class="px-3 py-2 text-left">Name</th>
+              <th class="px-3 py-2 text-left">Content</th>
+              <th class="px-3 py-2 text-left">Proxy</th>
+              <th class="px-3 py-2 text-left">TTL</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-neutral-100 bg-white text-neutral-800">
+            <tr>
+              <td class="px-3 py-2 font-bold text-neutral-950">A</td>
+              <td class="px-3 py-2">ultrademon.site</td>
+              <td class="px-3 py-2 text-neutral-600">172.67.182.204</td>
+              <td class="px-3 py-2"><span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-50 text-amber-800 border border-amber-200 font-semibold">Proxied</span></td>
+              <td class="px-3 py-2 text-neutral-400">Auto</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 font-bold text-neutral-950">AAAA</td>
+              <td class="px-3 py-2">ultrademon.site</td>
+              <td class="px-3 py-2 text-neutral-600">2606:4700:3033::ac43:b6cc</td>
+              <td class="px-3 py-2"><span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-50 text-amber-800 border border-amber-200 font-semibold">Proxied</span></td>
+              <td class="px-3 py-2 text-neutral-400">Auto</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 font-bold text-neutral-950">CNAME</td>
+              <td class="px-3 py-2">api</td>
+              <td class="px-3 py-2 text-emerald-700 font-semibold truncate max-w-[180px]">ultrasearch-api...workers.dev</td>
+              <td class="px-3 py-2"><span class="px-1.5 py-0.5 rounded text-[10px] bg-neutral-100 text-neutral-700 border border-neutral-300">DNS Only</span></td>
+              <td class="px-3 py-2 text-neutral-400">Auto</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 font-bold text-neutral-950">TXT</td>
+              <td class="px-3 py-2">_challenge</td>
+              <td class="px-3 py-2 text-neutral-500 truncate max-w-[180px]">"ud-verify-sovereign-edge-2026"</td>
+              <td class="px-3 py-2"><span class="px-1.5 py-0.5 rounded text-[10px] bg-neutral-100 text-neutral-700">DNS Only</span></td>
+              <td class="px-3 py-2 text-neutral-400">Auto</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 font-bold text-neutral-950">CAA</td>
+              <td class="px-3 py-2">@</td>
+              <td class="px-3 py-2 text-neutral-600">0 issue "letsencrypt.org"</td>
+              <td class="px-3 py-2"><span class="px-1.5 py-0.5 rounded text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">Valid</span></td>
+              <td class="px-3 py-2 text-neutral-400">Auto</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="flex items-center justify-between pt-2">
+        <button type="button" onclick="window.copyZonefile()" class="px-3 py-1.5 rounded-lg border border-neutral-300 hover:bg-neutral-100 text-neutral-800 text-xs font-semibold font-mono transition cursor-pointer flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          <span>Copy BIND Zonefile</span>
+        </button>
+        <button type="button" onclick="window.closeDnsRecordsModal()" class="px-4 py-1.5 rounded-lg bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer">
+          Done
+        </button>
       </div>
     </div>
   </div>
@@ -5925,6 +6270,18 @@ requests.post("${origin}/v1/analytics/capture", json={
       }
 
       updateUserProfileUI(currentUser);
+
+      try {
+        if (localStorage.getItem('ultrademon_favorite_domain') === 'true') {
+          var btnFav = document.getElementById('btnFavoriteDomain');
+          if (btnFav) {
+            var svg = btnFav.querySelector('svg');
+            if (svg) svg.setAttribute('fill', 'currentColor');
+            btnFav.classList.add('text-amber-500');
+            btnFav.classList.remove('text-neutral-400');
+          }
+        }
+      } catch (e) {}
 
       const activeKey = getActiveKey();
       const topLabel = document.getElementById('topActiveKeyLabel');
