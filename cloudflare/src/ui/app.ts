@@ -8,6 +8,7 @@ import { CUSTOM_CURSORS_CSS } from './cursors';
 import { ULTRADEMON_LOGO_URI, ULTRADEMON_FAVICON_URI } from './logo-data';
 
 export function renderAppDashboard(origin: string, supabaseUrl: string, supabaseAnonKey: string, initialView: string = 'overview'): string {
+  const displayOrigin = (origin && origin.includes('workers.dev')) ? 'https://ultrademon.site' : (origin || 'https://ultrademon.site');
   return `<!DOCTYPE html>
 <html lang="en" class="light">
 <head>
@@ -1850,7 +1851,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </div>
         <div class="relative">
           <pre class="p-4 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-100 overflow-x-auto code-scroll" id="overviewCodeSnippet"># Query sovereign agent memory
-curl -X POST "${origin}/v1/memory/query" \\
+curl -X POST "${displayOrigin}/v1/memory/query" \\
   -H "X-API-Key: us_your_key_here" \\
   -H "Content-Type: application/json" \\
   -d '{"query": "user preferences", "container_tag": "default"}'</pre>
@@ -3003,13 +3004,13 @@ print(results.latency_ms, results.hits)</pre>
             <button type="button" onclick="copyToClipboard(document.getElementById('memQuickSnippet').innerText)" class="hover:text-black cursor-pointer underline text-[10px]">Copy</button>
           </div>
           <pre id="memQuickSnippet" class="p-3 bg-neutral-950 border border-neutral-800 rounded-xl font-mono text-[11px] text-neutral-100 overflow-x-auto code-scroll"># 1. Store memory from agent
-curl -X POST "${origin}/v1/memory" \\
+curl -X POST "${displayOrigin}/v1/memory" \\
   -H "X-API-Key: um_your_key_here" \\
   -H "Content-Type: application/json" \\
   -d '{"content": "User prefers Michelangelus font and monochrome UI", "container_tag": "agent_prod"}'
 
 # 2. Recall memory in &lt;15ms
-curl "${origin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
+curl "${displayOrigin}/v1/memory/recall?q=user+preferences&container_tag=agent_prod" \\
   -H "X-API-Key: um_your_key_here"</pre>
         </div>
       </div>
@@ -3204,7 +3205,7 @@ const { results, latency_ms } = await search.query('LLM edge retrieval', {
             </div>
             <pre id="searchPySnippet" class="p-3 bg-neutral-950 rounded-xl text-neutral-100 font-mono text-[10px] overflow-x-auto code-scroll">import requests
 
-res = requests.get("${origin}/v1/search",
+res = requests.get("${displayOrigin}/v1/search",
     params={"q": "LLM edge retrieval", "mode": 1},
     headers={"X-API-Key": "YOUR_SEARCH_KEY"}).json()
 print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
@@ -3369,7 +3370,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
   "mcpServers": {
     "ultrademon": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sse", "${origin}/mcp/sse"],
+      "args": ["-y", "@modelcontextprotocol/server-sse", "${displayOrigin}/mcp/sse"],
       "env": { "ULTRASEARCH_API_KEY": "us_your_key_here" }
     }
   }
@@ -3475,7 +3476,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
               <span>Copy Embed Tag</span>
             </button>
           </div>
-          <pre id="snippetScriptTagTop" class="p-3 bg-neutral-950 rounded-xl text-neutral-100 font-mono text-[11px] overflow-x-auto code-scroll">&lt;script src="${origin}/sdk/ultrademon.js" data-key="YOUR_API_KEY" async&gt;&lt;/script&gt;</pre>
+          <pre id="snippetScriptTagTop" class="p-3 bg-neutral-950 rounded-xl text-neutral-100 font-mono text-[11px] overflow-x-auto code-scroll">&lt;script src="${displayOrigin}/sdk/ultrademon.js" data-key="YOUR_API_KEY" async&gt;&lt;/script&gt;</pre>
         </div>
       </div>
 
@@ -4005,7 +4006,7 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
               <span>Copy Embed Tag</span>
             </button>
           </div>
-          <pre id="snippetScriptTag" class="p-3 bg-neutral-950 rounded-xl text-neutral-100 font-mono text-[11px] overflow-x-auto code-scroll">&lt;script src="${origin}/sdk/ultrademon.js" data-key="YOUR_API_KEY" async&gt;&lt;/script&gt;</pre>
+          <pre id="snippetScriptTag" class="p-3 bg-neutral-950 rounded-xl text-neutral-100 font-mono text-[11px] overflow-x-auto code-scroll">&lt;script src="${displayOrigin}/sdk/ultrademon.js" data-key="YOUR_API_KEY" async&gt;&lt;/script&gt;</pre>
         </div>
 
         <!-- Node & Python Snippets (Grid) -->
@@ -4019,7 +4020,7 @@ window.ultrademon.identify('usr_9281', { email: 'ceo@startup.com' });</pre>
           <div>
             <span class="text-[11px] font-bold text-neutral-700 font-num block mb-1">Python Backend Telemetry</span>
             <pre class="p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-800 font-mono text-[10px] overflow-x-auto code-scroll">import requests
-requests.post("${origin}/v1/analytics/capture", json={
+requests.post("${displayOrigin}/v1/analytics/capture", json={
     "api_key": "YOUR_API_KEY",
     "event_name": "pipeline_complete",
     "distinct_id": "usr_9281"
@@ -4142,7 +4143,7 @@ requests.post("${origin}/v1/analytics/capture", json={
 
             <!-- Diagnostic Metrics Footer -->
             <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-200 text-[11px] font-num text-neutral-500 flex flex-wrap items-center justify-between gap-2">
-              <span>Edge Gateway: <strong class="text-neutral-900">${origin}</strong></span>
+              <span>Edge Gateway: <strong class="text-neutral-900">${displayOrigin}</strong></span>
               <span id="testerTimestamp">Ready</span>
             </div>
           </div>
@@ -4399,7 +4400,7 @@ requests.post("${origin}/v1/analytics/capture", json={
 
   <!-- Client-side Workspace Script -->
   <script>
-    const ORIGIN = "${origin}";
+    const ORIGIN = window.location.origin;
     const STORAGE_KEY = 'ultrasearch_local_keys';
 
     let currentSessionToken = null;
