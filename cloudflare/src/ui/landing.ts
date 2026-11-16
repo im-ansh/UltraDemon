@@ -3,7 +3,7 @@
 // Uses Real 4K High-Fidelity Dashboard Screenshots from UltraDemon.
 // Strict Constraint: ZERO EMOJIS ANYWHERE. Minimalist SVG icons only.
 
-import { MICHELANGELUS_BOLD_ITALIC_WOFF2_B64, MICHELANGELUS_REGULAR_WOFF2_B64, NB_INTERNATIONAL_PRO_WOFF2_B64 } from './font-data';
+import { MICHELANGELUS_BOLD_ITALIC_WOFF2_B64, MICHELANGELUS_REGULAR_WOFF2_B64, NB_INTERNATIONAL_PRO_WOFF2_B64, NB_INTERNATIONAL_PRO_LIGHT_WOFF2_B64 } from './font-data';
 import { BLUEPRINT_CIRCUIT_SVG, VINTAGE_TERMINAL_SVG, MATH_MANUSCRIPT_SVG, TECHNICAL_SCHEMATIC_SVG } from './science-assets';
 import { CUSTOM_CURSORS_CSS } from './cursors';
 import { ULTRADEMON_LOGO_URI, ULTRADEMON_FAVICON_URI } from './logo-data';
@@ -190,7 +190,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       theme: {
         extend: {
           fontFamily: {
-            sans: ['"NB International Pro"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            sans: ['"NB International Pro"', '"NB International"', 'nbinternational', '"NBInternational"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
             serif: ['"Michelangelus"', 'Georgia', 'serif'],
             mono: ['"Geist Mono"', 'monospace'],
             num: ['"Geist Mono"', 'monospace'],
@@ -206,13 +206,157 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   </script>
 
   <style>
+    /* Discrete @font-face rules for authentic NB International Pro & aliases across all weights */
     @font-face {
       font-family: 'NB International Pro';
-      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
-      font-weight: 100 900;
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_LIGHT_WOFF2_B64}') format('woff2');
+      font-weight: 300;
       font-style: normal;
       font-display: swap;
     }
+    @font-face {
+      font-family: 'NB International Pro';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'NB International Pro';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'NB International Pro';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'NB International Pro';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'NB International Pro';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 800;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'NB International Pro';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'NB International';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_LIGHT_WOFF2_B64}') format('woff2');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'NB International';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'NB International';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'NB International';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'NB International';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'NB International';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 800;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'NB International';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'nbinternational';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_LIGHT_WOFF2_B64}') format('woff2');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'nbinternational';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'nbinternational';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'nbinternational';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'nbinternational';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'nbinternational';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 800;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'nbinternational';
+      src: url('data:font/woff2;base64,${NB_INTERNATIONAL_PRO_WOFF2_B64}') format('woff2');
+      font-weight: 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
     @font-face {
       font-family: 'Michelangelus';
       src: url('data:font/woff2;base64,${MICHELANGELUS_BOLD_ITALIC_WOFF2_B64}') format('woff2');
@@ -226,16 +370,28 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       font-style: normal;
     }
 
-    body, input, textarea, button, select {
-      font-family: 'NB International Pro', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #ffffff;
-      color: #09090b;
+    * {
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
-    .font-num, .font-mono {
-      font-family: 'Geist Mono', monospace;
+    html, body, input, textarea, button, select, h1, h2, h3, h4, h5, h6, p, span, div, a, li, tr, td, th, table, nav, aside, header, footer, main, section, label, form, dialog {
+      font-family: 'NB International Pro', 'NB International', 'nbinternational', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-synthesis: weight style;
+    }
+
+    body {
+      background-color: #ffffff;
+      color: #09090b;
+    }
+
+    .font-sans {
+      font-family: 'NB International Pro', 'NB International', 'nbinternational', -apple-system, BlinkMacSystemFont, sans-serif !important;
+      font-synthesis: weight style;
+    }
+
+    .font-num, .font-mono, code, pre, kbd {
+      font-family: 'Geist Mono', monospace !important;
       font-variant-numeric: tabular-nums;
     }
 
@@ -1940,19 +2096,19 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <!-- Form -->
         <form id="inlineAuthForm" onsubmit="handleInlineAuthSubmit(event)" class="space-y-4 text-xs">
           <div>
-            <label class="block text-[11px] font-mono text-neutral-600 uppercase tracking-wider mb-1.5 font-medium">Email address</label>
+            <label class="block text-[11px] font-sans text-neutral-600 uppercase tracking-wider mb-1.5 font-medium">Email address</label>
             <input type="email" id="inlineAuthEmail" required class="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200 bg-neutral-50/70 focus:bg-white focus:outline-none focus:border-neutral-950 transition-colors font-mono text-xs text-neutral-950" placeholder="name@company.com">
           </div>
           <div>
             <div class="flex items-center justify-between mb-1.5">
-              <label class="block text-[11px] font-mono text-neutral-600 uppercase tracking-wider font-medium">Password</label>
+              <label class="block text-[11px] font-sans text-neutral-600 uppercase tracking-wider font-medium">Password</label>
               <span class="text-[10px] text-neutral-400 font-num">Min. 6 chars</span>
             </div>
             <input type="password" id="inlineAuthPassword" required minlength="6" class="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200 bg-neutral-50/70 focus:bg-white focus:outline-none focus:border-neutral-950 transition-colors font-mono text-xs text-neutral-950" placeholder="••••••••••••">
           </div>
 
           <div id="inlineConfirmPasswordRow" class="hidden">
-            <label class="block text-[11px] font-mono text-neutral-600 uppercase tracking-wider mb-1.5 font-medium">Confirm Password</label>
+            <label class="block text-[11px] font-sans text-neutral-600 uppercase tracking-wider mb-1.5 font-medium">Confirm Password</label>
             <input type="password" id="inlineAuthConfirmPassword" minlength="6" class="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200 bg-neutral-50/70 focus:bg-white focus:outline-none focus:border-neutral-950 transition-colors font-mono text-xs text-neutral-950" placeholder="••••••••••••">
           </div>
 
@@ -2156,17 +2312,17 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       <!-- Auth Form -->
       <form id="authModalForm" onsubmit="event.preventDefault(); window.handleAuthModalSubmit(event); return false;" class="space-y-3.5 text-xs">
         <div>
-          <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Email address</label>
-          <input type="email" id="modalAuthEmail" required class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-mono" placeholder="agent@company.com">
+          <label class="block text-[11px] font-sans font-medium text-neutral-500 uppercase tracking-wider mb-1">Email address</label>
+          <input type="email" id="modalAuthEmail" required class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-sans" placeholder="agent@company.com">
         </div>
         <div>
-          <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Password</label>
-          <input type="password" id="modalAuthPassword" required minlength="6" class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-mono" placeholder="••••••••">
+          <label class="block text-[11px] font-sans font-medium text-neutral-500 uppercase tracking-wider mb-1">Password</label>
+          <input type="password" id="modalAuthPassword" required minlength="6" class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-sans" placeholder="••••••••">
         </div>
 
         <div id="modalConfirmPasswordRow" class="hidden">
-          <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Confirm Password</label>
-          <input type="password" id="modalAuthConfirmPassword" minlength="6" class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-mono" placeholder="••••••••">
+          <label class="block text-[11px] font-sans font-medium text-neutral-500 uppercase tracking-wider mb-1">Confirm Password</label>
+          <input type="password" id="modalAuthConfirmPassword" minlength="6" class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-sans" placeholder="••••••••">
         </div>
 
         <div id="modalAuthError" class="text-red-600 text-[11px] hidden font-mono"></div>
@@ -2196,7 +2352,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </div>
 
       <div class="mt-4 text-center">
-        <span class="text-[11px] text-neutral-400 font-num">Edge-authenticated on Cloudflare Workers</span>
+        <span class="text-[11px] text-neutral-400 font-sans">Edge-authenticated on Cloudflare Workers</span>
       </div>
     </div>
   </div>
