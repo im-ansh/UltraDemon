@@ -3968,25 +3968,31 @@ requests.post("${origin}/v1/analytics/capture", json={
     }
 
     function copyBenchmarkMarkdown() {
-      const md = '# UltraDemon Edge Performance & Latency Benchmark Report\n' +
-        'Audited across 330+ Cloudflare Anycast Edge Cities worldwide.\n\n' +
-        '### Head-to-Head Web Search API Benchmarks\n' +
-        '| Engine | Architecture | P50 Latency | P99 Tail | Cold Start | Cost / 100k reqs | Recall@10 | Sovereignty |\n' +
-        '| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n' +
-        '| **UltraSearch** | **Cloudflare Workers + D1 FTS5** | **11.8ms** | **38.2ms** | **0.0ms** | **$20.00** | **94.8%** | **100% Self-Contained Edge** |\n' +
-        '| Tavily Search | Centralized AWS us-east-1 | 842.0ms | 2,450.0ms | 320.0ms | $100.00 | 81.4% | Proprietary Cloud |\n' +
-        '| Exa (Metaphor) | US West Central Cluster | 910.0ms | 2,800.0ms | 410.0ms | $150.00 | 84.1% | Proprietary Cloud |\n' +
-        '| Serper Google | Scraping Proxy Fleet | 580.0ms | 1,890.0ms | 180.0ms | $100.00 | 79.5% | Proxy Relay |\n' +
-        '| Bing Web Search | Azure Central Region | 490.0ms | 1,620.0ms | 250.0ms | $250.00 | 83.0% | Centralized Azure |\n\n' +
-        '### Agent Memory Architecture Benchmarks\n' +
-        '| System | Substrate | Recall P50 | P99 Tail | Cost / 100k Ops | Compaction |\n' +
-        '| :--- | :--- | :--- | :--- | :--- | :--- |\n' +
-        '| **UltraMemory** | **Edge D1 SQLite FTS5 + KV** | **8.4ms** | **24.1ms** | **$20 (Included)** | **Dynamic BM25 Recency** |\n' +
-        '| Mem0 | Cloud Vector DB + Central API | 340.0ms | 1,120.0ms | $80.00 | Embedding Graph |\n' +
-        '| Pinecone Serverless | AWS S3 + Pod Partition | 195.0ms | 680.0ms | $70.00 | Hierarchical HNSW |\n' +
-        '| Supabase pgvector | Postgres RDS us-east-1 | 135.0ms | 450.0ms | $50.00 | IVFFlat / HNSW |\n\n' +
-        '- Audit Methodology: 10,000 real query runs executed against live edge nodes.\n' +
-        '- Verified Status: Operational (Global Anycast SLA 99.99%).\n';
+      const md = [
+        '# UltraDemon Edge Performance & Latency Benchmark Report',
+        'Audited across 330+ Cloudflare Anycast Edge Cities worldwide.',
+        '',
+        '### Head-to-Head Web Search API Benchmarks',
+        '| Engine | Architecture | P50 Latency | P99 Tail | Cold Start | Cost / 100k reqs | Recall@10 | Sovereignty |',
+        '| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |',
+        '| **UltraSearch** | **Cloudflare Workers + D1 FTS5** | **11.8ms** | **38.2ms** | **0.0ms** | **$20.00** | **94.8%** | **100% Self-Contained Edge** |',
+        '| Tavily Search | Centralized AWS us-east-1 | 842.0ms | 2,450.0ms | 320.0ms | $100.00 | 81.4% | Proprietary Cloud |',
+        '| Exa (Metaphor) | US West Central Cluster | 910.0ms | 2,800.0ms | 410.0ms | $150.00 | 84.1% | Proprietary Cloud |',
+        '| Serper Google | Scraping Proxy Fleet | 580.0ms | 1,890.0ms | 180.0ms | $100.00 | 79.5% | Proxy Relay |',
+        '| Bing Web Search | Azure Central Region | 490.0ms | 1,620.0ms | 250.0ms | $250.00 | 83.0% | Centralized Azure |',
+        '',
+        '### Agent Memory Architecture Benchmarks',
+        '| System | Substrate | Recall P50 | P99 Tail | Cost / 100k Ops | Compaction |',
+        '| :--- | :--- | :--- | :--- | :--- | :--- |',
+        '| **UltraMemory** | **Edge D1 SQLite FTS5 + KV** | **8.4ms** | **24.1ms** | **$20 (Included)** | **Dynamic BM25 Recency** |',
+        '| Mem0 | Cloud Vector DB + Central API | 340.0ms | 1,120.0ms | $80.00 | Embedding Graph |',
+        '| Pinecone Serverless | AWS S3 + Pod Partition | 195.0ms | 680.0ms | $70.00 | Hierarchical HNSW |',
+        '| Supabase pgvector | Postgres RDS us-east-1 | 135.0ms | 450.0ms | $50.00 | IVFFlat / HNSW |',
+        '',
+        '- Audit Methodology: 10,000 real query runs executed against live edge nodes.',
+        '- Verified Status: Operational (Global Anycast SLA 99.99%).',
+        ''
+      ].join('\\n');
 
       copyToClipboard(md);
       showAppToast('Copied full benchmark markdown report to clipboard');
@@ -6303,9 +6309,9 @@ requests.post("${origin}/v1/analytics/capture", json={
         authHeaderStr = '-H "Authorization: Bearer ' + token + '" ';
       }
 
-      let curlCmd = 'curl -X ' + method + ' "' + ORIGIN + (endpoint.startsWith('/') ? endpoint : '/' + endpoint) + '" \\\n  ' + authHeaderStr + '-H "Content-Type: application/json"';
+      let curlCmd = 'curl -X ' + method + ' "' + ORIGIN + (endpoint.startsWith('/') ? endpoint : '/' + endpoint) + '" ' + authHeaderStr + '-H "Content-Type: application/json"';
       if (method !== 'GET' && bodyText) {
-        curlCmd += ' \\\n  -d ' + JSON.stringify(bodyText);
+        curlCmd += ' -d ' + JSON.stringify(bodyText);
       }
       lastTesterCurlCommand = curlCmd;
 

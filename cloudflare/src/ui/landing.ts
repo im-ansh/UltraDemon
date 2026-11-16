@@ -1666,7 +1666,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       </div>
 
       <!-- Auth Form -->
-      <form id="authModalForm" onsubmit="handleAuthModalSubmit(event)" class="space-y-3.5 text-xs">
+      <form id="authModalForm" onsubmit="event.preventDefault(); handleAuthModalSubmit(event); return false;" class="space-y-3.5 text-xs">
         <div>
           <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider mb-1">Email address</label>
           <input type="email" id="modalAuthEmail" required class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-mono" placeholder="agent@company.com">
@@ -1684,7 +1684,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <div id="modalAuthError" class="text-red-600 text-[11px] hidden font-mono"></div>
         <div id="modalAuthSuccess" class="text-emerald-700 text-[11px] hidden font-mono"></div>
 
-        <button type="submit" id="modalAuthSubmitBtn" class="w-full py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold transition-colors cursor-pointer shadow-xs">
+        <button type="submit" onclick="handleAuthModalSubmit(event)" id="modalAuthSubmitBtn" class="w-full py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold transition-colors cursor-pointer shadow-xs">
           Sign In
         </button>
 
@@ -1843,11 +1843,11 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         if (err) {
           err.innerText = error.message || 'Authentication error';
           err.classList.remove('hidden');
-          if (error.message && error.message.includes('switch to Create Account')) {
+          if (error.message && (error.message.includes('switch to Create Account') || error.message.includes('Incorrect password') || error.message.includes('not found') || error.message.includes('password'))) {
             const switchBtn = document.createElement('button');
             switchBtn.type = 'button';
             switchBtn.className = 'block mt-2 underline font-semibold text-neutral-900 cursor-pointer';
-            switchBtn.innerText = 'Click here to Switch to Create Account';
+            switchBtn.innerText = 'Click here to Switch to Create Account / Set Password';
             switchBtn.onclick = function() { switchAuthTab('signup'); };
             err.appendChild(switchBtn);
           }
@@ -1859,6 +1859,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         }
       }
     }
+    window.handleAuthModalSubmit = handleAuthModalSubmit;
 
     async function handleModalGuestAccess() {
       const btn = document.getElementById('modalGuestBtn');
@@ -1887,6 +1888,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         }
       }
     }
+    window.handleModalGuestAccess = handleModalGuestAccess;
 
     let inlineAuthMode = 'signin';
     window.switchInlineAuthTab = function(mode) {
@@ -1989,12 +1991,12 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         if (err) {
           err.innerText = error.message || 'Authentication error';
           err.classList.remove('hidden');
-          if (error.message && error.message.includes('switch to Create Account')) {
+          if (error.message && (error.message.includes('switch to Create Account') || error.message.includes('Incorrect password') || error.message.includes('not found') || error.message.includes('password'))) {
             const switchBtn = document.createElement('button');
             switchBtn.type = 'button';
             switchBtn.className = 'block mt-2 underline font-semibold text-neutral-900 cursor-pointer';
-            switchBtn.innerText = 'Click here to Switch to Create Account';
-            switchBtn.onclick = function() { switchAuthTab('signup'); };
+            switchBtn.innerText = 'Click here to Switch to Create Account / Set Password';
+            switchBtn.onclick = function() { switchInlineAuthTab('signup'); };
             err.appendChild(switchBtn);
           }
         }
@@ -2005,6 +2007,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         }
       }
     }
+    window.handleInlineAuthSubmit = handleInlineAuthSubmit;
 
     function setBillingCycle() {}
 
@@ -2028,7 +2031,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
         if (output) {
           output.classList.remove('hidden');
-          output.innerHTML = '// UltraDemon Anycast Response — ' + latency + 'ms roundtrip\n' +
+          output.innerHTML = '// UltraDemon Anycast Response — ' + latency + 'ms roundtrip\\n' +
             JSON.stringify({
               latency_ms: parseFloat(latency),
               status: res.status,
