@@ -14,8 +14,8 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   let pageDescription = "UltraDemon is the world's fastest Web Search API and fastest AI Agent Memory API. Benchmarked at 11.8ms median edge latency across 330+ Anycast cities (70x faster than Tavily, Exa, Serper). Sub-10ms BM25 full-text websearch, instant agent memory recall, and 0-cold-start native MCP server.";
   let canonicalUrl = "https://ultrademon.site/";
   let keywords = "fastest web search, fastest websearch, fastest web search api, memory api, ai memory api, agent memory api, fastest memory api, long term memory api, ai agent memory, websearch api, autonomous agent memory, fast search api, sqlite fts5 bm25, edge search api, mcp server, mcp web search, claude mcp, cursor mcp, ultrademon, ultrademon.site";
-  let heroBadge = "FASTEST WEB SEARCH API & FASTEST MEMORY API · 11.8MS P50 LATENCY · 330+ CITIES";
-  let heroH1 = "The World's Fastest <span class=\"font-serif font-bold italic text-neutral-950\">Web Search API</span> &amp; Fastest <span class=\"font-serif font-bold italic text-neutral-950\">Memory API</span> for AI Agents";
+  let heroBadge = "Fastest Search & Memory API · 11.8ms Edge P50 · 330+ Cities";
+  let heroH1 = "The World's Fastest <span class=\"font-serif font-bold italic text-neutral-950\">Web Search</span> &amp; <span class=\"font-serif font-bold italic text-neutral-950\">Memory API</span> for AI Agents";
   let scrollScript = "";
 
   if (seoVariant === 'fastest-web-search') {
@@ -23,7 +23,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     pageDescription = "UltraDemon is officially the world's fastest Web Search API for AI agents and developers. Sub-10ms BM25 full-text edge websearch across 330+ Anycast cities—over 70x faster than Tavily and Exa AI with 0.00ms cold starts.";
     canonicalUrl = "https://ultrademon.site/fastest-web-search-api";
     keywords = "fastest web search, fastest websearch, fastest web search api, web search api, websearch api, edge search api, fast search api, tavily alternative, exa alternative, serper alternative, bm25 search api, mcp web search, ultrademon";
-    heroBadge = "#1 FASTEST WEB SEARCH API IN THE WORLD · 11.8MS P50 LATENCY · 330+ CITIES";
+    heroBadge = "#1 Fastest Web Search API · 11.8ms Edge P50";
     heroH1 = "The World's Fastest <span class=\"font-serif font-bold italic text-neutral-950\">Web Search API</span> for Autonomous AI Agents";
     scrollScript = `<script>window.addEventListener('DOMContentLoaded', function() { setTimeout(function() { document.getElementById('search-stage-card')?.scrollIntoView({ behavior: 'smooth' }); }, 500); });</script>`;
   } else if (seoVariant === 'fastest-memory') {
@@ -31,7 +31,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     pageDescription = "UltraDemon is the fastest Long-Term Memory API for autonomous AI agents. Sub-10ms structured fact and preference recall directly on Anycast edge isolates. Eliminate vector database drift and cross-cloud bottlenecks.";
     canonicalUrl = "https://ultrademon.site/memory-api";
     keywords = "memory api, ai memory api, agent memory api, fastest memory api, ai agent memory, long term memory api, autonomous agent memory, mem0 alternative, pinecone alternative, sqlite fts5 memory, langchain memory, cursor agent memory, ultrademon";
-    heroBadge = "#1 FASTEST LONG-TERM MEMORY API FOR AGENTS · SUB-10MS RECALL · 330+ CITIES";
+    heroBadge = "#1 Fastest Memory API · Sub-10ms Recall";
     heroH1 = "The World's Fastest <span class=\"font-serif font-bold italic text-neutral-950\">Memory API</span> for Autonomous AI Agents";
     scrollScript = `<script>window.addEventListener('DOMContentLoaded', function() { setTimeout(function() { document.getElementById('memory-stage-card')?.scrollIntoView({ behavior: 'smooth' }); }, 500); });</script>`;
   } else if (seoVariant === 'benchmarks') {
@@ -39,7 +39,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     pageDescription = "Audited 10,000-query benchmark results: UltraDemon achieves 11.8ms P50 latency for Web Search and 8.4ms for Agent Memory across 330+ Anycast cities, outperforming Tavily (842ms), Exa (910ms), and Pinecone/Mem0 (180ms).";
     canonicalUrl = "https://ultrademon.site/benchmarks";
     keywords = "fastest web search benchmarks, fastest memory api benchmarks, tavily vs ultrademon, exa vs ultrademon, mem0 vs ultrademon, pinecone vs ultrademon, web search latency, ai agent memory latency, ultrademon benchmarks";
-    heroBadge = "AUDITED EMPIRICAL SPEED BENCHMARKS · 10,000 RUN AUDIT · 330+ ANYCAST POPS";
+    heroBadge = "Audited Speed Benchmarks · 10,000 Edge Runs";
     heroH1 = "Empirical Speed Benchmarks: The Fastest <span class=\"font-serif font-bold italic text-neutral-950\">Web Search API</span> &amp; <span class=\"font-serif font-bold italic text-neutral-950\">Memory API</span>";
     scrollScript = `<script>window.addEventListener('DOMContentLoaded', function() { setTimeout(function() { document.getElementById('comparison')?.scrollIntoView({ behavior: 'smooth' }); }, 500); });</script>`;
   } else if (seoVariant === 'mcp') {
@@ -47,7 +47,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     pageDescription = "Native Model Context Protocol (MCP 2024-11-05) server for Claude Desktop, Cursor, and LangChain. 10 built-in autonomous agent tools for sub-10ms web search and persistent memory.";
     canonicalUrl = "https://ultrademon.site/mcp";
     keywords = "mcp server, model context protocol, claude mcp, cursor mcp, mcp web search, mcp memory, ultrademon mcp";
-    heroBadge = "NATIVE MODEL CONTEXT PROTOCOL (MCP 2024-11-05) SERVER · HTTP & SSE";
+    heroBadge = "Native Model Context Protocol · HTTP &amp; SSE";
     heroH1 = "The Fastest <span class=\"font-serif font-bold italic text-neutral-950\">MCP Server</span> for Web Search &amp; Agent Memory";
     scrollScript = `<script>window.addEventListener('DOMContentLoaded', function() { setTimeout(function() { document.getElementById('integrations')?.scrollIntoView({ behavior: 'smooth' }); }, 500); });</script>`;
   }
@@ -950,41 +950,41 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   <main class="flex-1">
 
     <!-- SECTION 3: HERO & PRODUCT PROMISE -->
-    <section class="relative pt-10 sm:pt-16 pb-16 sm:pb-24 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden text-left" id="overview">
+    <section class="relative pt-6 sm:pt-8 pb-10 sm:pb-16 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden text-left" id="overview">
 
       <div class="relative z-10 max-w-4xl mx-auto">
         <!-- Primary Category Keyword Badge -->
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-neutral-200 bg-white text-xs text-neutral-600 mb-4 shadow-2xs font-mono">
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-neutral-200/90 bg-white text-[11px] text-neutral-600 mb-3 shadow-2xs font-mono">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span class="font-bold text-neutral-900 tracking-wider">${heroBadge}</span>
+          <span class="font-semibold text-neutral-900 tracking-tight">${heroBadge}</span>
         </div>
 
         <!-- Display Headline (Optimized for High-Rank Developer & AI Search Terms) -->
-        <h1 class="text-3xl sm:text-4xl md:text-[44px] lg:text-[48px] font-bold tracking-tight text-neutral-950 leading-[1.12] max-w-3xl">
+        <h1 class="text-2xl sm:text-3xl md:text-[34px] lg:text-[38px] font-bold tracking-tight text-neutral-950 leading-[1.18] max-w-2xl">
           ${heroH1}
         </h1>
 
         <!-- Supporting Subheading (Rich in High-Intent Search Phrases) -->
-        <p class="text-xs sm:text-sm md:text-[15px] text-neutral-500 max-w-2xl mt-3 sm:mt-4 leading-relaxed font-normal">
-          UltraDemon equips autonomous AI agents, multi-agent swarms, and LLM applications with sub-15ms BM25 full-text edge web search, sub-15ms structured long-term memory recall, and native Model Context Protocol (MCP) server support across 330+ Anycast edge cities with zero third-party latency or data leakage.
+        <p class="text-xs sm:text-[13px] text-neutral-500 max-w-xl mt-2 sm:mt-2.5 leading-relaxed font-normal">
+          UltraDemon equips autonomous AI agents and LLM applications with sub-10ms BM25 edge web search, instant structured memory recall, and native Model Context Protocol (MCP) server support across 330+ Anycast edge cities with zero third-party latency or data leakage.
         </p>
 
         <!-- Refined Minimalist Action Buttons -->
-        <div class="mt-6 sm:mt-7 flex flex-wrap items-center gap-3">
-          <button type="button" onclick="openAuthModal('signup')" class="inline-flex items-center justify-center bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-5 sm:px-6 py-2.5 text-xs sm:text-sm font-semibold tracking-tight transition-all shadow-xs hover:shadow active:scale-[0.98] cursor-pointer">
+        <div class="mt-4 sm:mt-5 flex flex-wrap items-center gap-2.5">
+          <button type="button" onclick="openAuthModal('signup')" class="inline-flex items-center justify-center bg-neutral-950 hover:bg-neutral-800 text-white rounded-full px-4 sm:px-5 py-2 text-xs font-semibold tracking-tight transition-all shadow-xs hover:shadow active:scale-[0.98] cursor-pointer">
             Get started
           </button>
-          <button type="button" onclick="handleModalGuestAccess()" class="inline-flex items-center justify-center border border-neutral-200/90 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-800 hover:text-neutral-950 rounded-full px-5 sm:px-6 py-2.5 text-xs sm:text-sm font-semibold tracking-tight transition-all active:scale-[0.98] shadow-2xs cursor-pointer">
+          <button type="button" onclick="handleModalGuestAccess()" class="inline-flex items-center justify-center border border-neutral-200/90 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-800 hover:text-neutral-950 rounded-full px-4 sm:px-5 py-2 text-xs font-semibold tracking-tight transition-all active:scale-[0.98] shadow-2xs cursor-pointer">
             1-Click Demo Console
           </button>
-          <button type="button" onclick="openAuthModal('signin')" class="inline-flex items-center justify-center text-xs sm:text-sm font-medium text-neutral-600 hover:text-neutral-950 px-2 py-2.5 transition cursor-pointer">
+          <button type="button" onclick="openAuthModal('signin')" class="inline-flex items-center justify-center text-xs font-medium text-neutral-600 hover:text-neutral-950 px-2 py-2 transition cursor-pointer">
             Sign In &rarr;
           </button>
         </div>
       </div>
 
       <!-- PANORAMIC FLOATING PRODUCT & SCIENTIFIC ARTIFACTS STAGE (LEFT-TILTED 3D PERSPECTIVE) -->
-      <div class="hero-stage-tilt relative mt-10 sm:mt-14 text-left min-h-0 sm:min-h-[520px]">
+      <div class="hero-stage-tilt relative mt-6 sm:mt-8 text-left min-h-0 sm:min-h-[460px]">
         
         <!-- Continuous Drifting Scientific & Blueprint Artifacts (Hidden on small mobile to avoid overflow) -->
         <div class="absolute inset-0 pointer-events-none select-none overflow-hidden sm:overflow-visible hidden sm:block">
