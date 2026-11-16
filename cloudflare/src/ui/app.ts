@@ -226,13 +226,13 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         position: fixed !important;
         top: 52px !important;
         left: 0 !important;
-        width: 240px !important;
+        width: 256px !important;
         height: calc(100vh - 52px) !important;
         z-index: 40 !important;
         background-color: #ffffff !important;
       }
       .app-main-wrapper {
-        padding-left: 240px !important;
+        padding-left: 256px !important;
       }
     }
     * {
@@ -459,6 +459,17 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
   <!-- Early-Bound Sovereign App Handlers (Available Millisecond 0) -->
   <script>
+    window.EDGE_API_BASE = (window.location.hostname.includes('ultrademon.site') && !window.location.hostname.includes('workers.dev'))
+      ? 'https://ultrasearch-api.aaronvanoss.workers.dev'
+      : '';
+    var _nativeFetch = window.fetch;
+    window.fetch = function(resource, init) {
+      if (typeof resource === 'string' && (resource.startsWith('/v1/') || resource.startsWith('/mcp'))) {
+        resource = window.EDGE_API_BASE + resource;
+      }
+      return _nativeFetch.call(this, resource, init);
+    };
+
     window.appAuthMode = 'signin';
     window.isAppModalSubmitting = false;
     window.currentAppViewId = 'overview';
@@ -502,27 +513,117 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       } catch (e) {}
     };
 
-    // Update Header Titles available millisecond 0
+    // Switch Memory Lab Sub-Workflows available millisecond 0
+    window.switchMemoryTab = function(tabName) {
+      var storeTab = document.getElementById('memTabStore');
+      var recallTab = document.getElementById('memTabRecall');
+      var explorerTab = document.getElementById('memTabExplorer');
+
+      var storePanel = document.getElementById('memPanelStore');
+      var recallPanel = document.getElementById('memPanelRecall');
+      var explorerPanel = document.getElementById('memPanelExplorer');
+
+      var tabs = [
+        { name: 'store', tab: storeTab, panel: storePanel },
+        { name: 'recall', tab: recallTab, panel: recallPanel },
+        { name: 'explorer', tab: explorerTab, panel: explorerPanel }
+      ];
+
+      tabs.forEach(function(item) {
+        if (!item.tab || !item.panel) return;
+        if (item.name === tabName) {
+          item.tab.className = 'py-1.5 px-3.5 rounded-lg bg-neutral-950 text-white font-semibold transition cursor-pointer shadow-2xs text-xs';
+          item.panel.classList.remove('hidden');
+          item.panel.setAttribute('aria-hidden', 'false');
+        } else {
+          item.tab.className = 'py-1.5 px-3.5 rounded-lg text-neutral-600 hover:text-black font-medium transition cursor-pointer text-xs';
+          item.panel.classList.add('hidden');
+          item.panel.setAttribute('aria-hidden', 'true');
+        }
+      });
+    };
+
+    // Update Header Titles and Contextual Top Action available millisecond 0
     window.updateHeaderTitles = function(viewId) {
-      var titles = {
-        overview: ['ultrademon.site', 'Sovereign Autonomous Memory, Full-Text Edge Search, and Custom Model Context Protocol (MCP) across 330+ Anycast edge locations.'],
-        summoning: ['Seamless Summoning Protocol', 'Zero-Cold-Start Anycast Edge Tunnel with Zero-Error Dual-Tier Resilience and Fastest Edge API Keys.'],
-        benchmarks: ['Edge Performance Benchmarks & Independent Telemetry', '10,000 real query runs executed across Cloudflare Anycast edge nodes in 330+ cities worldwide. Zero cold starts, sub-15ms BM25 full-text search, and autonomous sub-15ms memory recall.'],
-        keys: ['API Keys & Custom MCP Server', 'Create sovereign API keys, summon pre-warmed edge tunnels, and configure native Model Context Protocol tools for AI agents.'],
-        memory: ['UltraMemory Lab', 'Store, query, and browse agent structured long-term memory with sub-15ms edge recall.'],
-        search: ['UltraSearch Studio', 'Test live BM25 web search and multi-hop research queries embedded at Cloudflare edge.'],
-        crawler: ['Web Crawler Control', 'Dispatch edge crawler tasks directly into D1 SQLite FTS5 index tables.'],
-        membership: ['Memberships & Quotas', 'Manage your subscription tier and upgrade daily limits.'],
-        integrations: ['Integrations & MCP Protocol', 'Connect UltraDemon to Claude Desktop, Cursor, and autonomous agent frameworks.'],
-        analytics: ['Telemetry & ICP Engine', 'PostHog-competitive edge analytics with autonomous Ideal Customer Profile synthesis.'],
-        tester: ['API Sandbox Tester', 'Interactive real-time test bench for UltraSearch, UltraMemory, and UltraMetrics endpoints with live latency metrics.']
+      var viewInfo = {
+        overview: {
+          title: 'Developer Workspace',
+          desc: 'Sovereign Autonomous Memory, Full-Text Edge Search, and Custom Model Context Protocol (MCP) across 330+ Anycast edge locations.',
+          breadcrumb: 'Overview',
+          action: '<button type="button" onclick="createOverviewApiKey()" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg><span>+ Generate Key</span></button>'
+        },
+        search: {
+          title: 'UltraSearch Studio',
+          desc: 'Test live BM25 web search and multi-hop research queries embedded at Cloudflare edge.',
+          breadcrumb: 'Search Studio',
+          action: '<button type="button" onclick="document.getElementById(\'appSearchQuery\')?.focus();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span>New Search</span></button>'
+        },
+        memory: {
+          title: 'UltraMemory Lab',
+          desc: 'Store, query, and browse agent structured long-term memory with sub-15ms edge recall.',
+          breadcrumb: 'UltraMemory Lab',
+          action: '<button type="button" onclick="if(typeof switchMemoryTab===\'function\') switchMemoryTab(\'store\'); document.getElementById(\'appMemContent\')?.focus();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg><span>+ Store Memory</span></button>'
+        },
+        tester: {
+          title: 'API Sandbox Tester',
+          desc: 'Interactive real-time test bench for UltraSearch, UltraMemory, and UltraMetrics endpoints with live latency metrics.',
+          breadcrumb: 'API Sandbox',
+          action: '<button type="button" onclick="if(typeof executeTesterQuery===\'function\') executeTesterQuery();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>Run API Test</span></button>'
+        },
+        keys: {
+          title: 'API Keys & Custom MCP Server',
+          desc: 'Create sovereign API keys, summon pre-warmed edge tunnels, and configure native Model Context Protocol tools for AI agents.',
+          breadcrumb: 'API Keys & MCP',
+          action: '<button type="button" onclick="document.getElementById(\'appKeyLabel\')?.focus();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg><span>+ Create Key</span></button>'
+        },
+        summoning: {
+          title: 'Seamless Summoning Protocol',
+          desc: 'Zero-Cold-Start Anycast Edge Tunnel with Zero-Error Dual-Tier Resilience and Fastest Edge API Keys.',
+          breadcrumb: 'Seamless Summon',
+          action: '<button type="button" onclick="if(typeof summonNewEdgeKey===\'function\') summonNewEdgeKey();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>Summon Edge Key</span></button>'
+        },
+        integrations: {
+          title: 'MCP Protocol & SDKs',
+          desc: 'Connect UltraDemon to Claude Desktop, Cursor, and autonomous agent frameworks.',
+          breadcrumb: 'MCP & SDKs',
+          action: '<button type="button" onclick="if(typeof copyMcpDirectConfig===\'function\') copyMcpDirectConfig();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><span>Copy MCP Config</span></button>'
+        },
+        benchmarks: {
+          title: 'Edge Performance Benchmarks',
+          desc: '10,000 real query runs executed across Cloudflare Anycast edge nodes in 330+ cities worldwide.',
+          breadcrumb: 'Benchmarks',
+          action: '<button type="button" onclick="if(typeof runAllBenchmarks===\'function\') runAllBenchmarks();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Run Benchmarks</span></button>'
+        },
+        analytics: {
+          title: 'Telemetry & Observability',
+          desc: 'PostHog-competitive edge analytics with autonomous Ideal Customer Profile synthesis.',
+          breadcrumb: 'Observability',
+          action: '<button type="button" onclick="if(typeof loadAnalyticsDashboard===\'function\') loadAnalyticsDashboard();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg><span>Refresh Telemetry</span></button>'
+        },
+        crawler: {
+          title: 'AI Crawl Control',
+          desc: 'Dispatch edge crawler tasks directly into D1 SQLite FTS5 index tables.',
+          breadcrumb: 'AI Crawl Control',
+          action: '<button type="button" onclick="document.getElementById(\'appCrawlUrlSearch\')?.focus();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg><span>+ Ingest URL</span></button>'
+        },
+        membership: {
+          title: 'Memberships & Quotas',
+          desc: 'Manage your subscription tier and upgrade daily limits.',
+          breadcrumb: 'Quotas & Top-Ups',
+          action: '<button type="button" onclick="openAppAuthModal(\'signup\')" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><span>Upgrade Tier &rarr;</span></button>'
+        }
       };
-      if (titles[viewId]) {
-        var t = document.getElementById('viewHeaderTitle');
-        var d = document.getElementById('viewHeaderDesc');
-        if (t) t.innerHTML = titles[viewId][0];
-        if (d) d.innerText = titles[viewId][1];
-      }
+
+      var info = viewInfo[viewId] || viewInfo.overview;
+      var t = document.getElementById('viewHeaderTitle');
+      var d = document.getElementById('viewHeaderDesc');
+      var bread = document.getElementById('topBreadcrumbView');
+      var actionBox = document.getElementById('topPrimaryActionContainer');
+
+      if (t) t.innerHTML = info.title;
+      if (d) d.innerText = info.desc;
+      if (bread) bread.innerText = info.breadcrumb;
+      if (actionBox) actionBox.innerHTML = info.action;
     };
 
     // Card cascade effect available millisecond 0
@@ -619,6 +720,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               v.classList.add('hidden');
               v.classList.remove('magic-flow-out', 'magic-flow-in');
               v.style.display = 'none';
+              v.setAttribute('aria-hidden', 'true');
             }
           });
         }
@@ -639,6 +741,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
           // PHASE 2: Hide outgoing, show incoming with smooth flow
           prevViewEl.classList.add('hidden');
           prevViewEl.style.display = 'none';
+          prevViewEl.setAttribute('aria-hidden', 'true');
           prevViewEl.classList.remove('magic-flow-out');
 
           window.currentAppViewId = viewId;
@@ -647,6 +750,8 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
           nextViewEl.classList.remove('hidden');
           nextViewEl.style.display = 'block';
+          nextViewEl.removeAttribute('aria-hidden');
+          nextViewEl.setAttribute('aria-hidden', 'false');
           nextViewEl.classList.remove('magic-flow-out');
           nextViewEl.classList.add('magic-flow-in');
           if (typeof window.applyMagicCardCascade === 'function') window.applyMagicCardCascade(nextViewEl);
@@ -702,11 +807,14 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               v.style.display = 'block';
               v.style.opacity = '1';
               v.style.pointerEvents = 'auto';
+              v.removeAttribute('aria-hidden');
+              v.setAttribute('aria-hidden', 'false');
               if (typeof window.applyMagicCardCascade === 'function') window.applyMagicCardCascade(v);
             } else {
               v.classList.add('hidden');
               v.classList.remove('magic-flow-out', 'magic-flow-in');
               v.style.display = 'none';
+              v.setAttribute('aria-hidden', 'true');
             }
           }
         });
@@ -1002,7 +1110,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 </head>
 <body class="min-h-screen bg-[#f7f7f7] text-neutral-950 flex flex-col md:flex-row antialiased selection:bg-black selection:text-white">
 
-  <!-- Cloudflare Global Top Navigation Bar (Fixed across entire window) -->
+  <!-- Cloudflare Global Top Navigation Bar (Fixed 52px across entire window) -->
   <header class="fixed top-0 left-0 right-0 h-[52px] z-50 bg-white border-b border-neutral-200/80 px-3 sm:px-4 flex items-center justify-between shadow-2xs select-none">
     <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
       <!-- UltraDemon Brand Logo in Top Corner -->
@@ -1012,25 +1120,32 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
       <!-- Account Selector Dropdown -->
       <div onclick="toggleAppAccountMenu(event)" id="userAccountSelectorBtn" class="flex items-center gap-1 cursor-pointer hover:bg-neutral-100 rounded-md px-2 py-1 transition text-xs font-medium text-neutral-800" title="Click to view account or switch login">
-        <span id="userEmailTopDisplay" class="truncate max-w-[120px] sm:max-w-[180px]">Workspace</span>
+        <span id="userEmailTopDisplay" class="truncate max-w-[120px] sm:max-w-[170px]">Workspace</span>
         <svg class="w-3.5 h-3.5 text-neutral-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
       </div>
 
       <span class="text-neutral-300 font-light hidden sm:inline">/</span>
 
-      <!-- Star & Domain & Plan Pill -->
+      <!-- Breadcrumbs & Dynamic Session Indicator -->
       <div class="hidden sm:flex items-center gap-2 min-w-0">
-        <button type="button" id="btnFavoriteDomain" onclick="window.toggleFavoriteDomain(this)" class="text-neutral-400 hover:text-amber-500 transition cursor-pointer" title="Pin domain to favorites">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        </button>
-        <button type="button" onclick="setAppView('overview')" class="font-semibold text-neutral-900 text-xs font-sans hover:underline cursor-pointer">ultrademon.site</button>
-        <button type="button" onclick="setAppView('membership')" id="userPlanBadgeTop" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-neutral-100 text-neutral-700 border border-neutral-300 hover:bg-neutral-200 transition cursor-pointer" title="Click to view Membership Quotas">free</button>
-        <svg class="w-3 h-3 text-neutral-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        <span class="text-xs text-neutral-500 font-sans">ultrademon.site</span>
+        <span class="text-neutral-300">/</span>
+        <span id="topBreadcrumbView" class="font-semibold text-neutral-900 text-xs font-sans">Overview</span>
+        <span id="userPlanBadgeTop" class="hidden">free</span>
+        <span id="topSessionStateBadge" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-neutral-100 text-neutral-700 border border-neutral-300">Guest Demo</span>
       </div>
     </div>
 
     <!-- Right Utility Actions -->
     <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+      <!-- Dynamic Contextual Primary Action Container (One Primary Action Per View) -->
+      <div id="topPrimaryActionContainer" class="flex items-center">
+        <button type="button" onclick="createOverviewApiKey()" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs">
+          <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg>
+          <span>+ Generate Key</span>
+        </button>
+      </div>
+
       <!-- Quick Active Key Pill Container -->
       <div id="quickActiveKeyContainer" class="relative flex items-center gap-1.5 bg-neutral-50 hover:bg-neutral-100 border border-neutral-200/90 rounded-md px-2.5 py-1 text-xs transition">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -1055,13 +1170,9 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </div>
       </div>
 
-      <button type="button" onclick="openHelpBotDrawer()" class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium text-neutral-700 hover:text-black hover:bg-neutral-100 transition cursor-pointer">
-        <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        <span>Ask AI</span>
-      </button>
       <a href="/docs" target="_blank" class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium text-neutral-700 hover:text-black hover:bg-neutral-100 transition">
         <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
-        <span>Support</span>
+        <span>Docs</span>
       </a>
 
       <!-- User Avatar Profile Circle -->
@@ -1101,7 +1212,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
     <!-- Slide-Out Menu -->
     <div class="relative w-4/5 max-w-xs bg-white h-full shadow-2xl p-5 flex flex-col justify-between overflow-y-auto z-10">
-      <div class="space-y-5">
+      <div class="space-y-4">
         <!-- Brand Logo & Close Button -->
         <div class="flex items-center justify-between pb-3 border-b border-neutral-100">
           <a href="/" class="flex items-center gap-2 group">
@@ -1114,88 +1225,90 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </div>
 
         <!-- User Profile & Plan Badge -->
-        <div class="p-3 bg-neutral-50 border border-neutral-200 rounded-xl space-y-2">
+        <div class="p-3 bg-neutral-50 border border-neutral-200/80 rounded-xl space-y-1.5">
           <div class="flex items-center justify-between">
-            <div class="flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-mono">Domain</span>
-            </div>
-            <span id="mobileDrawerPlanBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase font-mono bg-neutral-950 text-white">
-              Free
-            </span>
-          </div>
-          <div id="mobileDrawerEmail" class="font-mono text-xs font-semibold text-neutral-900 truncate">
-            ultrademon.site
+            <span id="mobileDrawerEmail" class="font-sans text-xs font-semibold text-neutral-900 truncate">Workspace</span>
+            <span id="mobileDrawerPlanBadge" class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase font-mono bg-neutral-950 text-white">FREE</span><span id="mobileActiveViewBadge" class="hidden">Overview</span>
           </div>
           <div class="flex items-center justify-between pt-1 border-t border-neutral-200/60 text-[10px] font-mono text-neutral-500">
-            <span>Edge PoP: Active</span>
-            <span class="text-neutral-900 font-semibold">&lt;15ms</span>
+            <span>Anycast PoP: Online</span>
+            <span class="text-neutral-900 font-semibold">&lt;10ms</span>
           </div>
         </div>
 
-        <!-- Navigation List -->
-        <nav class="flex flex-col space-y-1 text-xs">
-          <button type="button" id="mobile-nav-overview" onclick="setAppView('overview', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
-            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
-            <span>Overview</span>
-          </button>
-          <button type="button" id="mobile-nav-summoning" onclick="setAppView('summoning', event); toggleAppMobileDrawer();" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
-            <div class="flex items-center gap-3">
-              <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              <span class="font-semibold text-neutral-900">Seamless Summon</span>
-            </div>
-            <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800">Sub-10ms</span>
-          </button>
-          <button type="button" id="mobile-nav-keys" onclick="setAppView('keys', event); toggleAppMobileDrawer();" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
-            <div class="flex items-center gap-3">
+        <!-- Categorized Mobile Navigation List -->
+        <nav class="flex flex-col space-y-3 text-xs">
+          <!-- Workspace -->
+          <div class="space-y-0.5">
+            <div class="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider px-2 py-0.5">Workspace</div>
+            <button type="button" id="mobile-nav-overview" onclick="setAppView('overview', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+              <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+              <span>Overview</span>
+            </button>
+            <button type="button" id="mobile-nav-search" onclick="setAppView('search', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+              <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span>Search Studio</span>
+            </button>
+            <button type="button" id="mobile-nav-memory" onclick="setAppView('memory', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+              <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+              <span>UltraMemory Lab</span>
+            </button>
+            <button type="button" id="mobile-nav-tester" onclick="setAppView('tester', event); toggleAppMobileDrawer();" class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+              <div class="flex items-center gap-3">
+                <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+                <span>API Sandbox</span>
+              </div>
+              <span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-1 rounded font-semibold">Live</span>
+            </button>
+          </div>
+
+          <!-- Developer -->
+          <div class="space-y-0.5">
+            <div class="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider px-2 py-0.5">Developer</div>
+            <button type="button" id="mobile-nav-keys" onclick="setAppView('keys', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
               <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M21 2l-2 2m-1.5 1.5L14 9l-1.5-1.5-3 3 1.5 1.5L9 14l-4 4H2v3h3l4-4 2 2 3-3-1.5-1.5 3.5-3.5L21 2z"/></svg>
               <span>API Keys &amp; Custom MCP</span>
-            </div>
-            <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-purple-100 text-purple-800">MCP Live</span>
-          </button>
-          <button type="button" id="mobile-nav-search" onclick="setAppView('search', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
-            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <span>UltraSearch Studio</span>
-          </button>
-          <button type="button" id="mobile-nav-memory" onclick="setAppView('memory', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
-            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
-            <span>UltraMemory Lab</span>
-          </button>
-          <button type="button" id="mobile-nav-benchmarks" onclick="setAppView('benchmarks', event); toggleAppMobileDrawer();" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
-            <div class="flex items-center gap-3">
-              <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <span>Benchmarks &amp; Latency</span>
-            </div>
-            <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-700">Global</span>
-          </button>
-          <button type="button" id="mobile-nav-crawler" onclick="setAppView('crawler', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
-            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-            <span>Web Crawler</span>
-          </button>
-          <button type="button" id="mobile-nav-analytics" onclick="setAppView('analytics', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
-            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-            <span>Observability &amp; Logs</span>
-          </button>
-          <button type="button" id="mobile-nav-tester" onclick="setAppView('tester', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
-            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
-            <span>API Sandbox Live Tester</span>
-          </button>
-          <button type="button" id="mobile-nav-membership" onclick="setAppView('membership', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
-            <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            <span>Quotas &amp; Top-Ups</span>
-          </button>
-          <button type="button" id="mobile-nav-integrations" onclick="setAppView('integrations', event); toggleAppMobileDrawer();" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
-            <div class="flex items-center gap-3">
+            </button>
+            <button type="button" id="mobile-nav-summoning" onclick="setAppView('summoning', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+              <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>Seamless Summon</span>
+            </button>
+            <button type="button" id="mobile-nav-integrations" onclick="setAppView('integrations', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
               <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="8" height="8" x="2" y="2" rx="2"/><rect width="8" height="8" x="14" y="2" rx="2"/><rect width="8" height="8" x="14" y="14" rx="2"/><rect width="8" height="8" x="2" y="14" rx="2"/></svg>
-              <span>MCP &amp; SDK Client Libraries</span>
-            </div>
-            <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-700">Docs</span>
-          </button>
+              <span>MCP &amp; SDKs</span>
+            </button>
+          </div>
+
+          <!-- Operations -->
+          <div class="space-y-0.5">
+            <div class="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider px-2 py-0.5">Operations</div>
+            <button type="button" id="mobile-nav-benchmarks" onclick="setAppView('benchmarks', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+              <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>Benchmarks</span>
+            </button>
+            <button type="button" id="mobile-nav-analytics" onclick="setAppView('analytics', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+              <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+              <span>Observability</span>
+            </button>
+            <button type="button" id="mobile-nav-crawler" onclick="setAppView('crawler', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+              <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+              <span>AI Crawl Control</span>
+            </button>
+          </div>
+
+          <!-- Account -->
+          <div class="space-y-0.5">
+            <div class="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider px-2 py-0.5">Account</div>
+            <button type="button" id="mobile-nav-membership" onclick="setAppView('membership', event); toggleAppMobileDrawer();" class="w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-neutral-700 hover:bg-neutral-100 text-left font-medium cursor-pointer">
+              <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span>Quotas &amp; Top-Ups</span>
+            </button>
+          </div>
         </nav>
       </div>
 
       <!-- Drawer Bottom Actions -->
-      <div class="pt-4 border-t border-neutral-100 space-y-2">
+      <div class="pt-4 border-t border-neutral-100 space-y-1.5">
         <button type="button" onclick="openAppAuthModal('signin'); toggleAppMobileDrawer();" class="w-full py-2 px-3 text-xs text-neutral-700 hover:text-black hover:bg-neutral-100 rounded-lg transition flex items-center gap-2 cursor-pointer">
           <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
           <span>Switch Account / Sign In</span>
@@ -1212,9 +1325,9 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     </div>
   </div>
 
-  <!-- Left Sidebar Navigation (Desktop & Tablet Fixed, Authentic Cloudflare Dashboard Standard) -->
-  <aside id="appSidebar" class="w-60 h-[calc(100vh-52px)] fixed top-[52px] left-0 border-r border-neutral-200/80 bg-white z-40 flex-col justify-between p-3.5 shadow-xs select-none overflow-y-auto">
-    <div class="space-y-3">
+  <!-- Left Sidebar Navigation (256px Desktop & Tablet Fixed, Categorized Layout) -->
+  <aside id="appSidebar" class="w-64 h-[calc(100vh-52px)] fixed top-[52px] left-0 border-r border-neutral-200/80 bg-white z-40 flex flex-col justify-between p-3.5 shadow-xs select-none overflow-y-auto">
+    <div class="space-y-4">
       <!-- Quick Search Box (Cmd+K) -->
       <div class="relative">
         <input type="text" id="sidebarQuickSearch" placeholder="Quick search..." onkeydown="if(event.key==='Enter'){ const q = this.value.trim(); if(q){ const searchIn = document.getElementById('appSearchQuery'); if(searchIn) searchIn.value = q; setAppView('search'); if(typeof handleAppSearch==='function') handleAppSearch(); } else { setAppView('search'); } }" class="w-full pl-8 pr-14 py-1.5 rounded-md border border-neutral-200/90 bg-neutral-50 hover:bg-white text-xs text-neutral-800 focus:outline-none focus:border-neutral-400 font-sans transition placeholder:text-neutral-400" />
@@ -1223,136 +1336,158 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       </div>
 
       <!-- Back to Landing Page Link -->
-      <a href="/" class="flex items-center gap-1.5 text-xs text-neutral-600 hover:text-black py-1 px-1 transition">
+      <a href="/" class="flex items-center gap-1.5 text-xs text-neutral-600 hover:text-black py-0.5 px-1 transition">
         <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
         <span>Back to Landing Page</span>
       </a>
 
-      <div class="border-t border-neutral-100 pt-2"></div>
+      <!-- Categorized Navigation -->
+      <nav class="flex flex-col space-y-3 text-xs font-sans" id="sidebarNav">
+        
+        <!-- Category: Workspace -->
+        <div class="space-y-0.5">
+          <div class="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider px-2.5 py-1">Workspace</div>
+          
+          <!-- Overview -->
+          <button type="button" onclick="setAppView('overview')" data-view-target="overview" id="nav-overview" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md bg-neutral-950 text-white font-medium cursor-pointer transition text-left shadow-xs">
+            <div class="flex items-center gap-2 truncate">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+              <span class="truncate">Overview</span>
+            </div>
+          </button>
 
-      <!-- Navigation Items -->
-      <nav class="flex flex-col space-y-0.5 text-xs font-sans" id="sidebarNav">
-        <!-- Overview -->
-        <button type="button" onclick="setAppView('overview')" data-view-target="overview" id="nav-overview" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md bg-neutral-950 text-white font-medium cursor-pointer transition text-left shadow-xs">
-          <div class="flex items-center gap-2 truncate">
-            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
-            <span class="truncate">Overview</span>
-          </div>
-        </button>
+          <!-- Search Studio -->
+          <button type="button" onclick="setAppView('search')" data-view-target="search" id="nav-search" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
+            <div class="flex items-center gap-2 truncate">
+              <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span class="truncate">Search Studio</span>
+            </div>
+          </button>
 
-        <!-- Seamless Summoning (NEW HERO FEATURE) -->
-        <button type="button" onclick="setAppView('summoning')" data-view-target="summoning" id="nav-summoning" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
-          <div class="flex items-center gap-2 truncate">
-            <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            <span class="truncate font-semibold text-neutral-900 group-hover:text-black">Seamless Summon</span>
-          </div>
-          <span class="text-[9px] font-bold font-mono px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">Sub-10ms</span>
-        </button>
+          <!-- UltraMemory Lab -->
+          <button type="button" onclick="setAppView('memory')" data-view-target="memory" id="nav-memory" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
+            <div class="flex items-center gap-2 truncate">
+              <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+              <span class="truncate">UltraMemory Lab</span>
+            </div>
+          </button>
 
-        <!-- API Keys & Custom MCP (HERO FEATURE) -->
-        <button type="button" onclick="setAppView('keys')" data-view-target="keys" id="nav-keys" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
-          <div class="flex items-center gap-2 truncate">
-            <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M21 2l-2 2m-1.5 1.5L14 9l-1.5-1.5-3 3 1.5 1.5L9 14l-4 4H2v3h3l4-4 2 2 3-3-1.5-1.5 3.5-3.5L21 2z"/></svg>
-            <span class="truncate">API Keys &amp; Custom MCP</span>
-          </div>
-          <span class="text-[9px] font-bold font-mono px-1.5 py-0.2 rounded bg-purple-100 text-purple-800 border border-purple-200">MCP Live</span>
-        </button>
+          <!-- API Sandbox -->
+          <button type="button" onclick="setAppView('tester')" data-view-target="tester" id="nav-tester" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
+            <div class="flex items-center gap-2 truncate">
+              <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+              <span class="truncate">API Sandbox</span>
+            </div>
+            <span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded font-semibold">Live</span>
+          </button>
+        </div>
 
-        <!-- Search Studio -->
-        <button type="button" onclick="setAppView('search')" data-view-target="search" id="nav-search" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
-          <div class="flex items-center gap-2 truncate">
-            <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <span class="truncate">Search Studio</span>
-          </div>
-          <svg class="w-3 h-3 text-neutral-300 group-hover:text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-        </button>
+        <!-- Category: Developer -->
+        <div class="space-y-0.5">
+          <div class="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider px-2.5 py-1">Developer</div>
 
-        <!-- UltraMemory Lab -->
-        <button type="button" onclick="setAppView('memory')" data-view-target="memory" id="nav-memory" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
-          <div class="flex items-center gap-2 truncate">
-            <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
-            <span class="truncate">UltraMemory Lab</span>
-          </div>
-          <span class="text-[9px] font-mono text-neutral-500 font-semibold">&lt;15ms</span>
-        </button>
+          <!-- API Keys & Custom MCP -->
+          <button type="button" onclick="setAppView('keys')" data-view-target="keys" id="nav-keys" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
+            <div class="flex items-center gap-2 truncate">
+              <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M21 2l-2 2m-1.5 1.5L14 9l-1.5-1.5-3 3 1.5 1.5L9 14l-4 4H2v3h3l4-4 2 2 3-3-1.5-1.5 3.5-3.5L21 2z"/></svg>
+              <span class="truncate">API Keys &amp; Custom MCP</span>
+            </div>
+          </button>
 
-        <!-- Benchmarks & Latency -->
-        <button type="button" onclick="setAppView('benchmarks')" data-view-target="benchmarks" id="nav-benchmarks" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
-          <div class="flex items-center gap-2 truncate">
-            <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span class="truncate">Benchmarks</span>
-          </div>
-          <span class="text-[9px] font-bold font-mono px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-700 border border-neutral-200">Global</span>
-        </button>
+          <!-- Seamless Summoning -->
+          <button type="button" onclick="setAppView('summoning')" data-view-target="summoning" id="nav-summoning" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
+            <div class="flex items-center gap-2 truncate">
+              <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span class="truncate">Seamless Summon</span>
+            </div>
+          </button>
 
-        <!-- AI Crawl Control -->
-        <button type="button" onclick="setAppView('crawler')" data-view-target="crawler" id="nav-crawler" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
-          <div class="flex items-center gap-2 truncate">
-            <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-            <span class="truncate">AI Crawl Control</span>
-          </div>
-          <svg class="w-3 h-3 text-neutral-300 group-hover:text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-        </button>
+          <!-- MCP & SDKs -->
+          <button type="button" onclick="setAppView('integrations')" data-view-target="integrations" id="nav-integrations" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
+            <div class="flex items-center gap-2 truncate">
+              <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="8" height="8" x="2" y="2" rx="2"/><rect width="8" height="8" x="14" y="2" rx="2"/><rect width="8" height="8" x="14" y="14" rx="2"/><rect width="8" height="8" x="2" y="14" rx="2"/></svg>
+              <span class="truncate">MCP &amp; SDKs</span>
+            </div>
+          </button>
+        </div>
 
-        <!-- Observability & Analytics -->
-        <button type="button" onclick="setAppView('analytics')" data-view-target="analytics" id="nav-analytics" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
-          <div class="flex items-center gap-2 truncate">
-            <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-            <span class="truncate">Observability</span>
-          </div>
-          <svg class="w-3 h-3 text-neutral-300 group-hover:text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-        </button>
+        <!-- Category: Operations -->
+        <div class="space-y-0.5">
+          <div class="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider px-2.5 py-1">Operations</div>
 
-        <!-- API Sandbox -->
-        <button type="button" onclick="setAppView('tester')" data-view-target="tester" id="nav-tester" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
-          <div class="flex items-center gap-2 truncate">
-            <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
-            <span class="truncate">API Sandbox</span>
-          </div>
-          <span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded font-semibold">Live</span>
-        </button>
+          <!-- Benchmarks -->
+          <button type="button" onclick="setAppView('benchmarks')" data-view-target="benchmarks" id="nav-benchmarks" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
+            <div class="flex items-center gap-2 truncate">
+              <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span class="truncate">Benchmarks</span>
+            </div>
+          </button>
 
-        <!-- Quotas & Top-Ups -->
-        <button type="button" onclick="setAppView('membership')" data-view-target="membership" id="nav-membership" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
-          <div class="flex items-center gap-2 truncate">
-            <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            <span class="truncate">Quotas &amp; Top-Ups</span>
-          </div>
-          <svg class="w-3 h-3 text-neutral-300 group-hover:text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-        </button>
+          <!-- Observability -->
+          <button type="button" onclick="setAppView('analytics')" data-view-target="analytics" id="nav-analytics" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
+            <div class="flex items-center gap-2 truncate">
+              <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+              <span class="truncate">Observability</span>
+            </div>
+          </button>
 
-        <!-- Integrations & SDKs -->
-        <button type="button" onclick="setAppView('integrations')" data-view-target="integrations" id="nav-integrations" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
-          <div class="flex items-center gap-2 truncate">
-            <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="8" height="8" x="2" y="2" rx="2"/><rect width="8" height="8" x="14" y="2" rx="2"/><rect width="8" height="8" x="14" y="14" rx="2"/><rect width="8" height="8" x="2" y="14" rx="2"/></svg>
-            <span class="truncate">MCP &amp; SDKs</span>
-          </div>
-          <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-700 border border-neutral-200">Docs</span>
-        </button>
+          <!-- AI Crawl Control -->
+          <button type="button" onclick="setAppView('crawler')" data-view-target="crawler" id="nav-crawler" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
+            <div class="flex items-center gap-2 truncate">
+              <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+              <span class="truncate">AI Crawl Control</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Category: Account -->
+        <div class="space-y-0.5">
+          <div class="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider px-2.5 py-1">Account</div>
+
+          <!-- Quotas & Top-Ups -->
+          <button type="button" onclick="setAppView('membership')" data-view-target="membership" id="nav-membership" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 font-medium cursor-pointer transition text-left group">
+            <div class="flex items-center gap-2 truncate">
+              <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span class="truncate">Quotas &amp; Top-Ups</span>
+            </div>
+          </button>
+        </div>
       </nav>
     </div>
 
-    <!-- Bottom: Manage account -->
-    <div class="pt-2 border-t border-neutral-100 space-y-1">
-      <div class="flex items-center justify-between text-neutral-500 font-mono text-[10px] px-2 py-1">
+    <!-- Bottom Workspace / User Card -->
+    <div class="pt-3 border-t border-neutral-100 space-y-2">
+      <!-- Connectivity & Status -->
+      <div class="flex items-center justify-between text-neutral-500 font-mono text-[10px] px-1">
         <div class="flex items-center gap-1.5">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
           <span>PoP: Online</span>
         </div>
-        <span class="text-neutral-900 font-semibold">&lt;15ms</span>
+        <span class="text-neutral-900 font-semibold">&lt;10ms</span>
       </div>
-      <button type="button" onclick="openAppAuthModal('signin')" class="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-neutral-700 hover:text-black hover:bg-neutral-100 rounded-md transition text-left cursor-pointer">
-        <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-        <span>Switch Account / Sign In</span>
-      </button>
-      <button type="button" onclick="setAppView('membership')" class="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-neutral-600 hover:text-black hover:bg-neutral-100 rounded-md transition text-left cursor-pointer">
-        <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        <span>Manage account</span>
-      </button>
-      <button type="button" onclick="handleAppSignOut()" class="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-red-600 hover:bg-red-50 rounded-md transition text-left cursor-pointer">
-        <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-        <span>Sign Out</span>
-      </button>
+
+      <!-- User Information Box -->
+      <div class="p-2.5 rounded-xl bg-neutral-50 border border-neutral-200/80 space-y-1.5">
+        <div class="flex items-center justify-between gap-1">
+          <span id="sidebarUserEmail" class="font-sans text-xs font-semibold text-neutral-900 truncate">Workspace Guest</span>
+          <span id="sidebarUserPlan" class="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold uppercase bg-neutral-200 text-neutral-700">FREE</span><span id="userPlanBadge" class="hidden">FREE</span>
+        </div>
+        <div class="text-[10px] text-neutral-500 font-sans flex items-center gap-1" id="sidebarUserStatus">
+          <span>Guest Session</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-0.5">
+        <button type="button" onclick="openAppAuthModal('signin')" class="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-neutral-700 hover:text-black hover:bg-neutral-100 rounded-md transition text-left cursor-pointer">
+          <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          <span>Switch Account / Sign In</span>
+        </button>
+        <button type="button" onclick="handleAppSignOut()" class="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-red-600 hover:bg-red-50 rounded-md transition text-left cursor-pointer">
+          <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+          <span>Sign Out</span>
+        </button>
+      </div>
     </div>
   </aside>
 
@@ -1360,58 +1495,28 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
   <div class="app-main-wrapper flex-1 md:pl-60 pt-[52px] min-h-screen w-full flex flex-col">
     <main class="flex-1 py-6 px-3.5 sm:px-8 max-w-7xl w-full min-w-0 mx-auto">
 
-    <!-- Sovereign Engine Breadcrumb & Status Bar -->
-    <div class="border-b border-neutral-200/80 pb-3 mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-      <div class="flex items-center gap-2 text-xs font-mono text-neutral-500 overflow-x-auto no-scrollbar">
-        <span class="inline-flex items-center justify-center w-5 h-5 rounded bg-neutral-950 text-white shrink-0 font-bold text-[10px]" title="UltraDemon Sovereign Engine">
-          UD
-        </span>
-        <span class="font-semibold text-neutral-900">UltraDemon OS</span>
-        <span class="text-neutral-300">/</span>
-        <span id="userEmailDisplay" class="text-neutral-700 font-semibold truncate max-w-[160px]">Workspace</span>
-        <span class="text-neutral-300">/</span>
-        <span class="text-neutral-950 font-bold font-sans">ultrademon.site</span>
-        <span class="text-neutral-300">/</span>
-        <span class="text-emerald-700 font-medium">330+ Anycast PoPs</span>
-      </div>
-
-      <div class="flex items-center gap-2.5 shrink-0">
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200/70 text-[10px] font-mono text-emerald-800 font-semibold">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>Global Anycast · 0.00ms Cold Start · Operational</span>
-        </span>
-        <button type="button" onclick="setAppView('summoning')" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-neutral-950 text-white hover:bg-neutral-800 text-[11px] font-mono font-semibold transition cursor-pointer shadow-xs">
-          <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          <span>Seamless Summon</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Sovereign Engine Header Bar -->
-    <header class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-5 pb-5 border-b border-neutral-200/80">
+    <!-- Sovereign Engine Header Bar (Calm, Contextual, Zero Duplication) -->
+    <header class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 pb-4 border-b border-neutral-200/80">
       <div class="space-y-1">
-        <div class="text-[11px] font-sans font-medium text-neutral-400 uppercase tracking-wider">Sovereign Edge Console</div>
-        <div class="flex items-center gap-3 flex-wrap">
+        <div class="flex items-center gap-2 text-xs font-mono text-neutral-500">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded bg-neutral-950 text-white shrink-0 font-bold text-[10px]" title="UltraDemon Sovereign Engine">
+            UD
+          </span>
+          <span class="font-semibold text-neutral-900">UltraDemon OS</span>
+          <span class="text-neutral-300">/</span>
+          <span id="userEmailDisplay" class="text-neutral-900 font-medium truncate max-w-[140px]">Workspace</span>
+          <span class="text-neutral-300">/</span>
+          <span class="text-neutral-500">330+ Anycast PoPs</span>
+        </div>
+        <div class="flex items-center gap-3 flex-wrap pt-1">
           <h1 id="viewHeaderTitle" class="text-2xl sm:text-3xl font-semibold text-neutral-950 tracking-tight font-sans">
-            ultrademon.site
+            Developer Workspace
           </h1>
-          <span class="px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-mono font-semibold">Anycast Active</span>
+          <span class="px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-mono font-semibold">Anycast Active · &lt;10ms</span>
         </div>
         <p id="viewHeaderDesc" class="text-xs text-neutral-500 font-sans mt-0.5">
           Sovereign Autonomous Memory, Full-Text Edge Search, and Custom Model Context Protocol (MCP) across 330+ Anycast edge locations.
         </p>
-      </div>
-
-      <!-- Sovereign Engine Quick Action Controls -->
-      <div class="flex items-center gap-2 flex-wrap">
-        <button type="button" onclick="showAppToast('DNS tags updated')" class="px-3 py-1.5 rounded-md border border-neutral-300 bg-white hover:bg-neutral-50 text-xs font-medium text-neutral-700 transition cursor-pointer flex items-center gap-1 shadow-2xs">
-          <svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          <span>Add tag</span>
-        </button>
-        <button type="button" onclick="setAppView('benchmarks')" class="px-3 py-1.5 rounded-md bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-medium transition cursor-pointer flex items-center gap-1.5 shadow-xs">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span>Run Benchmarks</span>
-        </button>
       </div>
     </header>
 
@@ -1430,176 +1535,128 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
 <section id="view-overview" class="space-y-6">
 
-
-  <!-- Hero Welcome & Developer Action Banner -->
-  <div class="card-clean p-6 sm:p-7 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-4">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <div>
-        <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-neutral-950 text-white text-[10px] font-mono font-bold tracking-wider uppercase mb-2">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>UltraDemon Developer Console · Edge Active</span>
+  <!-- PRIMARY STATUS STRIP (4 Compact Items) -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 font-sans">
+    
+    <!-- 1: Session & Authentication -->
+    <div class="card-clean p-4 rounded-xl bg-white border border-neutral-200/90 shadow-2xs space-y-2 flex flex-col justify-between">
+      <div class="space-y-1">
+        <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center justify-between">
+          <span>Session State</span>
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
         </div>
-        <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 font-sans">
-          Developer Workspace
-        </h2>
-        <p class="text-xs text-neutral-500 mt-1 max-w-2xl leading-relaxed font-sans">
-          Build with the fastest web search and autonomous agent memory engine on Earth. Generate an API key, copy your integration code, and test endpoints live below.
-        </p>
+        <div class="text-sm font-bold text-neutral-950 font-sans truncate" id="overviewSessionStatus">
+          Guest Demo Mode
+        </div>
       </div>
-      <div class="flex items-center gap-3 shrink-0">
-        <div class="hidden sm:flex items-center gap-3 text-xs font-mono px-3 py-1.5 rounded-xl bg-neutral-50 border border-neutral-200">
-          <span class="text-neutral-500">PoP: <strong id="overviewColoBadge" class="text-neutral-900 font-bold">Auto</strong></span>
-          <span class="text-neutral-300">|</span>
-          <span class="text-neutral-500">RTT: <strong id="overviewRttBadge" class="text-emerald-700 font-bold">&lt;10ms</strong></span>
+      <div class="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs">
+        <button type="button" onclick="openAppAuthModal('signin')" id="overviewSessionActionBtn" class="font-semibold text-neutral-900 hover:underline cursor-pointer text-[11px]">
+          Sign In / Switch &rarr;
+        </button>
+        <span class="text-[10px] font-mono text-neutral-400" id="overviewSessionSubtext">Public Sandbox</span>
+      </div>
+    </div>
+
+    <!-- 2: Active Sovereign Key -->
+    <div class="card-clean p-4 rounded-xl bg-white border border-neutral-200/90 shadow-2xs space-y-2 flex flex-col justify-between">
+      <div class="space-y-1">
+        <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center justify-between">
+          <span>Active API Key</span>
+          <span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-1 rounded font-semibold">Active</span>
         </div>
-        <button type="button" onclick="setAppView('tester')" class="px-3.5 py-2 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 shadow-xs font-sans">
-          <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          <span>Open Full Sandbox &rarr;</span>
+        <div class="text-xs font-bold font-mono text-neutral-950 truncate select-all" id="overviewActiveKeyDisplay">
+          ud_live_demo_console_key
+        </div>
+      </div>
+      <div class="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs">
+        <button type="button" onclick="copyActiveKeyFromOverview()" id="btnOverviewCopyKey" class="font-semibold text-neutral-900 hover:underline cursor-pointer text-[11px] flex items-center gap-1 font-mono">
+          <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          <span id="overviewCopyKeyLabel">Copy Key</span>
+        </button>
+        <button type="button" onclick="setAppView('keys')" class="text-[11px] text-neutral-500 hover:text-black cursor-pointer font-sans">
+          Manage &rarr;
         </button>
       </div>
     </div>
-  </div>
 
-  <!-- STEP 1: CREATE API KEY -->
-  <div class="card-clean p-6 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-4">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-neutral-100">
-      <div class="flex items-center gap-3">
-        <div class="w-7 h-7 rounded-lg bg-neutral-950 text-white flex items-center justify-center font-bold text-xs font-mono">1</div>
-        <div>
-          <h3 class="text-sm font-bold text-neutral-950 font-sans">Create API Key</h3>
-          <p class="text-[11px] text-neutral-500 font-sans">Instantly issue high-performance API keys with pre-warmed edge tunnels</p>
+    <!-- 3: Plan & Quotas -->
+    <div class="card-clean p-4 rounded-xl bg-white border border-neutral-200/90 shadow-2xs space-y-2 flex flex-col justify-between">
+      <div class="space-y-1">
+        <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center justify-between">
+          <span>Plan &amp; Quota</span>
+          <span class="text-[9px] font-mono uppercase text-neutral-600 bg-neutral-100 border border-neutral-200 px-1 rounded font-semibold" id="overviewPlanBadge">Free</span>
+        </div>
+        <div class="text-sm font-bold text-neutral-950 font-sans truncate" id="overviewPlanDisplay">
+          Free Tier · 100 req/day
         </div>
       </div>
-      <span class="text-[10px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full font-bold">Sub-10ms Active</span>
-    </div>
-
-    <!-- Key Creation Form & Active Key Bar -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
-      <div class="lg:col-span-5 flex items-center gap-2">
-        <input type="text" id="overviewKeyName" placeholder="Key label (e.g. Production Agent, Claude MCP)" class="flex-1 px-3 py-2 rounded-xl border border-neutral-200 bg-neutral-50 hover:bg-white focus:bg-white focus:outline-none focus:border-neutral-950 text-xs font-sans transition" />
-        <button type="button" id="btnCreateOverviewKey" onclick="createOverviewApiKey()" class="px-4 py-2 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer whitespace-nowrap shadow-xs font-sans">
-          + Generate Key
+      <div class="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs">
+        <button type="button" onclick="setAppView('membership')" class="font-semibold text-neutral-900 hover:underline cursor-pointer text-[11px]">
+          Upgrade Quota &rarr;
         </button>
+        <span class="text-[10px] font-mono text-neutral-400">Zero Overage</span>
       </div>
+    </div>
 
-      <div class="lg:col-span-7 p-3 rounded-xl bg-neutral-50 border border-neutral-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div class="space-y-0.5 min-w-0 flex-1">
-          <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center gap-1.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span>Active Sovereign Key</span>
-          </div>
-          <div class="font-mono text-xs text-neutral-900 font-semibold truncate select-all" id="overviewActiveKeyDisplay">
-            ud_live_demo_console_key
-          </div>
+    <!-- 4: Edge Region & Latency -->
+    <div class="card-clean p-4 rounded-xl bg-white border border-neutral-200/90 shadow-2xs space-y-2 flex flex-col justify-between">
+      <div class="space-y-1">
+        <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center justify-between">
+          <span>Edge Network</span>
+          <span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-1 rounded font-semibold">&lt;10ms</span>
         </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <button type="button" onclick="copyActiveKeyFromOverview()" id="btnOverviewCopyKey" class="px-3 py-1.5 rounded-lg bg-white border border-neutral-300 hover:bg-neutral-100 text-neutral-800 text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 shadow-2xs font-mono">
-            <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            <span id="overviewCopyKeyLabel">Copy Key</span>
-          </button>
-          <button type="button" onclick="setAppView('keys')" class="px-3 py-1.5 rounded-lg text-neutral-600 hover:text-black hover:bg-neutral-100 text-xs font-semibold transition cursor-pointer font-sans">
-            Manage Keys &rarr;
-          </button>
+        <div class="text-sm font-bold text-neutral-950 font-sans truncate">
+          Global Anycast PoP
         </div>
+      </div>
+      <div class="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs">
+        <span class="text-[11px] text-neutral-600 font-sans font-medium">330+ Edge Cities</span>
+        <span class="text-[10px] font-mono text-emerald-700 font-semibold"><span id="overviewColoBadge">Auto</span> · <span id="overviewRttBadge">&lt;10ms</span></span>
       </div>
     </div>
   </div>
 
-  <!-- STEP 2: INSTANT INTEGRATION SNIPPETS -->
-  <div class="card-clean p-6 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-4">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-neutral-100">
-      <div class="flex items-center gap-3">
-        <div class="w-7 h-7 rounded-lg bg-neutral-950 text-white flex items-center justify-center font-bold text-xs font-mono">2</div>
-        <div>
-          <h3 class="text-sm font-bold text-neutral-950 font-sans">Integrate in 30 Seconds</h3>
-          <p class="text-[11px] text-neutral-500 font-sans">Drop into your agentic loops, autonomous workers, or MCP clients with your active key pre-injected</p>
-        </div>
-      </div>
-      <!-- Tab switcher -->
-      <div class="flex items-center gap-1 p-1 bg-neutral-100 rounded-xl text-xs font-mono flex-wrap">
-        <button type="button" id="overviewTab-curl" onclick="switchOverviewSnippetTab('curl')" class="py-1 px-3 rounded-lg bg-neutral-950 text-white font-semibold transition cursor-pointer shadow-2xs">cURL</button>
-        <button type="button" id="overviewTab-python" onclick="switchOverviewSnippetTab('python')" class="py-1 px-3 rounded-lg text-neutral-600 hover:text-black font-medium transition cursor-pointer">Python</button>
-        <button type="button" id="overviewTab-ts" onclick="switchOverviewSnippetTab('ts')" class="py-1 px-3 rounded-lg text-neutral-600 hover:text-black font-medium transition cursor-pointer">TypeScript</button>
-        <button type="button" id="overviewTab-mcp" onclick="switchOverviewSnippetTab('mcp')" class="py-1 px-3 rounded-lg text-neutral-600 hover:text-black font-medium transition cursor-pointer">Cursor &amp; Claude MCP</button>
-      </div>
+  <!-- KEY METRICS (4 Honest Indicators) -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 font-sans">
+    <!-- Metric 1: Requests Today -->
+    <div class="card-clean p-4 rounded-xl bg-white border border-neutral-200/90 shadow-2xs space-y-1">
+      <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">Requests Today</div>
+      <div class="text-2xl font-bold font-mono text-neutral-950" id="overviewMetricsRequests"><span id="metricUsed">0</span> / <span id="metricLimit">100</span></div>
+      <div class="text-[11px] text-neutral-500 font-sans">Daily Free Limit · Resets 00:00 UTC</div>
     </div>
 
-    <!-- Code Snippet Area -->
-    <div class="relative">
-      <!-- cURL snippet -->
-      <pre id="overviewSnippet-curl" class="p-4 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-xs overflow-x-auto code-scroll leading-relaxed"># 1. Fastest Web Search API (&lt;15ms)
-curl -X POST "/v1/search" \
-  -H "Authorization: Bearer ud_live_demo_console_key" \
-  -H "Content-Type: application/json" \
-  -d '{"query": "fastest web search api for ai agents", "limit": 5, "mode": 1}'
+    <!-- Metric 2: Median Latency -->
+    <div class="card-clean p-4 rounded-xl bg-white border border-neutral-200/90 shadow-2xs space-y-1">
+      <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">Median Latency (P50)</div>
+      <div class="text-2xl font-bold font-mono text-emerald-700">&lt;12ms</div>
+      <div class="text-[11px] text-neutral-500 font-sans">P99: 38ms · BM25 In-Memory Edge</div>
+    </div>
 
-# 2. Agent Long-Term Memory Recall (&lt;10ms)
-curl -X POST "/v1/memory/query" \
-  -H "Authorization: Bearer ud_live_demo_console_key" \
-  -H "Content-Type: application/json" \
-  -d '{"query": "user preferences and system context", "limit": 5}'</pre>
+    <!-- Metric 3: Active Sovereign Keys -->
+    <div class="card-clean p-4 rounded-xl bg-white border border-neutral-200/90 shadow-2xs space-y-1">
+      <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">Active API Keys</div>
+      <div class="text-2xl font-bold font-mono text-neutral-950" id="overviewMetricsKeysCount"><span id="metricKeys">1</span> Active</div>
+      <div class="text-[11px] text-neutral-500 font-sans">D1 SQLite FTS5 Key Vault</div>
+    </div>
 
-      <!-- Python snippet -->
-      <pre id="overviewSnippet-python" class="hidden p-4 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-xs overflow-x-auto code-scroll leading-relaxed"># pip install ultrademon
-from ultrademon import UltraClient
-
-client = UltraClient(api_key="ud_live_demo_console_key")
-
-# 1. Fastest Web Search
-search_results = client.search("fastest web search api for ai agents", limit=5)
-print(search_results)
-
-# 2. Agent Long-Term Memory Store &amp; Recall
-client.memory.add("User prefers concise Python code without boilerplate")
-memories = client.memory.query("code style preferences")
-print(memories)</pre>
-
-      <!-- TypeScript snippet -->
-      <pre id="overviewSnippet-ts" class="hidden p-4 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-xs overflow-x-auto code-scroll leading-relaxed">// npm install @ultrademon/sdk
-import { UltraClient } from '@ultrademon/sdk';
-
-const client = new UltraClient({ apiKey: 'ud_live_demo_console_key' });
-
-// 1. Web Search
-const searchRes = await client.search('fastest web search api for ai agents');
-console.log(searchRes.results);
-
-// 2. Recall Agent Context
-const facts = await client.memory.query('project architecture');
-console.log(facts);</pre>
-
-      <!-- MCP snippet -->
-      <pre id="overviewSnippet-mcp" class="hidden p-4 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-xs overflow-x-auto code-scroll leading-relaxed">// Add to claude_desktop_config.json or .cursor/mcp.json
-{
-  "mcpServers": {
-    "ultrademon": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "mcp-remote",
-        "/mcp",
-        "--header",
-        "Authorization: Bearer ud_live_demo_console_key"
-      ]
-    }
-  }
-}</pre>
-
-      <button type="button" onclick="copyCurrentOverviewSnippet()" id="btnCopyOverviewSnippet" class="absolute top-3 right-3 text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg cursor-pointer transition flex items-center gap-1 font-mono">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-        <span id="overviewSnippetCopyLabel">Copy Code</span>
-      </button>
+    <!-- Metric 4: Indexed Documents -->
+    <div class="card-clean p-4 rounded-xl bg-white border border-neutral-200/90 shadow-2xs space-y-1">
+      <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">Search Corpus</div>
+      <div class="text-2xl font-bold font-mono text-neutral-950" id="overviewMetricsIndexDocs"><span id="metricIndexed">369</span> Docs</div>
+      <div class="text-[11px] text-neutral-500 font-sans">BM25 Porter-Stemmed Web Index</div>
     </div>
   </div>
 
-  <!-- STEP 3: INTERACTIVE LIVE ENDPOINT & API TESTER -->
+  <!-- PRIMARY WORKSPACE AREA: LIVE ENDPOINT & API TEST BENCH (Largest Section) -->
   <div class="card-clean p-6 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-4">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-neutral-100">
       <div class="flex items-center gap-3">
-        <div class="w-7 h-7 rounded-lg bg-neutral-950 text-white flex items-center justify-center font-bold text-xs font-mono">3</div>
+        <div class="w-8 h-8 rounded-lg bg-neutral-950 text-white flex items-center justify-center font-bold text-xs font-mono">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
         <div>
-          <h3 class="text-sm font-bold text-neutral-950 font-sans">Live Endpoint &amp; API Tester</h3>
-          <p class="text-[11px] text-neutral-500 font-sans">Send real requests directly from your browser to test endpoints with live latency and response validation</p>
+          <h3 class="text-sm font-bold text-neutral-950 font-sans">Live Endpoint &amp; API Test Bench</h3>
+          <p class="text-[11px] text-neutral-500 font-sans">Send real requests directly to Cloudflare edge nodes with live response validation &amp; latency measurement</p>
         </div>
       </div>
       <div class="flex items-center gap-2">
@@ -1610,8 +1667,8 @@ console.log(facts);</pre>
 
     <!-- Interactive Query Form -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-      <div class="lg:col-span-4 space-y-2">
-        <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider font-semibold">Select Endpoint</label>
+      <div class="lg:col-span-4 space-y-1.5">
+        <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider font-semibold">Select Target Endpoint</label>
         <select id="overviewTestEndpoint" onchange="handleOverviewEndpointChange(this.value)" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono text-neutral-900 focus:outline-none focus:bg-white focus:border-neutral-950 cursor-pointer">
           <option value="/v1/search" selected>POST /v1/search (Web Search)</option>
           <option value="/v1/memory/query">POST /v1/memory/query (Recall Memory)</option>
@@ -1620,8 +1677,8 @@ console.log(facts);</pre>
         </select>
       </div>
 
-      <div class="lg:col-span-8 space-y-2">
-        <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider font-semibold" id="overviewTestInputLabel">Query / Prompt Payload</label>
+      <div class="lg:col-span-8 space-y-1.5">
+        <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider font-semibold" id="overviewTestInputLabel">Query / Payload</label>
         <div class="flex items-center gap-2">
           <input type="text" id="overviewTestQuery" value="fastest web search api for ai agents" placeholder="Enter query string..." class="flex-1 px-3.5 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono text-neutral-900 focus:outline-none focus:bg-white focus:border-neutral-950 transition" />
           <button type="button" id="btnRunOverviewTest" onclick="runOverviewLiveTest()" class="px-5 py-2 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 shadow-xs whitespace-nowrap font-sans">
@@ -1635,7 +1692,7 @@ console.log(facts);</pre>
     <!-- Live JSON Response Console -->
     <div class="relative mt-2">
       <pre id="overviewTestResultPre" class="p-4 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-xs overflow-x-auto code-scroll min-h-[160px] max-h-[300px] overflow-y-auto leading-relaxed">// Click "Run Test" above to test the endpoint live and inspect edge latency.
-// Results from https://api.ultrademon.site will appear here formatted.</pre>
+// Real results from Sovereign Anycast Edge will appear here formatted.</pre>
       <div class="absolute top-3 right-3 flex items-center gap-1.5">
         <button type="button" onclick="copyOverviewTestResult()" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white rounded text-[10px] font-mono cursor-pointer transition">Copy JSON</button>
         <button type="button" onclick="setAppView('tester')" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white rounded text-[10px] font-sans cursor-pointer transition">Full Sandbox &rarr;</button>
@@ -1643,17 +1700,94 @@ console.log(facts);</pre>
     </div>
   </div>
 
-    <!-- 6 Service Feature Showcases & Launchers (Enhanced Developer Suite) -->
-  <div class="space-y-3 pt-2">
+  <!-- NEXT STEPS SETUP (2 Columns: Key Generation & Integration Snippets) -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <!-- Step 1: Create API Key (5 cols) -->
+    <div class="lg:col-span-5 card-clean p-6 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-4 flex flex-col justify-between">
+      <div class="space-y-3">
+        <div class="flex items-center gap-2.5 pb-2 border-b border-neutral-100">
+          <div class="w-6 h-6 rounded-md bg-neutral-950 text-white flex items-center justify-center font-bold text-xs font-mono">1</div>
+          <div>
+            <h3 class="text-sm font-bold text-neutral-950 font-sans">Generate Sovereign Key</h3>
+            <p class="text-[11px] text-neutral-500 font-sans">Issue high-performance key with pre-warmed tunnel</p>
+          </div>
+        </div>
+        <div class="space-y-2">
+          <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider font-semibold">Key Label</label>
+          <input type="text" id="overviewKeyName" placeholder="e.g. Claude MCP, Agent Worker" class="w-full px-3 py-2 rounded-xl border border-neutral-200 bg-neutral-50 hover:bg-white focus:bg-white focus:outline-none focus:border-neutral-950 text-xs font-sans transition" />
+        </div>
+      </div>
+      <button type="button" id="btnCreateOverviewKey" onclick="createOverviewApiKey()" class="w-full py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer shadow-xs font-sans flex items-center justify-center gap-1.5">
+        <span>+ Generate Sovereign Key</span>
+      </button>
+    </div>
+
+    <!-- Step 2: Instant Integration Snippets (7 cols) -->
+    <div class="lg:col-span-7 card-clean p-6 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-neutral-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-6 h-6 rounded-md bg-neutral-950 text-white flex items-center justify-center font-bold text-xs font-mono">2</div>
+          <div>
+            <h3 class="text-sm font-bold text-neutral-950 font-sans">Integration Code</h3>
+            <p class="text-[11px] text-neutral-500 font-sans">Active key injected automatically</p>
+          </div>
+        </div>
+        <!-- Tab switcher -->
+        <div class="flex items-center gap-1 p-0.5 bg-neutral-100 rounded-lg text-xs font-mono">
+          <button type="button" id="overviewTab-curl" onclick="switchOverviewSnippetTab('curl')" class="py-1 px-2.5 rounded-md bg-neutral-950 text-white font-semibold transition cursor-pointer shadow-2xs text-[11px]">cURL</button>
+          <button type="button" id="overviewTab-python" onclick="switchOverviewSnippetTab('python')" class="py-1 px-2.5 rounded-md text-neutral-600 hover:text-black font-medium transition cursor-pointer text-[11px]">Python</button>
+          <button type="button" id="overviewTab-ts" onclick="switchOverviewSnippetTab('ts')" class="py-1 px-2.5 rounded-md text-neutral-600 hover:text-black font-medium transition cursor-pointer text-[11px]">TypeScript</button>
+          <button type="button" id="overviewTab-mcp" onclick="switchOverviewSnippetTab('mcp')" class="py-1 px-2.5 rounded-md text-neutral-600 hover:text-black font-medium transition cursor-pointer text-[11px]">MCP</button>
+        </div>
+      </div>
+
+      <!-- Code Snippet Area -->
+      <div class="relative">
+        <pre id="overviewSnippet-curl" class="p-3.5 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-[11px] overflow-x-auto code-scroll leading-relaxed max-h-[160px]"># Fastest Web Search API (&lt;15ms)
+curl -X POST "${displayOrigin}/v1/search" \
+  -H "Authorization: Bearer ud_live_demo_console_key" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "fastest web search api for ai agents", "limit": 5, "mode": 1}'</pre>
+
+        <pre id="overviewSnippet-python" class="hidden p-3.5 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-[11px] overflow-x-auto code-scroll leading-relaxed max-h-[160px]">from ultrademon import UltraClient
+client = UltraClient(api_key="ud_live_demo_console_key")
+results = client.search("fastest web search api", limit=5)
+print(results)</pre>
+
+        <pre id="overviewSnippet-ts" class="hidden p-3.5 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-[11px] overflow-x-auto code-scroll leading-relaxed max-h-[160px]">import { UltraClient } from '@ultrademon/sdk';
+const client = new UltraClient({ apiKey: 'ud_live_demo_console_key' });
+const searchRes = await client.search('fastest web search api');
+console.log(searchRes.results);</pre>
+
+        <pre id="overviewSnippet-mcp" class="hidden p-3.5 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-[11px] overflow-x-auto code-scroll leading-relaxed max-h-[160px]">{
+  "mcpServers": {
+    "ultrademon": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "${displayOrigin}/mcp", "--header", "Authorization: Bearer ud_live_demo_console_key"]
+    }
+  }
+}</pre>
+
+        <button type="button" onclick="copyCurrentOverviewSnippet()" id="btnCopyOverviewSnippet" class="absolute top-2 right-2 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded cursor-pointer transition flex items-center gap-1 font-mono">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          <span id="overviewSnippetCopyLabel">Copy</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 SERVICE PROTOCOLS & STUDIOS LAUNCHERS -->
+  <div class="space-y-3 pt-1">
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <h3 class="text-sm font-bold text-neutral-950 font-sans">Sovereign Developer Protocols &amp; Studios</h3>
+        <h3 class="text-sm font-bold text-neutral-950 font-sans">Developer Protocols &amp; Studios</h3>
         <span class="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">330+ Anycast PoPs</span>
       </div>
       <span class="text-xs text-neutral-500 font-sans hidden sm:inline">Direct in-dashboard studio workspaces</span>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 font-sans">
       <!-- 1: UltraSearch Studio -->
       <div class="p-5 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-3 flex flex-col justify-between hover:border-neutral-300 transition">
         <div class="space-y-1.5">
@@ -2446,7 +2580,7 @@ print(results.latency_ms, results.hits)</pre>
 
         <div class="card-elevated bg-white p-4 rounded-xl border border-neutral-200/90 shadow-2xs">
           <div class="text-[10px] text-neutral-400 uppercase tracking-wider">Active Workspace Key</div>
-          <div class="text-sm font-bold text-neutral-950 mt-1.5 truncate" id="topActiveKeyLabel">Loading...</div>
+          <div class="text-sm font-bold text-neutral-950 mt-1.5 truncate" id="keysActiveKeyDisplay">Loading...</div>
           <div class="text-[10px] text-neutral-400 mt-1">Bound to Current Session</div>
         </div>
       </div>
@@ -2768,17 +2902,27 @@ curl "${displayOrigin}/v1/memory/recall?q=user+preferences&container_tag=agent_p
         </div>
       </div>
 
-      <!-- Store Memory Form -->
-      <div class="card-clean p-6 rounded-2xl space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-sm font-bold text-neutral-950">Store Agent Memory</h2>
-          <span class="text-[10px] bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded font-num text-neutral-700">D1 FTS5 Auto-Sync</span>
+      <!-- Segmented Workflow Tab Switcher -->
+      <div class="flex items-center gap-1.5 p-1 bg-neutral-100 border border-neutral-200/80 rounded-xl max-w-fit">
+        <button type="button" id="memTabStore" onclick="switchMemoryTab('store')" class="py-1.5 px-3.5 rounded-lg bg-neutral-950 text-white font-semibold transition cursor-pointer shadow-2xs text-xs">Store Memory</button>
+        <button type="button" id="memTabRecall" onclick="switchMemoryTab('recall')" class="py-1.5 px-3.5 rounded-lg text-neutral-600 hover:text-black font-medium transition cursor-pointer text-xs">Recall Memory</button>
+        <button type="button" id="memTabExplorer" onclick="switchMemoryTab('explorer')" class="py-1.5 px-3.5 rounded-lg text-neutral-600 hover:text-black font-medium transition cursor-pointer text-xs">Stored Memories Explorer</button>
+      </div>
+
+      <!-- WORKFLOW PANEL 1: STORE MEMORY -->
+      <div id="memPanelStore" class="card-clean p-6 rounded-2xl space-y-4 bg-white border border-neutral-200/90 shadow-2xs">
+        <div class="flex items-center justify-between border-b border-neutral-100 pb-3">
+          <div>
+            <h2 class="text-sm font-bold text-neutral-950 font-sans">Store Agent Memory</h2>
+            <p class="text-xs text-neutral-500 mt-0.5">Persist knowledge, conversation turns, or user preferences into Cloudflare D1 FTS5 with sub-15ms edge persistence.</p>
+          </div>
+          <span class="text-[10px] bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded font-mono text-neutral-700">Requires API Key</span>
         </div>
-        <form onsubmit="event.preventDefault(); handleAppStoreMemory(event); return false;" class="space-y-3">
+        <form onsubmit="event.preventDefault(); handleAppStoreMemory(event); return false;" class="space-y-3 font-sans">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-[11px] font-medium text-neutral-600 mb-1">Memory Type</label>
-              <select id="appMemType" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-num">
+              <label class="block text-[11px] font-mono text-neutral-600 mb-1">Memory Type</label>
+              <select id="appMemType" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono">
                 <option value="fact">fact (Direct knowledge item)</option>
                 <option value="preference">preference (User / agent setting)</option>
                 <option value="document">document (Structured note or article)</option>
@@ -2787,44 +2931,56 @@ curl "${displayOrigin}/v1/memory/recall?q=user+preferences&container_tag=agent_p
               </select>
             </div>
             <div>
-              <label class="block text-[11px] font-medium text-neutral-600 mb-1">Container Namespace (Tag)</label>
-              <input type="text" id="appMemContainer" value="default" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-num" />
+              <label class="block text-[11px] font-mono text-neutral-600 mb-1">Container Namespace (Tag)</label>
+              <input type="text" id="appMemContainer" value="default" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono" />
             </div>
           </div>
           <div>
-            <label class="block text-[11px] font-medium text-neutral-600 mb-1">Memory Content</label>
-            <textarea id="appMemContent" rows="3" placeholder="Enter text to store in long-term memory..." required class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs focus:outline-none focus:bg-white focus:border-black"></textarea>
+            <label class="block text-[11px] font-mono text-neutral-600 mb-1">Memory Content</label>
+            <textarea id="appMemContent" rows="3" placeholder="Enter text to store in long-term memory..." required class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs focus:outline-none focus:bg-white focus:border-black font-sans"></textarea>
           </div>
-          <button type="button" onclick="handleAppStoreMemory(event); return false;" id="btnStoreMemApp" class="px-4 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl transition shadow-xs flex items-center gap-1.5 cursor-pointer">
-            <span>Store into Memory</span>
-            <span id="spinnerStoreMemApp" class="hidden skeleton-dark h-3 w-12 rounded"></span>
-          </button>
+          <div class="flex items-center justify-between pt-1">
+            <button type="button" onclick="handleAppStoreMemory(event); return false;" id="btnStoreMemApp" class="px-4 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl transition shadow-xs flex items-center gap-1.5 cursor-pointer font-sans">
+              <span>Store into Memory</span>
+              <span id="spinnerStoreMemApp" class="hidden skeleton-dark h-3 w-12 rounded"></span>
+            </button>
+            <span class="text-[10px] text-neutral-400 font-mono">Sub-15ms edge persistence</span>
+          </div>
         </form>
-        <div id="alertStoreMemApp" class="hidden p-3 rounded-xl text-xs font-num"></div>
+        <div id="alertStoreMemApp" class="hidden p-3 rounded-xl text-xs font-mono"></div>
       </div>
 
-      <!-- Query Memory Tester -->
-      <div class="card-clean p-6 rounded-2xl space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-sm font-bold text-neutral-950">Recall Memories (BM25 Match)</h2>
-          <span id="appRecallTimer" class="hidden font-num text-[10px] bg-neutral-100 border border-neutral-300 text-neutral-900 px-2 py-0.5 rounded font-bold">0ms</span>
+      <!-- WORKFLOW PANEL 2: RECALL MEMORY -->
+      <div id="memPanelRecall" class="hidden card-clean p-6 rounded-2xl space-y-4 bg-white border border-neutral-200/90 shadow-2xs" aria-hidden="true">
+        <div class="flex items-center justify-between border-b border-neutral-100 pb-3">
+          <div>
+            <h2 class="text-sm font-bold text-neutral-950 font-sans">Recall Agent Memories (BM25 Match)</h2>
+            <p class="text-xs text-neutral-500 mt-0.5">Instant BM25 Porter-stemmed recall with sub-15ms edge latency across active namespaces.</p>
+          </div>
+          <span id="appRecallTimer" class="font-mono text-[10px] bg-neutral-100 border border-neutral-300 text-neutral-900 px-2 py-0.5 rounded font-bold">&lt;15ms Edge</span>
         </div>
         <form onsubmit="event.preventDefault(); handleAppQueryMemory(event); return false;" class="flex gap-2">
-          <input type="text" id="appMemQuery" placeholder="Query memories..." required class="flex-1 px-3.5 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs" />
-          <button type="button" onclick="handleAppQueryMemory(event); return false;" class="px-4 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer">Recall</button>
+          <input type="text" id="appMemQuery" placeholder="Query memories (e.g. user preferences, project context)..." required class="flex-1 px-3.5 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-sans" />
+          <button type="button" onclick="handleAppQueryMemory(event); return false;" class="px-5 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer font-sans shadow-xs">Recall</button>
         </form>
         <div id="appMemResults" class="space-y-2 pt-2">
-          <div class="text-center py-4 text-neutral-400 text-xs">Run a query to recall memories.</div>
+          <div class="text-center py-4 text-neutral-400 text-xs font-sans">Run a query to recall memories.</div>
         </div>
       </div>
 
-      <!-- Memories Browser Table -->
-      <div class="card-clean p-6 rounded-2xl space-y-4">
-        <h2 class="text-sm font-bold text-neutral-950">Stored Memories Explorer</h2>
+      <!-- WORKFLOW PANEL 3: MEMORIES BROWSER TABLE -->
+      <div id="memPanelExplorer" class="hidden card-clean p-6 rounded-2xl space-y-4 bg-white border border-neutral-200/90 shadow-2xs" aria-hidden="true">
+        <div class="flex items-center justify-between border-b border-neutral-100 pb-3">
+          <div>
+            <h2 class="text-sm font-bold text-neutral-950 font-sans">Stored Memories Explorer</h2>
+            <p class="text-xs text-neutral-500 mt-0.5">Browse and manage active memory records stored across edge isolate containers.</p>
+          </div>
+          <button type="button" onclick="loadStoredMemories()" class="text-xs font-medium text-neutral-700 hover:text-black underline cursor-pointer font-sans">Refresh</button>
+        </div>
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-left">
             <thead>
-              <tr class="border-b border-neutral-200 text-neutral-500 font-num">
+              <tr class="border-b border-neutral-200 text-neutral-500 font-mono">
                 <th class="pb-2 font-medium">Memory ID</th>
                 <th class="pb-2 font-medium">Container</th>
                 <th class="pb-2 font-medium">Type</th>
@@ -2832,7 +2988,7 @@ curl "${displayOrigin}/v1/memory/recall?q=user+preferences&container_tag=agent_p
                 <th class="pb-2 font-medium text-right">Delete</th>
               </tr>
             </thead>
-            <tbody id="appMemoriesTableBody" class="divide-y divide-neutral-100 font-num">
+            <tbody id="appMemoriesTableBody" class="divide-y divide-neutral-100 font-mono">
               <tr><td colspan="5" class="p-3"><div class="skeleton h-4 w-full"></div></td></tr>
               <tr><td colspan="5" class="p-3"><div class="skeleton h-4 w-5/6"></div></td></tr>
             </tbody>
@@ -2966,28 +3122,39 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
         </div>
       </div>
 
-      <!-- Live Search Query Studio -->
-      <div class="card-clean p-6 rounded-2xl space-y-4">
-        <h2 class="text-sm font-bold text-neutral-950">Test Sovereign Web Index</h2>
-        <form onsubmit="event.preventDefault(); handleAppSearch(event); return false;" class="space-y-3">
-          <div class="flex gap-2">
-            <input type="text" id="appSearchQuery" value="What is Python?" placeholder="Search index..." required class="flex-1 px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-xs" />
-            <button type="button" onclick="handleAppSearch(event); return false;" class="px-5 py-2.5 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer">Search</button>
+      <!-- Live Search Query Studio (Single-Bar Unified Control) -->
+      <div class="card-clean p-6 rounded-2xl space-y-4 bg-white border border-neutral-200/90 shadow-2xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-neutral-100 pb-3">
+          <div>
+            <h2 class="text-sm font-bold text-neutral-950 font-sans">Test Sovereign Web Index</h2>
+            <p class="text-xs text-neutral-500 mt-0.5">Execute BM25 keyword matching or deep multi-hop research queries directly against Cloudflare edge nodes.</p>
           </div>
-          <div class="flex items-center gap-3 pt-1">
-            <span class="text-xs font-semibold text-neutral-500 font-num">Execution Mode:</span>
-            <div class="relative min-w-[240px]">
-              <select id="appSearchModeSelect" class="w-full px-3 py-1.5 bg-neutral-50 hover:bg-white border border-neutral-200/90 rounded-xl text-xs font-semibold text-neutral-800 cursor-pointer shadow-2xs appearance-none pr-8 focus:outline-none focus:border-black transition font-num">
-                <option value="1" selected>Mode 1: Instant Edge (&lt;50ms)</option>
+          <span class="text-[10px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-semibold">&lt;15ms Instant Edge</span>
+        </div>
+
+        <!-- Single Focused Search Control Bar -->
+        <form onsubmit="event.preventDefault(); handleAppSearch(event); return false;" class="space-y-3">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-1.5 bg-neutral-50 border border-neutral-200 rounded-2xl shadow-2xs focus-within:border-neutral-950 transition">
+            <div class="flex items-center gap-2 flex-1 px-2.5">
+              <svg class="w-4 h-4 text-neutral-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" id="appSearchQuery" value="What is Python?" placeholder="Search index..." required class="w-full py-1.5 bg-transparent border-none text-xs text-neutral-900 focus:outline-none font-sans" />
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0 border-t sm:border-t-0 sm:border-l border-neutral-200 pt-1.5 sm:pt-0 sm:pl-2">
+              <select id="appSearchModeSelect" class="px-2.5 py-1.5 bg-white border border-neutral-200 rounded-xl text-xs font-semibold text-neutral-800 cursor-pointer shadow-2xs focus:outline-none font-mono">
+                <option value="1" selected>Mode 1: Instant (&lt;15ms)</option>
                 <option value="2">Mode 2: Standard BM25 (&lt;40ms)</option>
                 <option value="3">Mode 3: Deep Research (&lt;80ms)</option>
               </select>
-              <svg class="w-3.5 h-3.5 text-neutral-400 absolute right-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              <button type="button" onclick="handleAppSearch(event); return false;" class="px-5 py-2 bg-neutral-950 hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer shadow-xs font-sans transition">
+                Search
+              </button>
             </div>
           </div>
         </form>
+
         <div id="appSearchResults" class="space-y-3 pt-4 border-t border-neutral-100">
-          <div class="text-center py-4 text-neutral-400 text-xs">Execute a search to view BM25 ranked passages.</div>
+          <div class="text-center py-4 text-neutral-400 text-xs font-sans">Execute a search to view BM25 ranked passages.</div>
         </div>
       </div>
 
@@ -4193,6 +4360,7 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
     function updateUserProfileUI(u) {
       if (!u) return;
       const emailText = u.email || u.id || 'Active Workspace';
+      const isGuest = u.is_guest || (u.email && u.email.includes('@edge.ultrademon.internal'));
       const emailEl = document.getElementById('userEmailDisplay');
       const topEmailEl = document.getElementById('userEmailTopDisplay');
       const popoverEmailEl = document.getElementById('popoverUserEmail');
@@ -4200,16 +4368,34 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
       const topPlanEl = document.getElementById('userPlanBadgeTop');
       const popoverPlanEl = document.getElementById('popoverUserPlan');
       const avatarEl = document.getElementById('userAvatarLetter');
+      const topSessionBadge = document.getElementById('topSessionStateBadge');
+      const sidebarEmail = document.getElementById('sidebarUserEmail');
+      const sidebarPlan = document.getElementById('sidebarUserPlan');
+      const sidebarStatus = document.getElementById('sidebarUserStatus');
+      const overviewSession = document.getElementById('overviewSessionStatus');
+      const overviewPlan = document.getElementById('overviewPlanDisplay');
+
       if (emailEl) emailEl.innerText = emailText;
-      if (topEmailEl) topEmailEl.innerText = emailText;
+      if (topEmailEl) topEmailEl.innerText = isGuest ? 'Guest Workspace' : emailText;
       if (popoverEmailEl) popoverEmailEl.innerText = emailText;
       if (planEl && u.plan) planEl.innerText = (u.plan || 'free').toUpperCase();
       if (topPlanEl && u.plan) topPlanEl.innerText = (u.plan || 'free').toLowerCase();
       if (popoverPlanEl && u.plan) popoverPlanEl.innerText = (u.plan || 'free').toUpperCase();
       if (avatarEl) {
-        const char = (u.email && u.email.length > 0) ? u.email.charAt(0).toUpperCase() : 'W';
+        const char = (u.email && u.email.length > 0 && !isGuest) ? u.email.charAt(0).toUpperCase() : 'G';
         avatarEl.innerText = char;
       }
+      if (topSessionBadge) {
+        topSessionBadge.innerText = isGuest ? 'Guest Demo' : ('Signed In · ' + (u.plan || 'free').toUpperCase());
+        topSessionBadge.className = isGuest
+          ? 'px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-amber-50 text-amber-800 border border-amber-200'
+          : 'px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-50 text-emerald-800 border border-emerald-200';
+      }
+      if (sidebarEmail) sidebarEmail.innerText = isGuest ? 'Guest Session' : emailText;
+      if (sidebarPlan) sidebarPlan.innerText = (u.plan || 'free').toUpperCase();
+      if (sidebarStatus) sidebarStatus.innerHTML = isGuest ? '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span><span>Public Demo Mode</span>' : '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>Authenticated User</span>';
+      if (overviewSession) overviewSession.innerText = isGuest ? 'Guest Demo (Public Sandbox)' : ('Signed In (' + emailText + ')');
+      if (overviewPlan) overviewPlan.innerText = (u.plan || 'free').toUpperCase() + ' Tier · 100 req/day';
     }
 
     // Immediate synchronous hydration from local storage (<0.5ms)
@@ -6120,11 +6306,25 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
 
         if (!res.ok || data.error) {
           if (resultsDiv) {
-            resultsDiv.innerHTML = '<div class="p-4 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 space-y-1 font-num">' +
-              '<div class="font-bold">Search Error (' + (res.status || 400) + ')</div>' +
-              '<div>' + escapeHtml(data.error || 'Request failed') + '</div>' +
-              (data.scope_restricted ? '<div class="text-[11px] text-red-600 mt-1 font-sans">Active key was restricted to UltraMemory. Switched to session/search scope.</div>' : '') +
-            '</div>';
+            if (res.status === 401 || (data.error && (data.error.includes('expired') || data.error.includes('invalid') || data.error.includes('Unauthorized')))) {
+              resultsDiv.innerHTML = '<div class="p-5 rounded-2xl bg-amber-50/80 border border-amber-200/90 text-xs text-amber-900 space-y-3 font-sans">' +
+                '<div class="flex items-center gap-2">' +
+                  '<svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+                  '<span class="font-bold text-sm">Session Expired or Guest Mode</span>' +
+                '</div>' +
+                '<p class="text-neutral-600 text-xs leading-relaxed">Your edge session has expired or requires authentication. You can sign in to your workspace or run this query in the public guest sandbox.</p>' +
+                '<div class="flex items-center gap-2 pt-1">' +
+                  '<button type="button" onclick="openAppAuthModal(\'signin\')" class="px-3.5 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold cursor-pointer transition shadow-xs">Sign In to Workspace</button>' +
+                  '<button type="button" onclick="runPublicSandboxSearch()" class="px-3.5 py-1.5 rounded-lg bg-white border border-neutral-300 hover:bg-neutral-100 text-neutral-800 text-xs font-semibold cursor-pointer transition shadow-2xs">Run in Public Sandbox &rarr;</button>' +
+                '</div>' +
+              '</div>';
+            } else {
+              resultsDiv.innerHTML = '<div class="p-4 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 space-y-1 font-num">' +
+                '<div class="font-bold">Search Error (' + (res.status || 400) + ')</div>' +
+                '<div>' + escapeHtml(data.error || 'Request failed') + '</div>' +
+                (data.scope_restricted ? '<div class="text-[11px] text-red-600 mt-1 font-sans">Active key was restricted to UltraMemory. Switched to session/search scope.</div>' : '') +
+              '</div>';
+            }
           }
           return;
         }
@@ -6531,6 +6731,63 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
     window.handleAppQueryMemory = handleAppQueryMemory;
     window.loadStoredMemories = loadStoredMemories;
     window.deleteAppMem = deleteAppMem;
+    window.runPublicSandboxSearch = async function() {
+      const query = document.getElementById('appSearchQuery')?.value.trim() || 'fastest web search api for ai agents';
+      const mode = parseInt(document.getElementById('appSearchModeSelect')?.value || '1', 10);
+      const resultsDiv = document.getElementById('appSearchResults');
+      if (resultsDiv) {
+        resultsDiv.innerHTML = '<div class="space-y-3 p-1"><div class="skeleton h-8 w-48 mb-2"></div><div class="skeleton-card space-y-2"><div class="skeleton h-4 w-3/4"></div><div class="skeleton h-3 w-full"></div></div></div>';
+      }
+      try {
+        const res = await fetch('/v1/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query, mode, num_results: 5 })
+        });
+        const data = await res.json();
+        if (data.results && data.results.length > 0) {
+          const reportedTime = data.search_time_ms || 220;
+          const headerHtml = '<div class="flex items-center justify-between text-xs font-mono px-3.5 py-2 rounded-xl bg-neutral-100 border border-neutral-200 mb-3">' +
+            '<div class="flex items-center gap-2">' +
+              '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>' +
+              '<span class="font-bold text-neutral-900">Public Sandbox Mode</span>' +
+            '</div>' +
+            '<span class="font-bold text-neutral-900">' + reportedTime + 'ms Edge Latency</span>' +
+          '</div>';
+          const itemsHtml = data.results.map(r =>
+            '<div class="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 text-xs space-y-1">' +
+              '<div class="flex items-center justify-between text-[10px] text-neutral-500 font-mono">' +
+                '<span class="truncate max-w-sm">' + r.url + '</span>' +
+                '<span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">Public Index</span>' +
+              '</div>' +
+              '<a href="' + r.url + '" target="_blank" class="font-bold text-neutral-950 hover:underline block">' + r.title + '</a>' +
+              '<p class="text-neutral-600">' + r.snippet + '</p>' +
+            '</div>'
+          ).join('');
+          resultsDiv.innerHTML = headerHtml + itemsHtml;
+        } else {
+          resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">No results found in sandbox.</div>';
+        }
+      } catch (err) {
+        if (resultsDiv) resultsDiv.innerHTML = '<div class="p-4 rounded-xl bg-red-50 text-red-700 text-xs">Sandbox error: ' + escapeHtml(err.message) + '</div>';
+      }
+    };
+
+    window.copyMcpDirectConfig = function() {
+      const host = window.location.origin;
+      const key = localStorage.getItem('ultrademon_active_key') || 'ud_live_demo_console_key';
+      const mcpSnippet = JSON.stringify({
+        mcpServers: {
+          ultrademon: {
+            command: 'npx',
+            args: ['-y', 'mcp-remote', host + '/mcp', '--header', 'Authorization: Bearer ' + key]
+          }
+        }
+      }, null, 2);
+      copyToClipboard(mcpSnippet);
+      showAppToast('MCP JSON config copied to clipboard!');
+    };
+
     window.handleAppSearch = handleAppSearch;
     window.handleAppCrawl = handleAppCrawl;
     window.upgradeTier = upgradeTier;
@@ -7916,7 +8173,11 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
               localStorage.setItem(STORAGE_KEY, JSON.stringify(localKeys));
               renderAppKeysTable();
             }
-          } else if (!currentUser) {
+          } else {
+            // Expired or invalid token! Clear stale session and refresh with valid guest credentials
+            localStorage.removeItem('ultrademon_auth_session');
+            localStorage.removeItem('ultrademon_user');
+            currentUser = null;
             token = await initGuestSession();
           }
         } catch (err) {

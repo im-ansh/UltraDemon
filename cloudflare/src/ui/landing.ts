@@ -853,7 +853,10 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       if (btn) { btn.disabled = true; btn.innerText = 'Connecting to edge...'; }
 
       try {
-        var endpoint = (window.authMode === 'signup') ? '/v1/auth/signup' : '/v1/auth/signin';
+        var edgeBase = (window.location.hostname.includes('ultrademon.site') && !window.location.hostname.includes('workers.dev'))
+          ? 'https://ultrasearch-api.aaronvanoss.workers.dev'
+          : '';
+        var endpoint = edgeBase + ((window.authMode === 'signup') ? '/v1/auth/signup' : '/v1/auth/signin');
         var plan = window.selectedModalPlan || 'free';
         var res = await fetch(endpoint, {
           method: 'POST',
@@ -882,9 +885,33 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         }, 200);
       } catch (error) {
         if (err) {
-          err.innerText = error.message || 'Authentication error';
+          err.innerHTML = '';
           err.classList.remove('hidden');
-          if (error.message && (error.message.includes('switch to Create Account') || error.message.includes('Incorrect password') || error.message.includes('not found') || error.message.includes('password'))) {
+
+          var refId = 'UD-AUTH-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+          var isInternal = error.message && (error.message.includes('Internal server error') || error.message.includes('fetch') || error.message.includes('network') || error.message.includes('Failed'));
+          var userMessage = isInternal
+            ? 'Unable to connect to sovereign edge authentication service. Please retry or continue in demo mode.'
+            : (error.message || 'Authentication error');
+
+          var msgDiv = document.createElement('div');
+          msgDiv.className = 'font-semibold text-red-600 mb-1';
+          msgDiv.innerText = userMessage;
+          err.appendChild(msgDiv);
+
+          var refDiv = document.createElement('div');
+          refDiv.className = 'text-[10px] text-neutral-400 font-mono mb-2';
+          refDiv.innerText = 'Support Identifier: ' + refId;
+          err.appendChild(refDiv);
+
+          if (isInternal) {
+            var retryBtn = document.createElement('button');
+            retryBtn.type = 'button';
+            retryBtn.className = 'px-3 py-1 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-md text-[11px] font-sans font-medium mr-2 cursor-pointer transition';
+            retryBtn.innerText = 'Retry Connection';
+            retryBtn.onclick = function() { window.handleAuthModalSubmit(); };
+            err.appendChild(retryBtn);
+          } else if (error.message && (error.message.includes('switch to Create Account') || error.message.includes('Incorrect password') || error.message.includes('not found') || error.message.includes('password'))) {
             var switchBtn = document.createElement('button');
             switchBtn.type = 'button';
             switchBtn.className = 'block mt-2 underline font-semibold text-neutral-900 cursor-pointer';
@@ -908,7 +935,10 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       if (btn) { btn.disabled = true; btn.innerText = 'Initializing demo workspace...'; }
       try {
         var plan = window.selectedModalPlan || 'free';
-        var res = await fetch('/v1/auth/anonymous', {
+        var edgeBase = (window.location.hostname.includes('ultrademon.site') && !window.location.hostname.includes('workers.dev'))
+          ? 'https://ultrasearch-api.aaronvanoss.workers.dev'
+          : '';
+        var res = await fetch(edgeBase + '/v1/auth/anonymous', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ plan: plan })
@@ -2733,7 +2763,10 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       if (btn) { btn.disabled = true; btn.innerText = 'Connecting to edge...'; }
 
       try {
-        const endpoint = inlineAuthMode === 'signup' ? '/v1/auth/signup' : '/v1/auth/signin';
+        const edgeBase = (window.location.hostname.includes('ultrademon.site') && !window.location.hostname.includes('workers.dev'))
+          ? 'https://ultrasearch-api.aaronvanoss.workers.dev'
+          : '';
+        const endpoint = edgeBase + (inlineAuthMode === 'signup' ? '/v1/auth/signup' : '/v1/auth/signin');
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
