@@ -61,7 +61,12 @@ export async function authMiddleware(c: Context<{ Bindings: Env }>, next: Next) 
     if (cachedIsolate && (Date.now() - cachedIsolate.cachedAt < KEY_ISOLATE_TTL_MS)) {
       record = cachedIsolate.record;
     } else {
-      const session = await c.env.KEY_CACHE.get<{ id: string; email?: string; plan?: string }>(`sess:${plainKey}`, 'json');
+      let session: { id: string; email?: string; plan?: string } | null = null;
+      if (c.env.KEY_CACHE && typeof c.env.KEY_CACHE.get === 'function') {
+        try {
+          session = await c.env.KEY_CACHE.get<{ id: string; email?: string; plan?: string }>(`sess:${plainKey}`, 'json');
+        } catch {}
+      }
       if (session && session.id) {
         record = {
           hashed_key: `sess_hash_${session.id}`,
@@ -277,15 +282,23 @@ export async function getSupabaseUser(
 
   // 1. Direct Edge Session check (<1ms KV recall)
   if (token.startsWith('edge_sess_')) {
-    const session = await env.KEY_CACHE.get<{ id: string; email?: string }>(`sess:${token}`, 'json');
-    if (session && session.id) return session;
+    if (env.KEY_CACHE && typeof env.KEY_CACHE.get === 'function') {
+      try {
+        const session = await env.KEY_CACHE.get<{ id: string; email?: string }>(`sess:${token}`, 'json');
+        if (session && session.id) return session;
+      } catch {}
+    }
     return null;
   }
 
   // 2. Supabase JWT verification
   const cacheKey = `sb_user:${token.slice(-32)}`;
-  const cached = await env.KEY_CACHE.get<{ id: string; email?: string }>(cacheKey, 'json');
-  if (cached) return cached;
+  if (env.KEY_CACHE && typeof env.KEY_CACHE.get === 'function') {
+    try {
+      const cached = await env.KEY_CACHE.get<{ id: string; email?: string }>(cacheKey, 'json');
+      if (cached) return cached;
+    } catch {}
+  }
 
   try {
     const res = await fetch(`${env.SUPABASE_URL}/auth/v1/user`, {
@@ -298,9 +311,13 @@ export async function getSupabaseUser(
     if (!res.ok) return null;
     const user = await res.json<{ id: string; email?: string }>();
     if (user && user.id) {
-      await env.KEY_CACHE.put(cacheKey, JSON.stringify({ id: user.id, email: user.email }), {
-        expirationTtl: 300, // 5 min cache
-      });
+      if (env.KEY_CACHE && typeof env.KEY_CACHE.put === 'function') {
+        try {
+          await env.KEY_CACHE.put(cacheKey, JSON.stringify({ id: user.id, email: user.email }), {
+            expirationTtl: 300, // 5 min cache
+          });
+        } catch {}
+      }
       return { id: user.id, email: user.email };
     }
   } catch (err) {

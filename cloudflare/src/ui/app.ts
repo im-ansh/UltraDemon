@@ -300,6 +300,16 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       border-radius: 6px;
     }
 
+    /* Neutralize browser autofill styling */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus, 
+    input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 1000px white inset !important;
+      -webkit-text-fill-color: #0a0a0a !important;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
     /* ── Signature View Transition: Text Flies Off Departure & Smooth Apparition ── */
     .magic-flow-out {
       animation: magicPageFlowOut 0.18s cubic-bezier(0.4, 0, 0.9, 1) forwards !important;
@@ -429,6 +439,12 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       if (modal) {
         modal.classList.remove('hidden');
         window.switchAppAuthTab(mode || 'signin');
+        var em = document.getElementById('appModalAuthEmail');
+        var pw = document.getElementById('appModalAuthPassword');
+        if (em) em.value = '';
+        if (pw) pw.value = '';
+        setTimeout(function() { if (em) em.value = ''; if (pw) pw.value = ''; }, 40);
+        setTimeout(function() { if (em) em.value = ''; if (pw) pw.value = ''; }, 160);
       }
     };
 
@@ -3668,19 +3684,22 @@ requests.post("${origin}/v1/analytics/capture", json={
       </div>
 
       <!-- Auth Form -->
-      <form id="appAuthModalForm" onsubmit="event.preventDefault(); window.handleAppAuthModalSubmit(event); return false;" class="space-y-3.5 text-xs">
+      <form id="appAuthModalForm" onsubmit="event.preventDefault(); window.handleAppAuthModalSubmit(event); return false;" autocomplete="off" class="space-y-3.5 text-xs">
+        <!-- Decoy hidden fields to absorb browser credential autofill -->
+        <input type="text" name="chrome_autofill_soak" style="position:absolute;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;" tabindex="-1" autocomplete="off" />
+        <input type="password" name="chrome_autofill_soak_pass" style="position:absolute;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;" tabindex="-1" autocomplete="off" />
         <div>
           <label class="block text-[11px] font-sans font-medium text-neutral-500 uppercase tracking-wider mb-1">Email address</label>
-          <input type="email" id="appModalAuthEmail" required autocomplete="off" class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-sans" placeholder="agent@company.com">
+          <input type="email" id="appModalAuthEmail" name="ud_agent_auth_email_field" required autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-sans" placeholder="agent@company.com">
         </div>
         <div>
           <label class="block text-[11px] font-sans font-medium text-neutral-500 uppercase tracking-wider mb-1">Password</label>
-          <input type="password" id="appModalAuthPassword" required autocomplete="new-password" minlength="6" class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-sans" placeholder="••••••••">
+          <input type="password" id="appModalAuthPassword" name="ud_agent_auth_secret_field" required autocomplete="new-password" minlength="6" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-sans" placeholder="••••••••">
         </div>
 
         <div id="appModalConfirmPasswordRow" class="hidden">
           <label class="block text-[11px] font-sans font-medium text-neutral-500 uppercase tracking-wider mb-1">Confirm Password</label>
-          <input type="password" id="appModalAuthConfirmPassword" autocomplete="new-password" minlength="6" class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-sans" placeholder="••••••••">
+          <input type="password" id="appModalAuthConfirmPassword" name="ud_agent_auth_confirm_field" autocomplete="new-password" minlength="6" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" class="w-full px-3 py-2 rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-950 transition-colors font-sans" placeholder="••••••••">
         </div>
 
         <div id="appModalAuthError" class="text-red-600 text-[11px] hidden font-mono"></div>
@@ -5859,6 +5878,12 @@ requests.post("${origin}/v1/analytics/capture", json={
       if (modal) {
         modal.classList.remove('hidden');
         switchAppAuthTab(mode || 'signin');
+        const em = document.getElementById('appModalAuthEmail') as HTMLInputElement | null;
+        const pw = document.getElementById('appModalAuthPassword') as HTMLInputElement | null;
+        if (em) em.value = '';
+        if (pw) pw.value = '';
+        setTimeout(() => { if (em) em.value = ''; if (pw) pw.value = ''; }, 40);
+        setTimeout(() => { if (em) em.value = ''; if (pw) pw.value = ''; }, 160);
       }
     }
 

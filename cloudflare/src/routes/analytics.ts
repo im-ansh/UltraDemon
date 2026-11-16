@@ -181,9 +181,13 @@ async function resolveProjectId(c: Context<{ Bindings: Env }>, payloadKey?: stri
   }
 
   if (plainKey && plainKey.startsWith('edge_sess_')) {
-    const session = await c.env.KEY_CACHE.get<{ id: string; email?: string }>(`sess:${plainKey}`, 'json');
-    if (session && session.id) {
-      return { projectId: session.id, isGuest: false };
+    if (c.env.KEY_CACHE && typeof c.env.KEY_CACHE.get === 'function') {
+      try {
+        const session = await c.env.KEY_CACHE.get<{ id: string; email?: string }>(`sess:${plainKey}`, 'json');
+        if (session && session.id) {
+          return { projectId: session.id, isGuest: false };
+        }
+      } catch {}
     }
   }
 

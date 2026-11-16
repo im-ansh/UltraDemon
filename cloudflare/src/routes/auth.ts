@@ -9,6 +9,32 @@ import { createApiKey, listUserKeys } from '../lib/api-keys';
 
 export const authRouter = new Hono<{ Bindings: Env }>();
 
+// Defensive KV Cache helpers (prevents crashes in non-KV / Vercel execution contexts)
+async function safePutKeyCache(env: Env, key: string, value: string, options?: { expirationTtl?: number }): Promise<void> {
+  if (env.KEY_CACHE && typeof env.KEY_CACHE.put === 'function') {
+    try {
+      await env.KEY_CACHE.put(key, value, options);
+    } catch {}
+  }
+}
+
+async function safeGetKeyCache<T = any>(env: Env, key: string, type?: 'json' | 'text'): Promise<T | null> {
+  if (env.KEY_CACHE && typeof env.KEY_CACHE.get === 'function') {
+    try {
+      return (await env.KEY_CACHE.get(key, (type || 'text') as any)) as T | null;
+    } catch {}
+  }
+  return null;
+}
+
+async function safeDeleteKeyCache(env: Env, key: string): Promise<void> {
+  if (env.KEY_CACHE && typeof env.KEY_CACHE.delete === 'function') {
+    try {
+      await env.KEY_CACHE.delete(key);
+    } catch {}
+  }
+}
+
 // Helper: Secure password hashing with Web Crypto SHA-256 and static salt
 async function hashPassword(password: string, salt: string): Promise<string> {
   const enc = new TextEncoder();
@@ -62,7 +88,7 @@ authRouter.post('/anonymous', async (c) => {
   const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
   const sessionPayload = { id: userId, email, plan: requestedPlan, active_key: initialKey, is_guest: true };
 
-  await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), {
+  await safePutKeyCache(c.env, `sess:${sessionToken}`, JSON.stringify(sessionPayload), {
     expirationTtl: 86400 * 30, // 30 days
   });
 
@@ -114,17 +140,17 @@ authRouter.post('/signup', async (c) => {
     const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
     const plan = existing.plan || requestedPlan;
 
-    let activeKey = (await c.env.KEY_CACHE.get(`user_primary_key:${existing.user_id}`)) || '';
+    let activeKey = (await safeGetKeyCache<string>(c.env, `user_primary_key:${existing.user_id}`)) || '';
     if (!activeKey) {
       try {
         const newKey = await createApiKey(c.env, existing.user_id, plan, 'Workspace Primary Key', 'unified');
         activeKey = newKey.plainKey;
-        await c.env.KEY_CACHE.put(`user_primary_key:${existing.user_id}`, activeKey, { expirationTtl: 86400 * 30 });
+        await safePutKeyCache(c.env, `user_primary_key:${existing.user_id}`, activeKey, { expirationTtl: 86400 * 30 });
       } catch {}
     }
 
     const sessionPayload = { id: existing.user_id, email: existing.email, plan, active_key: activeKey };
-    await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), { expirationTtl: 86400 * 30 });
+    await safePutKeyCache(c.env, `sess:${sessionToken}`, JSON.stringify(sessionPayload), { expirationTtl: 86400 * 30 });
 
     return c.json({
       message: 'Account configured and signed in successfully',
@@ -151,7 +177,7 @@ authRouter.post('/signup', async (c) => {
   try {
     const { plainKey } = await createApiKey(c.env, userId, requestedPlan, 'Workspace Primary Key', 'unified');
     initialKey = plainKey;
-    await c.env.KEY_CACHE.put(`user_primary_key:${userId}`, initialKey, { expirationTtl: 86400 * 30 });
+    await safePutKeyCache(c.env, `user_primary_key:${userId}`, initialKey, { expirationTtl: 86400 * 30 });
   } catch (keyErr) {
     console.warn('Initial key creation non-fatal:', keyErr);
   }
@@ -159,7 +185,7 @@ authRouter.post('/signup', async (c) => {
   // Create immediate active edge session
   const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
   const sessionPayload = { id: userId, email, plan: requestedPlan, active_key: initialKey };
-  await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), { expirationTtl: 86400 * 30 });
+  await safePutKeyCache(c.env, `sess:${sessionToken}`, JSON.stringify(sessionPayload), { expirationTtl: 86400 * 30 });
 
   // Optional background sync to Supabase without blocking user flow
   if (c.env.SUPABASE_URL && c.env.SUPABASE_ANON_KEY) {
@@ -289,17 +315,17 @@ authRouter.post('/signin', async (c) => {
   const plan = authenticatedUser.plan || 'free';
 
   // Always ensure a valid active plain key
-  let activeKey = (await c.env.KEY_CACHE.get(`user_primary_key:${authenticatedUser.user_id}`)) || '';
+  let activeKey = (await safeGetKeyCache<string>(c.env, `user_primary_key:${authenticatedUser.user_id}`)) || '';
   if (!activeKey) {
     try {
       const newKey = await createApiKey(c.env, authenticatedUser.user_id, plan, 'Workspace Primary Key', 'unified');
       activeKey = newKey.plainKey;
-      await c.env.KEY_CACHE.put(`user_primary_key:${authenticatedUser.user_id}`, activeKey, { expirationTtl: 86400 * 30 });
+      await safePutKeyCache(c.env, `user_primary_key:${authenticatedUser.user_id}`, activeKey, { expirationTtl: 86400 * 30 });
     } catch {}
   }
 
   const sessionPayload = { id: authenticatedUser.user_id, email: authenticatedUser.email, plan, active_key: activeKey };
-  await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), {
+  await safePutKeyCache(c.env, `sess:${sessionToken}`, JSON.stringify(sessionPayload), {
     expirationTtl: 86400 * 30,
   });
 
@@ -347,18 +373,18 @@ authRouter.post('/reset-password', async (c) => {
     ).bind(userId, email, expectedHash, Date.now(), plan).run();
   }
 
-  let activeKey = (await c.env.KEY_CACHE.get(`user_primary_key:${userId}`)) || '';
+  let activeKey = (await safeGetKeyCache<string>(c.env, `user_primary_key:${userId}`)) || '';
   if (!activeKey) {
     try {
       const newKey = await createApiKey(c.env, userId!, plan, 'Workspace Primary Key', 'unified');
       activeKey = newKey.plainKey;
-      await c.env.KEY_CACHE.put(`user_primary_key:${userId}`, activeKey, { expirationTtl: 86400 * 30 });
+      await safePutKeyCache(c.env, `user_primary_key:${userId}`, activeKey, { expirationTtl: 86400 * 30 });
     } catch {}
   }
 
   const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
   const sessionPayload = { id: userId, email, plan, active_key: activeKey };
-  await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), { expirationTtl: 86400 * 30 });
+  await safePutKeyCache(c.env, `sess:${sessionToken}`, JSON.stringify(sessionPayload), { expirationTtl: 86400 * 30 });
 
   return c.json({
     message: 'Password updated and signed in successfully',
@@ -498,7 +524,7 @@ authRouter.post('/confirm-verification', async (c) => {
       const newKey = await createApiKey(c.env, user.user_id, plan, 'Primary Workspace Key', 'unified');
       activeKey = newKey.plainKey;
     } else {
-      activeKey = (await c.env.KEY_CACHE.get(`user_primary_key:${user.user_id}`)) || '';
+      activeKey = (await safeGetKeyCache<string>(c.env, `user_primary_key:${user.user_id}`)) || '';
       if (!activeKey) {
         const newKey = await createApiKey(c.env, user.user_id, plan, 'Primary Workspace Key', 'unified');
         activeKey = newKey.plainKey;
@@ -511,7 +537,7 @@ authRouter.post('/confirm-verification', async (c) => {
   const sessionToken = `edge_sess_${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
   const sessionPayload = { id: user.user_id, email: user.email, plan, active_key: activeKey };
 
-  await c.env.KEY_CACHE.put(`sess:${sessionToken}`, JSON.stringify(sessionPayload), {
+  await safePutKeyCache(c.env, `sess:${sessionToken}`, JSON.stringify(sessionPayload), {
     expirationTtl: 86400 * 30,
   });
 
@@ -538,7 +564,7 @@ authRouter.get('/me', async (c) => {
 
   // Edge session check (<1ms KV recall)
   if (token.startsWith('edge_sess_')) {
-    const cached = await c.env.KEY_CACHE.get<{ id: string; email: string; plan?: string }>(`sess:${token}`, 'json');
+    const cached = await safeGetKeyCache<{ id: string; email: string; plan?: string }>(c.env, `sess:${token}`, 'json');
     if (cached) {
       const row = await c.env.DB.prepare('SELECT plan FROM users WHERE user_id = ?').bind(cached.id).first<{ plan: string }>();
       const plan = row?.plan || cached.plan || 'free';
@@ -551,7 +577,7 @@ authRouter.get('/me', async (c) => {
   // Supabase token check (with Edge KV 5-min caching for fast sub-15ms verification)
   if (c.env.SUPABASE_URL && c.env.SUPABASE_ANON_KEY) {
     const cacheKey = `sb_user:${token.slice(-32)}`;
-    let user = await c.env.KEY_CACHE.get<{ id: string; email?: string }>(cacheKey, 'json');
+    let user = await safeGetKeyCache<{ id: string; email?: string }>(c.env, cacheKey, 'json');
 
     if (!user) {
       try {
@@ -564,7 +590,7 @@ authRouter.get('/me', async (c) => {
         if (res.ok) {
           user = await res.json<{ id: string; email?: string }>();
           if (user && user.id) {
-            await c.env.KEY_CACHE.put(cacheKey, JSON.stringify({ id: user.id, email: user.email }), {
+            await safePutKeyCache(c.env, cacheKey, JSON.stringify({ id: user.id, email: user.email }), {
               expirationTtl: 300,
             });
           }
@@ -621,7 +647,7 @@ authRouter.post('/membership', async (c) => {
   let userId = '';
 
   if (token.startsWith('edge_sess_')) {
-    const cached = await c.env.KEY_CACHE.get<{ id: string; email: string }>(`sess:${token}`, 'json');
+    const cached = await safeGetKeyCache<{ id: string; email: string }>(c.env, `sess:${token}`, 'json');
     if (cached) userId = cached.id;
   } else if (c.env.SUPABASE_URL && c.env.SUPABASE_ANON_KEY) {
     try {
@@ -658,10 +684,10 @@ authRouter.post('/membership', async (c) => {
 
   // Update session in KV
   if (token.startsWith('edge_sess_')) {
-    const cached = await c.env.KEY_CACHE.get<{ id: string; email: string; plan?: string }>(`sess:${token}`, 'json');
+    const cached = await safeGetKeyCache<{ id: string; email: string; plan?: string }>(c.env, `sess:${token}`, 'json');
     if (cached) {
       cached.plan = plan;
-      await c.env.KEY_CACHE.put(`sess:${token}`, JSON.stringify(cached), { expirationTtl: 86400 * 30 });
+      await safePutKeyCache(c.env, `sess:${token}`, JSON.stringify(cached), { expirationTtl: 86400 * 30 });
     }
   }
 
@@ -679,9 +705,9 @@ authRouter.post('/signout', async (c) => {
     if (token.startsWith('edge_sess_')) {
       const ctx = c.executionCtx as { waitUntil?: (p: Promise<unknown>) => void } | undefined;
       if (ctx && typeof ctx.waitUntil === 'function') {
-        ctx.waitUntil(c.env.KEY_CACHE.delete(`sess:${token}`));
+        ctx.waitUntil(safeDeleteKeyCache(c.env, `sess:${token}`));
       } else {
-        await c.env.KEY_CACHE.delete(`sess:${token}`).catch(() => {});
+        await safeDeleteKeyCache(c.env, `sess:${token}`);
       }
     }
   }

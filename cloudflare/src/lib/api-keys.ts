@@ -165,7 +165,11 @@ export async function createApiKey(
 
   // Populate In-Isolate and KV cache proactively
   KEY_ISOLATE_CACHE.set(plainKey, { record, cachedAt: now });
-  await env.KEY_CACHE.put(`key:${hashedKey}`, JSON.stringify(record), { expirationTtl: 300 });
+  if (env.KEY_CACHE && typeof env.KEY_CACHE.put === 'function') {
+    try {
+      await env.KEY_CACHE.put(`key:${hashedKey}`, JSON.stringify(record), { expirationTtl: 300 });
+    } catch {}
+  }
 
   // Store in D1 (persistent)
   await env.DB
@@ -205,15 +209,21 @@ export async function validateApiKey(
 
   // Tier 1: Cloudflare KV Edge Cache (<15ms)
   const cacheKey = `key:${hashedKey}`;
-  const cached = await env.KEY_CACHE.get<ApiKeyRecord>(cacheKey, 'json');
-  if (cached) {
-    if (cached.revoked) throw new Error('API key has been revoked');
-    if (KEY_ISOLATE_CACHE.size >= MAX_ISOLATE_KEYS) {
-      const oldest = KEY_ISOLATE_CACHE.keys().next().value;
-      if (oldest) KEY_ISOLATE_CACHE.delete(oldest);
+  if (env.KEY_CACHE && typeof env.KEY_CACHE.get === 'function') {
+    try {
+      const cached = await env.KEY_CACHE.get<ApiKeyRecord>(cacheKey, 'json');
+      if (cached) {
+        if (cached.revoked) throw new Error('API key has been revoked');
+        if (KEY_ISOLATE_CACHE.size >= MAX_ISOLATE_KEYS) {
+          const oldest = KEY_ISOLATE_CACHE.keys().next().value;
+          if (oldest) KEY_ISOLATE_CACHE.delete(oldest);
+        }
+        KEY_ISOLATE_CACHE.set(plainKey, { record: cached, cachedAt: now });
+        return cached;
+      }
+    } catch (e: any) {
+      if (e?.message === 'API key has been revoked') throw e;
     }
-    KEY_ISOLATE_CACHE.set(plainKey, { record: cached, cachedAt: now });
-    return cached;
   }
 
   // Tier 2: D1 Database Query (Cache miss)
@@ -226,7 +236,11 @@ export async function validateApiKey(
   if (row.revoked) throw new Error('API key has been revoked');
 
   // Populate KV cache (5 min TTL)
-  await env.KEY_CACHE.put(cacheKey, JSON.stringify(row), { expirationTtl: 300 });
+  if (env.KEY_CACHE && typeof env.KEY_CACHE.put === 'function') {
+    try {
+      await env.KEY_CACHE.put(cacheKey, JSON.stringify(row), { expirationTtl: 300 });
+    } catch {}
+  }
 
   // Populate In-Isolate cache
   KEY_ISOLATE_CACHE.set(plainKey, { record: row, cachedAt: now });
@@ -246,7 +260,11 @@ export async function revokeApiKey(env: Env, plainKey: string): Promise<void> {
     .run();
 
   // Invalidate KV cache immediately
-  await env.KEY_CACHE.delete(`key:${hashedKey}`);
+  if (env.KEY_CACHE && typeof env.KEY_CACHE.delete === 'function') {
+    try {
+      await env.KEY_CACHE.delete(`key:${hashedKey}`);
+    } catch {}
+  }
 }
 
 // ── List Keys for User ────────────────────────────────────────────────────────

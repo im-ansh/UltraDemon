@@ -43,18 +43,20 @@ export async function getCachedSearch(
 
   // 2. Tier 1: Cloudflare Anycast KV Cache (<15ms)
   try {
-    const kvCached = await env.SEARCH_CACHE.get<SearchResponse>(key, 'json');
-    if (kvCached) {
-      // Warm up isolate cache for subsequent requests
-      if (ISOLATE_SEARCH_CACHE.size >= MAX_ISOLATE_ENTRIES) {
-        const oldest = ISOLATE_SEARCH_CACHE.keys().next().value;
-        if (oldest) ISOLATE_SEARCH_CACHE.delete(oldest);
+    if (env.SEARCH_CACHE && typeof env.SEARCH_CACHE.get === 'function') {
+      const kvCached = await env.SEARCH_CACHE.get<SearchResponse>(key, 'json');
+      if (kvCached) {
+        // Warm up isolate cache for subsequent requests
+        if (ISOLATE_SEARCH_CACHE.size >= MAX_ISOLATE_ENTRIES) {
+          const oldest = ISOLATE_SEARCH_CACHE.keys().next().value;
+          if (oldest) ISOLATE_SEARCH_CACHE.delete(oldest);
+        }
+        ISOLATE_SEARCH_CACHE.set(key, { response: kvCached, ts: now });
+        return {
+          response: kvCached,
+          cacheTier: 'KV',
+        };
       }
-      ISOLATE_SEARCH_CACHE.set(key, { response: kvCached, ts: now });
-      return {
-        response: kvCached,
-        cacheTier: 'KV',
-      };
     }
   } catch (err) {
     console.warn('KV search cache read non-fatal:', err);
@@ -81,9 +83,11 @@ export async function setCachedSearch(
 
   // Populate Tier 1 (KV)
   try {
-    await env.SEARCH_CACHE.put(key, JSON.stringify(response), {
-      expirationTtl: KV_CACHE_TTL_SECONDS,
-    });
+    if (env.SEARCH_CACHE && typeof env.SEARCH_CACHE.put === 'function') {
+      await env.SEARCH_CACHE.put(key, JSON.stringify(response), {
+        expirationTtl: KV_CACHE_TTL_SECONDS,
+      });
+    }
   } catch (err) {
     console.warn('KV search cache write non-fatal:', err);
   }

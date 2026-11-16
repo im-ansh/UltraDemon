@@ -71,7 +71,10 @@ export async function getContainerVersion(env: Env, userId: string, containerTag
   }
 
   try {
-    const kvVerStr = await env.SEARCH_CACHE.get(`mem_v:${tagKey}`);
+    let kvVerStr: string | null = null;
+    if (env.SEARCH_CACHE && typeof env.SEARCH_CACHE.get === 'function') {
+      kvVerStr = await env.SEARCH_CACHE.get(`mem_v:${tagKey}`);
+    }
     const ver = kvVerStr ? parseInt(kvVerStr, 10) : 1;
     ISOLATE_CONTAINER_VERSIONS.set(tagKey, ver);
     return ver;
@@ -94,15 +97,19 @@ export async function bumpContainerVersion(env: Env, userId: string, containerTa
     const allKey = `${userId}:all`;
     const currentAllVer = ISOLATE_CONTAINER_VERSIONS.get(allKey) || 1;
     ISOLATE_CONTAINER_VERSIONS.set(allKey, currentAllVer + 1);
-    try {
-      await env.SEARCH_CACHE.put(`mem_v:${allKey}`, String(currentAllVer + 1), { expirationTtl: 86400 * 30 });
-    } catch {}
+    if (env.SEARCH_CACHE && typeof env.SEARCH_CACHE.put === 'function') {
+      try {
+        await env.SEARCH_CACHE.put(`mem_v:${allKey}`, String(currentAllVer + 1), { expirationTtl: 86400 * 30 });
+      } catch {}
+    }
   }
 
-  try {
-    await env.SEARCH_CACHE.put(`mem_v:${tagKey}`, String(nextVer), { expirationTtl: 86400 * 30 });
-  } catch (e) {
-    console.warn('Failed to persist container version to KV:', e);
+  if (env.SEARCH_CACHE && typeof env.SEARCH_CACHE.put === 'function') {
+    try {
+      await env.SEARCH_CACHE.put(`mem_v:${tagKey}`, String(nextVer), { expirationTtl: 86400 * 30 });
+    } catch (e) {
+      console.warn('Failed to persist container version to KV:', e);
+    }
   }
 
   return nextVer;
@@ -197,24 +204,26 @@ export async function queryMemories(env: Env, params: QueryMemoryParams): Promis
 
   // 2. Level 1: Global Edge KV Cache Check (<5ms)
   try {
-    const kvCached = await env.SEARCH_CACHE.get<MemoryQueryResponse>(cacheKey, 'json');
-    if (kvCached) {
-      const duration = Math.round((performance.now() - t0) * 100) / 100;
-      const result: MemoryQueryResponse = {
-        ...kvCached,
-        retrieval_time_ms: duration,
-        cache_tier: 'KV',
-      };
-      if (ISOLATE_MEMORY_CACHE.size >= MAX_ISOLATE_ENTRIES) {
-        const firstKey = ISOLATE_MEMORY_CACHE.keys().next().value;
-        if (firstKey) ISOLATE_MEMORY_CACHE.delete(firstKey);
+    if (env.SEARCH_CACHE && typeof env.SEARCH_CACHE.get === 'function') {
+      const kvCached = await env.SEARCH_CACHE.get<MemoryQueryResponse>(cacheKey, 'json');
+      if (kvCached) {
+        const duration = Math.round((performance.now() - t0) * 100) / 100;
+        const result: MemoryQueryResponse = {
+          ...kvCached,
+          retrieval_time_ms: duration,
+          cache_tier: 'KV',
+        };
+        if (ISOLATE_MEMORY_CACHE.size >= MAX_ISOLATE_ENTRIES) {
+          const firstKey = ISOLATE_MEMORY_CACHE.keys().next().value;
+          if (firstKey) ISOLATE_MEMORY_CACHE.delete(firstKey);
+        }
+        ISOLATE_MEMORY_CACHE.set(cacheKey, {
+          data: result,
+          expiresAt: Date.now() + 120_000,
+          version,
+        });
+        return result;
       }
-      ISOLATE_MEMORY_CACHE.set(cacheKey, {
-        data: result,
-        expiresAt: Date.now() + 120_000,
-        version,
-      });
-      return result;
     }
   } catch (err) {
     console.warn('KV memory cache read error:', err);
@@ -354,7 +363,9 @@ export async function queryMemories(env: Env, params: QueryMemoryParams): Promis
 
   // Cache in Level 1 KV (asynchronous edge propagation)
   try {
-    await env.SEARCH_CACHE.put(cacheKey, JSON.stringify(response), { expirationTtl: 3600 });
+    if (env.SEARCH_CACHE && typeof env.SEARCH_CACHE.put === 'function') {
+      await env.SEARCH_CACHE.put(cacheKey, JSON.stringify(response), { expirationTtl: 3600 });
+    }
   } catch (kvErr) {
     console.warn('Failed to store memory query to KV cache:', kvErr);
   }
