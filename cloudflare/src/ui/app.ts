@@ -1411,9 +1411,45 @@ curl -X POST "${origin}/v1/memory/query" \\
         </button>
       </div>
 
-      <!-- Card 3: Network Topology Flow -->
+      <!-- Card 3: Cloudflare Domain Registration & DNS (Reduced / Compact) -->
       <div class="bg-white border border-neutral-200/90 rounded-xl p-4 shadow-2xs space-y-3">
-        <div class="text-xs font-semibold text-neutral-900 font-mono">Anycast Zero-Hop Network Topology</div>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5 text-xs font-semibold text-neutral-900 font-sans">
+            <svg class="w-3.5 h-3.5 text-[#f6821f]" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+            <span>Cloudflare Registrar &amp; DNS</span>
+          </div>
+          <span class="text-[10px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded font-bold">Full Setup</span>
+        </div>
+        <div class="space-y-1.5 text-xs text-neutral-600 bg-neutral-50/70 p-2.5 rounded-lg border border-neutral-200/70 font-mono">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="text-neutral-500">Registrar:</span>
+            <span class="text-neutral-900 font-semibold truncate max-w-[150px]">TucowsRadix-godaddy</span>
+          </div>
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="text-neutral-500">DNS Zone:</span>
+            <span class="text-neutral-900">Full Setup · Anycast [i]</span>
+          </div>
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="text-neutral-500">Worker Route:</span>
+            <span class="text-emerald-700 font-bold truncate max-w-[150px]">ultrasearch-api (/*)</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 pt-0.5">
+          <a href="#dns" onclick="showAppToast('DNS zone managed on Cloudflare Anycast edge'); return false;" class="py-1 px-2 rounded-md border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-800 text-[11px] font-medium transition cursor-pointer text-center font-mono">
+            DNS Records
+          </a>
+          <button type="button" onclick="showAppToast('Worker route linked to ultrademon.site/*');" class="py-1 px-2 rounded-md border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-800 text-[11px] font-medium transition cursor-pointer text-center font-mono">
+            Connect Worker
+          </button>
+        </div>
+      </div>
+
+      <!-- Card 4: Network Topology Flow -->
+      <div class="bg-white border border-neutral-200/90 rounded-xl p-4 shadow-2xs space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="text-xs font-semibold text-neutral-900 font-mono">Anycast Zero-Hop Network Flow</div>
+          <span class="text-[10px] text-emerald-700 font-bold font-mono">330+ Cities</span>
+        </div>
         <div class="p-3 bg-neutral-50 border border-neutral-200/70 rounded-lg flex items-center justify-between text-[11px] font-mono text-neutral-600">
           <div class="text-center">
             <div class="w-8 h-8 mx-auto rounded-md bg-white border border-neutral-200 flex items-center justify-center text-neutral-700 shadow-2xs font-bold text-xs">
@@ -1446,9 +1482,16 @@ curl -X POST "${origin}/v1/memory/query" \\
         </div>
       </div>
 
-      <!-- Card 4: Quick Actions & Diagnostics -->
+      <!-- Card 5: AI Bot Access & Quick Actions -->
       <div class="bg-white border border-neutral-200/90 rounded-xl p-4 shadow-2xs space-y-3">
-        <div class="text-xs font-semibold text-neutral-900 font-mono">Quick Actions &amp; Diagnostics</div>
+        <div class="flex items-center justify-between">
+          <div class="text-xs font-semibold text-neutral-900 font-mono">Edge Controls &amp; Bot Access</div>
+          <span class="text-[10px] font-mono text-neutral-500">Global Anycast</span>
+        </div>
+        <div class="flex items-center justify-between p-2 rounded-lg bg-neutral-50 border border-neutral-200/70 text-xs">
+          <span class="text-neutral-700 font-medium">AI Bot Preference Sync</span>
+          <span class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Enabled</span>
+        </div>
         <div class="space-y-2">
           <button type="button" onclick="testSummoningPing()" class="w-full py-1.5 px-3 rounded-lg border border-neutral-300 bg-white hover:bg-neutral-50 text-xs font-medium text-neutral-800 transition cursor-pointer flex items-center justify-center gap-1.5 font-mono shadow-2xs">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -3757,7 +3800,7 @@ requests.post("${origin}/v1/analytics/capture", json={
         <div id="appModalAuthError" class="text-red-600 text-[11px] hidden font-mono"></div>
         <div id="appModalAuthSuccess" class="text-emerald-700 text-[11px] hidden font-mono"></div>
 
-        <button type="submit" id="appModalAuthSubmitBtn" class="w-full py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold transition-colors cursor-pointer shadow-xs text-xs">
+        <button type="button" onclick="handleAppAuthModalSubmit(event)" id="appModalAuthSubmitBtn" class="w-full py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold transition-colors cursor-pointer shadow-xs text-xs">
           Sign In
         </button>
 
@@ -5628,8 +5671,14 @@ requests.post("${origin}/v1/analytics/capture", json={
       }
     }
 
+    let isAppModalSubmitting = false;
     async function handleAppAuthModalSubmit(e) {
-      if (e && e.preventDefault) e.preventDefault();
+      if (e) {
+        if (typeof e.preventDefault === 'function') e.preventDefault();
+        if (typeof e.stopPropagation === 'function') e.stopPropagation();
+      }
+      if (isAppModalSubmitting) return;
+      isAppModalSubmitting = true;
       const email = document.getElementById('appModalAuthEmail').value.trim();
       const password = document.getElementById('appModalAuthPassword').value;
       const confirmEl = document.getElementById('appModalAuthConfirmPassword');
@@ -5646,6 +5695,7 @@ requests.post("${origin}/v1/analytics/capture", json={
           err.innerText = 'Please provide both email and password';
           err.classList.remove('hidden');
         }
+        isAppModalSubmitting = false;
         return;
       }
 
@@ -5654,6 +5704,7 @@ requests.post("${origin}/v1/analytics/capture", json={
           err.innerText = 'Passwords do not match';
           err.classList.remove('hidden');
         }
+        isAppModalSubmitting = false;
         return;
       }
 
@@ -5698,16 +5749,17 @@ requests.post("${origin}/v1/analytics/capture", json={
         if (err) {
           err.innerText = error.message || 'Authentication error';
           err.classList.remove('hidden');
-          if (error.message && error.message.includes('switch to Create Account')) {
+          if (error.message && (error.message.includes('switch to Create Account') || error.message.includes('Incorrect password') || error.message.includes('not found') || error.message.includes('password'))) {
             const switchBtn = document.createElement('button');
             switchBtn.type = 'button';
             switchBtn.className = 'block mt-2 underline font-semibold text-neutral-900 cursor-pointer';
-            switchBtn.innerText = 'Click here to Switch to Create Account';
+            switchBtn.innerText = 'Click here to Switch to Create Account / Set Password';
             switchBtn.onclick = function() { switchAppAuthTab('signup'); };
             err.appendChild(switchBtn);
           }
         }
       } finally {
+        isAppModalSubmitting = false;
         if (btn) {
           btn.disabled = false;
           btn.innerText = appAuthMode === 'signin' ? 'Sign In' : 'Create Account';

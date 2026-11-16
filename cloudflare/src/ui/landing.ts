@@ -1912,7 +1912,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <div id="modalAuthError" class="text-red-600 text-[11px] hidden font-mono"></div>
         <div id="modalAuthSuccess" class="text-emerald-700 text-[11px] hidden font-mono"></div>
 
-        <button type="submit" onclick="handleAuthModalSubmit(event)" id="modalAuthSubmitBtn" class="w-full py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold transition-colors cursor-pointer shadow-xs">
+        <button type="button" onclick="handleAuthModalSubmit(event)" id="modalAuthSubmitBtn" class="w-full py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-semibold transition-colors cursor-pointer shadow-xs">
           Sign In
         </button>
 
@@ -2008,8 +2008,14 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       }
     };
 
+    let isModalSubmitting = false;
     async function handleAuthModalSubmit(e) {
-      if (e && e.preventDefault) e.preventDefault();
+      if (e) {
+        if (typeof e.preventDefault === 'function') e.preventDefault();
+        if (typeof e.stopPropagation === 'function') e.stopPropagation();
+      }
+      if (isModalSubmitting) return;
+      isModalSubmitting = true;
       const email = document.getElementById('modalAuthEmail').value.trim();
       const password = document.getElementById('modalAuthPassword').value;
       const confirmEl = document.getElementById('modalAuthConfirmPassword');
@@ -2026,6 +2032,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           err.innerText = 'Please provide both email and password';
           err.classList.remove('hidden');
         }
+        isModalSubmitting = false;
         return;
       }
 
@@ -2034,6 +2041,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           err.innerText = 'Passwords do not match';
           err.classList.remove('hidden');
         }
+        isModalSubmitting = false;
         return;
       }
 
@@ -2081,6 +2089,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           }
         }
       } finally {
+        isModalSubmitting = false;
         if (btn) {
           btn.disabled = false;
           btn.innerText = authMode === 'signin' ? 'Sign In' : 'Create Account';
