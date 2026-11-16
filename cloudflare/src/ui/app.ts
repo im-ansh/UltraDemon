@@ -652,21 +652,43 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       } catch(e) {}
     };
 
-    window.openDnsRecordsModal = function() {
-      var modal = document.getElementById('appDnsModal');
-      if (modal) modal.classList.remove('hidden');
-    };
-    window.closeDnsRecordsModal = function() {
-      var modal = document.getElementById('appDnsModal');
-      if (modal) modal.classList.add('hidden');
-    };
+    window.openDnsRecordsModal = function() {};
+    window.closeDnsRecordsModal = function() {};
     window.copyZonefile = function() {
-      var zone = '; Zonefile for ultrademon.site (Cloudflare Anycast Managed)\n$ORIGIN ultrademon.site.\n$TTL 300\n@ IN SOA ns1.cloudflare.com. dns.cloudflare.com. 2026111601 3600 600 604800 300\n@ IN NS ns1.cloudflare.com.\n@ IN NS ns2.cloudflare.com.\n@ IN A 172.67.182.204 ; Cloudflare Edge Anycast\n@ IN AAAA 2606:4700:3033::ac43:b6cc ; Cloudflare IPv6 Anycast\napi IN CNAME ultrasearch-api.aaronvanoss.workers.dev. ; Sovereign Worker Route\n_ultrademon-challenge IN TXT "ud-verify-sovereign-edge-2026"\n@ IN CAA 0 issue "letsencrypt.org"';
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(zone);
-      }
       if (typeof window.showAppToast === 'function') {
-        window.showAppToast('Zonefile copied to clipboard');
+        window.showAppToast('Active API endpoints on Anycast edge');
+      }
+    };
+
+    // One-Time Cookie & Privacy Consent Logic
+    window.initCookieConsent = function() {
+      try {
+        var consent = localStorage.getItem('ud_privacy_consent');
+        if (!consent) {
+          setTimeout(function() {
+            var el = document.getElementById('cookieConsentPopup');
+            if (el) {
+              el.classList.remove('translate-y-8', 'opacity-0', 'pointer-events-none');
+              el.classList.add('translate-y-0', 'opacity-100');
+            }
+          }, 700);
+        }
+      } catch (e) {}
+    };
+
+    window.closeCookieConsent = function(choice) {
+      try {
+        localStorage.setItem('ud_privacy_consent', choice || 'accepted');
+      } catch (e) {}
+      var el = document.getElementById('cookieConsentPopup');
+      if (el) {
+        el.classList.add('translate-y-8', 'opacity-0', 'pointer-events-none');
+        el.classList.remove('translate-y-0', 'opacity-100');
+        setTimeout(function() {
+          if (el && el.parentNode) {
+            el.style.display = 'none';
+          }
+        }, 350);
       }
     };
 
@@ -1902,35 +1924,38 @@ curl -X POST "${origin}/v1/memory/query" \\
         </button>
       </div>
 
-      <!-- Card 3: Cloudflare Domain Registration & DNS (Reduced / Compact) -->
-      <div class="bg-white border border-neutral-200/90 rounded-xl p-4 shadow-2xs space-y-3">
+      <!-- Card 3: API Integration & Test Hub -->
+      <div class="bg-white border border-neutral-200/90 rounded-xl p-4 shadow-2xs space-y-3 font-sans">
         <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1.5 text-xs font-semibold text-neutral-900 font-sans">
-            <svg class="w-3.5 h-3.5 text-[#f6821f]" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
-            <span>Cloudflare Registrar &amp; DNS</span>
+          <div class="flex items-center gap-1.5 text-xs font-bold text-neutral-900 font-mono">
+            <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            <span>API Integration &amp; Test</span>
           </div>
-          <span class="text-[10px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded font-bold">Full Setup</span>
+          <span class="text-[10px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded font-bold">Live Endpoints</span>
         </div>
-        <div class="space-y-1.5 text-xs text-neutral-600 bg-neutral-50/70 p-2.5 rounded-lg border border-neutral-200/70 font-mono">
+        <p class="text-[11px] text-neutral-500 leading-relaxed font-sans">
+          Create sovereign keys, test search &amp; memory endpoints live in the interactive sandbox, and install the official SDK.
+        </p>
+        <div class="space-y-1.5 bg-neutral-50 p-2.5 rounded-lg border border-neutral-200/80 font-mono text-xs">
           <div class="flex items-center justify-between text-[11px]">
-            <span class="text-neutral-500">Registrar:</span>
-            <span class="text-neutral-900 font-semibold truncate max-w-[150px]">Cloudflare Registrar</span>
+            <span class="text-neutral-500">Endpoints:</span>
+            <span class="text-neutral-900 font-semibold">/v1/search &middot; /v1/memory</span>
           </div>
           <div class="flex items-center justify-between text-[11px]">
-            <span class="text-neutral-500">DNS Zone:</span>
-            <span class="text-neutral-900">Full Setup · Anycast [i]</span>
+            <span class="text-neutral-500">Latency P50:</span>
+            <span class="text-emerald-700 font-bold">&lt;11.8ms Anycast</span>
           </div>
           <div class="flex items-center justify-between text-[11px]">
-            <span class="text-neutral-500">Worker Route:</span>
-            <span class="text-emerald-700 font-bold truncate max-w-[150px]">ultrasearch-api (/*)</span>
+            <span class="text-neutral-500">SDK:</span>
+            <span class="text-neutral-800 font-mono text-[10px] bg-white px-1.5 py-0.5 rounded border border-neutral-200">npm i ultrademon</span>
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-2 pt-0.5">
-          <button type="button" onclick="window.openDnsRecordsModal();" class="py-1 px-2 rounded-md border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-800 text-[11px] font-medium transition cursor-pointer text-center font-mono">
-            DNS Records
+        <div class="grid grid-cols-2 gap-2 pt-0.5 font-mono">
+          <button type="button" onclick="setAppView('keys')" class="py-1.5 px-2 rounded-md border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-800 text-[11px] font-medium transition cursor-pointer text-center">
+            Create Key
           </button>
-          <button type="button" onclick="setAppView('tester'); if(typeof showAppToast==='function') showAppToast('Opened Sandbox with worker route active');" class="py-1 px-2 rounded-md border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-800 text-[11px] font-medium transition cursor-pointer text-center font-mono">
-            Connect Worker
+          <button type="button" onclick="setAppView('tester')" class="py-1.5 px-2 rounded-md bg-neutral-950 hover:bg-neutral-800 text-white text-[11px] font-medium transition cursor-pointer text-center">
+            Test API
           </button>
         </div>
       </div>
@@ -4247,85 +4272,43 @@ requests.post("${origin}/v1/analytics/capture", json={
     </div>
   </div>
 
-  <!-- Live Anycast DNS Inspection Modal -->
-  <div id="appDnsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs hidden" onclick="if(event.target===this) window.closeDnsRecordsModal();">
-    <div class="relative w-full max-w-xl bg-white rounded-3xl p-6 shadow-2xl border border-neutral-100 font-sans" onclick="event.stopPropagation();">
-      <!-- Close Button -->
-      <button onclick="window.closeDnsRecordsModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-neutral-900 transition-colors p-1 cursor-pointer">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  <!-- Cookie & Privacy Permissions One-Time Consent Popup -->
+  <div id="cookieConsentPopup" class="fixed bottom-5 right-5 z-[60] max-w-sm sm:max-w-md w-[calc(100vw-2.5rem)] sm:w-[420px] bg-white border border-neutral-200/90 rounded-2xl shadow-2xl p-5 font-sans transition-all duration-300 transform translate-y-8 opacity-0 pointer-events-none" role="dialog" aria-labelledby="appCookiePopupTitle" aria-describedby="appCookiePopupDesc">
+    <div class="flex items-start justify-between gap-3 mb-2.5">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center shrink-0 text-neutral-800">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div>
+          <h4 id="appCookiePopupTitle" class="text-sm font-bold text-neutral-950 font-sans tracking-tight">Privacy &amp; Cookie Preferences</h4>
+          <span class="text-[10px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded font-semibold">GDPR &middot; CCPA Compliant</span>
+        </div>
+      </div>
+      <button type="button" onclick="window.closeCookieConsent('dismissed')" aria-label="Close" class="text-neutral-400 hover:text-neutral-900 transition p-1 cursor-pointer rounded-md">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
-
-      <!-- Modal Header -->
-      <div class="flex items-center gap-2.5 mb-1">
-        <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
-        <h3 class="font-bold text-base text-neutral-950 font-sans">ultrademon.site · Cloudflare Anycast DNS</h3>
-      </div>
-      <p class="text-xs text-neutral-500 font-mono mb-4">Authoritative Zone · Anycast BGP across 330+ Cities · DNSSEC Validated</p>
-
-      <!-- Records Table -->
-      <div class="overflow-x-auto border border-neutral-200 rounded-xl mb-4 text-xs font-mono">
-        <table class="w-full divide-y divide-neutral-200">
-          <thead class="bg-neutral-50 text-[10px] text-neutral-500 uppercase tracking-wider">
-            <tr>
-              <th class="px-3 py-2 text-left">Type</th>
-              <th class="px-3 py-2 text-left">Name</th>
-              <th class="px-3 py-2 text-left">Content</th>
-              <th class="px-3 py-2 text-left">Proxy</th>
-              <th class="px-3 py-2 text-left">TTL</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-neutral-100 bg-white text-neutral-800">
-            <tr>
-              <td class="px-3 py-2 font-bold text-neutral-950">A</td>
-              <td class="px-3 py-2">ultrademon.site</td>
-              <td class="px-3 py-2 text-neutral-600">172.67.182.204</td>
-              <td class="px-3 py-2"><span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-50 text-amber-800 border border-amber-200 font-semibold">Proxied</span></td>
-              <td class="px-3 py-2 text-neutral-400">Auto</td>
-            </tr>
-            <tr>
-              <td class="px-3 py-2 font-bold text-neutral-950">AAAA</td>
-              <td class="px-3 py-2">ultrademon.site</td>
-              <td class="px-3 py-2 text-neutral-600">2606:4700:3033::ac43:b6cc</td>
-              <td class="px-3 py-2"><span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-50 text-amber-800 border border-amber-200 font-semibold">Proxied</span></td>
-              <td class="px-3 py-2 text-neutral-400">Auto</td>
-            </tr>
-            <tr>
-              <td class="px-3 py-2 font-bold text-neutral-950">CNAME</td>
-              <td class="px-3 py-2">api</td>
-              <td class="px-3 py-2 text-emerald-700 font-semibold truncate max-w-[180px]">ultrasearch-api.aaronvanoss.workers.dev</td>
-              <td class="px-3 py-2"><span class="px-1.5 py-0.5 rounded text-[10px] bg-neutral-100 text-neutral-700 border border-neutral-300">DNS Only</span></td>
-              <td class="px-3 py-2 text-neutral-400">Auto</td>
-            </tr>
-            <tr>
-              <td class="px-3 py-2 font-bold text-neutral-950">TXT</td>
-              <td class="px-3 py-2">_challenge</td>
-              <td class="px-3 py-2 text-neutral-500 truncate max-w-[180px]">"ud-verify-sovereign-edge-2026"</td>
-              <td class="px-3 py-2"><span class="px-1.5 py-0.5 rounded text-[10px] bg-neutral-100 text-neutral-700">DNS Only</span></td>
-              <td class="px-3 py-2 text-neutral-400">Auto</td>
-            </tr>
-            <tr>
-              <td class="px-3 py-2 font-bold text-neutral-950">CAA</td>
-              <td class="px-3 py-2">@</td>
-              <td class="px-3 py-2 text-neutral-600">0 issue "letsencrypt.org"</td>
-              <td class="px-3 py-2"><span class="px-1.5 py-0.5 rounded text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">Valid</span></td>
-              <td class="px-3 py-2 text-neutral-400">Auto</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Action buttons -->
-      <div class="flex items-center justify-between pt-2">
-        <button type="button" onclick="window.copyZonefile()" class="px-3 py-1.5 rounded-lg border border-neutral-300 hover:bg-neutral-100 text-neutral-800 text-xs font-semibold font-mono transition cursor-pointer flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-          <span>Copy BIND Zonefile</span>
-        </button>
-        <button type="button" onclick="window.closeDnsRecordsModal()" class="px-4 py-1.5 rounded-lg bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer">
-          Done
-        </button>
-      </div>
     </div>
-  </div>  <!-- In-App Authentication & Account Switcher Modal (Cloudflare Standard) -->
+    <p id="appCookiePopupDesc" class="text-xs text-neutral-600 leading-relaxed mb-3.5">
+      UltraDemon uses essential cookies and edge telemetry to maintain session state, guarantee sub-10ms search latency, and sync memory. We never sell your data or use third-party ad tracking.
+    </p>
+    <div class="text-[11px] text-neutral-500 mb-3 flex items-center gap-3">
+      <a href="/privacy" target="_blank" class="text-neutral-800 underline hover:text-black">Privacy Policy</a>
+      <span class="text-neutral-300">&middot;</span>
+      <a href="/terms" target="_blank" class="text-neutral-800 underline hover:text-black">Terms of Service</a>
+    </div>
+    <div class="flex items-center gap-2 pt-1 font-sans">
+      <button type="button" onclick="window.closeCookieConsent('all')" class="flex-1 py-2 px-3 rounded-lg bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer text-center shadow-xs">
+        Accept All
+      </button>
+      <button type="button" onclick="window.closeCookieConsent('essential')" class="flex-1 py-2 px-3 rounded-lg border border-neutral-300 hover:bg-neutral-100 text-neutral-800 text-xs font-semibold transition cursor-pointer text-center">
+        Essential Only
+      </button>
+    </div>
+  </div>
+
+  <!-- In-App Authentication & Account Switcher Modal (Cloudflare Standard) -->
   <div id="appAuthModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs hidden">
     <div class="relative w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl border border-neutral-100 font-sans">
       <!-- Close Button -->
@@ -8176,6 +8159,7 @@ requests.post("${origin}/v1/analytics/capture", json={
       document.addEventListener('DOMContentLoaded', initWorkspace);
     } else {
       initWorkspace();
+      if (typeof window.initCookieConsent === "function") window.initCookieConsent();
     }
   
     // ── Seamless Summoning Functions ──────────────────────────────────────────

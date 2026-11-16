@@ -2455,8 +2455,76 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     </div>
   </div>
 
+  <!-- Cookie & Privacy Permissions One-Time Consent Popup -->
+  <div id="cookieConsentPopup" class="fixed bottom-5 right-5 z-[60] max-w-sm sm:max-w-md w-[calc(100vw-2.5rem)] sm:w-[420px] bg-white border border-neutral-200/90 rounded-2xl shadow-2xl p-5 font-sans transition-all duration-300 transform translate-y-8 opacity-0 pointer-events-none" role="dialog" aria-labelledby="cookiePopupTitle" aria-describedby="cookiePopupDesc">
+    <div class="flex items-start justify-between gap-3 mb-2.5">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center shrink-0 text-neutral-800">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div>
+          <h4 id="cookiePopupTitle" class="text-sm font-bold text-neutral-950 font-sans tracking-tight">Privacy &amp; Cookie Preferences</h4>
+          <span class="text-[10px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded font-semibold">GDPR &middot; CCPA Compliant</span>
+        </div>
+      </div>
+      <button type="button" onclick="window.closeCookieConsent('dismissed')" aria-label="Close" class="text-neutral-400 hover:text-neutral-900 transition p-1 cursor-pointer rounded-md">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <p id="cookiePopupDesc" class="text-xs text-neutral-600 leading-relaxed mb-3.5">
+      UltraDemon uses essential cookies and edge telemetry to maintain session state, guarantee sub-10ms search latency, and sync memory. We never sell your data or use third-party ad tracking.
+    </p>
+    <div class="text-[11px] text-neutral-500 mb-3 flex items-center gap-3">
+      <a href="/privacy" target="_blank" class="text-neutral-800 underline hover:text-black">Privacy Policy</a>
+      <span class="text-neutral-300">&middot;</span>
+      <a href="/terms" target="_blank" class="text-neutral-800 underline hover:text-black">Terms of Service</a>
+    </div>
+    <div class="flex items-center gap-2 pt-1 font-sans">
+      <button type="button" onclick="window.closeCookieConsent('all')" class="flex-1 py-2 px-3 rounded-lg bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer text-center shadow-xs">
+        Accept All
+      </button>
+      <button type="button" onclick="window.closeCookieConsent('essential')" class="flex-1 py-2 px-3 rounded-lg border border-neutral-300 hover:bg-neutral-100 text-neutral-800 text-xs font-semibold transition cursor-pointer text-center">
+        Essential Only
+      </button>
+    </div>
+  </div>
+
   <!-- Client-Side Runtime Script -->
   <script>
+    // One-Time Cookie & Privacy Consent Logic
+    window.initCookieConsent = function() {
+      try {
+        var consent = localStorage.getItem('ud_privacy_consent');
+        if (!consent) {
+          setTimeout(function() {
+            var el = document.getElementById('cookieConsentPopup');
+            if (el) {
+              el.classList.remove('translate-y-8', 'opacity-0', 'pointer-events-none');
+              el.classList.add('translate-y-0', 'opacity-100');
+            }
+          }, 700);
+        }
+      } catch (e) {}
+    };
+
+    window.closeCookieConsent = function(choice) {
+      try {
+        localStorage.setItem('ud_privacy_consent', choice || 'accepted');
+      } catch (e) {}
+      var el = document.getElementById('cookieConsentPopup');
+      if (el) {
+        el.classList.add('translate-y-8', 'opacity-0', 'pointer-events-none');
+        el.classList.remove('translate-y-0', 'opacity-100');
+        setTimeout(function() {
+          if (el && el.parentNode) {
+            el.style.display = 'none';
+          }
+        }, 350);
+      }
+    };
+
     let currentUser = null;
 
     // Check existing session in localStorage
@@ -2642,6 +2710,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
 
     document.addEventListener('DOMContentLoaded', function() {
       checkAuthSession();
+      window.initCookieConsent();
 
       // Dual-defense button event binding for modal
       var tabIn = document.getElementById('modalTabSignin');
