@@ -250,7 +250,7 @@ interface MemoryCacheItem {
   ts: number;
 }
 const INSTANT_CACHE = new Map<string, MemoryCacheItem>();
-const MAX_INSTANT_CACHE_SIZE = 500;
+const MAX_INSTANT_CACHE_SIZE = 2000;
 const INSTANT_CACHE_TTL_MS = 60_000; // 60 seconds
 
 // ── Mode 1: Instant Search (<15ms Edge Fast-Path) ────────────────────────────
@@ -263,6 +263,9 @@ async function executeInstantSearch(
   const normKey = `${query.toLowerCase().trim()}:${count}`;
   const memCached = INSTANT_CACHE.get(normKey);
   if (memCached && (Date.now() - memCached.ts < INSTANT_CACHE_TTL_MS)) {
+    // True LRU promotion
+    INSTANT_CACHE.delete(normKey);
+    INSTANT_CACHE.set(normKey, memCached);
     return memCached.results;
   }
 
@@ -372,7 +375,9 @@ async function executeInstantSearch(
       }
     }
 
-    if (INSTANT_CACHE.size >= MAX_INSTANT_CACHE_SIZE) {
+    if (INSTANT_CACHE.has(normKey)) {
+      INSTANT_CACHE.delete(normKey);
+    } else if (INSTANT_CACHE.size >= MAX_INSTANT_CACHE_SIZE) {
       const first = INSTANT_CACHE.keys().next().value;
       if (first) INSTANT_CACHE.delete(first);
     }

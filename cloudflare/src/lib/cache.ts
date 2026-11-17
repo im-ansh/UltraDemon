@@ -6,7 +6,7 @@ import type { Env, SearchResponse } from '../types';
 
 const KV_CACHE_TTL_SECONDS = 120; // 2 min for search results in KV
 const ISOLATE_CACHE_TTL_MS = 60_000; // 60s in local isolate RAM
-const MAX_ISOLATE_ENTRIES = 500;
+const MAX_ISOLATE_ENTRIES = 2000; // Expanded high-concurrency isolate LRU cache
 
 interface IsolateSearchEntry {
   response: SearchResponse;
@@ -35,6 +35,9 @@ export async function getCachedSearch(
   const now = Date.now();
   const ramCached = ISOLATE_SEARCH_CACHE.get(key);
   if (ramCached && (now - ramCached.ts < ISOLATE_CACHE_TTL_MS)) {
+    // True LRU promotion: re-insert at end of Map
+    ISOLATE_SEARCH_CACHE.delete(key);
+    ISOLATE_SEARCH_CACHE.set(key, ramCached);
     return {
       response: { ...ramCached.response },
       cacheTier: 'RAM',
@@ -46,8 +49,10 @@ export async function getCachedSearch(
     if (env.SEARCH_CACHE && typeof env.SEARCH_CACHE.get === 'function') {
       const kvCached = await env.SEARCH_CACHE.get<SearchResponse>(key, 'json');
       if (kvCached) {
-        // Warm up isolate cache for subsequent requests
-        if (ISOLATE_SEARCH_CACHE.size >= MAX_ISOLATE_ENTRIES) {
+        // Warm up isolate cache with true LRU eviction
+        if (ISOLATE_SEARCH_CACHE.has(key)) {
+          ISOLATE_SEARCH_CACHE.delete(key);
+        } else if (ISOLATE_SEARCH_CACHE.size >= MAX_ISOLATE_ENTRIES) {
           const oldest = ISOLATE_SEARCH_CACHE.keys().next().value;
           if (oldest) ISOLATE_SEARCH_CACHE.delete(oldest);
         }
@@ -74,8 +79,10 @@ export async function setCachedSearch(
   const key = buildCacheKey(query, params);
   const now = Date.now();
 
-  // Populate Tier 0 (RAM)
-  if (ISOLATE_SEARCH_CACHE.size >= MAX_ISOLATE_ENTRIES) {
+  // Populate Tier 0 (RAM) with true LRU eviction
+  if (ISOLATE_SEARCH_CACHE.has(key)) {
+    ISOLATE_SEARCH_CACHE.delete(key);
+  } else if (ISOLATE_SEARCH_CACHE.size >= MAX_ISOLATE_ENTRIES) {
     const oldest = ISOLATE_SEARCH_CACHE.keys().next().value;
     if (oldest) ISOLATE_SEARCH_CACHE.delete(oldest);
   }

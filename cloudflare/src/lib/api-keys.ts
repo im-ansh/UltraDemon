@@ -113,7 +113,7 @@ export interface IsolateKeyEntry {
 }
 export const KEY_ISOLATE_CACHE = new Map<string, IsolateKeyEntry>();
 export const KEY_ISOLATE_TTL_MS = 60_000; // 60s
-export const MAX_ISOLATE_KEYS = 1000;
+export const MAX_ISOLATE_KEYS = 5000; // High-concurrency V8 isolate cache
 
 export async function createApiKey(
   env: Env,
@@ -202,6 +202,9 @@ export async function validateApiKey(
       KEY_ISOLATE_CACHE.delete(plainKey);
       throw new Error('API key has been revoked');
     }
+    // True LRU promotion on read
+    KEY_ISOLATE_CACHE.delete(plainKey);
+    KEY_ISOLATE_CACHE.set(plainKey, memCached);
     return memCached.record;
   }
 
@@ -214,7 +217,9 @@ export async function validateApiKey(
       const cached = await env.KEY_CACHE.get<ApiKeyRecord>(cacheKey, 'json');
       if (cached) {
         if (cached.revoked) throw new Error('API key has been revoked');
-        if (KEY_ISOLATE_CACHE.size >= MAX_ISOLATE_KEYS) {
+        if (KEY_ISOLATE_CACHE.has(plainKey)) {
+          KEY_ISOLATE_CACHE.delete(plainKey);
+        } else if (KEY_ISOLATE_CACHE.size >= MAX_ISOLATE_KEYS) {
           const oldest = KEY_ISOLATE_CACHE.keys().next().value;
           if (oldest) KEY_ISOLATE_CACHE.delete(oldest);
         }
@@ -242,7 +247,13 @@ export async function validateApiKey(
     } catch {}
   }
 
-  // Populate In-Isolate cache
+  // Populate In-Isolate cache with true LRU eviction
+  if (KEY_ISOLATE_CACHE.has(plainKey)) {
+    KEY_ISOLATE_CACHE.delete(plainKey);
+  } else if (KEY_ISOLATE_CACHE.size >= MAX_ISOLATE_KEYS) {
+    const oldest = KEY_ISOLATE_CACHE.keys().next().value;
+    if (oldest) KEY_ISOLATE_CACHE.delete(oldest);
+  }
   KEY_ISOLATE_CACHE.set(plainKey, { record: row, cachedAt: now });
 
   return row;
@@ -317,8 +328,8 @@ export async function incrementUsage(
   const isCrawler = service === 'crawler' ? 1 : 0;
 
   try {
-    // 1. Upsert daily counter in D1
-    await env.DB
+    // Execute both daily counter upsert and real-time micro-event in 1 atomic D1 batch
+    const stmt1 = env.DB
       .prepare(`
         INSERT INTO usage (hashed_key, date, request_count, search_count, memory_count, metrics_count, crawler_count, last_used_at)
         VALUES (?, ?, 1, ?, ?, ?, ?, ?)
@@ -331,11 +342,9 @@ export async function incrementUsage(
           crawler_count = crawler_count + excluded.crawler_count,
           last_used_at  = excluded.last_used_at
       `)
-      .bind(hashedKey, today, isSearch, isMemory, isMetrics, isCrawler, now)
-      .run();
+      .bind(hashedKey, today, isSearch, isMemory, isMetrics, isCrawler, now);
 
-    // 2. Log real-time micro-event
-    await env.DB
+    const stmt2 = env.DB
       .prepare(`
         INSERT INTO api_key_usage_events (hashed_key, key_id, service, path, method, status, latency_ms, timestamp, date)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -350,8 +359,9 @@ export async function incrementUsage(
         options?.latencyMs || 0,
         now,
         today
-      )
-      .run();
+      );
+
+    await env.DB.batch([stmt1, stmt2]);
   } catch (err) {
     console.warn('Non-fatal usage increment error:', err);
   }
@@ -546,20 +556,19 @@ export async function getApiKeyMetrics(
     combinedHistoryBuckets[d] = { total: 0, search: 0, memory: 0, metrics: 0, crawler: 0 };
   }
 
-  for (const k of keyRows) {
-    keyLabelsMap[k.key_id] = k.label || k.key_id;
+  interface UsageDbRow {
+    date: string;
+    request_count: number;
+    search_count: number;
+    memory_count: number;
+    metrics_count: number;
+    crawler_count: number;
+    last_used_at: number;
+  }
 
-    interface UsageDbRow {
-      date: string;
-      request_count: number;
-      search_count: number;
-      memory_count: number;
-      metrics_count: number;
-      crawler_count: number;
-      last_used_at: number;
-    }
-
-    const { results: usageRows } = await env.DB
+  // Ultra-Fast: Batch query all keys in 1 D1 roundtrip instead of N sequential awaits
+  const usageStatements = keyRows.map(k =>
+    env.DB
       .prepare(`
         SELECT date, request_count, search_count, memory_count, metrics_count, crawler_count, last_used_at
         FROM usage
@@ -567,8 +576,15 @@ export async function getApiKeyMetrics(
         ORDER BY date ASC
       `)
       .bind(k.hashed_key, oldestDate)
-      .all<UsageDbRow>();
+  );
 
+  const batchResults = await env.DB.batch<UsageDbRow>(usageStatements);
+
+  for (let i = 0; i < keyRows.length; i++) {
+    const k = keyRows[i];
+    keyLabelsMap[k.key_id] = k.label || k.key_id;
+
+    const usageRows = batchResults[i]?.results;
     const usageByDate: Record<string, UsageDbRow> = {};
     let latestUsedAt: number | null = null;
 

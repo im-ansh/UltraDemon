@@ -49,7 +49,25 @@ app.use('*', cors({
 }));
 
 app.use('*', logger());
-app.use('*', prettyJSON());
+app.use('*', prettyJSON({ query: 'pretty' }));
+
+// ── In-Memory Binary Asset Cache (<0.01ms V8 RAM) ────────────────────────────
+const BINARY_CACHE = new Map<string, ArrayBuffer>();
+
+function getCachedBinary(key: string, b64: string): ArrayBuffer {
+  let cached = BINARY_CACHE.get(key);
+  if (!cached) {
+    const binaryString = atob(b64);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    cached = bytes.buffer as ArrayBuffer;
+    BINARY_CACHE.set(key, cached);
+  }
+  return cached;
+}
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 
@@ -60,14 +78,8 @@ app.get('/assets/demo/:filename', (c) => {
   if (!b64) {
     return c.notFound();
   }
-  // Convert base64 to binary
-  const binaryString = atob(b64);
-  const len = binaryString.length;
-  const bytes = new Uint8Array(len);
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return new Response(bytes.buffer, {
+  const buffer = getCachedBinary(`demo:${filename}`, b64);
+  return new Response(buffer, {
     headers: {
       'Content-Type': 'image/webp',
       'Cache-Control': 'public, max-age=31536000, immutable',
@@ -77,12 +89,8 @@ app.get('/assets/demo/:filename', (c) => {
 
 // Serve Official UltraDemon Favicon (Binary PNG)
 app.get('/favicon.ico', (c) => {
-  const binaryString = atob(ULTRADEMON_FAVICON_B64);
-  const bytes = new Uint8Array(binaryString.length);
-  for (let i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return new Response(bytes.buffer, {
+  const buffer = getCachedBinary('favicon', ULTRADEMON_FAVICON_B64);
+  return new Response(buffer, {
     headers: {
       'Content-Type': 'image/png',
       'Cache-Control': 'public, max-age=31536000, immutable',
@@ -91,12 +99,8 @@ app.get('/favicon.ico', (c) => {
 });
 
 app.get('/favicon.png', (c) => {
-  const binaryString = atob(ULTRADEMON_FAVICON_B64);
-  const bytes = new Uint8Array(binaryString.length);
-  for (let i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return new Response(bytes.buffer, {
+  const buffer = getCachedBinary('favicon', ULTRADEMON_FAVICON_B64);
+  return new Response(buffer, {
     headers: {
       'Content-Type': 'image/png',
       'Cache-Control': 'public, max-age=31536000, immutable',
@@ -106,12 +110,8 @@ app.get('/favicon.png', (c) => {
 
 // Serve Official UltraDemon High-Res Logo
 app.get('/logo.png', (c) => {
-  const binaryString = atob(ULTRADEMON_LOGO_PNG_B64);
-  const bytes = new Uint8Array(binaryString.length);
-  for (let i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return new Response(bytes.buffer, {
+  const buffer = getCachedBinary('logo', ULTRADEMON_LOGO_PNG_B64);
+  return new Response(buffer, {
     headers: {
       'Content-Type': 'image/png',
       'Cache-Control': 'public, max-age=31536000, immutable',
@@ -670,12 +670,8 @@ app.get('/health', c => c.json({ status: 'ok', ts: new Date().toISOString() }));
 
 // Serve custom Michelangelus font directly from edge
 app.get('/fonts/Michelangelus-BoldItalic.ttf', () => {
-  const binaryString = atob(MICHELANGELUS_BOLD_ITALIC_B64);
-  const bytes = new Uint8Array(binaryString.length);
-  for (let i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return new Response(bytes.buffer, {
+  const buffer = getCachedBinary('font:michelangelus-bolditalic', MICHELANGELUS_BOLD_ITALIC_B64);
+  return new Response(buffer, {
     headers: {
       'Content-Type': 'font/ttf',
       'Cache-Control': 'public, max-age=31536000, immutable',
@@ -686,12 +682,8 @@ app.get('/fonts/Michelangelus-BoldItalic.ttf', () => {
 
 // Serve 3D Hero Brand Assets directly from edge
 app.get('/images/hero-brain.webp', () => {
-  const binaryString = atob(HERO_BRAIN_WEBP_B64);
-  const bytes = new Uint8Array(binaryString.length);
-  for (let i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return new Response(bytes.buffer, {
+  const buffer = getCachedBinary('img:hero-brain', HERO_BRAIN_WEBP_B64);
+  return new Response(buffer, {
     headers: {
       'Content-Type': 'image/webp',
       'Cache-Control': 'public, max-age=31536000, immutable',
@@ -701,12 +693,8 @@ app.get('/images/hero-brain.webp', () => {
 });
 
 app.get('/images/hero-lens.webp', () => {
-  const binaryString = atob(HERO_LENS_WEBP_B64);
-  const bytes = new Uint8Array(binaryString.length);
-  for (let i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return new Response(bytes.buffer, {
+  const buffer = getCachedBinary('img:hero-lens', HERO_LENS_WEBP_B64);
+  return new Response(buffer, {
     headers: {
       'Content-Type': 'image/webp',
       'Cache-Control': 'public, max-age=31536000, immutable',

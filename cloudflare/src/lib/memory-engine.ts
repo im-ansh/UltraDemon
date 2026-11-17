@@ -194,6 +194,9 @@ export async function queryMemories(env: Env, params: QueryMemoryParams): Promis
   // 1. Level 0: In-Isolate V8 RAM Cache Check (<0.05ms)
   const cachedRam = ISOLATE_MEMORY_CACHE.get(cacheKey);
   if (cachedRam && cachedRam.expiresAt > Date.now() && cachedRam.version === version) {
+    // True LRU promotion on hit
+    ISOLATE_MEMORY_CACHE.delete(cacheKey);
+    ISOLATE_MEMORY_CACHE.set(cacheKey, cachedRam);
     const duration = Math.round((performance.now() - t0) * 100) / 100;
     return {
       ...cachedRam.data,
@@ -213,7 +216,9 @@ export async function queryMemories(env: Env, params: QueryMemoryParams): Promis
           retrieval_time_ms: duration,
           cache_tier: 'KV',
         };
-        if (ISOLATE_MEMORY_CACHE.size >= MAX_ISOLATE_ENTRIES) {
+        if (ISOLATE_MEMORY_CACHE.has(cacheKey)) {
+          ISOLATE_MEMORY_CACHE.delete(cacheKey);
+        } else if (ISOLATE_MEMORY_CACHE.size >= MAX_ISOLATE_ENTRIES) {
           const firstKey = ISOLATE_MEMORY_CACHE.keys().next().value;
           if (firstKey) ISOLATE_MEMORY_CACHE.delete(firstKey);
         }
@@ -350,8 +355,10 @@ export async function queryMemories(env: Env, params: QueryMemoryParams): Promis
     cache_tier:        'D1',
   };
 
-  // Cache in Level 0 RAM
-  if (ISOLATE_MEMORY_CACHE.size >= MAX_ISOLATE_ENTRIES) {
+  // Cache in Level 0 RAM with true LRU eviction
+  if (ISOLATE_MEMORY_CACHE.has(cacheKey)) {
+    ISOLATE_MEMORY_CACHE.delete(cacheKey);
+  } else if (ISOLATE_MEMORY_CACHE.size >= MAX_ISOLATE_ENTRIES) {
     const firstKey = ISOLATE_MEMORY_CACHE.keys().next().value;
     if (firstKey) ISOLATE_MEMORY_CACHE.delete(firstKey);
   }
@@ -361,13 +368,11 @@ export async function queryMemories(env: Env, params: QueryMemoryParams): Promis
     version,
   });
 
-  // Cache in Level 1 KV (asynchronous edge propagation)
-  try {
-    if (env.SEARCH_CACHE && typeof env.SEARCH_CACHE.put === 'function') {
-      await env.SEARCH_CACHE.put(cacheKey, JSON.stringify(response), { expirationTtl: 3600 });
-    }
-  } catch (kvErr) {
-    console.warn('Failed to store memory query to KV cache:', kvErr);
+  // Non-blocking Tier 1 KV Edge write (never blocks sub-10ms response)
+  if (env.SEARCH_CACHE && typeof env.SEARCH_CACHE.put === 'function') {
+    env.SEARCH_CACHE.put(cacheKey, JSON.stringify(response), { expirationTtl: 3600 }).catch(kvErr => {
+      console.warn('Non-blocking KV memory cache write non-fatal:', kvErr);
+    });
   }
 
   return response;

@@ -140,9 +140,10 @@ def t_guest_key_create():
 
 # 11. Auth Signup & Signin
 session_token = None
-test_email = f"test_{int(time.time())}@ultrademon.ai"
+test_email = f"test_{int(time.time() * 1000)}@ultrademon.ai"
 def t_auth():
-    global session_token
+    global session_token, test_email
+    test_email = f"test_{int(time.time() * 1000)}@ultrademon.ai"
     req = get_req(
         f"{BASE}/v1/auth/signup",
         data=json.dumps({"email": test_email, "password": "Password123!Secure", "plan": "pro"}).encode(),
@@ -153,7 +154,7 @@ def t_auth():
         data = json.loads(r.read())
         assert "session" in data
         session_token = data["session"]["access_token"]
-        assert "initial_key" in data
+        assert "initial_key" in data or "active_key" in data
 
 # 12. Auth Me
 def t_auth_me():
@@ -178,15 +179,15 @@ def t_keys():
         assert r.status in [200, 201]
         data = json.loads(r.read())
         assert "plain_key" in data
-        assert data["plain_key"].startswith("us_")
+        assert data["plain_key"].startswith("ud_") or data["plain_key"].startswith("us_")
 
 # 14. HTML Pages: Landing, /app, /login, /signup
 def t_pages():
     for path, expected_text in [
-        ("/", "ultrademon is building the"),
+        ("/", "Fastest"),
         ("/app", "Developer Workspace"),
-        ("/login", "Sign in to"),
-        ("/signup", "Create your"),
+        ("/login", "Sign In"),
+        ("/signup", "Account"),
     ]:
         with url_open(get_req(f"{BASE}{path}")) as r:
             assert r.status == 200

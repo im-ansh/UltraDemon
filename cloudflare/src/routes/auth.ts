@@ -156,6 +156,7 @@ authRouter.post('/signup', async (c) => {
       message: 'Account configured and signed in successfully',
       user: sessionPayload,
       active_key: activeKey,
+      initial_key: activeKey,
       session: { access_token: sessionToken, token_type: 'bearer', expires_in: 86400 * 30 }
     }, 200);
   }
@@ -205,6 +206,7 @@ authRouter.post('/signup', async (c) => {
     message: 'Account created and verified successfully',
     user: sessionPayload,
     active_key: initialKey,
+    initial_key: initialKey,
     session: { access_token: sessionToken, token_type: 'bearer', expires_in: 86400 * 30 },
   }, 201);
 });

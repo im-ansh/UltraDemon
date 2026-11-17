@@ -560,61 +560,61 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
           title: 'UltraSearch Studio',
           desc: 'Test live BM25 web search and multi-hop research queries embedded at Cloudflare edge.',
           breadcrumb: 'Search Studio',
-          action: '<button type="button" onclick="document.getElementById(\'appSearchQuery\')?.focus();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span>New Search</span></button>'
+          action: '<button type="button" onclick="document.getElementById(&quot;appSearchQuery&quot;)?.focus();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span>New Search</span></button>'
         },
         memory: {
           title: 'UltraMemory Lab',
           desc: 'Store, query, and browse agent structured long-term memory with sub-15ms edge recall.',
           breadcrumb: 'UltraMemory Lab',
-          action: '<button type="button" onclick="if(typeof switchMemoryTab===\'function\') switchMemoryTab(\'store\'); document.getElementById(\'appMemContent\')?.focus();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg><span>+ Store Memory</span></button>'
+          action: '<button type="button" onclick="if(typeof switchMemoryTab===&quot;function&quot;) switchMemoryTab(&quot;store&quot;); document.getElementById(&quot;appMemContent&quot;)?.focus();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg><span>+ Store Memory</span></button>'
         },
         tester: {
           title: 'API Sandbox Tester',
           desc: 'Interactive real-time test bench for UltraSearch, UltraMemory, and UltraMetrics endpoints with live latency metrics.',
           breadcrumb: 'API Sandbox',
-          action: '<button type="button" onclick="if(typeof executeTesterRequest===\'function\') executeTesterRequest();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>Run API Test</span></button>'
+          action: '<button type="button" onclick="if(typeof executeTesterRequest===&quot;function&quot;) executeTesterRequest();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>Run API Test</span></button>'
         },
         keys: {
           title: 'API Keys & Custom MCP Server',
           desc: 'Create sovereign API keys, summon pre-warmed edge tunnels, and configure native Model Context Protocol tools for AI agents.',
           breadcrumb: 'API Keys & MCP',
-          action: '<button type="button" onclick="document.getElementById(\'appKeyLabel\')?.focus();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg><span>+ Create Key</span></button>'
+          action: '<button type="button" onclick="document.getElementById(&quot;appKeyLabel&quot;)?.focus();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg><span>+ Create Key</span></button>'
         },
         summoning: {
           title: 'Seamless Summoning Protocol',
           desc: 'Zero-Cold-Start Anycast Edge Tunnel with Zero-Error Dual-Tier Resilience and Fastest Edge API Keys.',
           breadcrumb: 'Seamless Summon',
-          action: '<button type="button" onclick="if(typeof summonFastestKey===\'function\') summonFastestKey();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>Summon Edge Key</span></button>'
+          action: '<button type="button" onclick="if(typeof summonFastestKey===&quot;function&quot;) summonFastestKey();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>Summon Edge Key</span></button>'
         },
         integrations: {
           title: 'MCP Protocol & SDKs',
           desc: 'Connect UltraDemon to Claude Desktop, Cursor, and autonomous agent frameworks.',
           breadcrumb: 'MCP & SDKs',
-          action: '<button type="button" onclick="if(typeof copyMcpDirectConfig===\'function\') copyMcpDirectConfig();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><span>Copy MCP Config</span></button>'
+          action: '<button type="button" onclick="if(typeof copyMcpDirectConfig===&quot;function&quot;) copyMcpDirectConfig();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><span>Copy MCP Config</span></button>'
         },
         benchmarks: {
           title: 'Edge Performance Benchmarks',
           desc: '10,000 real query runs executed across Cloudflare Anycast edge nodes in 330+ cities worldwide.',
           breadcrumb: 'Benchmarks',
-          action: '<button type="button" onclick="if(typeof runLiveBenchmarks===\'function\') runLiveBenchmarks();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Run Benchmarks</span></button>'
+          action: '<button type="button" onclick="if(typeof runLiveBenchmarks===&quot;function&quot;) runLiveBenchmarks();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Run Benchmarks</span></button>'
         },
         analytics: {
           title: 'Telemetry & Observability',
           desc: 'PostHog-competitive edge analytics with autonomous Ideal Customer Profile synthesis.',
           breadcrumb: 'Observability',
-          action: '<button type="button" onclick="if(typeof loadAnalyticsDashboard===\'function\') loadAnalyticsDashboard();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg><span>Refresh Telemetry</span></button>'
+          action: '<button type="button" onclick="if(typeof loadAnalyticsDashboard===&quot;function&quot;) loadAnalyticsDashboard();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg><span>Refresh Telemetry</span></button>'
         },
         crawler: {
           title: 'AI Crawl Control',
           desc: 'Dispatch edge crawler tasks directly into D1 SQLite FTS5 index tables.',
           breadcrumb: 'AI Crawl Control',
-          action: '<button type="button" onclick="document.getElementById(\'appCrawlUrlSearch\')?.focus();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg><span>+ Ingest URL</span></button>'
+          action: '<button type="button" onclick="document.getElementById(&quot;appCrawlUrlSearch&quot;)?.focus();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg><span>+ Ingest URL</span></button>'
         },
         membership: {
           title: 'Memberships & Quotas',
           desc: 'Manage your subscription tier and upgrade daily limits.',
           breadcrumb: 'Quotas & Top-Ups',
-          action: '<button type="button" onclick="openAppAuthModal(\'signup\')" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><span>Upgrade Tier &rarr;</span></button>'
+          action: '<button type="button" onclick="openAppAuthModal(&quot;signup&quot;)" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><span>Upgrade Tier &rarr;</span></button>'
         }
       };
 
@@ -794,7 +794,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
             }, 200);
           } else if (viewId === 'tester') {
             setTimeout(function() {
-              var queryIn = document.getElementById('testerQueryInput') || document.getElementById('testerBodyInput');
+              var queryIn = document.getElementById('testerBody') || document.getElementById('testerEndpoint') || document.getElementById('testerQueryInput');
               if (queryIn) queryIn.focus();
             }, 200);
           }
@@ -6252,7 +6252,7 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
         const res = await fetch('/v1/memory?limit=30', { headers: getAppAuthHeaders() });
         const data = await res.json();
         const tbody = document.getElementById('appMemoriesTableBody');
-        const metric = document.getElementById('metricMemories');
+        const metric = document.getElementById('memoryTotalNodesDisplay') || document.getElementById('metricMemories');
         if (data.memories && data.memories.length > 0) {
           if (metric) metric.innerText = data.total || data.memories.length;
           if (tbody) {
@@ -6320,7 +6320,7 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
                 '</div>' +
                 '<p class="text-neutral-600 text-xs leading-relaxed">Your edge session has expired or requires authentication. You can sign in to your workspace or run this query in the public guest sandbox.</p>' +
                 '<div class="flex items-center gap-2 pt-1">' +
-                  '<button type="button" onclick="openAppAuthModal(\'signin\')" class="px-3.5 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold cursor-pointer transition shadow-xs">Sign In to Workspace</button>' +
+                  '<button type="button" onclick="openAppAuthModal(&quot;signin&quot;)" class="px-3.5 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold cursor-pointer transition shadow-xs">Sign In to Workspace</button>' +
                   '<button type="button" onclick="runPublicSandboxSearch()" class="px-3.5 py-1.5 rounded-lg bg-white border border-neutral-300 hover:bg-neutral-100 text-neutral-800 text-xs font-semibold cursor-pointer transition shadow-2xs">Run in Public Sandbox &rarr;</button>' +
                 '</div>' +
               '</div>';
