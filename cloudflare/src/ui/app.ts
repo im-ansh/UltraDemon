@@ -5339,7 +5339,8 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
       else if (type === 'mcp') snippet = 'npx -y mcp-remote https://ultrademon.site/mcp';
       else if (type === 'curl') {
         var key = localStorage.getItem('ultrademon_active_key') || 'ud_live_demo_console_key';
-        snippet = 'curl -X POST "https://ultrademon.site/v1/search" -H "Authorization: Bearer ' + key + '" -H "Content-Type: application/json" -d \'{"query":"fastest ai search"}\';';
+        var bodyStr = String.fromCharCode(39) + '{"query":"fastest ai search"}' + String.fromCharCode(39);
+        snippet = 'curl -X POST "https://ultrademon.site/v1/search" -H "Authorization: Bearer ' + key + '" -H "Content-Type: application/json" -d ' + bodyStr;
       }
       copyToClipboard(snippet);
       showAppToast('Command copied to clipboard');
@@ -7523,6 +7524,7 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
 
     window.switchSuite = switchSuite;
     window.switchSuiteTab = switchSuite;
+    window.updateSuiteSwitcher = updateSuiteSwitcher;
     window.switchProfilePeriod = switchProfilePeriod;
     window.generateFreshICPReport = generateFreshICPReport;
     window.handleAppCreateKey = handleAppCreateKey;
