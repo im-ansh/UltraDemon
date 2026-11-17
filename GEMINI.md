@@ -16,3 +16,8 @@
   - Primary Sans: NB International Pro across all general interface text and headings.
   - Serif Accents: Michelangelus (bold italic).
   - Numbers & Telemetry: Geist Mono with tabular figures (`tabular-nums`).
+
+## 4. Strict Prohibition on Cheap, Copied, or "AI-Slop" Design
+- **Never produce cheap or generic design**: Absolutely avoid generic floating cards, bulbous border radiuses, tacky drop shadows, and lazy template styling.
+- **Articulated, Line-Based & Table Architecture**: All layouts must follow a disciplined, high-density architectural standard using 1px hairline dividers, structured data tables, and crisp line-bordered panels.
+- **Zero Emojis Under Any Circumstances**: Never use emojis as icons, badges, or decorations. Rely strictly on precision SVG line icons and typographic telemetry.

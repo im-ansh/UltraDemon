@@ -244,8 +244,8 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       font-synthesis: weight style;
     }
     body {
-      background-color: #f7f7f7;
-      color: #09090b;
+      background-color: #ffffff;
+      color: #0a0a0a;
     }
     .font-sans {
       font-family: 'NB International Pro', 'NB International', 'nbinternational', -apple-system, BlinkMacSystemFont, sans-serif !important;
@@ -261,64 +261,127 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
     ${CUSTOM_CURSORS_CSS}
     
-    /* Shimmering Skeleton Loaders (Devin & Cognition Minimalist Standard) */
+    /* Shimmering Skeleton Loaders */
     @keyframes skeleton-shimmer {
       0% { background-position: -200% 0; }
       100% { background-position: 200% 0; }
     }
     .skeleton {
-      background: linear-gradient(90deg, #f1f1f4 25%, #e4e4e9 50%, #f1f1f4 75%);
+      background: linear-gradient(90deg, #f4f4f5 25%, #e4e4e7 50%, #f4f4f5 75%);
       background-size: 200% 100%;
       animation: skeleton-shimmer 1.5s ease-in-out infinite;
-      border-radius: 6px;
+      border-radius: 2px;
       display: inline-block;
     }
     .skeleton-dark {
-      background: linear-gradient(90deg, #1c1c20 25%, #2d2d32 50%, #1c1c20 75%);
+      background: linear-gradient(90deg, #18181b 25%, #27272a 50%, #18181b 75%);
       background-size: 200% 100%;
       animation: skeleton-shimmer 1.5s ease-in-out infinite;
-      border-radius: 6px;
+      border-radius: 2px;
       display: inline-block;
     }
     .skeleton-card {
       background: #ffffff;
-      border: 1px solid #e8e8ed;
-      border-radius: 1rem;
+      border: 1px solid #e5e5e5;
+      border-radius: 0px;
       padding: 1.25rem;
       position: relative;
       overflow: hidden;
     }
 
+    /* Articulated Line-Based & Table Architecture (Swiss High-Density Grid) */
+    .card-clean,
+    .card-elevated,
     .devin-card {
       background: #ffffff;
-      border: 1px solid #e8e8ed;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.02), 0 4px 16px rgba(0,0,0,0.02);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1px solid #e5e5e5;
+      border-radius: 0px !important;
+      box-shadow: none !important;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
     }
+    .card-clean:hover,
+    .card-elevated:hover,
     .devin-card:hover {
-      border-color: #d4d4d8;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03), 0 8px 24px rgba(0,0,0,0.04);
-    }
-    .card-clean {
-      background: #ffffff;
-      border: 1px solid #e8e8ed;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.02);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .card-clean:hover {
       border-color: #a3a3a3;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      box-shadow: none !important;
+      transform: none !important;
     }
-    .card-elevated {
+
+    /* Crisp Line Grids & Hairline Dividers */
+    .line-grid {
+      display: grid;
+      border: 1px solid #e5e5e5;
+      background: #e5e5e5;
+      gap: 1px;
+    }
+    .line-grid-cell {
+      background: #ffffff;
+      padding: 14px 16px;
+      transition: background-color 0.15s ease;
+    }
+    .line-grid-cell:hover {
+      background-color: #fafafa;
+    }
+
+    .line-panel {
       background: #ffffff;
       border: 1px solid #e5e5e5;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 6px 16px -2px rgba(0,0,0,0.03);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      border-radius: 0px;
     }
-    .card-elevated:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
-      border-color: #171717;
+
+    .line-header {
+      padding: 10px 16px;
+      border-bottom: 1px solid #e5e5e5;
+      background: #fafafa;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .line-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .line-table th {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #71717a;
+      background: #fafafa;
+      border-bottom: 1px solid #e5e5e5;
+      padding: 8px 14px;
+      text-align: left;
+      font-weight: 600;
+    }
+    .line-table td {
+      border-bottom: 1px solid #f4f4f5;
+      padding: 10px 14px;
+      color: #0a0a0a;
+      font-family: 'NB International Pro', -apple-system, sans-serif;
+    }
+    .line-table tr:hover td {
+      background-color: #fafafa;
+    }
+    .line-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .line-subnav {
+      border: 1px solid #e5e5e5;
+      background: #ffffff;
+    }
+
+    .suite-tab-btn {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      transition: all 0.15s ease;
     }
     .code-scroll::-webkit-scrollbar {
       height: 6px;
@@ -1114,7 +1177,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     });
   </script>
 </head>
-<body class="min-h-screen bg-[#f7f7f7] text-neutral-950 flex flex-col md:flex-row antialiased selection:bg-black selection:text-white">
+<body class="min-h-screen bg-white text-neutral-950 flex flex-col md:flex-row antialiased selection:bg-black selection:text-white">
 
   <!-- Cloudflare Global Top Navigation Bar (Fixed 52px across entire window) -->
   <header class="fixed top-0 left-0 right-0 h-[52px] z-50 bg-white border-b border-neutral-200/80 px-3 sm:px-4 flex items-center justify-between shadow-2xs select-none">
@@ -1539,143 +1602,305 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       <option value="">Actions</option>
     </select>
 
+    <!-- In-App Flow Sub-Navigation Ribbon (Articulated Line-Based Tabs with Dividers) -->
+    <nav class="line-subnav border border-neutral-200 bg-white mb-6 overflow-x-auto no-scrollbar shadow-none select-none flex items-stretch justify-between" aria-label="In-App Navigation Flow">
+      <div class="flex items-stretch divide-x divide-neutral-200 min-w-max">
+        <button type="button" id="suiteBtn-overview" onclick="switchSuite('overview', event)" class="suite-tab-btn py-2.5 px-3.5 sm:px-4 font-semibold text-neutral-950 border-b-2 border-neutral-950 cursor-pointer flex items-center gap-1.5 shrink-0 transition text-xs font-mono">
+          <span class="text-neutral-400 font-normal">01</span>
+          <span>Overview</span>
+        </button>
+        <button type="button" id="suiteBtn-search" onclick="switchSuite('search', event)" class="suite-tab-btn py-2.5 px-3.5 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition text-xs font-mono">
+          <span class="text-neutral-400 font-normal">02</span>
+          <span>Search</span>
+        </button>
+        <button type="button" id="suiteBtn-memory" onclick="switchSuite('memory', event)" class="suite-tab-btn py-2.5 px-3.5 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition text-xs font-mono">
+          <span class="text-neutral-400 font-normal">03</span>
+          <span>Memory</span>
+        </button>
+        <button type="button" id="suiteBtn-tester" onclick="switchSuite('tester', event)" class="suite-tab-btn py-2.5 px-3.5 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition text-xs font-mono">
+          <span class="text-neutral-400 font-normal">04</span>
+          <span>Sandbox</span>
+          <span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-1 py-0.2 rounded font-semibold">Live</span>
+        </button>
+        <button type="button" id="suiteBtn-keys" onclick="switchSuite('keys', event)" class="suite-tab-btn py-2.5 px-3.5 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition text-xs font-mono">
+          <span class="text-neutral-400 font-normal">05</span>
+          <span>Keys &amp; MCP</span>
+        </button>
+        <button type="button" id="suiteBtn-summoning" onclick="setAppView('summoning', event)" class="suite-tab-btn py-2.5 px-3.5 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition text-xs font-mono">
+          <span class="text-neutral-400 font-normal">06</span>
+          <span>Summon</span>
+        </button>
+        <button type="button" id="suiteBtn-benchmarks" onclick="switchSuite('benchmarks', event)" class="suite-tab-btn py-2.5 px-3.5 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition text-xs font-mono">
+          <span class="text-neutral-400 font-normal">07</span>
+          <span>Benchmarks</span>
+        </button>
+        <button type="button" id="suiteBtn-metrics" onclick="switchSuite('metrics', event)" class="suite-tab-btn py-2.5 px-3.5 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition text-xs font-mono">
+          <span class="text-neutral-400 font-normal">08</span>
+          <span>Telemetry</span>
+        </button>
+        <button type="button" id="suiteBtn-crawler" onclick="switchSuite('crawler', event)" class="suite-tab-btn py-2.5 px-3.5 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition text-xs font-mono">
+          <span class="text-neutral-400 font-normal">09</span>
+          <span>Crawler</span>
+        </button>
+        <button type="button" id="suiteBtn-membership" onclick="switchSuite('membership', event)" class="suite-tab-btn py-2.5 px-3.5 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition text-xs font-mono">
+          <span class="text-neutral-400 font-normal">10</span>
+          <span>Quotas</span>
+        </button>
+      </div>
+
+      <!-- Right Edge Telemetry Live Ticker -->
+      <div class="hidden xl:flex items-center gap-3 px-3 py-1.5 font-mono text-[10px] text-neutral-500 border-l border-neutral-200 shrink-0">
+        <span class="flex items-center gap-1 text-emerald-700 font-semibold">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>ANYCAST: ONLINE</span>
+        </span>
+        <span class="text-neutral-300">|</span>
+        <span>P50: &lt;12ms</span>
+        <span class="text-neutral-300">|</span>
+        <span>330+ CITIES</span>
+      </div>
+    </nav>
+
 <section id="view-overview" class="space-y-6">
 
-  <!-- PRIMARY STATUS STRIP (4 Compact Items) -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 font-sans">
-    
-    <!-- 1: Session & Authentication -->
-    <div class="card-clean p-4 rounded-xl bg-white border border-neutral-200/90 shadow-2xs space-y-2 flex flex-col justify-between">
-      <div class="space-y-1">
-        <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center justify-between">
-          <span>Session State</span>
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        </div>
-        <div class="text-sm font-bold text-neutral-950 font-sans truncate" id="overviewSessionStatus">
-          Guest Demo Mode
-        </div>
+  <!-- 01 // SOVEREIGN WORKSPACE ONBOARDING (Articulated Line-Divided Stepper) -->
+  <div id="onboardingGuidePanel" class="border border-neutral-200 bg-white">
+    <!-- Stepper Header Rule -->
+    <div class="px-4 py-3 bg-neutral-50/70 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+      <div class="flex items-center gap-2.5">
+        <span class="inline-flex items-center justify-center w-5 h-5 bg-neutral-950 text-white font-mono text-[10px] font-bold">01</span>
+        <span class="text-xs font-bold font-mono tracking-wider uppercase text-neutral-950">Workspace Onboarding &amp; Setup</span>
+        <span class="text-neutral-300">|</span>
+        <span id="onboardingProgressText" class="text-[11px] font-mono text-neutral-600 font-semibold">1 / 4 Steps Completed</span>
       </div>
-      <div class="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs">
-        <button type="button" onclick="openAppAuthModal('signin')" id="overviewSessionActionBtn" class="font-semibold text-neutral-900 hover:underline cursor-pointer text-[11px]">
-          Sign In / Switch &rarr;
-        </button>
-        <span class="text-[10px] font-mono text-neutral-400" id="overviewSessionSubtext">Public Sandbox</span>
-      </div>
-    </div>
-
-    <!-- 2: Active Sovereign Key -->
-    <div class="card-clean p-4 rounded-xl bg-white border border-neutral-200/90 shadow-2xs space-y-2 flex flex-col justify-between">
-      <div class="space-y-1">
-        <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center justify-between">
-          <span>Active API Key</span>
-          <span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-1 rounded font-semibold">Active</span>
-        </div>
-        <div class="text-xs font-bold font-mono text-neutral-950 truncate select-all" id="overviewActiveKeyDisplay">
-          ud_live_demo_console_key
-        </div>
-      </div>
-      <div class="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs">
-        <button type="button" onclick="copyActiveKeyFromOverview()" id="btnOverviewCopyKey" class="font-semibold text-neutral-900 hover:underline cursor-pointer text-[11px] flex items-center gap-1 font-mono">
-          <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-          <span id="overviewCopyKeyLabel">Copy Key</span>
-        </button>
-        <button type="button" onclick="setAppView('keys')" class="text-[11px] text-neutral-500 hover:text-black cursor-pointer font-sans">
-          Manage &rarr;
-        </button>
-      </div>
-    </div>
-
-    <!-- 3: Plan & Quotas -->
-    <div class="card-clean p-4 rounded-xl bg-white border border-neutral-200/90 shadow-2xs space-y-2 flex flex-col justify-between">
-      <div class="space-y-1">
-        <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center justify-between">
-          <span>Plan &amp; Quota</span>
-          <span class="text-[9px] font-mono uppercase text-neutral-600 bg-neutral-100 border border-neutral-200 px-1 rounded font-semibold" id="overviewPlanBadge">Free</span>
-        </div>
-        <div class="text-sm font-bold text-neutral-950 font-sans truncate" id="overviewPlanDisplay">
-          Free Tier · 100 req/day
-        </div>
-      </div>
-      <div class="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs">
-        <button type="button" onclick="setAppView('membership')" class="font-semibold text-neutral-900 hover:underline cursor-pointer text-[11px]">
-          Upgrade Quota &rarr;
-        </button>
-        <span class="text-[10px] font-mono text-neutral-400">Zero Overage</span>
-      </div>
-    </div>
-
-    <!-- 4: Edge Region & Latency -->
-    <div class="card-clean p-4 rounded-xl bg-white border border-neutral-200/90 shadow-2xs space-y-2 flex flex-col justify-between">
-      <div class="space-y-1">
-        <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center justify-between">
-          <span>Edge Network</span>
-          <span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-1 rounded font-semibold">&lt;10ms</span>
-        </div>
-        <div class="text-sm font-bold text-neutral-950 font-sans truncate">
-          Global Anycast PoP
-        </div>
-      </div>
-      <div class="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs">
-        <span class="text-[11px] text-neutral-600 font-sans font-medium">330+ Edge Cities</span>
-        <span class="text-[10px] font-mono text-emerald-700 font-semibold"><span id="overviewColoBadge">Auto</span> · <span id="overviewRttBadge">&lt;10ms</span></span>
-      </div>
-    </div>
-  </div>
-
-  <!-- KEY METRICS (4 Honest Indicators) -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 font-sans">
-    <!-- Metric 1: Requests Today -->
-    <div class="card-clean p-4 rounded-xl bg-white border border-neutral-200/90 shadow-2xs space-y-1">
-      <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">Requests Today</div>
-      <div class="text-2xl font-bold font-mono text-neutral-950" id="overviewMetricsRequests"><span id="metricUsed">0</span> / <span id="metricLimit">100</span></div>
-      <div class="text-[11px] text-neutral-500 font-sans">Daily Free Limit · Resets 00:00 UTC</div>
-    </div>
-
-    <!-- Metric 2: Median Latency -->
-    <div class="card-clean p-4 rounded-xl bg-white border border-neutral-200/90 shadow-2xs space-y-1">
-      <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">Median Latency (P50)</div>
-      <div class="text-2xl font-bold font-mono text-emerald-700">&lt;12ms</div>
-      <div class="text-[11px] text-neutral-500 font-sans">P99: 38ms · BM25 In-Memory Edge</div>
-    </div>
-
-    <!-- Metric 3: Active Sovereign Keys -->
-    <div class="card-clean p-4 rounded-xl bg-white border border-neutral-200/90 shadow-2xs space-y-1">
-      <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">Active API Keys</div>
-      <div class="text-2xl font-bold font-mono text-neutral-950" id="overviewMetricsKeysCount"><span id="metricKeys">1</span> Active</div>
-      <div class="text-[11px] text-neutral-500 font-sans">D1 SQLite FTS5 Key Vault</div>
-    </div>
-
-    <!-- Metric 4: Indexed Documents -->
-    <div class="card-clean p-4 rounded-xl bg-white border border-neutral-200/90 shadow-2xs space-y-1">
-      <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">Search Corpus</div>
-      <div class="text-2xl font-bold font-mono text-neutral-950" id="overviewMetricsIndexDocs"><span id="metricIndexed">369</span> Docs</div>
-      <div class="text-[11px] text-neutral-500 font-sans">BM25 Porter-Stemmed Web Index</div>
-    </div>
-  </div>
-
-  <!-- PRIMARY WORKSPACE AREA: LIVE ENDPOINT & API TEST BENCH (Largest Section) -->
-  <div class="card-clean p-6 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-4">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-neutral-100">
       <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-neutral-950 text-white flex items-center justify-center font-bold text-xs font-mono">
-          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <!-- Thin Line Progress Bar -->
+        <div class="w-24 sm:w-36 h-1.5 bg-neutral-200 overflow-hidden">
+          <div id="onboardingProgressBar" class="h-full bg-neutral-950 transition-all duration-300" style="width: 25%;"></div>
         </div>
+        <button type="button" id="btnToggleOnboardingGuide" onclick="toggleOnboardingGuide()" class="text-[11px] font-mono text-neutral-600 hover:text-black cursor-pointer font-semibold underline underline-offset-2">
+          <span id="onboardingToggleLabel">Collapse Guide</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Stepper 4-Column Table Grid -->
+    <div id="onboardingGuideContent" class="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-neutral-200">
+      
+      <!-- Step 01: Provision Key -->
+      <div class="p-4 flex flex-col justify-between space-y-3 bg-white hover:bg-neutral-50/50 transition">
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono uppercase tracking-widest text-neutral-400 font-semibold">Step 01 // Token</span>
+            <span id="onboardingStepBadge-1" class="text-[9px] font-mono font-bold px-1.5 py-0.5 bg-neutral-950 text-white border border-neutral-950">ACTIVE</span>
+          </div>
+          <div class="text-xs font-bold font-sans text-neutral-950">Provision Sovereign Key</div>
+          <p class="text-[11px] text-neutral-500 font-sans leading-relaxed">Issue sub-10ms Anycast key bound to D1 SQLite FTS5 database.</p>
+          <input type="text" id="overviewKeyName" placeholder="Key label (optional)" class="w-full px-2 py-1 text-xs border border-neutral-200 bg-neutral-50 font-sans focus:outline-none focus:bg-white focus:border-neutral-900 transition mt-1" />
+        </div>
+        <div class="pt-2 border-t border-neutral-100 flex items-center justify-between gap-1.5 text-xs font-mono">
+          <button type="button" id="btnCreateOverviewKey" onclick="createOverviewApiKey()" class="px-2.5 py-1 bg-neutral-950 hover:bg-neutral-800 text-white text-[11px] font-semibold cursor-pointer transition">
+            + New Key
+          </button>
+          <button type="button" onclick="copyActiveKeyFromOverview()" class="text-[11px] text-neutral-600 hover:text-black cursor-pointer underline underline-offset-2">
+            Copy Active
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 02: SDK / MCP Setup -->
+      <div class="p-4 flex flex-col justify-between space-y-3 bg-white hover:bg-neutral-50/50 transition">
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono uppercase tracking-widest text-neutral-400 font-semibold">Step 02 // Client</span>
+            <span id="onboardingStepBadge-2" class="text-[9px] font-mono font-bold px-1.5 py-0.5 bg-neutral-100 text-neutral-600 border border-neutral-300">PENDING</span>
+          </div>
+          <div class="text-xs font-bold font-sans text-neutral-950">Install SDK &amp; MCP Tool</div>
+          <p class="text-[11px] text-neutral-500 font-sans leading-relaxed">Quick copy command for Node, Python, or Claude Desktop MCP.</p>
+        </div>
+        <div class="pt-2 border-t border-neutral-100 flex items-center justify-between gap-1.5 text-xs font-mono">
+          <div class="flex items-center gap-1">
+            <button type="button" onclick="copyOnboardingSdkSnippet('npm')" class="px-2 py-0.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-[10px] cursor-pointer">npm</button>
+            <button type="button" onclick="copyOnboardingSdkSnippet('pip')" class="px-2 py-0.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-[10px] cursor-pointer">pip</button>
+            <button type="button" onclick="copyOnboardingSdkSnippet('mcp')" class="px-2 py-0.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-[10px] cursor-pointer">mcp</button>
+          </div>
+          <button type="button" onclick="copyOnboardingSdkSnippet('curl')" class="text-[11px] text-neutral-600 hover:text-black cursor-pointer underline underline-offset-2">
+            cURL &rarr;
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 03: Live Query Verification -->
+      <div class="p-4 flex flex-col justify-between space-y-3 bg-white hover:bg-neutral-50/50 transition">
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono uppercase tracking-widest text-neutral-400 font-semibold">Step 03 // Query</span>
+            <span id="onboardingStepBadge-3" class="text-[9px] font-mono font-bold px-1.5 py-0.5 bg-neutral-100 text-neutral-600 border border-neutral-300">PENDING</span>
+          </div>
+          <div class="text-xs font-bold font-sans text-neutral-950">Dispatch Test Query</div>
+          <p class="text-[11px] text-neutral-500 font-sans leading-relaxed">Send live edge query to verify &lt;15ms Anycast response latency.</p>
+        </div>
+        <div class="pt-2 border-t border-neutral-100 flex items-center justify-between gap-1.5 text-xs font-mono">
+          <button type="button" onclick="runOverviewLiveTest()" class="px-2.5 py-1 bg-neutral-950 hover:bg-neutral-800 text-white text-[11px] font-semibold cursor-pointer transition">
+            Run Test
+          </button>
+          <span class="text-[10px] text-emerald-700 font-bold" id="onboardingTestLatency">P50: &lt;12ms</span>
+        </div>
+      </div>
+
+      <!-- Step 04: Ingest & Memory -->
+      <div class="p-4 flex flex-col justify-between space-y-3 bg-white hover:bg-neutral-50/50 transition">
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono uppercase tracking-widest text-neutral-400 font-semibold">Step 04 // Ingest</span>
+            <span id="onboardingStepBadge-4" class="text-[9px] font-mono font-bold px-1.5 py-0.5 bg-neutral-100 text-neutral-600 border border-neutral-300">PENDING</span>
+          </div>
+          <div class="text-xs font-bold font-sans text-neutral-950">Ingest Knowledge / Memory</div>
+          <p class="text-[11px] text-neutral-500 font-sans leading-relaxed">Crawl documentation or save structured facts for your AI agent.</p>
+        </div>
+        <div class="pt-2 border-t border-neutral-100 flex items-center justify-between gap-1 text-xs font-sans">
+          <button type="button" onclick="setAppView('crawler')" class="text-[11px] text-neutral-700 hover:text-black font-semibold cursor-pointer underline underline-offset-2">
+            Crawler &rarr;
+          </button>
+          <button type="button" onclick="setAppView('memory')" class="text-[11px] text-neutral-700 hover:text-black font-semibold cursor-pointer underline underline-offset-2">
+            Memory &rarr;
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 02 // SYSTEM METRICS & SESSION TELEMETRY (Unified 4x2 Line Grid Table) -->
+  <div class="border border-neutral-200 bg-white">
+    <div class="px-4 py-2.5 bg-neutral-50/70 border-b border-neutral-200 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center w-5 h-5 bg-neutral-950 text-white font-mono text-[10px] font-bold">02</span>
+        <span class="text-xs font-bold font-mono tracking-wider uppercase text-neutral-950">System Telemetry &amp; Session State</span>
+      </div>
+      <span class="text-[10px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 font-semibold">330+ Anycast PoPs · Active</span>
+    </div>
+
+    <!-- Row 1: Session, Key, Quota, Edge Network -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-neutral-200 border-b border-neutral-200">
+      
+      <!-- Cell 1: Session -->
+      <div class="p-4 flex flex-col justify-between space-y-2">
+        <div class="space-y-1">
+          <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center justify-between">
+            <span>Session State</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          </div>
+          <div class="text-sm font-bold text-neutral-950 font-sans truncate" id="overviewSessionStatus">Guest Demo Mode</div>
+        </div>
+        <div class="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs font-mono">
+          <button type="button" onclick="openAppAuthModal('signin')" id="overviewSessionActionBtn" class="font-semibold text-neutral-900 hover:underline cursor-pointer text-[11px]">
+            Sign In / Switch &rarr;
+          </button>
+          <span class="text-[10px] text-neutral-400" id="overviewSessionSubtext">Public Sandbox</span>
+        </div>
+      </div>
+
+      <!-- Cell 2: Key -->
+      <div class="p-4 flex flex-col justify-between space-y-2">
+        <div class="space-y-1">
+          <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center justify-between">
+            <span>Active Sovereign Key</span>
+            <span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-1 font-semibold">Verified</span>
+          </div>
+          <div class="text-xs font-bold font-mono text-neutral-950 truncate select-all" id="overviewActiveKeyDisplay">ud_live_demo_console_key</div>
+        </div>
+        <div class="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs font-mono">
+          <button type="button" onclick="copyActiveKeyFromOverview()" id="btnOverviewCopyKey" class="font-semibold text-neutral-900 hover:underline cursor-pointer text-[11px] flex items-center gap-1">
+            <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <span id="overviewCopyKeyLabel">Copy Key</span>
+          </button>
+          <button type="button" onclick="setAppView('keys')" class="text-[11px] text-neutral-500 hover:text-black cursor-pointer font-sans">
+            Manage &rarr;
+          </button>
+        </div>
+      </div>
+
+      <!-- Cell 3: Plan & Quota -->
+      <div class="p-4 flex flex-col justify-between space-y-2">
+        <div class="space-y-1">
+          <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center justify-between">
+            <span>Plan &amp; Quota</span>
+            <span class="text-[9px] font-mono uppercase text-neutral-600 bg-neutral-100 border border-neutral-200 px-1 font-semibold" id="overviewPlanBadge">Free</span>
+          </div>
+          <div class="text-sm font-bold text-neutral-950 font-sans truncate" id="overviewPlanDisplay">Free Tier · 100 req/day</div>
+        </div>
+        <div class="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs font-mono">
+          <button type="button" onclick="setAppView('membership')" class="font-semibold text-neutral-900 hover:underline cursor-pointer text-[11px] font-sans">
+            Upgrade Quota &rarr;
+          </button>
+          <span class="text-[10px] text-neutral-400">Zero Overage</span>
+        </div>
+      </div>
+
+      <!-- Cell 4: Edge Network -->
+      <div class="p-4 flex flex-col justify-between space-y-2">
+        <div class="space-y-1">
+          <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center justify-between">
+            <span>Edge Network</span>
+            <span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-1 font-semibold">&lt;10ms</span>
+          </div>
+          <div class="text-sm font-bold text-neutral-950 font-sans truncate">Global Anycast PoP</div>
+        </div>
+        <div class="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs font-mono">
+          <span class="text-[11px] text-neutral-600 font-sans font-medium">330+ Cities</span>
+          <span class="text-[10px] text-emerald-700 font-semibold"><span id="overviewColoBadge">Auto</span> · <span id="overviewRttBadge">&lt;10ms</span></span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Row 2: Four Key Telemetry Metrics -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-neutral-200 font-sans">
+      <div class="p-4 space-y-1">
+        <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">Requests Today</div>
+        <div class="text-2xl font-bold font-mono text-neutral-950" id="overviewMetricsRequests"><span id="metricUsed">0</span> / <span id="metricLimit">100</span></div>
+        <div class="text-[11px] text-neutral-500 font-sans">Daily Free Limit · Resets 00:00 UTC</div>
+      </div>
+      <div class="p-4 space-y-1">
+        <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">Median Latency (P50)</div>
+        <div class="text-2xl font-bold font-mono text-emerald-700">&lt;12ms</div>
+        <div class="text-[11px] text-neutral-500 font-sans">P99: 38ms · BM25 In-Memory Edge</div>
+      </div>
+      <div class="p-4 space-y-1">
+        <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">Active API Keys</div>
+        <div class="text-2xl font-bold font-mono text-neutral-950" id="overviewMetricsKeysCount"><span id="metricKeys">1</span> Active</div>
+        <div class="text-[11px] text-neutral-500 font-sans">D1 SQLite FTS5 Key Vault</div>
+      </div>
+      <div class="p-4 space-y-1">
+        <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">Search Corpus</div>
+        <div class="text-2xl font-bold font-mono text-neutral-950" id="overviewMetricsIndexDocs"><span id="metricIndexed">369</span> Docs</div>
+        <div class="text-[11px] text-neutral-500 font-sans">BM25 Porter-Stemmed Web Index</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 // LIVE ENDPOINT & API TEST BENCH (Line-Divided Workbench) -->
+  <div class="border border-neutral-200 bg-white">
+    <div class="px-4 py-3 bg-neutral-50/70 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+      <div class="flex items-center gap-2.5">
+        <span class="inline-flex items-center justify-center w-5 h-5 bg-neutral-950 text-white font-mono text-[10px] font-bold">03</span>
         <div>
-          <h3 class="text-sm font-bold text-neutral-950 font-sans">Live Endpoint &amp; API Test Bench</h3>
-          <p class="text-[11px] text-neutral-500 font-sans">Send real requests directly to Cloudflare edge nodes with live response validation &amp; latency measurement</p>
+          <h3 class="text-xs font-bold font-mono tracking-wider uppercase text-neutral-950">Live Endpoint &amp; API Test Bench</h3>
+          <p class="text-[11px] text-neutral-500 font-sans">Real-time request dispatch directly to Cloudflare edge nodes with live latency feedback</p>
         </div>
       </div>
       <div class="flex items-center gap-2">
-        <span id="overviewTestStatusBadge" class="hidden px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200"></span>
-        <span id="overviewTestLatencyBadge" class="hidden px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-50 text-purple-800 border border-purple-200"></span>
+        <span id="overviewTestStatusBadge" class="hidden px-2.5 py-0.5 text-[10px] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200"></span>
+        <span id="overviewTestLatencyBadge" class="hidden px-2.5 py-0.5 text-[10px] font-mono font-bold bg-neutral-100 text-neutral-900 border border-neutral-300"></span>
       </div>
     </div>
 
-    <!-- Interactive Query Form -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-      <div class="lg:col-span-4 space-y-1.5">
-        <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider font-semibold">Select Target Endpoint</label>
-        <select id="overviewTestEndpoint" onchange="handleOverviewEndpointChange(this.value)" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono text-neutral-900 focus:outline-none focus:bg-white focus:border-neutral-950 cursor-pointer">
+    <!-- Parameter Controls Form -->
+    <div class="p-4 border-b border-neutral-200 grid grid-cols-1 lg:grid-cols-12 gap-3 bg-white">
+      <div class="lg:col-span-4 space-y-1">
+        <label class="block text-[10px] font-mono text-neutral-500 uppercase tracking-wider font-semibold">Target Endpoint</label>
+        <select id="overviewTestEndpoint" onchange="handleOverviewEndpointChange(this.value)" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 text-xs font-mono text-neutral-900 focus:outline-none focus:bg-white focus:border-neutral-950 cursor-pointer">
           <option value="/v1/search" selected>POST /v1/search (Web Search)</option>
           <option value="/v1/memory/query">POST /v1/memory/query (Recall Memory)</option>
           <option value="/v1/memory/add">POST /v1/memory/add (Save Memory)</option>
@@ -1683,11 +1908,11 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
         </select>
       </div>
 
-      <div class="lg:col-span-8 space-y-1.5">
-        <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider font-semibold" id="overviewTestInputLabel">Query / Payload</label>
+      <div class="lg:col-span-8 space-y-1">
+        <label class="block text-[10px] font-mono text-neutral-500 uppercase tracking-wider font-semibold" id="overviewTestInputLabel">Query / Payload</label>
         <div class="flex items-center gap-2">
-          <input type="text" id="overviewTestQuery" value="fastest web search api for ai agents" placeholder="Enter query string..." class="flex-1 px-3.5 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono text-neutral-900 focus:outline-none focus:bg-white focus:border-neutral-950 transition" />
-          <button type="button" id="btnRunOverviewTest" onclick="runOverviewLiveTest()" class="px-5 py-2 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 shadow-xs whitespace-nowrap font-sans">
+          <input type="text" id="overviewTestQuery" value="fastest web search api for ai agents" placeholder="Enter query string..." class="flex-1 px-3 py-2 bg-neutral-50 border border-neutral-200 text-xs font-mono text-neutral-900 focus:outline-none focus:bg-white focus:border-neutral-950 transition" />
+          <button type="button" id="btnRunOverviewTest" onclick="runOverviewLiveTest()" class="px-4 py-2 bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap font-sans">
             <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             <span>Run Test</span>
           </button>
@@ -1695,78 +1920,53 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       </div>
     </div>
 
-    <!-- Live JSON Response Console -->
-    <div class="relative mt-2">
-      <pre id="overviewTestResultPre" class="p-4 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-xs overflow-x-auto code-scroll min-h-[160px] max-h-[300px] overflow-y-auto leading-relaxed">// Click "Run Test" above to test the endpoint live and inspect edge latency.
+    <!-- Output Console with Line Numbers & Dividers -->
+    <div class="p-4 bg-neutral-950 text-neutral-100 font-mono text-xs relative">
+      <pre id="overviewTestResultPre" class="overflow-x-auto code-scroll min-h-[140px] max-h-[260px] overflow-y-auto leading-relaxed">// Click "Run Test" above to test the endpoint live and inspect edge latency.
 // Real results from Sovereign Anycast Edge will appear here formatted.</pre>
       <div class="absolute top-3 right-3 flex items-center gap-1.5">
-        <button type="button" onclick="copyOverviewTestResult()" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white rounded text-[10px] font-mono cursor-pointer transition">Copy JSON</button>
-        <button type="button" onclick="setAppView('tester')" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white rounded text-[10px] font-sans cursor-pointer transition">Full Sandbox &rarr;</button>
+        <button type="button" onclick="copyOverviewTestResult()" class="px-2 py-1 bg-white/10 hover:bg-white/20 text-white text-[10px] font-mono cursor-pointer transition">Copy JSON</button>
+        <button type="button" onclick="setAppView('tester')" class="px-2 py-1 bg-white/10 hover:bg-white/20 text-white text-[10px] font-sans cursor-pointer transition">Full Sandbox &rarr;</button>
       </div>
     </div>
   </div>
 
-  <!-- NEXT STEPS SETUP (2 Columns: Key Generation & Integration Snippets) -->
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-    
-    <!-- Step 1: Create API Key (5 cols) -->
-    <div class="lg:col-span-5 card-clean p-6 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-4 flex flex-col justify-between">
-      <div class="space-y-3">
-        <div class="flex items-center gap-2.5 pb-2 border-b border-neutral-100">
-          <div class="w-6 h-6 rounded-md bg-neutral-950 text-white flex items-center justify-center font-bold text-xs font-mono">1</div>
-          <div>
-            <h3 class="text-sm font-bold text-neutral-950 font-sans">Generate Sovereign Key</h3>
-            <p class="text-[11px] text-neutral-500 font-sans">Issue high-performance key with pre-warmed tunnel</p>
-          </div>
-        </div>
-        <div class="space-y-2">
-          <label class="block text-[11px] font-mono text-neutral-500 uppercase tracking-wider font-semibold">Key Label</label>
-          <input type="text" id="overviewKeyName" placeholder="e.g. Claude MCP, Agent Worker" class="w-full px-3 py-2 rounded-xl border border-neutral-200 bg-neutral-50 hover:bg-white focus:bg-white focus:outline-none focus:border-neutral-950 text-xs font-sans transition" />
+  <!-- 04 // SDK & PROTOCOL CODE (Line-Divided Console) -->
+  <div class="border border-neutral-200 bg-white">
+    <div class="px-4 py-3 bg-neutral-50/70 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+      <div class="flex items-center gap-2.5">
+        <span class="inline-flex items-center justify-center w-5 h-5 bg-neutral-950 text-white font-mono text-[10px] font-bold">04</span>
+        <div>
+          <h3 class="text-xs font-bold font-mono tracking-wider uppercase text-neutral-950">Integration Snippets</h3>
+          <p class="text-[11px] text-neutral-500 font-sans">Active sovereign key automatically injected into copyable code</p>
         </div>
       </div>
-      <button type="button" id="btnCreateOverviewKey" onclick="createOverviewApiKey()" class="w-full py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer shadow-xs font-sans flex items-center justify-center gap-1.5">
-        <span>+ Generate Sovereign Key</span>
-      </button>
+      <div class="flex items-center divide-x divide-neutral-200 border border-neutral-200 bg-white text-xs font-mono">
+        <button type="button" id="overviewTab-curl" onclick="switchOverviewSnippetTab('curl')" class="py-1 px-3 bg-neutral-950 text-white font-semibold transition cursor-pointer text-[11px]">cURL</button>
+        <button type="button" id="overviewTab-python" onclick="switchOverviewSnippetTab('python')" class="py-1 px-3 text-neutral-600 hover:text-black font-medium transition cursor-pointer text-[11px]">Python</button>
+        <button type="button" id="overviewTab-ts" onclick="switchOverviewSnippetTab('ts')" class="py-1 px-3 text-neutral-600 hover:text-black font-medium transition cursor-pointer text-[11px]">TypeScript</button>
+        <button type="button" id="overviewTab-mcp" onclick="switchOverviewSnippetTab('mcp')" class="py-1 px-3 text-neutral-600 hover:text-black font-medium transition cursor-pointer text-[11px]">MCP JSON</button>
+      </div>
     </div>
 
-    <!-- Step 2: Instant Integration Snippets (7 cols) -->
-    <div class="lg:col-span-7 card-clean p-6 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-4">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-neutral-100">
-        <div class="flex items-center gap-2.5">
-          <div class="w-6 h-6 rounded-md bg-neutral-950 text-white flex items-center justify-center font-bold text-xs font-mono">2</div>
-          <div>
-            <h3 class="text-sm font-bold text-neutral-950 font-sans">Integration Code</h3>
-            <p class="text-[11px] text-neutral-500 font-sans">Active key injected automatically</p>
-          </div>
-        </div>
-        <!-- Tab switcher -->
-        <div class="flex items-center gap-1 p-0.5 bg-neutral-100 rounded-lg text-xs font-mono">
-          <button type="button" id="overviewTab-curl" onclick="switchOverviewSnippetTab('curl')" class="py-1 px-2.5 rounded-md bg-neutral-950 text-white font-semibold transition cursor-pointer shadow-2xs text-[11px]">cURL</button>
-          <button type="button" id="overviewTab-python" onclick="switchOverviewSnippetTab('python')" class="py-1 px-2.5 rounded-md text-neutral-600 hover:text-black font-medium transition cursor-pointer text-[11px]">Python</button>
-          <button type="button" id="overviewTab-ts" onclick="switchOverviewSnippetTab('ts')" class="py-1 px-2.5 rounded-md text-neutral-600 hover:text-black font-medium transition cursor-pointer text-[11px]">TypeScript</button>
-          <button type="button" id="overviewTab-mcp" onclick="switchOverviewSnippetTab('mcp')" class="py-1 px-2.5 rounded-md text-neutral-600 hover:text-black font-medium transition cursor-pointer text-[11px]">MCP</button>
-        </div>
-      </div>
-
-      <!-- Code Snippet Area -->
-      <div class="relative">
-        <pre id="overviewSnippet-curl" class="p-3.5 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-[11px] overflow-x-auto code-scroll leading-relaxed max-h-[160px]"># Fastest Web Search API (&lt;15ms)
+    <div class="p-4 bg-neutral-950 text-neutral-100 font-mono text-[11px] relative">
+      <pre id="overviewSnippet-curl" class="overflow-x-auto code-scroll leading-relaxed max-h-[160px]"># Fastest Web Search API (&lt;15ms)
 curl -X POST "${displayOrigin}/v1/search" \
   -H "Authorization: Bearer ud_live_demo_console_key" \
   -H "Content-Type: application/json" \
   -d '{"query": "fastest web search api for ai agents", "limit": 5, "mode": 1}'</pre>
 
-        <pre id="overviewSnippet-python" class="hidden p-3.5 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-[11px] overflow-x-auto code-scroll leading-relaxed max-h-[160px]">from ultrademon import UltraClient
+      <pre id="overviewSnippet-python" class="hidden overflow-x-auto code-scroll leading-relaxed max-h-[160px]">from ultrademon import UltraClient
 client = UltraClient(api_key="ud_live_demo_console_key")
 results = client.search("fastest web search api", limit=5)
 print(results)</pre>
 
-        <pre id="overviewSnippet-ts" class="hidden p-3.5 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-[11px] overflow-x-auto code-scroll leading-relaxed max-h-[160px]">import { UltraClient } from '@ultrademon/sdk';
+      <pre id="overviewSnippet-ts" class="hidden overflow-x-auto code-scroll leading-relaxed max-h-[160px]">import { UltraClient } from '@ultrademon/sdk';
 const client = new UltraClient({ apiKey: 'ud_live_demo_console_key' });
 const searchRes = await client.search('fastest web search api');
 console.log(searchRes.results);</pre>
 
-        <pre id="overviewSnippet-mcp" class="hidden p-3.5 bg-neutral-950 text-neutral-100 rounded-xl font-mono text-[11px] overflow-x-auto code-scroll leading-relaxed max-h-[160px]">{
+      <pre id="overviewSnippet-mcp" class="hidden overflow-x-auto code-scroll leading-relaxed max-h-[160px]">{
   "mcpServers": {
     "ultrademon": {
       "command": "npx",
@@ -1775,146 +1975,150 @@ console.log(searchRes.results);</pre>
   }
 }</pre>
 
-        <button type="button" onclick="copyCurrentOverviewSnippet()" id="btnCopyOverviewSnippet" class="absolute top-2 right-2 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded cursor-pointer transition flex items-center gap-1 font-mono">
-          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-          <span id="overviewSnippetCopyLabel">Copy</span>
-        </button>
-      </div>
+      <button type="button" onclick="copyCurrentOverviewSnippet()" id="btnCopyOverviewSnippet" class="absolute top-3 right-3 text-[10px] bg-white/10 hover:bg-white/20 text-white px-2.5 py-1 cursor-pointer transition flex items-center gap-1 font-mono">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+        <span id="overviewSnippetCopyLabel">Copy Code</span>
+      </button>
     </div>
   </div>
 
-  <!-- 6 SERVICE PROTOCOLS & STUDIOS LAUNCHERS -->
-  <div class="space-y-3 pt-1">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <h3 class="text-sm font-bold text-neutral-950 font-sans">Developer Protocols &amp; Studios</h3>
-        <span class="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">330+ Anycast PoPs</span>
+  <!-- 05 // SERVICE DIRECTORY & STUDIOS (Articulated Line-Divided Table) -->
+  <div class="border border-neutral-200 bg-white">
+    <div class="px-4 py-3 bg-neutral-50/70 border-b border-neutral-200 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <span class="inline-flex items-center justify-center w-5 h-5 bg-neutral-950 text-white font-mono text-[10px] font-bold">05</span>
+        <h3 class="text-xs font-bold font-mono tracking-wider uppercase text-neutral-950">Sovereign Service Studios &amp; Protocols</h3>
       </div>
-      <span class="text-xs text-neutral-500 font-sans hidden sm:inline">Direct in-dashboard studio workspaces</span>
+      <span class="text-[10px] font-mono text-neutral-500">6 Edge Services · Sub-15ms Anycast</span>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 font-sans">
-      <!-- 1: UltraSearch Studio -->
-      <div class="p-5 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-3 flex flex-col justify-between hover:border-neutral-300 transition">
-        <div class="space-y-1.5">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-7 h-7 rounded-lg bg-neutral-950 text-white flex items-center justify-center font-bold text-xs">
-                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <div class="overflow-x-auto">
+      <table class="line-table">
+        <thead>
+          <tr>
+            <th class="w-16">#</th>
+            <th>Protocol / Studio</th>
+            <th>Core Capability</th>
+            <th>Edge Substrate</th>
+            <th>Latency Target</th>
+            <th class="text-right">Action</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-neutral-200 font-sans">
+          
+          <tr class="hover:bg-neutral-50/80 transition-colors">
+            <td class="font-mono text-neutral-400 text-xs">01</td>
+            <td>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-xs text-neutral-950">UltraSearch Studio</span>
+                <span class="text-[9px] font-mono font-semibold px-1.5 py-0.2 bg-emerald-50 text-emerald-800 border border-emerald-200">&lt;15ms</span>
               </div>
-              <span class="text-xs font-bold text-neutral-950 font-sans">UltraSearch Studio</span>
-            </div>
-            <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">&lt;15ms</span>
-          </div>
-          <p class="text-[11px] text-neutral-500 font-sans leading-relaxed">BM25 full-text keyword indexing, live edge web crawling, and deep search modes for LLM agents.</p>
-        </div>
-        <button type="button" onclick="setAppView('search')" class="w-full py-1.5 px-3 rounded-lg bg-neutral-50 hover:bg-neutral-100 text-neutral-900 border border-neutral-200/80 text-xs font-semibold transition cursor-pointer flex items-center justify-between font-sans">
-          <span>Open Search Studio</span>
-          <span>&rarr;</span>
-        </button>
-      </div>
+            </td>
+            <td class="text-xs text-neutral-600">BM25 Porter-stemmed search, live web crawler, and deep query modes for LLM agents.</td>
+            <td class="font-mono text-[11px] text-neutral-500">Cloudflare D1 FTS5</td>
+            <td class="font-mono text-xs font-semibold text-emerald-700">11.8ms P50</td>
+            <td class="text-right">
+              <button type="button" onclick="setAppView('search')" class="font-mono text-xs text-neutral-950 hover:underline font-semibold cursor-pointer">
+                Open Studio &rarr;
+              </button>
+            </td>
+          </tr>
 
-      <!-- 2: UltraMemory Lab -->
-      <div class="p-5 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-3 flex flex-col justify-between hover:border-neutral-300 transition">
-        <div class="space-y-1.5">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-7 h-7 rounded-lg bg-neutral-950 text-white flex items-center justify-center font-bold text-xs">
-                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+          <tr class="hover:bg-neutral-50/80 transition-colors">
+            <td class="font-mono text-neutral-400 text-xs">02</td>
+            <td>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-xs text-neutral-950">UltraMemory Lab</span>
+                <span class="text-[9px] font-mono font-semibold px-1.5 py-0.2 bg-emerald-50 text-emerald-800 border border-emerald-200">&lt;10ms</span>
               </div>
-              <span class="text-xs font-bold text-neutral-950 font-sans">UltraMemory Lab</span>
-            </div>
-            <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">&lt;10ms</span>
-          </div>
-          <p class="text-[11px] text-neutral-500 font-sans leading-relaxed">Autonomous agent memory recall, facts extraction, and permanent contextual retention across sessions.</p>
-        </div>
-        <button type="button" onclick="setAppView('memory')" class="w-full py-1.5 px-3 rounded-lg bg-neutral-50 hover:bg-neutral-100 text-neutral-900 border border-neutral-200/80 text-xs font-semibold transition cursor-pointer flex items-center justify-between font-sans">
-          <span>Open Memory Lab</span>
-          <span>&rarr;</span>
-        </button>
-      </div>
+            </td>
+            <td class="text-xs text-neutral-600">Autonomous agent memory recall, facts extraction, and permanent contextual retention.</td>
+            <td class="font-mono text-[11px] text-neutral-500">Edge SQLite + KV</td>
+            <td class="font-mono text-xs font-semibold text-emerald-700">8.4ms P50</td>
+            <td class="text-right">
+              <button type="button" onclick="setAppView('memory')" class="font-mono text-xs text-neutral-950 hover:underline font-semibold cursor-pointer">
+                Open Lab &rarr;
+              </button>
+            </td>
+          </tr>
 
-      <!-- 3: Custom MCP Server -->
-      <div class="p-5 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-3 flex flex-col justify-between hover:border-neutral-300 transition">
-        <div class="space-y-1.5">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-7 h-7 rounded-lg bg-neutral-950 text-white flex items-center justify-center font-bold text-xs">
-                <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M21 2l-2 2m-1.5 1.5L14 9l-1.5-1.5-3 3 1.5 1.5L9 14l-4 4H2v3h3l4-4 2 2 3-3-1.5-1.5 3.5-3.5L21 2z"/></svg>
+          <tr class="hover:bg-neutral-50/80 transition-colors">
+            <td class="font-mono text-neutral-400 text-xs">03</td>
+            <td>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-xs text-neutral-950">Custom MCP Server</span>
+                <span class="text-[9px] font-mono font-semibold px-1.5 py-0.2 bg-neutral-100 text-neutral-800 border border-neutral-300">MCP 2.0</span>
               </div>
-              <span class="text-xs font-bold text-neutral-950 font-sans">Custom MCP Server</span>
-            </div>
-            <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 font-bold">MCP 2.0</span>
-          </div>
-          <p class="text-[11px] text-neutral-500 font-sans leading-relaxed">Native JSON-RPC &amp; SSE Model Context Protocol server connecting to Claude Desktop, Cursor, and Antigravity.</p>
-        </div>
-        <button type="button" onclick="setAppView('keys')" class="w-full py-1.5 px-3 rounded-lg bg-neutral-50 hover:bg-neutral-100 text-neutral-900 border border-neutral-200/80 text-xs font-semibold transition cursor-pointer flex items-center justify-between font-sans">
-          <span>Open MCP Hub</span>
-          <span>&rarr;</span>
-        </button>
-      </div>
+            </td>
+            <td class="text-xs text-neutral-600">Native Model Context Protocol server connecting to Claude Desktop, Cursor, and Antigravity.</td>
+            <td class="font-mono text-[11px] text-neutral-500">HTTP + SSE RPC</td>
+            <td class="font-mono text-xs font-semibold text-neutral-900">Sub-15ms</td>
+            <td class="text-right">
+              <button type="button" onclick="setAppView('keys')" class="font-mono text-xs text-neutral-950 hover:underline font-semibold cursor-pointer">
+                Open Hub &rarr;
+              </button>
+            </td>
+          </tr>
 
-      <!-- 4: Seamless Summoning Protocol -->
-      <div class="p-5 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-3 flex flex-col justify-between hover:border-neutral-300 transition">
-        <div class="space-y-1.5">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-7 h-7 rounded-lg bg-neutral-950 text-white flex items-center justify-center font-bold text-xs">
-                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <tr class="hover:bg-neutral-50/80 transition-colors">
+            <td class="font-mono text-neutral-400 text-xs">04</td>
+            <td>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-xs text-neutral-950">Seamless Summoning</span>
+                <span class="text-[9px] font-mono font-semibold px-1.5 py-0.2 bg-emerald-50 text-emerald-800 border border-emerald-200">Sub-10ms</span>
               </div>
-              <span class="text-xs font-bold text-neutral-950 font-sans">Seamless Summoning</span>
-            </div>
-            <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">Sub-10ms</span>
-          </div>
-          <p class="text-[11px] text-neutral-500 font-sans leading-relaxed">Zero-cold-start isolate tunnel with self-healing dual-tier fallback and fastest edge API keys.</p>
-        </div>
-        <button type="button" onclick="setAppView('summoning')" class="w-full py-1.5 px-3 rounded-lg bg-neutral-50 hover:bg-neutral-100 text-neutral-900 border border-neutral-200/80 text-xs font-semibold transition cursor-pointer flex items-center justify-between font-sans">
-          <span>Open Summon Console</span>
-          <span>&rarr;</span>
-        </button>
-      </div>
+            </td>
+            <td class="text-xs text-neutral-600">Zero-cold-start isolate tunnel with self-healing dual-tier fallback and fastest edge API keys.</td>
+            <td class="font-mono text-[11px] text-neutral-500">Pre-warmed V8 RAM</td>
+            <td class="font-mono text-xs font-semibold text-emerald-700">0.00ms Cold</td>
+            <td class="text-right">
+              <button type="button" onclick="setAppView('summoning')" class="font-mono text-xs text-neutral-950 hover:underline font-semibold cursor-pointer">
+                Open Console &rarr;
+              </button>
+            </td>
+          </tr>
 
-      <!-- 5: Edge Benchmarks Suite -->
-      <div class="p-5 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-3 flex flex-col justify-between hover:border-neutral-300 transition">
-        <div class="space-y-1.5">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-7 h-7 rounded-lg bg-neutral-950 text-white flex items-center justify-center font-bold text-xs">
-                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <tr class="hover:bg-neutral-50/80 transition-colors">
+            <td class="font-mono text-neutral-400 text-xs">05</td>
+            <td>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-xs text-neutral-950">Edge Benchmarks</span>
+                <span class="text-[9px] font-mono font-semibold px-1.5 py-0.2 bg-neutral-100 text-neutral-800 border border-neutral-300">10k Runs</span>
               </div>
-              <span class="text-xs font-bold text-neutral-950 font-sans">Edge Benchmarks</span>
-            </div>
-            <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold">10k Runs</span>
-          </div>
-          <p class="text-[11px] text-neutral-500 font-sans leading-relaxed">Audited performance telemetry across Cloudflare Anycast edge nodes in 330+ cities worldwide.</p>
-        </div>
-        <button type="button" onclick="setAppView('benchmarks')" class="w-full py-1.5 px-3 rounded-lg bg-neutral-50 hover:bg-neutral-100 text-neutral-900 border border-neutral-200/80 text-xs font-semibold transition cursor-pointer flex items-center justify-between font-sans">
-          <span>Run Live Benchmarks</span>
-          <span>&rarr;</span>
-        </button>
-      </div>
+            </td>
+            <td class="text-xs text-neutral-600">Audited latency comparisons against Tavily (842ms) and Exa (910ms) across 330+ Anycast cities.</td>
+            <td class="font-mono text-[11px] text-neutral-500">Global Anycast SLA</td>
+            <td class="font-mono text-xs font-semibold text-emerald-700">70x Faster</td>
+            <td class="text-right">
+              <button type="button" onclick="setAppView('benchmarks')" class="font-mono text-xs text-neutral-950 hover:underline font-semibold cursor-pointer">
+                Run Audit &rarr;
+              </button>
+            </td>
+          </tr>
 
-      <!-- 6: Telemetry & ICP Engine -->
-      <div class="p-5 rounded-2xl bg-white border border-neutral-200/90 shadow-2xs space-y-3 flex flex-col justify-between hover:border-neutral-300 transition">
-        <div class="space-y-1.5">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-7 h-7 rounded-lg bg-neutral-950 text-white flex items-center justify-center font-bold text-xs">
-                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          <tr class="hover:bg-neutral-50/80 transition-colors">
+            <td class="font-mono text-neutral-400 text-xs">06</td>
+            <td>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-xs text-neutral-950">Telemetry &amp; ICP</span>
+                <span class="text-[9px] font-mono font-semibold px-1.5 py-0.2 bg-neutral-100 text-neutral-800 border border-neutral-300">PostHog-Edge</span>
               </div>
-              <span class="text-xs font-bold text-neutral-950 font-sans">Telemetry &amp; ICP</span>
-            </div>
-            <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold">PostHog-Edge</span>
-          </div>
-          <p class="text-[11px] text-neutral-500 font-sans leading-relaxed">Real-time edge event capture and autonomous Ideal Customer Profile intelligence synthesis.</p>
-        </div>
-        <button type="button" onclick="setAppView('analytics')" class="w-full py-1.5 px-3 rounded-lg bg-neutral-50 hover:bg-neutral-100 text-neutral-900 border border-neutral-200/80 text-xs font-semibold transition cursor-pointer flex items-center justify-between font-sans">
-          <span>Open Telemetry Hub</span>
-          <span>&rarr;</span>
-        </button>
-      </div>
+            </td>
+            <td class="text-xs text-neutral-600">Real-time edge event capture and autonomous Ideal Customer Profile intelligence synthesis.</td>
+            <td class="font-mono text-[11px] text-neutral-500">Edge Event Log</td>
+            <td class="font-mono text-xs font-semibold text-neutral-900">Real-Time</td>
+            <td class="text-right">
+              <button type="button" onclick="setAppView('analytics')" class="font-mono text-xs text-neutral-950 hover:underline font-semibold cursor-pointer">
+                Open Telemetry &rarr;
+              </button>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
     </div>
   </div>
+
 </section>
 
 
@@ -2561,45 +2765,46 @@ print(results.latency_ms, results.hits)</pre>
     <!-- SECTION 2: API KEYS & CUSTOM MODEL CONTEXT PROTOCOL (MCP) HUB -->
     <section id="view-keys" class="space-y-6 hidden">
 
-      <!-- Top Summary Strip -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 font-mono">
-        <div class="card-elevated bg-white p-4 rounded-xl border border-neutral-200/90 shadow-2xs">
+      <!-- Top Summary Strip (Unified 4-Column Line Grid Table) -->
+      <div class="border border-neutral-200 bg-white grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-neutral-200 font-mono">
+        <div class="p-4 bg-white">
           <div class="text-[10px] text-neutral-400 uppercase tracking-wider">Active Sovereign Keys</div>
           <div class="text-2xl font-bold text-neutral-950 mt-1" id="keysCountBadge">1</div>
           <div class="text-[10px] text-emerald-700 mt-1 font-semibold">Edge Anycast Verified</div>
         </div>
 
-        <div class="card-elevated bg-white p-4 rounded-xl border border-neutral-200/90 shadow-2xs">
+        <div class="p-4 bg-white">
           <div class="text-[10px] text-neutral-400 uppercase tracking-wider">Custom MCP Server</div>
           <div class="text-lg font-bold text-neutral-950 mt-1 flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
+            <span class="w-2 h-2 rounded-full bg-neutral-900 animate-pulse"></span>
             <span>10 Tools Active</span>
           </div>
-          <div class="text-[10px] text-purple-700 mt-1 font-semibold">POST /mcp &amp; SSE /mcp/sse</div>
+          <div class="text-[10px] text-neutral-600 mt-1 font-semibold">POST /mcp &amp; SSE /mcp/sse</div>
         </div>
 
-        <div class="card-elevated bg-white p-4 rounded-xl border border-neutral-200/90 shadow-2xs">
+        <div class="p-4 bg-white">
           <div class="text-[10px] text-neutral-400 uppercase tracking-wider">Seamless Summon Key</div>
           <div class="text-lg font-bold text-emerald-700 mt-1 truncate">ud_summon_</div>
           <div class="text-[10px] text-neutral-500 mt-1">Pre-warmed Isolate RAM</div>
         </div>
 
-        <div class="card-elevated bg-white p-4 rounded-xl border border-neutral-200/90 shadow-2xs">
+        <div class="p-4 bg-white">
           <div class="text-[10px] text-neutral-400 uppercase tracking-wider">Active Workspace Key</div>
           <div class="text-sm font-bold text-neutral-950 mt-1.5 truncate" id="keysActiveKeyDisplay">Loading...</div>
           <div class="text-[10px] text-neutral-400 mt-1">Bound to Current Session</div>
         </div>
       </div>
 
-      <!-- Generate Key Form Card -->
-      <div class="card-clean p-6 rounded-2xl space-y-4 bg-white border border-neutral-200/90 shadow-2xs">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-neutral-100 pb-3">
+      <!-- Generate Key Form Panel -->
+      <div class="border border-neutral-200 bg-white">
+        <div class="px-4 py-3 bg-neutral-50/70 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 class="text-sm font-bold text-neutral-950 font-sans">Generate Sovereign API Key</h2>
-            <p class="text-xs text-neutral-500 mt-0.5">Provision high-speed edge keys with native support for Custom MCP, Seamless Summoning, Search, or Memory.</p>
+            <h2 class="text-xs font-bold font-mono tracking-wider uppercase text-neutral-950">Provision Sovereign API Key</h2>
+            <p class="text-[11px] text-neutral-500 font-sans mt-0.5">Sub-10ms edge validation with native scope for Custom MCP, Seamless Summoning, Search, or Memory.</p>
           </div>
-          <span class="text-[10px] font-mono bg-neutral-100 text-neutral-700 border border-neutral-200 px-2 py-0.5 rounded font-semibold self-start sm:self-auto">Sub-15ms Edge Validation</span>
+          <span class="text-[10px] font-mono bg-neutral-100 text-neutral-700 border border-neutral-200 px-2 py-0.5 font-semibold self-start sm:self-auto">Sub-15ms Anycast Key</span>
         </div>
+        <div class="p-4 space-y-3">
 
         <form onsubmit="event.preventDefault(); handleAppCreateKey(event); return false;" class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs font-mono">
           <div>
@@ -2679,9 +2884,9 @@ print(results.latency_ms, results.hits)</pre>
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-100 pb-4">
           <div class="space-y-1">
             <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-purple-600 animate-pulse"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-neutral-900 animate-pulse"></span>
               <h3 class="text-base font-bold text-neutral-950 font-sans">Custom Model Context Protocol (MCP) Hub</h3>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-50 text-purple-800 border border-purple-200 font-bold">Protocol 2024-11-05</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-900 border border-neutral-300 font-bold">Protocol 2024-11-05</span>
             </div>
             <p class="text-xs text-neutral-500 font-sans max-w-2xl">
               Connect UltraDemon directly into Claude Desktop, Cursor, Antigravity, and AI agents using native MCP. Run sub-50ms web search and sub-15ms agent memory tools with zero middleware.
@@ -2791,58 +2996,58 @@ print(results.latency_ms, results.hits)</pre>
 
     <!-- SECTION 3: ULTRAMEMORY LAB & AGENT API STUDIO -->
     <section id="view-memory" class="space-y-6 hidden">
-      <!-- UltraMemory Suite Top KPI Strip & Dedicated Usage Tracker -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <!-- UltraMemory Suite Top KPI Strip (Unified Line Grid) -->
+      <div class="border border-neutral-200 bg-white grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-neutral-200">
         <!-- Daily Memory Calls -->
-        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
-          <div class="flex items-center justify-between mb-3">
+        <div class="p-4 bg-white flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-2">
             <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">UltraMemory Calls Today</span>
-            <div class="w-8 h-8 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white transition-all shadow-2xs">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
+            <div class="w-6 h-6 bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87A4 4 0 0 0 4 14a4 4 0 0 0 2 3.46V18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-.54A4 4 0 0 0 20 14a4 4 0 0 0-1-3.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/></svg>
             </div>
           </div>
-          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="memoryDailyCallsDisplay">0</div>
-          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+          <div class="text-2xl font-bold font-num text-neutral-950 tracking-tight" id="memoryDailyCallsDisplay">0</div>
+          <div class="text-[10px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-1.5 flex items-center justify-between">
             <span>Share of Calls</span>
             <span class="font-bold text-neutral-900 font-num" id="memoryCallsShareDisplay">0%</span>
           </div>
         </div>
 
         <!-- Recall Latency Guaranteed -->
-        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
-          <div class="flex items-center justify-between mb-3">
+        <div class="p-4 bg-white flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-2">
             <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Recall Latency</span>
-            <span class="text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.5 rounded font-num font-bold">&lt;15ms Edge</span>
+            <span class="text-[9px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-1 py-0.2 font-num font-bold">&lt;15ms</span>
           </div>
-          <div class="text-3xl font-medium font-num text-emerald-600 tracking-tight" id="memoryRecallLatency">8ms</div>
-          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+          <div class="text-2xl font-bold font-num text-emerald-700 tracking-tight" id="memoryRecallLatency">8ms</div>
+          <div class="text-[10px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-1.5 flex items-center justify-between">
             <span>Recall Target</span>
             <span class="font-bold text-neutral-900 font-num">&lt;15ms BM25</span>
           </div>
         </div>
 
         <!-- Stored Knowledge Nodes -->
-        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
-          <div class="flex items-center justify-between mb-3">
+        <div class="p-4 bg-white flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-2">
             <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Stored Memories</span>
-            <span class="text-xs text-neutral-400 font-num">D1 FTS5</span>
+            <span class="text-[9px] text-neutral-400 font-num">D1 FTS5</span>
           </div>
-          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="memoryTotalNodesDisplay">0</div>
-          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+          <div class="text-2xl font-bold font-num text-neutral-950 tracking-tight" id="memoryTotalNodesDisplay">0</div>
+          <div class="text-[10px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-1.5 flex items-center justify-between">
             <span>Deduplication</span>
-            <span class="font-bold text-emerald-600 font-num">100% Active</span>
+            <span class="font-bold text-emerald-700 font-num">100% Active</span>
           </div>
         </div>
 
         <!-- Active Containers -->
-        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
-          <div class="flex items-center justify-between mb-3">
+        <div class="p-4 bg-white flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-2">
             <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Container Namespaces</span>
-            <span class="text-xs text-neutral-400 font-num">Isolated</span>
+            <span class="text-[9px] text-neutral-400 font-num">Isolated</span>
           </div>
-          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="memoryContainersCountDisplay">1</div>
-          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
-            <span>Default Namespace</span>
+          <div class="text-2xl font-bold font-num text-neutral-950 tracking-tight" id="memoryContainersCountDisplay">1</div>
+          <div class="text-[10px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-1.5 flex items-center justify-between">
+            <span>Namespace</span>
             <span class="font-bold text-neutral-900 font-num" id="memoryActiveTagPreview">default</span>
           </div>
         </div>
@@ -3005,57 +3210,57 @@ curl "${displayOrigin}/v1/memory/recall?q=user+preferences&container_tag=agent_p
 
     <!-- SECTION 4: ULTRASEARCH STUDIO -->
     <section id="view-search" class="space-y-6 hidden">
-      <!-- Search Suite Top KPI Strip & Dedicated Usage Tracker -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <!-- Search Suite Top KPI Strip (Unified Line Grid) -->
+      <div class="border border-neutral-200 bg-white grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-neutral-200">
         <!-- Daily Search Calls -->
-        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
-          <div class="flex items-center justify-between mb-3">
+        <div class="p-4 bg-white flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-2">
             <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">UltraSearch Calls Today</span>
-            <div class="w-8 h-8 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white transition-all shadow-2xs">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <div class="w-6 h-6 bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             </div>
           </div>
-          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="searchDailyCallsDisplay">0</div>
-          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+          <div class="text-2xl font-bold font-num text-neutral-950 tracking-tight" id="searchDailyCallsDisplay">0</div>
+          <div class="text-[10px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-1.5 flex items-center justify-between">
             <span>Share of Calls</span>
             <span class="font-bold text-neutral-900 font-num" id="searchCallsShareDisplay">0%</span>
           </div>
         </div>
 
         <!-- BM25 Edge P50 -->
-        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
-          <div class="flex items-center justify-between mb-3">
+        <div class="p-4 bg-white flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-2">
             <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">BM25 Edge P50</span>
-            <span class="text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.5 rounded font-num font-bold">&lt;15ms Instant</span>
+            <span class="text-[9px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-1 py-0.2 font-num font-bold">&lt;15ms</span>
           </div>
-          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="searchP50Latency">12ms</div>
-          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
-            <span>Standard Mode 2</span>
+          <div class="text-2xl font-bold font-num text-neutral-950 tracking-tight" id="searchP50Latency">12ms</div>
+          <div class="text-[10px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-1.5 flex items-center justify-between">
+            <span>Mode 2 Standard</span>
             <span class="font-bold text-neutral-900 font-num">&lt;40ms</span>
           </div>
         </div>
 
         <!-- KV Cache Hit Rate -->
-        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
-          <div class="flex items-center justify-between mb-3">
+        <div class="p-4 bg-white flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-2">
             <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Cache Hit Rate</span>
-            <span class="text-xs text-neutral-400 font-num">In-Isolate</span>
+            <span class="text-[9px] text-neutral-400 font-num">In-Isolate</span>
           </div>
-          <div class="text-3xl font-medium font-num text-emerald-600 tracking-tight" id="searchCacheHit">96.4%</div>
-          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+          <div class="text-2xl font-bold font-num text-emerald-700 tracking-tight" id="searchCacheHit">96.4%</div>
+          <div class="text-[10px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-1.5 flex items-center justify-between">
             <span>Sub-5ms Hits</span>
             <span class="font-bold text-neutral-900 font-num">Active</span>
           </div>
         </div>
 
         <!-- Total Indexed Corpus -->
-        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden">
-          <div class="flex items-center justify-between mb-3">
+        <div class="p-4 bg-white flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-2">
             <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Indexed Documents</span>
-            <span class="text-xs text-neutral-400 font-num">SQLite FTS5</span>
+            <span class="text-[9px] text-neutral-400 font-num">D1 FTS5</span>
           </div>
-          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="searchIndexedDocs">369</div>
-          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+          <div class="text-2xl font-bold font-num text-neutral-950 tracking-tight" id="searchIndexedDocs">369</div>
+          <div class="text-[10px] text-neutral-500 mt-2 font-num border-t border-neutral-100 pt-1.5 flex items-center justify-between">
             <span>Algorithm</span>
             <span class="font-bold text-neutral-900">BM25 Porter</span>
           </div>
@@ -4798,21 +5003,23 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
         crawler: 'crawler',
         memory: 'memory',
         keys: 'keys',
+        summoning: 'summoning',
         analytics: 'metrics',
         tester: 'tester',
-        membership: 'membership'
+        membership: 'membership',
+        integrations: 'keys'
       };
       const activeSuite = suiteMap[viewId] || null;
-      const suites = ['overview', 'benchmarks', 'search', 'memory', 'keys', 'tester', 'crawler', 'metrics', 'membership'];
+      const suites = ['overview', 'benchmarks', 'search', 'memory', 'keys', 'summoning', 'tester', 'crawler', 'metrics', 'membership'];
       suites.forEach(s => {
         const btn = document.getElementById('suiteBtn-' + s);
         if (!btn) return;
         const svg = btn.querySelector('svg');
         if (s === activeSuite) {
-          btn.className = 'suite-tab-btn py-2.5 px-3 sm:px-4 font-semibold text-neutral-950 border-b-2 border-neutral-950 cursor-pointer flex items-center gap-1.5 shrink-0 transition text-xs';
+          btn.className = 'suite-tab-btn py-2.5 px-3.5 sm:px-4 font-semibold text-neutral-950 border-b-2 border-neutral-950 cursor-pointer flex items-center gap-1.5 shrink-0 transition text-xs font-mono';
           if (svg) svg.className = 'w-3.5 h-3.5 text-neutral-950';
         } else {
-          btn.className = 'suite-tab-btn py-2.5 px-3 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition text-xs';
+          btn.className = 'suite-tab-btn py-2.5 px-3.5 sm:px-4 font-medium text-neutral-500 hover:text-neutral-950 border-b-2 border-transparent cursor-pointer flex items-center gap-1.5 shrink-0 transition text-xs font-mono';
           if (svg) svg.className = 'w-3.5 h-3.5 text-neutral-400';
         }
       });
@@ -5085,6 +5292,91 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
       showAppToast('Active API Key copied to clipboard');
     }
 
+    
+    // ── Articulated Onboarding State Manager ──
+    window.getOnboardingState = function() {
+      try {
+        var raw = localStorage.getItem('ud_onboarding_state');
+        if (raw) return JSON.parse(raw);
+      } catch(e) {}
+      var hasKey = !!(localStorage.getItem('ultrademon_active_key') || localStorage.getItem('ultrademon_saved_plain_keys'));
+      return {
+        step1: hasKey,
+        step2: false,
+        step3: false,
+        step4: false
+      };
+    };
+
+    window.setOnboardingStep = function(stepNum, isDone) {
+      try {
+        var state = window.getOnboardingState();
+        state['step' + stepNum] = !!isDone;
+        localStorage.setItem('ud_onboarding_state', JSON.stringify(state));
+      } catch(e) {}
+      if (typeof window.renderOnboardingUI === 'function') window.renderOnboardingUI();
+    };
+
+    window.toggleOnboardingGuide = function() {
+      var content = document.getElementById('onboardingGuideContent');
+      var label = document.getElementById('onboardingToggleLabel');
+      if (!content) return;
+      var isHidden = content.classList.contains('hidden');
+      if (isHidden) {
+        content.classList.remove('hidden');
+        if (label) label.innerText = 'Collapse Guide';
+        try { localStorage.setItem('ud_onboarding_collapsed', 'false'); } catch(e) {}
+      } else {
+        content.classList.add('hidden');
+        if (label) label.innerText = 'Expand Guide';
+        try { localStorage.setItem('ud_onboarding_collapsed', 'true'); } catch(e) {}
+      }
+    };
+
+    window.copyOnboardingSdkSnippet = function(type) {
+      var snippet = 'npm i @ultrademon/sdk';
+      if (type === 'pip') snippet = 'pip install ultrademon';
+      else if (type === 'mcp') snippet = 'npx -y mcp-remote https://ultrademon.site/mcp';
+      else if (type === 'curl') {
+        var key = localStorage.getItem('ultrademon_active_key') || 'ud_live_demo_console_key';
+        snippet = 'curl -X POST "https://ultrademon.site/v1/search" -H "Authorization: Bearer ' + key + '" -H "Content-Type: application/json" -d \'{"query":"fastest ai search"}\';';
+      }
+      copyToClipboard(snippet);
+      showAppToast('Command copied to clipboard');
+      window.setOnboardingStep(2, true);
+    };
+
+    window.renderOnboardingUI = function() {
+      var state = window.getOnboardingState();
+      var completedCount = [state.step1, state.step2, state.step3, state.step4].filter(Boolean).length;
+      
+      var progText = document.getElementById('onboardingProgressText');
+      var progBar = document.getElementById('onboardingProgressBar');
+      if (progText) progText.innerText = completedCount + ' / 4 Steps Completed';
+      if (progBar) progBar.style.width = (completedCount * 25) + '%';
+      
+      for (var i = 1; i <= 4; i++) {
+        var badge = document.getElementById('onboardingStepBadge-' + i);
+        var done = !!state['step' + i];
+        if (badge) {
+          badge.innerText = done ? 'COMPLETED' : 'PENDING';
+          badge.className = done
+            ? 'text-[9px] font-mono font-bold px-1.5 py-0.5 bg-neutral-950 text-white border border-neutral-950'
+            : 'text-[9px] font-mono font-bold px-1.5 py-0.5 bg-neutral-100 text-neutral-600 border border-neutral-300';
+        }
+      }
+
+      try {
+        var isCollapsed = localStorage.getItem('ud_onboarding_collapsed') === 'true';
+        var content = document.getElementById('onboardingGuideContent');
+        var label = document.getElementById('onboardingToggleLabel');
+        if (content && isCollapsed) {
+          content.classList.add('hidden');
+          if (label) label.innerText = 'Expand Guide';
+        }
+      } catch(e) {}
+    };
+
     async function createOverviewApiKey() {
       const nameIn = document.getElementById('overviewKeyName');
       const label = (nameIn && nameIn.value.trim()) ? nameIn.value.trim() : 'Production Agent Key';
@@ -5119,6 +5411,7 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
 
           copyToClipboard(plain);
           showAppToast('API Key generated: ' + plain.slice(0, 14) + '... (Copied!)');
+          if (typeof window.setOnboardingStep === 'function') window.setOnboardingStep(1, true);
           renderAppKeysTable();
           updateAllSuiteSnippets();
           updateOverviewSnippets();
@@ -5161,6 +5454,7 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
           setTimeout(() => { label.innerText = 'Copy Code'; }, 1500);
         }
         showAppToast('Code snippet copied to clipboard');
+        if (typeof window.setOnboardingStep === 'function') window.setOnboardingStep(2, true);
       }
     }
 
@@ -5258,6 +5552,8 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
         if (resPre) {
           resPre.innerText = JSON.stringify(bodyData, null, 2);
         }
+        if (typeof window.setOnboardingStep === 'function') window.setOnboardingStep(3, true);
+        var obLatency = document.getElementById('onboardingTestLatency'); if (obLatency) obLatency.innerText = 'P50: ' + ms + 'ms';
       } catch (err) {
         if (resPre) resPre.innerText = JSON.stringify({ error: err.message }, null, 2);
         if (statusBadge) {
@@ -8639,6 +8935,7 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
     async function initWorkspace() {
       // 1. Synchronous hydration first (<1ms) - instantaneous local state render
       hydrateCachedState();
+      if (typeof window.renderOnboardingUI === 'function') window.renderOnboardingUI();
 
       // 3. Immediately activate target view from URL / hash so UI is interactive instantly
       const urlParams = new URLSearchParams(window.location.search);

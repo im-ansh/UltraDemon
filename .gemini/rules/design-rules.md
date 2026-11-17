@@ -24,3 +24,9 @@
    - BEFORE committing any code or deploying, ALWAYS thoroughly test and verify that all buttons, click handlers, links, tab switches, and interactive elements across the application function properly.
    - Verify that all inline browser scripts and JavaScript code are 100% syntactically valid (via `node -e "new Function(...)"`) so that no runtime syntax errors disable client scripts or break button click listeners.
    - Verify that every referenced function exists in scope and every element ID exists in the markup.
+
+7. **Strict Prohibition on Cheap, Copied, or Emoji-Laden Design**:
+   - NEVER make the app look cheap, generic, or derivative.
+   - Absolutely NO emojis anywhere in the interface, code, HTML, CSS, commits, or responses. Use clean SVG vector icons or crisp typography instead.
+   - Avoid generic "card-heavy" designs with bulbous corner radiuses and tacky drop shadows.
+   - Maintain a disciplined, high-density Swiss aesthetic: clean white canvas (`#ffffff`), neutral hairline 1px dividers (`border-neutral-200` / `#e5e5e5`), structured line-based tables, and articulated key-value panels.
