@@ -608,7 +608,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
           title: 'AI Crawl Control',
           desc: 'Dispatch edge crawler tasks directly into D1 SQLite FTS5 index tables.',
           breadcrumb: 'AI Crawl Control',
-          action: '<button type="button" onclick="document.getElementById(&quot;appCrawlUrlSearch&quot;)?.focus();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg><span>+ Ingest URL</span></button>'
+          action: '<button type="button" onclick="var el=document.getElementById(&quot;appCrawlUrl&quot;)||document.getElementById(&quot;appCrawlUrlSearch&quot;);if(el)el.focus();" class="px-3 py-1.5 rounded-lg bg-neutral-950 text-white hover:bg-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg><span>+ Ingest URL</span></button>'
         },
         membership: {
           title: 'Memberships & Quotas',
@@ -774,6 +774,8 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
               window.loadAnalyticsDashboard();
             } else if ((viewId === 'keys' || viewId === 'overview') && typeof window.loadRealtimeKeyMetrics === 'function') {
               window.loadRealtimeKeyMetrics(false);
+            } else if (viewId === 'crawler' && typeof window.loadCrawlerData === 'function') {
+              window.loadCrawlerData();
             }
             if (typeof window.updateAllSuiteSnippets === 'function') window.updateAllSuiteSnippets();
             if (typeof window.updateOverviewSnippets === 'function') window.updateOverviewSnippets();
@@ -3193,28 +3195,206 @@ print(f"Results in {res['latency_ms']}ms: {res['results']}")</pre>
 
     <!-- SECTION 5: WEB CRAWLER -->
     <section id="view-crawler" class="space-y-6 hidden">
+      <!-- Top KPI Row -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <!-- Card 1: Total Documents -->
+        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden shadow-2xs">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Indexed Documents</span>
+            <div class="w-8 h-8 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white transition-all shadow-2xs">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
+          </div>
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="crawlerStatTotalDocs">--</div>
+          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>D1 SQLite FTS5</span>
+            <span class="font-bold text-neutral-900 font-num">Live Edge Index</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Total Words -->
+        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden shadow-2xs">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Corpus Word Count</span>
+            <div class="w-8 h-8 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white transition-all shadow-2xs">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            </div>
+          </div>
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="crawlerStatTotalWords">--</div>
+          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Tokenized Corpus</span>
+            <span class="font-bold text-neutral-900 font-num">Porter Stemmed</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Domains Covered -->
+        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden shadow-2xs">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Domains Covered</span>
+            <div class="w-8 h-8 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white transition-all shadow-2xs">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+          </div>
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="crawlerStatDomains">--</div>
+          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Distinct Origins</span>
+            <span class="font-bold text-neutral-900 font-num">Autonomous</span>
+          </div>
+        </div>
+
+        <!-- Card 4: Crawl Queue -->
+        <div class="card-elevated group relative bg-white rounded-2xl border border-neutral-200/90 p-5 flex flex-col justify-between overflow-hidden shadow-2xs">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] text-neutral-500 uppercase tracking-wider font-bold font-num">Crawl Queue</span>
+            <div class="w-8 h-8 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 group-hover:scale-105 group-hover:bg-neutral-950 group-hover:text-white transition-all shadow-2xs">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+          </div>
+          <div class="text-3xl font-medium font-num text-neutral-950 tracking-tight" id="crawlerStatQueue">--</div>
+          <div class="text-[11px] text-neutral-500 mt-3 font-num border-t border-neutral-100 pt-2 flex items-center justify-between">
+            <span>Queue Status</span>
+            <span class="font-bold text-neutral-900 font-num" id="crawlerStatPending">0 pending</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ingest URL Card -->
       <div class="card-clean p-6 rounded-2xl space-y-4">
-        <h2 class="text-sm font-bold text-neutral-950">Ingest URL into Sovereign Index</h2>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-neutral-100 pb-3">
+          <div>
+            <h2 class="text-sm font-bold text-neutral-950">Ingest URL into Sovereign Index</h2>
+            <p class="text-xs text-neutral-500 mt-0.5">Fetch, strip boilerplate, extract links, and index live into D1 SQLite FTS5 in real time.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="triggerProcessCrawlQueue()" id="btnProcessQueue" class="px-3 py-1.5 rounded-lg border border-neutral-200 hover:bg-neutral-100 text-neutral-800 text-xs font-semibold font-sans cursor-pointer flex items-center gap-1.5 transition shadow-2xs">
+              <svg class="w-3.5 h-3.5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              <span>Process Queue</span>
+            </button>
+          </div>
+        </div>
+
         <form onsubmit="event.preventDefault(); handleAppCrawl(event); return false;" class="space-y-3">
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="sm:col-span-2">
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+            <div class="sm:col-span-3">
               <label class="block text-[11px] font-medium text-neutral-600 mb-1">Target URL</label>
-              <input type="url" id="appCrawlUrl" placeholder="https://docs.python.org" required class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono" />
+              <input type="url" id="appCrawlUrl" placeholder="https://docs.python.org" required class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono focus:bg-white focus:outline-none focus:border-neutral-400 transition" />
             </div>
             <div>
-              <label class="block text-[11px] font-medium text-neutral-600 mb-1">Depth</label>
-              <select id="appCrawlDepth" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-num">
+              <label class="block text-[11px] font-medium text-neutral-600 mb-1">Crawl Depth</label>
+              <select id="appCrawlDepth" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-num focus:bg-white focus:outline-none focus:border-neutral-400 transition">
                 <option value="0">Depth 0 (Exact URL only)</option>
                 <option value="1">Depth 1 (URL + outgoing links)</option>
                 <option value="2">Depth 2 (Deep recursive crawl)</option>
               </select>
             </div>
           </div>
-          <button type="button" onclick="handleAppCrawl(event); return false;" id="btnCrawlApp" class="px-4 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer">
-            Start Edge Crawl &amp; Index
-          </button>
+
+          <!-- Quick Suggestion Pills -->
+          <div class="flex flex-wrap items-center gap-1.5 pt-1 text-xs text-neutral-500">
+            <span class="text-[11px] font-medium text-neutral-400">Quick suggestions:</span>
+            <button type="button" onclick="fillCrawlUrl('https://docs.python.org')" class="px-2 py-0.5 rounded-md bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-[11px] font-mono cursor-pointer transition">docs.python.org</button>
+            <button type="button" onclick="fillCrawlUrl('https://developers.cloudflare.com')" class="px-2 py-0.5 rounded-md bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-[11px] font-mono cursor-pointer transition">developers.cloudflare.com</button>
+            <button type="button" onclick="fillCrawlUrl('https://news.ycombinator.com')" class="px-2 py-0.5 rounded-md bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-[11px] font-mono cursor-pointer transition">news.ycombinator.com</button>
+            <button type="button" onclick="fillCrawlUrl('https://github.blog')" class="px-2 py-0.5 rounded-md bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-[11px] font-mono cursor-pointer transition">github.blog</button>
+          </div>
+
+          <div class="flex items-center gap-3 pt-2">
+            <button type="button" onclick="handleAppCrawl(event); return false;" id="btnCrawlApp" class="px-4 py-2 bg-neutral-950 hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer transition shadow-xs flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg>
+              <span>Start Edge Crawl &amp; Index</span>
+            </button>
+            <span class="text-[11px] text-neutral-400 font-num">Sub-second HTML parsing with Cloudflare HTMLRewriter</span>
+          </div>
         </form>
+
         <div id="appCrawlResult" class="hidden p-4 rounded-xl bg-neutral-50 border border-neutral-200 font-mono text-xs"></div>
+      </div>
+
+      <!-- Live Crawled Data Explorer Card -->
+      <div class="card-clean p-6 rounded-2xl space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-100 pb-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="text-sm font-bold text-neutral-950">Sovereign Index Explorer</h2>
+              <span id="crawlerLiveBadge" class="px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">Live Index</span>
+            </div>
+            <p class="text-xs text-neutral-500 mt-0.5">Live index corpus stored and searched in Cloudflare D1 across 330+ Anycast edge cities.</p>
+          </div>
+
+          <!-- Controls: Tabs, Filter, Refresh -->
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- View Tabs -->
+            <div class="flex items-center bg-neutral-100 p-0.5 rounded-lg border border-neutral-200">
+              <button type="button" id="crawlerTabDocsBtn" onclick="switchCrawlerTab('docs')" class="px-3 py-1 text-xs font-semibold rounded-md bg-white text-neutral-950 shadow-2xs cursor-pointer transition">Indexed Pages</button>
+              <button type="button" id="crawlerTabQueueBtn" onclick="switchCrawlerTab('queue')" class="px-3 py-1 text-xs font-medium text-neutral-600 hover:text-black rounded-md cursor-pointer transition">Crawl Queue</button>
+            </div>
+
+            <!-- Filter Search -->
+            <div class="relative">
+              <svg class="w-3.5 h-3.5 text-neutral-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" id="crawlerSearchFilter" placeholder="Search crawled pages..." oninput="debounceCrawlerFilter()" class="pl-8 pr-3 py-1.5 bg-neutral-50 border border-neutral-200 rounded-lg text-xs font-sans placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:border-neutral-400 w-48 sm:w-56 transition" />
+            </div>
+
+            <!-- Refresh Button -->
+            <button type="button" onclick="loadCrawlerData(true)" class="p-1.5 rounded-lg border border-neutral-200 hover:bg-neutral-100 text-neutral-700 cursor-pointer transition" title="Refresh Live Data">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab 1: Indexed Documents Table -->
+        <div id="crawlerDocsSection" class="space-y-4">
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead>
+                <tr class="border-b border-neutral-200 text-neutral-500 font-mono">
+                  <th class="pb-2 font-medium">Page Title &amp; Target URL</th>
+                  <th class="pb-2 font-medium">Domain</th>
+                  <th class="pb-2 font-medium">Snippet Preview</th>
+                  <th class="pb-2 font-medium font-num text-right">Words</th>
+                  <th class="pb-2 font-medium font-num text-right">Crawled</th>
+                  <th class="pb-2 font-medium text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="appCrawlerDocsTableBody" class="divide-y divide-neutral-100">
+                <tr><td colspan="6" class="p-4"><div class="skeleton h-4 w-full"></div></td></tr>
+                <tr><td colspan="6" class="p-4"><div class="skeleton h-4 w-5/6"></div></td></tr>
+                <tr><td colspan="6" class="p-4"><div class="skeleton h-4 w-4/6"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination Bar -->
+          <div class="flex items-center justify-between border-t border-neutral-100 pt-3 text-xs text-neutral-500 font-num">
+            <div>
+              Showing <span id="crawlerDocsRange" class="font-bold text-neutral-900">0</span> of <span id="crawlerDocsTotal" class="font-bold text-neutral-900">0</span> indexed pages
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button type="button" id="btnCrawlerPrev" onclick="changeCrawlerPage(-1)" class="px-2.5 py-1 rounded-md border border-neutral-200 hover:bg-neutral-100 text-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed font-sans cursor-pointer transition">Previous</button>
+              <button type="button" id="btnCrawlerNext" onclick="changeCrawlerPage(1)" class="px-2.5 py-1 rounded-md border border-neutral-200 hover:bg-neutral-100 text-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed font-sans cursor-pointer transition">Next</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Crawl Queue Table -->
+        <div id="crawlerQueueSection" class="space-y-4 hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead>
+                <tr class="border-b border-neutral-200 text-neutral-500 font-mono">
+                  <th class="pb-2 font-medium">Queue Target URL</th>
+                  <th class="pb-2 font-medium">Domain</th>
+                  <th class="pb-2 font-medium">Depth &amp; Priority</th>
+                  <th class="pb-2 font-medium">Status</th>
+                  <th class="pb-2 font-medium">Added</th>
+                </tr>
+              </thead>
+              <tbody id="appCrawlerQueueTableBody" class="divide-y divide-neutral-100 font-mono">
+                <tr><td colspan="5" class="p-4"><div class="skeleton h-4 w-full"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -5301,6 +5481,8 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
             loadAnalyticsDashboard();
           } else if (viewId === 'keys' || viewId === 'overview') {
             loadRealtimeKeyMetrics(false);
+          } else if (viewId === 'crawler') {
+            loadCrawlerData();
           }
 
           updateAllSuiteSnippets();
@@ -5331,6 +5513,13 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
         updateSuiteSwitcher(viewId);
         updateAllSuiteSnippets();
         updateOverviewSnippets();
+        if (viewId === 'analytics') {
+          loadAnalyticsDashboard();
+        } else if (viewId === 'keys' || viewId === 'overview') {
+          loadRealtimeKeyMetrics(false);
+        } else if (viewId === 'crawler') {
+          loadCrawlerData();
+        }
       }
 
       // URL history synchronization
@@ -6376,6 +6565,275 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
       }
     }
 
+    let crawlerCurrentTab = 'docs';
+    let crawlerDocsOffset = 0;
+    const CRAWLER_PAGE_SIZE = 25;
+    let crawlerSearchTimer = null;
+    window.CRAWLER_DOCS_CACHE = [];
+
+    function fillCrawlUrl(url) {
+      const inEl = document.getElementById('appCrawlUrl');
+      if (inEl) {
+        inEl.value = url;
+        inEl.focus();
+      }
+    }
+
+    function switchCrawlerTab(tab) {
+      crawlerCurrentTab = tab;
+      const docsSec = document.getElementById('crawlerDocsSection');
+      const queueSec = document.getElementById('crawlerQueueSection');
+      const tabDocsBtn = document.getElementById('crawlerTabDocsBtn');
+      const tabQueueBtn = document.getElementById('crawlerTabQueueBtn');
+
+      if (tab === 'docs') {
+        if (docsSec) docsSec.classList.remove('hidden');
+        if (queueSec) queueSec.classList.add('hidden');
+        if (tabDocsBtn) {
+          tabDocsBtn.className = 'px-3 py-1 text-xs font-semibold rounded-md bg-white text-neutral-950 shadow-2xs cursor-pointer transition';
+        }
+        if (tabQueueBtn) {
+          tabQueueBtn.className = 'px-3 py-1 text-xs font-medium text-neutral-600 hover:text-black rounded-md cursor-pointer transition';
+        }
+      } else {
+        if (docsSec) docsSec.classList.add('hidden');
+        if (queueSec) queueSec.classList.remove('hidden');
+        if (tabDocsBtn) {
+          tabDocsBtn.className = 'px-3 py-1 text-xs font-medium text-neutral-600 hover:text-black rounded-md cursor-pointer transition';
+        }
+        if (tabQueueBtn) {
+          tabQueueBtn.className = 'px-3 py-1 text-xs font-semibold rounded-md bg-white text-neutral-950 shadow-2xs cursor-pointer transition';
+        }
+        loadCrawlerQueueData();
+      }
+    }
+
+    function debounceCrawlerFilter() {
+      clearTimeout(crawlerSearchTimer);
+      crawlerSearchTimer = setTimeout(() => {
+        crawlerDocsOffset = 0;
+        loadCrawlerDocuments();
+      }, 250);
+    }
+
+    function changeCrawlerPage(delta) {
+      const newOffset = crawlerDocsOffset + (delta * CRAWLER_PAGE_SIZE);
+      if (newOffset >= 0) {
+        crawlerDocsOffset = newOffset;
+        loadCrawlerDocuments();
+      }
+    }
+
+    function copyCrawlerDocByIndex(idx) {
+      const doc = window.CRAWLER_DOCS_CACHE && window.CRAWLER_DOCS_CACHE[idx];
+      if (doc && doc.url) {
+        if (navigator && navigator.clipboard) {
+          navigator.clipboard.writeText(doc.url).then(() => {
+            showAppToast('URL copied to clipboard');
+          }).catch(() => {
+            showAppToast('Failed to copy URL', true);
+          });
+        }
+      }
+    }
+
+    function searchCrawlerDocByIndex(idx) {
+      const doc = window.CRAWLER_DOCS_CACHE && window.CRAWLER_DOCS_CACHE[idx];
+      if (doc) {
+        const q = doc.title || doc.url;
+        const searchInput = document.getElementById('appSearchQuery');
+        if (searchInput) searchInput.value = q;
+        setAppView('search');
+        if (typeof handleAppSearch === 'function') handleAppSearch();
+      }
+    }
+
+    async function triggerProcessCrawlQueue() {
+      const btn = document.getElementById('btnProcessQueue');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="inline-block animate-spin mr-1">↻</span> Processing...';
+      }
+      try {
+        const res = await fetch('/v1/crawler/process', {
+          method: 'POST',
+          headers: getAppAuthHeaders()
+        });
+        const data = await res.json();
+        if (data.indexed_documents !== undefined) {
+          showAppToast('Processed queue: ' + data.indexed_documents + ' documents indexed');
+          await loadCrawlerData(true);
+        } else if (data.error) {
+          showAppToast('Queue process error: ' + data.error, true);
+        }
+      } catch (err) {
+        showAppToast('Queue process error: ' + err.message, true);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<svg class="w-3.5 h-3.5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg><span>Process Queue</span>';
+        }
+      }
+    }
+
+    async function loadCrawlerDocuments() {
+      const tbody = document.getElementById('appCrawlerDocsTableBody');
+      const q = (document.getElementById('crawlerSearchFilter')?.value || '').trim();
+      let queryUrl = '/v1/crawler/documents?limit=' + CRAWLER_PAGE_SIZE + '&offset=' + crawlerDocsOffset;
+      if (q) queryUrl += '&q=' + encodeURIComponent(q);
+
+      try {
+        const res = await fetch(queryUrl, { headers: getAppAuthHeaders() });
+        const data = await res.json();
+        const docs = data.documents || [];
+        const total = data.total || 0;
+        window.CRAWLER_DOCS_CACHE = docs;
+
+        const rangeEl = document.getElementById('crawlerDocsRange');
+        const totalEl = document.getElementById('crawlerDocsTotal');
+        const prevBtn = document.getElementById('btnCrawlerPrev');
+        const nextBtn = document.getElementById('btnCrawlerNext');
+
+        if (totalEl) totalEl.innerText = total.toLocaleString();
+        if (rangeEl) {
+          const start = total === 0 ? 0 : crawlerDocsOffset + 1;
+          const end = Math.min(crawlerDocsOffset + docs.length, total);
+          rangeEl.innerText = start + ' - ' + end;
+        }
+
+        if (prevBtn) prevBtn.disabled = crawlerDocsOffset <= 0;
+        if (nextBtn) nextBtn.disabled = crawlerDocsOffset + docs.length >= total;
+
+        if (!tbody) return;
+
+        if (docs.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-neutral-400 font-sans text-xs">' +
+            (q ? 'No crawled pages match "' + escapeHtml(q) + '".' : 'No documents indexed in D1 yet. Ingest a URL above to start edge indexing.') +
+            '</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = docs.map((doc, idx) => {
+          const title = escapeHtml(doc.title || doc.url);
+          const url = escapeHtml(doc.url);
+          const domain = escapeHtml(doc.domain || '');
+          const snippet = escapeHtml(doc.snippet || doc.description || 'No snippet preview available.');
+          const wordCount = (doc.word_count || 0).toLocaleString();
+          const dateStr = doc.crawled_at ? new Date(doc.crawled_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '--';
+
+          return '<tr class="hover:bg-neutral-50/70 transition-colors">' +
+            '<td class="py-3 pr-3 font-sans max-w-xs sm:max-w-sm">' +
+              '<div class="flex items-center gap-1.5 font-semibold text-neutral-900 group">' +
+                '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="hover:underline flex items-center gap-1 truncate" title="' + title + '">' +
+                  '<span>' + title + '</span>' +
+                  '<svg class="w-3 h-3 text-neutral-400 group-hover:text-neutral-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>' +
+                '</a>' +
+              '</div>' +
+              '<div class="text-[11px] font-mono text-neutral-400 truncate mt-0.5">' + url + '</div>' +
+            '</td>' +
+            '<td class="py-3 px-2 font-mono whitespace-nowrap">' +
+              '<span class="px-2 py-0.5 rounded-md bg-neutral-100 border border-neutral-200/80 text-neutral-700 text-[11px]">' + domain + '</span>' +
+            '</td>' +
+            '<td class="py-3 px-2 font-sans text-neutral-600 text-xs max-w-xs truncate" title="' + snippet + '">' +
+              snippet +
+            '</td>' +
+            '<td class="py-3 px-2 font-num tabular-nums text-neutral-800 text-right whitespace-nowrap">' +
+              wordCount + ' words' +
+            '</td>' +
+            '<td class="py-3 px-2 font-num tabular-nums text-neutral-500 text-right whitespace-nowrap text-[11px]">' +
+              dateStr +
+            '</td>' +
+            '<td class="py-3 pl-2 text-right whitespace-nowrap">' +
+              '<div class="flex items-center justify-end gap-1.5">' +
+                '<button type="button" onclick="copyCrawlerDocByIndex(' + idx + ')" class="px-2 py-1 rounded border border-neutral-200 hover:bg-neutral-100 text-neutral-700 text-[11px] font-sans cursor-pointer transition shadow-2xs" title="Copy URL">Copy</button>' +
+                '<button type="button" onclick="searchCrawlerDocByIndex(' + idx + ')" class="px-2 py-1 rounded bg-neutral-900 hover:bg-neutral-800 text-white text-[11px] font-sans cursor-pointer transition shadow-2xs" title="Search in Studio">Search</button>' +
+              '</div>' +
+            '</td>' +
+          '</tr>';
+        }).join('');
+      } catch (err) {
+        if (tbody) {
+          tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-red-600 font-mono text-xs">Failed to load crawled documents: ' + escapeHtml(err.message) + '</td></tr>';
+        }
+      }
+    }
+
+    async function loadCrawlerQueueData() {
+      const tbody = document.getElementById('appCrawlerQueueTableBody');
+      if (!tbody) return;
+
+      try {
+        const res = await fetch('/v1/crawler/queue?limit=40', { headers: getAppAuthHeaders() });
+        const data = await res.json();
+        const queue = data.queue || [];
+
+        if (queue.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-neutral-400 font-sans text-xs">Crawl queue is empty. Submit URLs to schedule new edge crawl jobs.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = queue.map(item => {
+          const url = escapeHtml(item.url);
+          const domain = escapeHtml(item.domain || '');
+          const depth = item.depth || 0;
+          const priority = item.priority || 1.0;
+          const status = item.status || 'pending';
+          const dateStr = item.added_at ? new Date(item.added_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '--';
+
+          let statusBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-neutral-100 text-neutral-800 border border-neutral-200">' + status + '</span>';
+          if (status === 'completed') {
+            statusBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">completed</span>';
+          } else if (status === 'failed') {
+            statusBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-red-50 text-red-800 border border-red-200">failed</span>';
+          } else if (status === 'crawling') {
+            statusBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-800 border border-blue-200">crawling</span>';
+          }
+
+          return '<tr class="hover:bg-neutral-50/70 transition-colors">' +
+            '<td class="py-2.5 pr-2 max-w-sm truncate text-neutral-900" title="' + url + '">' + url + '</td>' +
+            '<td class="py-2.5 px-2 text-neutral-600">' + domain + '</td>' +
+            '<td class="py-2.5 px-2 text-neutral-500 font-num">Depth ' + depth + ' · Pri ' + priority + '</td>' +
+            '<td class="py-2.5 px-2">' + statusBadge + '</td>' +
+            '<td class="py-2.5 pl-2 text-neutral-500 font-num text-[11px]">' + dateStr + '</td>' +
+          '</tr>';
+        }).join('');
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-red-600 font-mono text-xs">Failed to load crawl queue: ' + escapeHtml(err.message) + '</td></tr>';
+      }
+    }
+
+    async function loadCrawlerData(force = false) {
+      try {
+        const res = await fetch('/v1/crawler/stats', { headers: getAppAuthHeaders() });
+        const data = await res.json();
+        if (data.index) {
+          const docsEl = document.getElementById('crawlerStatTotalDocs');
+          const wordsEl = document.getElementById('crawlerStatTotalWords');
+          const domainsEl = document.getElementById('crawlerStatDomains');
+          const queueEl = document.getElementById('crawlerStatQueue');
+          const pendingEl = document.getElementById('crawlerStatPending');
+          const liveBadge = document.getElementById('crawlerLiveBadge');
+
+          if (docsEl) docsEl.innerText = (data.index.total_documents || 0).toLocaleString();
+          if (wordsEl) {
+            const w = data.index.total_words || 0;
+            wordsEl.innerText = w > 1000000 ? (w / 1000000).toFixed(2) + 'M' : w.toLocaleString();
+          }
+          if (domainsEl) domainsEl.innerText = (data.index.domains_covered || 0).toLocaleString();
+          if (queueEl) queueEl.innerText = (data.crawler_queue?.total_queued || 0).toLocaleString();
+          if (pendingEl) pendingEl.innerText = (data.crawler_queue?.pending || 0) + ' pending';
+          if (liveBadge) liveBadge.innerText = (data.index.total_documents || 0) + ' Pages';
+        }
+      } catch (err) {
+        console.error('Failed to load crawler stats:', err);
+      }
+
+      await loadCrawlerDocuments();
+      if (crawlerCurrentTab === 'queue') {
+        await loadCrawlerQueueData();
+      }
+    }
+
     async function handleAppCrawl(e) {
       if (e && e.preventDefault) e.preventDefault();
       const url = (document.getElementById('appCrawlUrlSearch')?.value || document.getElementById('appCrawlUrl')?.value || '').trim();
@@ -6384,11 +6842,18 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
 
       if (!url) return;
 
+      const btn = document.getElementById('btnCrawlApp');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="inline-block animate-spin mr-1">↻</span> Crawling edge...';
+      }
+
       if (box) {
-        box.innerHTML = '<div class="space-y-2 p-2">' +
-          '<div class="skeleton-dark h-4 w-64"></div>' +
-          '<div class="skeleton-dark h-4 w-80"></div>' +
-          '<div class="skeleton-dark h-4 w-48"></div>' +
+        box.innerHTML = '<div class="space-y-2 p-3 font-sans text-xs text-neutral-600">' +
+          '<div class="flex items-center gap-2 font-semibold text-neutral-900">' +
+            '<span class="inline-block animate-spin">↻</span> Crawling and parsing ' + escapeHtml(url) + ' at edge...' +
+          '</div>' +
+          '<div class="skeleton h-3 w-64"></div>' +
         '</div>';
         box.classList.remove('hidden');
       }
@@ -6400,11 +6865,46 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
           body: JSON.stringify({ url, depth })
         });
         const data = await res.json();
-        if (box) box.innerText = JSON.stringify(data, null, 2);
+        if (box) {
+          if (data.document && data.document.status === 'indexed') {
+            const doc = data.document;
+            box.innerHTML = '<div class="space-y-2 p-3 font-sans text-xs bg-emerald-50/80 border border-emerald-200 rounded-xl text-emerald-950">' +
+              '<div class="flex items-center justify-between">' +
+                '<div class="font-bold text-emerald-900 flex items-center gap-1.5">' +
+                  '<svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' +
+                  'Successfully Crawled &amp; Indexed' +
+                '</div>' +
+                '<span class="font-num text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">' + (doc.wordCount || 0).toLocaleString() + ' words</span>' +
+              '</div>' +
+              '<div class="font-bold text-neutral-900 text-sm">' + escapeHtml(doc.title || doc.url) + '</div>' +
+              '<div class="text-neutral-600 line-clamp-2">' + escapeHtml(doc.snippet || doc.description || '') + '</div>' +
+              '<div class="flex items-center gap-3 pt-1 text-[11px] text-neutral-500 font-num">' +
+                '<span>Domain: <strong class="text-neutral-700">' + escapeHtml(doc.domain) + '</strong></span>' +
+                '<span>Outlinks: <strong class="text-neutral-700">' + (doc.outlinks ? doc.outlinks.length : 0) + '</strong></span>' +
+              '</div>' +
+            '</div>';
+          } else {
+            box.innerHTML = '<div class="p-3 font-sans text-xs bg-neutral-100 border border-neutral-200 rounded-xl text-neutral-800">' +
+              '<div class="font-bold mb-1">Crawl Response: ' + escapeHtml(data.message || 'Complete') + '</div>' +
+              '<div class="font-mono text-[11px] text-neutral-600">' + escapeHtml(data.document?.error || JSON.stringify(data)) + '</div>' +
+            '</div>';
+          }
+        }
         showAppToast('Crawl completed');
+        loadCrawlerData(true);
       } catch (err) {
-        if (box) box.innerText = 'Crawl error: ' + err.message;
+        if (box) {
+          box.innerHTML = '<div class="p-3 font-sans text-xs bg-red-50 border border-red-200 rounded-xl text-red-700">' +
+            '<div class="font-bold">Crawl Failed</div>' +
+            '<div>' + escapeHtml(err.message) + '</div>' +
+          '</div>';
+        }
         showAppToast('Crawl failed', true);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg><span>Start Edge Crawl &amp; Index</span>';
+        }
       }
     }
 
@@ -6796,6 +7296,14 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
 
     window.handleAppSearch = handleAppSearch;
     window.handleAppCrawl = handleAppCrawl;
+    window.loadCrawlerData = loadCrawlerData;
+    window.switchCrawlerTab = switchCrawlerTab;
+    window.fillCrawlUrl = fillCrawlUrl;
+    window.triggerProcessCrawlQueue = triggerProcessCrawlQueue;
+    window.debounceCrawlerFilter = debounceCrawlerFilter;
+    window.changeCrawlerPage = changeCrawlerPage;
+    window.copyCrawlerDocByIndex = copyCrawlerDocByIndex;
+    window.searchCrawlerDocByIndex = searchCrawlerDocByIndex;
     window.upgradeTier = upgradeTier;
     window.refreshTelemetry = refreshTelemetry;
     window.handleAppSignOut = handleAppSignOut;
