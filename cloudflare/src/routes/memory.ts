@@ -92,6 +92,7 @@ async function handleStoreMemory(c: any) {
         sessionId,
         memoryType:   memType,
         metadata,
+        ctx:          c.executionCtx,
       });
       stored.push(memory);
     }
@@ -133,6 +134,7 @@ async function handleStoreMemory(c: any) {
       sessionId,
       memoryType,
       metadata,
+      ctx:          c.executionCtx,
     });
 
     const duration = Math.round(performance.now() - t0);
@@ -191,6 +193,7 @@ async function handleQueryMemory(c: any) {
       sessionId:    sessionId || undefined,
       memoryType:   memoryType || undefined,
       limit:        isNaN(limit) ? 10 : limit,
+      ctx:          c.executionCtx,
     });
 
     const cacheTier = response.cache_tier || 'D1';
@@ -245,6 +248,7 @@ async function handleContextMemory(c: any) {
     query,
     containerTag: containerTag || undefined,
     limit: isNaN(limit) ? 5 : limit,
+    ctx: c.executionCtx,
   });
 
   const cacheTier = response.cache_tier || 'D1';
@@ -375,6 +379,7 @@ memoryRouter.post('/file', async (c) => {
       fileType:     body.file_type,
       containerTag: body.container_tag || body.tag || 'documents',
       metadata:     body.metadata,
+      ctx:          c.executionCtx,
     });
 
     return c.json({

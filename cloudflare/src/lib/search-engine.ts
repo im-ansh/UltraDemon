@@ -316,24 +316,10 @@ async function executeInstantSearch(
       }));
     }
 
-    // If AND match yielded fewer than 2 relevant results, fetch live online web results first
+    // If AND match yielded fewer than 2 relevant results, try fast in-engine D1 OR match first (<15ms)
     if (formatted.length < 2) {
-      const liveResults = await fetchLiveOnlineResults(query, count);
-      if (liveResults.length > 0) {
-        if (formatted.length === 0) {
-          formatted = liveResults;
-        } else {
-          const seen = new Set(formatted.map(f => f.url));
-          for (const lr of liveResults) {
-            if (!seen.has(lr.url)) {
-              seen.add(lr.url);
-              formatted.push(lr);
-            }
-          }
-        }
-      } else {
-        // Fall back to loose OR match only if live web search is unreachable
-        const orMatch = prepareOrFts5Query(query);
+      const orMatch = prepareOrFts5Query(query);
+      try {
         const { results: orResults } = await env.DB.prepare(`
           SELECT
             d.doc_id,
@@ -363,14 +349,30 @@ async function executeInstantSearch(
         }>();
 
         if (orResults && orResults.length > 0) {
-          formatted = orResults.map(r => ({
-            title: r.title || r.url,
-            url: r.url,
-            snippet: r.snippet || r.description || 'Fast indexed entry',
-            source: 'ultrasearch-instant-d1',
-            score: Math.round(((r.bm25_score * -1.0) + (r.pagerank * 0.2) + 0.5) * 100) / 100,
-            published_date: r.crawled_at ? new Date(r.crawled_at).toISOString() : undefined,
-          }));
+          const seen = new Set(formatted.map(f => f.url));
+          for (const r of orResults) {
+            if (!seen.has(r.url)) {
+              seen.add(r.url);
+              formatted.push({
+                title: r.title || r.url,
+                url: r.url,
+                snippet: r.snippet || r.description || 'Fast indexed entry',
+                source: 'ultrasearch-instant-d1',
+                score: Math.round(((r.bm25_score * -1.0) + (r.pagerank * 0.2) + 0.5) * 100) / 100,
+                published_date: r.crawled_at ? new Date(r.crawled_at).toISOString() : undefined,
+              });
+            }
+          }
+        }
+      } catch (orErr) {
+        console.warn('D1 OR match non-fatal:', orErr);
+      }
+
+      // If D1 index still has zero results, fall back to live web search
+      if (formatted.length === 0) {
+        const liveResults = await fetchLiveOnlineResults(query, count);
+        if (liveResults.length > 0) {
+          formatted = liveResults;
         }
       }
     }

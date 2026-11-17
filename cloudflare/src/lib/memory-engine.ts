@@ -15,6 +15,7 @@ export interface StoreMemoryParams {
   fileName?:     string;
   fileType?:     string;
   fileSize?:     number;
+  ctx?:          { waitUntil?: (p: Promise<unknown>) => void };
 }
 
 export interface QueryMemoryParams {
@@ -24,6 +25,7 @@ export interface QueryMemoryParams {
   sessionId?:    string;
   memoryType?:   string;
   limit?:        number;
+  ctx?:          { waitUntil?: (p: Promise<unknown>) => void };
 }
 
 export interface ListMemoryParams {
@@ -84,7 +86,12 @@ export async function getContainerVersion(env: Env, userId: string, containerTag
   }
 }
 
-export async function bumpContainerVersion(env: Env, userId: string, containerTag?: string): Promise<number> {
+export async function bumpContainerVersion(
+  env: Env,
+  userId: string,
+  containerTag?: string,
+  ctx?: { waitUntil?: (p: Promise<unknown>) => void }
+): Promise<number> {
   const tag = containerTag || 'all';
   const tagKey = `${userId}:${tag}`;
   const currentVer = ISOLATE_CONTAINER_VERSIONS.get(tagKey) || 1;
@@ -98,18 +105,19 @@ export async function bumpContainerVersion(env: Env, userId: string, containerTa
     const currentAllVer = ISOLATE_CONTAINER_VERSIONS.get(allKey) || 1;
     ISOLATE_CONTAINER_VERSIONS.set(allKey, currentAllVer + 1);
     if (env.SEARCH_CACHE && typeof env.SEARCH_CACHE.put === 'function') {
-      try {
-        await env.SEARCH_CACHE.put(`mem_v:${allKey}`, String(currentAllVer + 1), { expirationTtl: 86400 * 30 });
-      } catch {}
+      const p = env.SEARCH_CACHE.put(`mem_v:${allKey}`, String(currentAllVer + 1), { expirationTtl: 86400 * 30 });
+      if (ctx && typeof ctx.waitUntil === 'function') ctx.waitUntil(p);
+      else p.catch(() => {});
     }
   }
 
+  // Non-blocking KV write to prevent latency spikes on storeMemory
   if (env.SEARCH_CACHE && typeof env.SEARCH_CACHE.put === 'function') {
-    try {
-      await env.SEARCH_CACHE.put(`mem_v:${tagKey}`, String(nextVer), { expirationTtl: 86400 * 30 });
-    } catch (e) {
+    const p = env.SEARCH_CACHE.put(`mem_v:${tagKey}`, String(nextVer), { expirationTtl: 86400 * 30 });
+    if (ctx && typeof ctx.waitUntil === 'function') ctx.waitUntil(p);
+    else p.catch((e) => {
       console.warn('Failed to persist container version to KV:', e);
-    }
+    });
   }
 
   return nextVer;
@@ -159,7 +167,7 @@ export async function storeMemory(env: Env, params: StoreMemoryParams): Promise<
   ).run();
 
   // Atomically bump container version to invalidate edge caches
-  await bumpContainerVersion(env, params.userId, containerTag);
+  await bumpContainerVersion(env, params.userId, containerTag, params.ctx);
 
   return {
     memory_id:     memoryId,
@@ -370,9 +378,14 @@ export async function queryMemories(env: Env, params: QueryMemoryParams): Promis
 
   // Non-blocking Tier 1 KV Edge write (never blocks sub-10ms response)
   if (env.SEARCH_CACHE && typeof env.SEARCH_CACHE.put === 'function') {
-    env.SEARCH_CACHE.put(cacheKey, JSON.stringify(response), { expirationTtl: 3600 }).catch(kvErr => {
-      console.warn('Non-blocking KV memory cache write non-fatal:', kvErr);
-    });
+    const putPromise = env.SEARCH_CACHE.put(cacheKey, JSON.stringify(response), { expirationTtl: 3600 });
+    if (params.ctx && typeof params.ctx.waitUntil === 'function') {
+      params.ctx.waitUntil(putPromise);
+    } else {
+      putPromise.catch(kvErr => {
+        console.warn('Non-blocking KV memory cache write non-fatal:', kvErr);
+      });
+    }
   }
 
   return response;
@@ -403,9 +416,31 @@ export async function listMemories(env: Env, params: ListMemoryParams): Promise<
   sql += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
   binds.push(limit, offset);
 
-  const { results: rows } = await env.DB.prepare(sql).bind(...binds).all<Record<string, unknown>>();
+  let countSql = 'SELECT COUNT(*) as cnt FROM memories WHERE (user_id = ? OR ? = \'public_guest\')';
+  const countBinds: unknown[] = [params.userId, params.userId];
+  if (params.containerTag) {
+    countSql += ' AND container_tag = ?';
+    countBinds.push(params.containerTag);
+  }
+  if (params.memoryType) {
+    countSql += ' AND memory_type = ?';
+    countBinds.push(params.memoryType);
+  }
+  if (params.sessionId) {
+    countSql += ' AND session_id = ?';
+    countBinds.push(params.sessionId);
+  }
 
-  const memories: MemoryQueryResult[] = (rows || []).map(r => ({
+  // Atomic D1 batch execution: 1 network roundtrip for both items and total count
+  const [dataBatch, countBatch] = await env.DB.batch([
+    env.DB.prepare(sql).bind(...binds),
+    env.DB.prepare(countSql).bind(...countBinds),
+  ]);
+
+  const rows = (dataBatch?.results || []) as Record<string, unknown>[];
+  const countRow = (countBatch?.results?.[0] || {}) as { cnt?: number };
+
+  const memories: MemoryQueryResult[] = rows.map(r => ({
     memory_id:     String(r.memory_id),
     container_tag: String(r.container_tag),
     session_id:    String(r.session_id),
@@ -418,13 +453,9 @@ export async function listMemories(env: Env, params: ListMemoryParams): Promise<
     created_at:    new Date(Number(r.created_at)).toISOString(),
   }));
 
-  const countRow = await env.DB.prepare('SELECT COUNT(*) as cnt FROM memories WHERE (user_id = ? OR ? = \'public_guest\')')
-    .bind(params.userId, params.userId)
-    .first<{ cnt: number }>();
-
   return {
     memories,
-    total: countRow?.cnt || memories.length,
+    total: countRow?.cnt ?? memories.length,
   };
 }
 
@@ -493,6 +524,7 @@ export async function ingestFileMemory(
     fileType?:     string;
     containerTag?: string;
     metadata?:     Record<string, unknown>;
+    ctx?:          { waitUntil?: (p: Promise<unknown>) => void };
   }
 ): Promise<{ chunks_stored: number; memory_ids: string[]; file_name: string }> {
   const containerTag = params.containerTag?.trim() || 'documents';
@@ -554,7 +586,7 @@ export async function ingestFileMemory(
   }
 
   // Atomically bump container version to invalidate edge caches
-  await bumpContainerVersion(env, params.userId, containerTag);
+  await bumpContainerVersion(env, params.userId, containerTag, params.ctx);
 
   return {
     chunks_stored: chunks.length,

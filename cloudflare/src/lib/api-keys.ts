@@ -374,33 +374,33 @@ export async function getUsage(
   const hashedKey = await hashKey(plainKey, env.ULTRASEARCH_SECRET);
   const today = new Date().toISOString().slice(0, 10);
 
-  const [keyRow, usageRow] = await Promise.all([
-    env.DB.prepare('SELECT plan, label, created_at FROM api_keys WHERE hashed_key = ?').bind(hashedKey).first<{ plan: string; label: string; created_at: number }>(),
-    env.DB.prepare('SELECT request_count, search_count, memory_count, metrics_count, crawler_count, last_used_at FROM usage WHERE hashed_key = ? AND date = ?').bind(hashedKey, today).first<{ request_count: number; search_count: number; memory_count: number; metrics_count: number; crawler_count: number; last_used_at: number }>(),
+  const [keyBatch, usageBatch] = await env.DB.batch([
+    env.DB.prepare('SELECT plan, label, created_at FROM api_keys WHERE hashed_key = ?').bind(hashedKey),
+    env.DB.prepare('SELECT request_count, search_count, memory_count, metrics_count, crawler_count, last_used_at FROM usage WHERE hashed_key = ? AND date = ?').bind(hashedKey, today),
   ]);
+
+  const keyRow = (keyBatch?.results?.[0] || null) as { plan: string; label: string; created_at: number } | null;
+  const usageRow = (usageBatch?.results?.[0] || null) as { request_count: number; search_count: number; memory_count: number; metrics_count: number; crawler_count: number; last_used_at: number } | null;
 
   if (!keyRow) {
     return {
       plan:           'free',
       label:          'Edge Sandbox',
-      daily_limit:    100,
+      daily_limit:    1000,
       requests_today: usageRow?.request_count ?? 0,
       search_today:   usageRow?.search_count ?? 0,
       memory_today:   usageRow?.memory_count ?? 0,
       metrics_today:  usageRow?.metrics_count ?? 0,
       crawler_today:  usageRow?.crawler_count ?? 0,
-      remaining:      Math.max(0, 100 - (usageRow?.request_count ?? 0)),
+      remaining:      Math.max(0, 1000 - (usageRow?.request_count ?? 0)),
       last_used_at:   usageRow?.last_used_at ? new Date(usageRow.last_used_at).toISOString() : null,
       reset_at:       `${today}T00:00:00Z (next day)`,
     };
   }
 
-  const planDetails = await env.DB
-    .prepare('SELECT daily_limit FROM plans WHERE plan_id = ?')
-    .bind(keyRow.plan)
-    .first<{ daily_limit: number }>();
-
-  const dailyLimit = planDetails?.daily_limit ?? 100;
+  // Read plan spec directly from in-memory configuration (<0.01ms V8 RAM)
+  const planSpec = getPlanSpec(keyRow.plan);
+  const dailyLimit = planSpec.daily_limit;
   const used = usageRow?.request_count ?? 0;
 
   return {
