@@ -1010,6 +1010,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <a href="#overview" class="hover:text-neutral-950 transition-colors">Overview</a>
         <a href="#value" class="hover:text-neutral-950 transition-colors">Core Engine</a>
         <a href="#features" class="hover:text-neutral-950 transition-colors">Features</a>
+        <a href="#scales" class="hover:text-neutral-950 transition-colors font-semibold">Scales</a>
         <a href="#comparison" class="hover:text-neutral-950 transition-colors font-semibold">Benchmarks</a>
         <a href="#faq" class="hover:text-neutral-950 transition-colors">FAQ</a>
         <a href="#pricing" class="hover:text-neutral-950 transition-colors">Pricing</a>
@@ -1043,6 +1044,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <a href="#overview" onclick="toggleLandingMobileMenu()" class="py-1.5 hover:text-neutral-950">Overview</a>
         <a href="#value" onclick="toggleLandingMobileMenu()" class="py-1.5 hover:text-neutral-950">Core Engine</a>
         <a href="#features" onclick="toggleLandingMobileMenu()" class="py-1.5 hover:text-neutral-950">Features</a>
+        <a href="#scales" onclick="toggleLandingMobileMenu()" class="py-1.5 hover:text-neutral-950 font-semibold">UltraMemory Scales</a>
         <a href="#comparison" onclick="toggleLandingMobileMenu()" class="py-1.5 hover:text-neutral-950 font-semibold">Benchmarks &amp; Comparison</a>
         <a href="#faq" onclick="toggleLandingMobileMenu()" class="py-1.5 hover:text-neutral-950">FAQ</a>
         <a href="#pricing" onclick="toggleLandingMobileMenu()" class="py-1.5 hover:text-neutral-950">Pricing</a>
@@ -1595,6 +1597,150 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           </div>
         </div>
 
+      </div>
+    </section>
+
+    <!-- SECTION 7.5: ULTRAMEMORY SCALES — PARTITIONED CATEGORICAL MEMORY -->
+    <section class="py-24 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100 motion-reveal" id="scales">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div class="max-w-2xl text-left">
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-neutral-100 border border-neutral-200/80 text-[11px] font-mono text-neutral-800 font-semibold mb-3">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>NEW // ULTRAMEMORY SCALES</span>
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950 font-sans">
+            Categorical Memory Scales for Sub-Millisecond AI Recall
+          </h2>
+          <p class="text-neutral-600 text-sm sm:text-base mt-3 leading-relaxed font-sans">
+            Eliminate unindexed prompt bloat and cold-cache latency. By partitioning agent memories into five high-speed architectural tiers, UltraMemory retrieves the exact context your models need in under 1ms.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-mono text-neutral-500 font-num">Global P50 Latency:</span>
+          <span class="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded font-num">&lt;2.5ms across 330+ PoPs</span>
+        </div>
+      </div>
+
+      <!-- 5 Pastel Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 text-left mb-12">
+        
+        <!-- Scale 1: Ephemeral -->
+        <div class="p-6 rounded-2xl bg-[#ecfdf5] border border-[#a7f3d0] transition-all hover:shadow-md flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-white/80 text-emerald-900 border border-[#a7f3d0]/60">RAM Tier</span>
+              <span class="font-mono text-xs font-bold text-emerald-800 bg-white/90 px-2 py-0.5 rounded shadow-2xs font-num">&lt;0.8ms</span>
+            </div>
+            <h3 class="text-lg font-bold text-emerald-950 mb-2 font-sans">Ephemeral Scale</h3>
+            <p class="text-xs text-emerald-900/80 leading-relaxed mb-4 font-sans">
+              Ultra-low-latency working memory, session scratchpads, live reasoning traces, and conversational short-term context stored in V8 isolate memory.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-[#a7f3d0]/60 flex items-center justify-between text-[11px] font-mono text-emerald-800 font-num">
+            <span>Storage: V8 Isolate RAM</span>
+            <span class="font-semibold">Zero Disk I/O</span>
+          </div>
+        </div>
+
+        <!-- Scale 2: Entity -->
+        <div class="p-6 rounded-2xl bg-[#f0f9ff] border border-[#bae6fd] transition-all hover:shadow-md flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-white/80 text-sky-900 border border-[#bae6fd]/60">Edge KV Tier</span>
+              <span class="font-mono text-xs font-bold text-sky-800 bg-white/90 px-2 py-0.5 rounded shadow-2xs font-num">&lt;2.1ms</span>
+            </div>
+            <h3 class="text-lg font-bold text-sky-950 mb-2 font-sans">Entity Scale</h3>
+            <p class="text-xs text-sky-900/80 leading-relaxed mb-4 font-sans">
+              Structured identity representations, user profiles, behavioral traits, developer preferences, and dynamic parameter dictionaries partitioned per user.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-[#bae6fd]/60 flex items-center justify-between text-[11px] font-mono text-sky-800 font-num">
+            <span>Storage: Edge KV Partition</span>
+            <span class="font-semibold">Per-User Bound</span>
+          </div>
+        </div>
+
+        <!-- Scale 3: Knowledge -->
+        <div class="p-6 rounded-2xl bg-[#fffbeb] border border-[#fde68a] transition-all hover:shadow-md flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-white/80 text-amber-900 border border-[#fde68a]/60">D1 FTS5 Tier</span>
+              <span class="font-mono text-xs font-bold text-amber-800 bg-white/90 px-2 py-0.5 rounded shadow-2xs font-num">&lt;6.5ms</span>
+            </div>
+            <h3 class="text-lg font-bold text-amber-950 mb-2 font-sans">Knowledge Scale</h3>
+            <p class="text-xs text-amber-900/80 leading-relaxed mb-4 font-sans">
+              High-density domain knowledge, full-text documentation, parsed technical manuals, code repositories, and reference books indexed with BM25.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-[#fde68a]/60 flex items-center justify-between text-[11px] font-mono text-amber-800 font-num">
+            <span>Storage: SQLite FTS5 BM25</span>
+            <span class="font-semibold">Full-Text Indexed</span>
+          </div>
+        </div>
+
+        <!-- Scale 4: Cognitive -->
+        <div class="p-6 rounded-2xl bg-[#faf5ff] border border-[#e9d5ff] transition-all hover:shadow-md flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-white/80 text-purple-900 border border-[#e9d5ff]/60">Graph Tier</span>
+              <span class="font-mono text-xs font-bold text-purple-800 bg-white/90 px-2 py-0.5 rounded shadow-2xs font-num">&lt;3.8ms</span>
+            </div>
+            <h3 class="text-lg font-bold text-purple-950 mb-2 font-sans">Cognitive Scale</h3>
+            <p class="text-xs text-purple-900/80 leading-relaxed mb-4 font-sans">
+              Hierarchical goal decomposition trees, multi-step action plans, reflection heuristics, and post-execution feedback loops for autonomous agency.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-[#e9d5ff]/60 flex items-center justify-between text-[11px] font-mono text-purple-800 font-num">
+            <span>Storage: Execution Graph</span>
+            <span class="font-semibold">Recursive Loops</span>
+          </div>
+        </div>
+
+        <!-- Scale 5: Swarm -->
+        <div class="p-6 rounded-2xl bg-[#fff1f2] border border-[#fecdd3] transition-all hover:shadow-md flex flex-col justify-between md:col-span-2 lg:col-span-2">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-white/80 text-rose-900 border border-[#fecdd3]/60">Anycast Bus Tier</span>
+              <span class="font-mono text-xs font-bold text-rose-800 bg-white/90 px-2 py-0.5 rounded shadow-2xs font-num">&lt;2.4ms</span>
+            </div>
+            <h3 class="text-lg font-bold text-rose-950 mb-2 font-sans">Swarm Scale</h3>
+            <p class="text-xs text-rose-900/80 leading-relaxed mb-4 font-sans">
+              Decentralized inter-agent message queues, peer coordination locks, consensus votes, and distributed blackboard state synchronized across all 330+ Cloudflare edge locations in real-time.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-[#fecdd3]/60 flex items-center justify-between text-[11px] font-mono text-rose-800 font-num">
+            <span>Storage: Global Anycast Swarm Bus</span>
+            <span class="font-semibold">330+ Global PoPs</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Interactive Code Snippets / Scales Usage -->
+      <div class="border border-neutral-200 rounded-2xl bg-white p-6 sm:p-8 text-left space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-100 pb-4">
+          <div>
+            <h3 class="text-base font-bold text-neutral-950 font-sans">Store &amp; Query by Scale in 1-Line</h3>
+            <p class="text-xs text-neutral-500 font-sans mt-0.5">Simply pass the scale parameter in the JSON payload or query string.</p>
+          </div>
+          <div class="flex items-center gap-1.5 p-1 bg-neutral-100 rounded-lg text-xs font-mono">
+            <button type="button" onclick="switchScaleSnippet('curl')" id="btnScaleCurl" class="px-2.5 py-1 rounded bg-white text-neutral-950 font-semibold shadow-2xs cursor-pointer">cURL</button>
+            <button type="button" onclick="switchScaleSnippet('python')" id="btnScalePy" class="px-2.5 py-1 rounded text-neutral-600 hover:text-neutral-950 cursor-pointer">Python</button>
+            <button type="button" onclick="switchScaleSnippet('ts')" id="btnScaleTs" class="px-2.5 py-1 rounded text-neutral-600 hover:text-neutral-950 cursor-pointer">TypeScript</button>
+          </div>
+        </div>
+
+        <div class="relative">
+          <pre id="scaleSnippetBox" class="p-4 bg-neutral-950 rounded-xl font-mono text-xs text-neutral-200 overflow-x-auto code-scroll leading-relaxed"># Store ephemeral reasoning trace (&lt;0.8ms V8 RAM)
+curl -X POST "https://ultrademon.site/v1/memory" \
+  -H "X-API-Key: ud_summon_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"content": "Intermediate calculation state #482", "scale": "ephemeral"}'
+
+# Recall memory strictly within the 'entity' scale (&lt;2.1ms KV partition)
+curl "https://ultrademon.site/v1/memory/recall?q=user+theme&scale=entity" \
+  -H "X-API-Key: ud_summon_your_key_here"</pre>
+        </div>
       </div>
     </section>
 
@@ -2860,6 +3006,64 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         }
       }
     }
+
+    window.switchScaleSnippet = function(lang) {
+      var box = document.getElementById('scaleSnippetBox');
+      var bCurl = document.getElementById('btnScaleCurl');
+      var bPy = document.getElementById('btnScalePy');
+      var bTs = document.getElementById('btnScaleTs');
+
+      var activeClass = 'px-2.5 py-1 rounded bg-white text-neutral-950 font-semibold shadow-2xs cursor-pointer';
+      var inactiveClass = 'px-2.5 py-1 rounded text-neutral-600 hover:text-neutral-950 cursor-pointer';
+
+      if (bCurl) bCurl.className = (lang === 'curl') ? activeClass : inactiveClass;
+      if (bPy) bPy.className = (lang === 'python') ? activeClass : inactiveClass;
+      if (bTs) bTs.className = (lang === 'ts') ? activeClass : inactiveClass;
+
+      if (!box) return;
+
+      if (lang === 'curl') {
+        box.innerText = '# 1. Store ephemeral reasoning trace (<0.8ms V8 RAM)\n' +
+          'curl -X POST "https://ultrademon.site/v1/memory" \\\n' +
+          '  -H "X-API-Key: ud_summon_your_key_here" \\\n' +
+          '  -H "Content-Type: application/json" \\\n' +
+          '  -d \'{"content": "Intermediate calculation state #482", "scale": "ephemeral"}\'\n\n' +
+          '# 2. Recall memory strictly within the "entity" scale (<2.1ms KV partition)\n' +
+          'curl "https://ultrademon.site/v1/memory/recall?q=user+theme&scale=entity" \\\n' +
+          '  -H "X-API-Key: ud_summon_your_key_here"';
+      } else if (lang === 'python') {
+        box.innerText = '# pip install requests\n' +
+          'import requests\n\n' +
+          'BASE = "https://ultrademon.site/v1/memory"\n' +
+          'HEADERS = {"X-API-Key": "ud_summon_your_key_here"}\n\n' +
+          '# Store cognitive scale decision tree (<3.8ms Execution Graph)\n' +
+          'res = requests.post(BASE, json={\n' +
+          '    "content": "Action Plan: Parse AST -> Execute Sub-Agents -> Lint",\n' +
+          '    "scale": "cognitive"\n' +
+          '}, headers=HEADERS)\n' +
+          'print("Stored in:", res.json().get("storage_time_ms"), "ms")\n\n' +
+          '# Query across the swarm scale (<2.4ms Anycast Swarm Bus)\n' +
+          'memories = requests.get(f"{BASE}/recall?q=action+plan&scale=swarm", headers=HEADERS)\n' +
+          'print(memories.json())';
+      } else if (lang === 'ts') {
+        box.innerText = '// Store in knowledge scale (<6.5ms D1 FTS5 BM25)\n' +
+          'const res = await fetch("https://ultrademon.site/v1/memory", {\n' +
+          '  method: "POST",\n' +
+          '  headers: {\n' +
+          '    "Content-Type": "application/json",\n' +
+          '    "X-API-Key": "ud_summon_your_key_here",\n' +
+          '  },\n' +
+          '  body: JSON.stringify({\n' +
+          '    content: "API RFC: Partitioned categorical scales eliminate prompt bloat",\n' +
+          '    scale: "knowledge"\n' +
+          '  })\n' +
+          '});\n\n' +
+          '// Query ephemeral scratchpad (<0.8ms V8 RAM)\n' +
+          'const recall = await fetch("https://ultrademon.site/v1/memory/recall?q=RFC&scale=ephemeral", {\n' +
+          '  headers: { "X-API-Key": "ud_summon_your_key_here" }\n' +
+          '}).then(r => r.json());';
+      }
+    };
 
     document.addEventListener('DOMContentLoaded', function() {
       checkAuthSession();

@@ -2884,7 +2884,17 @@ curl "${displayOrigin}/v1/memory/recall?q=user+preferences&container_tag=agent_p
           <span class="text-[10px] bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded font-mono text-neutral-700">Requires API Key</span>
         </div>
         <form onsubmit="event.preventDefault(); handleAppStoreMemory(event); return false;" class="space-y-3 font-sans">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-[11px] font-mono text-neutral-600 mb-1">Scale (Category Partition)</label>
+              <select id="appMemScale" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono">
+                <option value="ephemeral">Ephemeral Scale (&lt;0.8ms · RAM)</option>
+                <option value="entity">Entity Scale (&lt;2.1ms · KV)</option>
+                <option value="knowledge" selected>Knowledge Scale (&lt;6.5ms · BM25)</option>
+                <option value="cognitive">Cognitive Scale (&lt;3.8ms · Graph)</option>
+                <option value="swarm">Swarm Scale (&lt;2.4ms · Bus)</option>
+              </select>
+            </div>
             <div>
               <label class="block text-[11px] font-mono text-neutral-600 mb-1">Memory Type</label>
               <select id="appMemType" class="w-full px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono">
@@ -2924,8 +2934,16 @@ curl "${displayOrigin}/v1/memory/recall?q=user+preferences&container_tag=agent_p
           </div>
           <span id="appRecallTimer" class="font-mono text-[10px] bg-neutral-100 border border-neutral-300 text-neutral-900 px-2 py-0.5 rounded font-bold">&lt;15ms Edge</span>
         </div>
-        <form onsubmit="event.preventDefault(); handleAppQueryMemory(event); return false;" class="flex gap-2">
+        <form onsubmit="event.preventDefault(); handleAppQueryMemory(event); return false;" class="flex flex-col sm:flex-row gap-2">
           <input type="text" id="appMemQuery" placeholder="Query memories (e.g. user preferences, project context)..." required class="flex-1 px-3.5 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-sans" />
+          <select id="appMemQueryScale" class="px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-mono text-neutral-800">
+            <option value="">All Scales</option>
+            <option value="ephemeral">Ephemeral Scale (&lt;0.8ms)</option>
+            <option value="entity">Entity Scale (&lt;2.1ms)</option>
+            <option value="knowledge">Knowledge Scale (&lt;6.5ms)</option>
+            <option value="cognitive">Cognitive Scale (&lt;3.8ms)</option>
+            <option value="swarm">Swarm Scale (&lt;2.4ms)</option>
+          </select>
           <button type="button" onclick="handleAppQueryMemory(event); return false;" class="px-5 py-2 bg-black hover:bg-neutral-800 text-white font-semibold text-xs rounded-xl cursor-pointer font-sans shadow-xs">Recall</button>
         </form>
         <div id="appMemResults" class="space-y-2 pt-2">
@@ -2947,6 +2965,7 @@ curl "${displayOrigin}/v1/memory/recall?q=user+preferences&container_tag=agent_p
             <thead>
               <tr class="border-b border-neutral-200 text-neutral-500 font-mono">
                 <th class="pb-2 font-medium">Memory ID</th>
+                <th class="pb-2 font-medium">Scale</th>
                 <th class="pb-2 font-medium">Container</th>
                 <th class="pb-2 font-medium">Type</th>
                 <th class="pb-2 font-medium">Content</th>
@@ -2954,8 +2973,8 @@ curl "${displayOrigin}/v1/memory/recall?q=user+preferences&container_tag=agent_p
               </tr>
             </thead>
             <tbody id="appMemoriesTableBody" class="divide-y divide-neutral-100 font-mono">
-              <tr><td colspan="5" class="p-3"><div class="skeleton h-4 w-full"></div></td></tr>
-              <tr><td colspan="5" class="p-3"><div class="skeleton h-4 w-5/6"></div></td></tr>
+              <tr><td colspan="6" class="p-3"><div class="skeleton h-4 w-full"></div></td></tr>
+              <tr><td colspan="6" class="p-3"><div class="skeleton h-4 w-5/6"></div></td></tr>
             </tbody>
           </table>
         </div>
@@ -4426,6 +4445,48 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
       <div class="mt-4 text-center">
         <span class="text-[11px] text-neutral-400 font-num">Cloudflare Workers Edge SHA-256 Authentication</span>
       </div>
+    </div>
+  </div>
+
+  <!-- Delete API Key Confirmation Modal (Requires Password Confirmation) -->
+  <div id="deleteKeyModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs hidden">
+    <div class="relative w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl border border-neutral-100 font-sans">
+      <button type="button" onclick="closeDeleteKeyModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-neutral-900 transition-colors p-1 cursor-pointer">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <div class="flex items-center gap-2.5 mb-2">
+        <div class="w-8 h-8 rounded-full bg-red-50 border border-red-200 flex items-center justify-center text-red-600 shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        </div>
+        <div>
+          <h3 class="font-bold text-sm text-neutral-950 font-sans">Permanently Delete Key</h3>
+          <p class="text-[11px] text-neutral-500 font-num" id="deleteKeyModalLabel">Target Key: --</p>
+        </div>
+      </div>
+
+      <p class="text-xs text-neutral-600 mb-4 leading-relaxed font-sans">
+        This action is irreversible. The key will be permanently expunged from Cloudflare D1 and edge caches across 330+ locations. Enter your account password to confirm deletion.
+      </p>
+
+      <form id="deleteKeyForm" onsubmit="event.preventDefault(); submitDeleteKeyWithPassword(); return false;" class="space-y-3 font-sans">
+        <div>
+          <label class="block text-[11px] font-mono text-neutral-700 uppercase tracking-wider mb-1">Account Password</label>
+          <input type="password" id="deleteKeyPassword" placeholder="Enter your password..." autocomplete="current-password" required class="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-xs focus:outline-none focus:border-black focus:bg-white font-mono" />
+        </div>
+
+        <div id="deleteKeyError" class="text-xs text-red-600 hidden font-sans"></div>
+
+        <div class="flex items-center gap-2 pt-2">
+          <button type="button" onclick="closeDeleteKeyModal()" class="flex-1 py-2.5 rounded-xl border border-neutral-300 hover:bg-neutral-100 text-neutral-800 text-xs font-semibold transition cursor-pointer text-center">
+            Cancel
+          </button>
+          <button type="submit" id="deleteKeySubmitBtn" class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition cursor-pointer text-center shadow-xs flex items-center justify-center gap-1.5">
+            <span>Confirm Delete</span>
+            <span id="deleteKeySpinner" class="hidden skeleton-dark h-3 w-12 rounded"></span>
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -6054,9 +6115,21 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
                     ? '<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-bold uppercase font-mono">Telemetry</span>'
                     : '<span class="px-2 py-0.5 rounded bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase font-mono">Unified API</span>'))));
 
-          const statusBtn = isCurrentActive
-            ? '<span class="px-2 py-0.5 rounded-full bg-neutral-950 text-white text-[10px] font-bold uppercase tracking-wider inline-flex items-center gap-1 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>Active</span>'
-            : '<button type="button" onclick="selectActiveAppKey(&apos;' + keyVal + '&apos;, &apos;' + (k.key_type || 'unified') + '&apos;, event)" class="px-2.5 py-0.5 rounded-full bg-white hover:bg-neutral-100 border border-neutral-300 hover:border-black text-neutral-800 text-[10px] font-bold uppercase tracking-wider transition cursor-pointer shadow-2xs">Activate</button>';
+          const isRevoked = !!k.revoked;
+
+          let statusBtn = '';
+          if (isRevoked) {
+            statusBtn = '<span class="px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-500 border border-neutral-200 text-[10px] font-bold uppercase tracking-wider font-mono">Revoked</span>';
+          } else if (isCurrentActive) {
+            statusBtn = '<span class="px-2 py-0.5 rounded-full bg-neutral-950 text-white text-[10px] font-bold uppercase tracking-wider inline-flex items-center gap-1 shadow-2xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>Active</span>';
+          } else {
+            statusBtn = '<button type="button" onclick="selectActiveAppKey(&apos;' + keyVal + '&apos;, &apos;' + (k.key_type || 'unified') + '&apos;, event)" class="px-2.5 py-0.5 rounded-full bg-white hover:bg-neutral-100 border border-neutral-300 hover:border-black text-neutral-800 text-[10px] font-bold uppercase tracking-wider transition cursor-pointer shadow-2xs">Activate</button>';
+          }
+
+          const revokeBtn = !isRevoked
+            ? '<button type="button" onclick="revokeAppKey(&apos;' + (k.key_id || keyVal) + '&apos;)" class="text-neutral-400 hover:text-red-600 text-xs font-semibold cursor-pointer ml-1">Revoke</button>'
+            : '';
+          const deleteBtn = '<button type="button" onclick="promptDeleteAppKey(&apos;' + (k.key_id || keyVal) + '&apos;, &apos;' + (k.label || 'Default') + '&apos;)" class="text-neutral-400 hover:text-red-700 text-xs font-semibold cursor-pointer ml-1" title="Permanently delete key with password">Delete</button>';
 
           return '<tr class="hover:bg-neutral-50/80 transition-colors group ' + (isCurrentActive ? 'bg-neutral-50/60' : '') + '">' +
             '<td class="py-3 font-mono text-neutral-900">' +
@@ -6070,7 +6143,8 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
             '<td class="py-3 text-right">' +
               '<div class="flex items-center justify-end gap-2">' +
                 statusBtn +
-                '<button type="button" onclick="revokeAppKey(&apos;' + keyVal + '&apos;)" class="text-neutral-400 hover:text-red-600 text-xs font-semibold cursor-pointer ml-1">Revoke</button>' +
+                revokeBtn +
+                deleteBtn +
               '</div>' +
             '</td>' +
           '</tr>';
@@ -6080,16 +6154,94 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
       updateAllSuiteSnippets();
     }
 
+    let pendingDeleteKeyId = null;
+
+    function promptDeleteAppKey(keyId, label) {
+      pendingDeleteKeyId = keyId;
+      const modal = document.getElementById('deleteKeyModal');
+      const labelEl = document.getElementById('deleteKeyModalLabel');
+      const pwInput = document.getElementById('deleteKeyPassword');
+      const errEl = document.getElementById('deleteKeyError');
+      if (labelEl) labelEl.innerText = 'Target Key ID: ' + keyId + (label ? (' (' + label + ')') : '');
+      if (pwInput) pwInput.value = '';
+      if (errEl) { errEl.innerText = ''; errEl.classList.add('hidden'); }
+      if (modal) modal.classList.remove('hidden');
+      setTimeout(() => pwInput?.focus(), 100);
+    }
+
+    function closeDeleteKeyModal() {
+      pendingDeleteKeyId = null;
+      const modal = document.getElementById('deleteKeyModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function submitDeleteKeyWithPassword() {
+      if (!pendingDeleteKeyId) return;
+      const pwInput = document.getElementById('deleteKeyPassword');
+      const password = pwInput ? pwInput.value.trim() : '';
+      const errEl = document.getElementById('deleteKeyError');
+      const spinner = document.getElementById('deleteKeySpinner');
+      const submitBtn = document.getElementById('deleteKeySubmitBtn');
+
+      if (!password) {
+        if (errEl) { errEl.innerText = 'Please enter your account password.'; errEl.classList.remove('hidden'); }
+        return;
+      }
+
+      if (spinner) spinner.classList.remove('hidden');
+      if (submitBtn) submitBtn.disabled = true;
+      if (errEl) errEl.classList.add('hidden');
+
+      const token = getAuthToken();
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+
+      try {
+        const res = await fetch('/v1/keys/' + encodeURIComponent(pendingDeleteKeyId) + '/delete', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ password })
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Failed to delete API key. Check password.');
+        }
+
+        showAppToast('API key permanently deleted');
+        const saved = JSON.parse(localStorage.getItem('ultrademon_saved_plain_keys') || '{}');
+        delete saved[pendingDeleteKeyId];
+        localStorage.setItem('ultrademon_saved_plain_keys', JSON.stringify(saved));
+        if (localStorage.getItem('ultrademon_active_key') === pendingDeleteKeyId) {
+          localStorage.removeItem('ultrademon_active_key');
+        }
+
+        closeDeleteKeyModal();
+        await loadAppKeys();
+        await loadRealtimeKeyMetrics(true);
+      } catch (err) {
+        if (errEl) { errEl.innerText = err.message; errEl.classList.remove('hidden'); }
+        showAppToast(err.message, true);
+      } finally {
+        if (spinner) spinner.classList.add('hidden');
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    }
+
     async function revokeAppKey(key) {
       if (!confirm('Are you sure you want to revoke this API key?')) return;
       const token = getAuthToken();
       const headers = {};
       if (token) headers['Authorization'] = 'Bearer ' + token;
       try {
-        await fetch('/v1/keys/' + key, {
+        const res = await fetch('/v1/keys/' + encodeURIComponent(key), {
           method: 'DELETE',
           headers
         });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(data.error || 'Revoke failed');
+        }
         showAppToast('Key revoked successfully');
         const saved = JSON.parse(localStorage.getItem('ultrademon_saved_plain_keys') || '{}');
         delete saved[key];
@@ -6376,6 +6528,7 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
       if (e && e.preventDefault) e.preventDefault();
       const memoryType = document.getElementById('appMemType')?.value || 'fact';
       const containerTag = document.getElementById('appMemContainer')?.value.trim() || 'default';
+      const scale = document.getElementById('appMemScale')?.value || 'knowledge';
       const content = document.getElementById('appMemContent')?.value.trim();
       const alertBox = document.getElementById('alertStoreMemApp');
 
@@ -6385,7 +6538,7 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
         const res = await fetch('/v1/memory', {
           method: 'POST',
           headers: getAppAuthHeaders(),
-          body: JSON.stringify({ content, memory_type: memoryType, container_tag: containerTag })
+          body: JSON.stringify({ content, memory_type: memoryType, container_tag: containerTag, scale })
         });
         const data = await res.json();
         if (data.memory || data.memory_id || data.status === 'success') {
@@ -6393,12 +6546,12 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
           const timeMs = data.storage_time_ms ? (' · stored in ' + data.storage_time_ms + 'ms') : '';
           if (alertBox) {
             alertBox.className = 'p-3 rounded-xl bg-neutral-100 border border-neutral-300 text-neutral-950 font-num text-xs';
-            alertBox.innerText = 'Stored memory ID: ' + (mem.memory_id || 'saved') + timeMs;
+            alertBox.innerText = 'Stored memory ID: ' + (mem.memory_id || 'saved') + ' [' + (mem.scale || scale) + ']' + timeMs;
             alertBox.classList.remove('hidden');
           }
           document.getElementById('appMemContent').value = '';
           loadStoredMemories();
-          showAppToast('Memory stored into edge D1 FTS5' + timeMs);
+          showAppToast('Memory stored into ' + (mem.scale || scale) + ' scale' + timeMs);
         } else {
           throw new Error(data.error || 'Failed to store memory');
         }
@@ -6415,6 +6568,7 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
     async function handleAppQueryMemory(e) {
       if (e && e.preventDefault) e.preventDefault();
       const query = document.getElementById('appMemQuery')?.value.trim();
+      const scale = document.getElementById('appMemQueryScale')?.value || '';
       const resultsDiv = document.getElementById('appMemResults');
       const timer = document.getElementById('appRecallTimer');
 
@@ -6429,7 +6583,10 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
 
       const t0 = performance.now();
       try {
-        const res = await fetch('/v1/memory/recall?q=' + encodeURIComponent(query), {
+        let recallUrl = '/v1/memory/recall?q=' + encodeURIComponent(query);
+        if (scale) recallUrl += '&scale=' + encodeURIComponent(scale);
+
+        const res = await fetch(recallUrl, {
           headers: getAppAuthHeaders()
         });
         const data = await res.json();
@@ -6439,6 +6596,14 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
           timer.classList.remove('hidden');
         }
 
+        const scaleColorMap = {
+          ephemeral: 'bg-[#ecfdf5] text-emerald-950 border border-[#a7f3d0]',
+          entity: 'bg-[#f0f9ff] text-sky-950 border border-[#bae6fd]',
+          knowledge: 'bg-[#fffbeb] text-amber-950 border border-[#fde68a]',
+          cognitive: 'bg-[#faf5ff] text-purple-950 border border-[#e9d5ff]',
+          swarm: 'bg-[#fff1f2] text-rose-950 border border-[#fecdd3]',
+        };
+
         if (data.memories && data.memories.length > 0) {
           let html = '';
           if (data.context) {
@@ -6447,15 +6612,20 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
               '<pre class="whitespace-pre-wrap font-mono">' + data.context + '</pre>' +
             '</div>';
           }
-          html += data.memories.map(m =>
-            '<div class="p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-xs">' +
+          html += data.memories.map(m => {
+            const sc = m.scale || 'knowledge';
+            const scCls = scaleColorMap[sc] || 'bg-neutral-100 text-neutral-800 border border-neutral-200';
+            return '<div class="p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-xs">' +
               '<div class="flex items-center justify-between text-[10px] text-neutral-500 font-num mb-1">' +
-                '<span class="uppercase font-bold text-neutral-900">' + m.memory_type + '</span>' +
+                '<div class="flex items-center gap-1.5">' +
+                  '<span class="uppercase font-bold text-neutral-900">' + m.memory_type + '</span>' +
+                  '<span class="px-2 py-0.2 rounded text-[9px] font-mono font-bold uppercase ' + scCls + '">' + sc + '</span>' +
+                '</div>' +
                 '<span>tag: ' + m.container_tag + ' · score: ' + (m.score || 1.0).toFixed(2) + '</span>' +
               '</div>' +
               '<p class="text-neutral-900 font-medium">' + m.content + '</p>' +
-            '</div>'
-          ).join('');
+            '</div>';
+          }).join('');
           if (resultsDiv) resultsDiv.innerHTML = html;
         } else {
           if (resultsDiv) resultsDiv.innerHTML = '<div class="text-center py-4 text-neutral-400 text-xs">No memories matching query.</div>';
@@ -6471,21 +6641,32 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
         const data = await res.json();
         const tbody = document.getElementById('appMemoriesTableBody');
         const metric = document.getElementById('memoryTotalNodesDisplay') || document.getElementById('metricMemories');
+        const scaleColorMap = {
+          ephemeral: 'bg-[#ecfdf5] text-emerald-950 border border-[#a7f3d0]',
+          entity: 'bg-[#f0f9ff] text-sky-950 border border-[#bae6fd]',
+          knowledge: 'bg-[#fffbeb] text-amber-950 border border-[#fde68a]',
+          cognitive: 'bg-[#faf5ff] text-purple-950 border border-[#e9d5ff]',
+          swarm: 'bg-[#fff1f2] text-rose-950 border border-[#fecdd3]',
+        };
+
         if (data.memories && data.memories.length > 0) {
           if (metric) metric.innerText = data.total || data.memories.length;
           if (tbody) {
-            tbody.innerHTML = data.memories.map(m =>
-              '<tr class="hover:bg-neutral-50">' +
+            tbody.innerHTML = data.memories.map(m => {
+              const sc = m.scale || 'knowledge';
+              const scCls = scaleColorMap[sc] || 'bg-neutral-100 text-neutral-800 border border-neutral-200';
+              return '<tr class="hover:bg-neutral-50">' +
                 '<td class="py-2.5 font-mono text-neutral-900">' + m.memory_id + '</td>' +
+                '<td class="py-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase ' + scCls + '">' + sc + '</span></td>' +
                 '<td class="py-2.5 font-mono text-neutral-600">' + m.container_tag + '</td>' +
                 '<td class="py-2.5"><span class="px-1.5 py-0.5 rounded bg-neutral-100 text-[10px] uppercase font-bold">' + m.memory_type + '</span></td>' +
                 '<td class="py-2.5 truncate max-w-xs text-neutral-900 font-sans">' + (m.title || m.content) + '</td>' +
                 '<td class="py-2.5 text-right"><button type="button" onclick="deleteAppMem(&apos;' + m.memory_id + '&apos;)" class="text-neutral-400 hover:text-black cursor-pointer">Delete</button></td>' +
-              '</tr>'
-            ).join('');
+              '</tr>';
+            }).join('');
           }
         } else {
-          if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-neutral-400">No memories stored yet.</td></tr>';
+          if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="py-4 text-center text-neutral-400">No memories stored yet.</td></tr>';
         }
       } catch {}
     }
@@ -7263,6 +7444,9 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
     window.copyToClipboard = copyToClipboard;
     window.copyActiveKey = copyActiveKey;
     window.revokeAppKey = revokeAppKey;
+    window.promptDeleteAppKey = promptDeleteAppKey;
+    window.closeDeleteKeyModal = closeDeleteKeyModal;
+    window.submitDeleteKeyWithPassword = submitDeleteKeyWithPassword;
     window.handleAppStoreMemory = handleAppStoreMemory;
     window.handleAppQueryMemory = handleAppQueryMemory;
     window.loadStoredMemories = loadStoredMemories;

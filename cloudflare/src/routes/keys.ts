@@ -2,7 +2,7 @@
 
 import { Hono } from 'hono';
 import type { Env } from '../types';
-import { createApiKey, listUserKeys, revokeApiKey, getUsage, getApiKeyMetrics, hashKey } from '../lib/api-keys';
+import { createApiKey, listUserKeys, revokeApiKey, deleteApiKeyPermanently, getUsage, getApiKeyMetrics, hashKey } from '../lib/api-keys';
 import { authMiddleware, getSupabaseUser } from '../lib/auth';
 
 export const keysRouter = new Hono<{ Bindings: Env }>();
@@ -91,10 +91,32 @@ keysRouter.delete('/:key', async (c) => {
 
   const key = c.req.param('key');
   try {
-    await revokeApiKey(c.env, key);
-    return c.json({ message: 'Key revoked successfully' });
+    const result = await revokeApiKey(c.env, key, sbUser.id);
+    return c.json(result);
   } catch (e: unknown) {
     return c.json({ error: (e as Error).message }, 404);
+  }
+});
+
+// ── POST /v1/keys/:key/delete — Permanent delete with password confirmation ──
+keysRouter.post('/:key/delete', async (c) => {
+  const sbUser = await getSupabaseUser(c.env, c.req.header('authorization'));
+  if (!sbUser) {
+    return c.json({
+      error: 'Authentication required. Please sign in to delete API keys.',
+      requires_auth: true,
+    }, 401);
+  }
+
+  const key = c.req.param('key');
+  const body = await c.req.json<{ password?: string }>().catch(() => ({} as { password?: string }));
+  try {
+    const result = await deleteApiKeyPermanently(c.env, key, sbUser.id, body.password);
+    return c.json(result);
+  } catch (e: unknown) {
+    const msg = (e as Error).message;
+    const status = msg.includes('Incorrect') || msg.includes('required') ? 401 : 400;
+    return c.json({ error: msg }, status);
   }
 });
 

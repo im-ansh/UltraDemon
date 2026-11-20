@@ -262,21 +262,98 @@ export async function validateApiKey(
 
 // ── Revoke Key ───────────────────────────────────────────────────────────────
 
-export async function revokeApiKey(env: Env, plainKey: string): Promise<void> {
-  KEY_ISOLATE_CACHE.delete(plainKey);
-  const hashedKey = await hashKey(plainKey, env.ULTRASEARCH_SECRET);
+export async function revokeApiKey(env: Env, keyIdentifier: string, userId?: string): Promise<{ success: boolean; message: string }> {
+  KEY_ISOLATE_CACHE.delete(keyIdentifier);
+  const hashedKey = await hashKey(keyIdentifier, env.ULTRASEARCH_SECRET);
+
+  let query = 'UPDATE api_keys SET revoked = 1 WHERE (key_id = ? OR hashed_key = ?)';
+  const binds: (string | number)[] = [keyIdentifier, hashedKey];
+  if (userId) {
+    query += ' AND (user_id = ? OR ? = "admin")';
+    binds.push(userId, userId);
+  }
 
   await env.DB
-    .prepare('UPDATE api_keys SET revoked = 1 WHERE hashed_key = ?')
-    .bind(hashedKey)
+    .prepare(query)
+    .bind(...binds)
     .run();
 
   // Invalidate KV cache immediately
   if (env.KEY_CACHE && typeof env.KEY_CACHE.delete === 'function') {
     try {
       await env.KEY_CACHE.delete(`key:${hashedKey}`);
+      await env.KEY_CACHE.delete(`key:${keyIdentifier}`);
     } catch {}
   }
+
+  return { success: true, message: 'API key revoked successfully' };
+}
+
+// ── Delete Key Permanently (Requires Password Confirmation) ───────────────────
+
+export async function deleteApiKeyPermanently(
+  env: Env,
+  keyIdentifier: string,
+  userId: string,
+  password?: string
+): Promise<{ success: boolean; message: string }> {
+  if (!password || password.trim().length === 0) {
+    throw new Error('Account password is required to permanently delete an API key');
+  }
+
+  // Find user to verify password
+  const user = await env.DB.prepare('SELECT user_id, email, password_hash FROM users WHERE user_id = ?')
+    .bind(userId)
+    .first<{ user_id: string; email: string; password_hash: string }>();
+
+  let verified = false;
+
+  if (user && user.email) {
+    // Check D1 password hash
+    const enc = new TextEncoder();
+    const data = enc.encode(`ultrademon_edge_salt_${user.email}:${password}`);
+    const hashBuf = await crypto.subtle.digest('SHA-256', data);
+    const expectedHash = Array.from(new Uint8Array(hashBuf))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+
+    if (user.password_hash === expectedHash) {
+      verified = true;
+    }
+  }
+
+  // If not verified via D1, try Supabase if available
+  if (!verified && env.SUPABASE_URL && env.SUPABASE_ANON_KEY && user?.email) {
+    try {
+      const sbRes = await fetch(`${env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+        method: 'POST',
+        headers: { 'apikey': env.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email, password }),
+      });
+      if (sbRes.ok) verified = true;
+    } catch {}
+  }
+
+  if (!verified) {
+    throw new Error('Incorrect account password. API key deletion cancelled.');
+  }
+
+  KEY_ISOLATE_CACHE.delete(keyIdentifier);
+  const hashedKey = await hashKey(keyIdentifier, env.ULTRASEARCH_SECRET);
+
+  await env.DB
+    .prepare('DELETE FROM api_keys WHERE (key_id = ? OR hashed_key = ?) AND user_id = ?')
+    .bind(keyIdentifier, hashedKey, userId)
+    .run();
+
+  if (env.KEY_CACHE && typeof env.KEY_CACHE.delete === 'function') {
+    try {
+      await env.KEY_CACHE.delete(`key:${hashedKey}`);
+      await env.KEY_CACHE.delete(`key:${keyIdentifier}`);
+    } catch {}
+  }
+
+  return { success: true, message: 'API key permanently deleted from database and edge cache' };
 }
 
 // ── List Keys for User ────────────────────────────────────────────────────────

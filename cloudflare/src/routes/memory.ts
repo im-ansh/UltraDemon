@@ -14,6 +14,7 @@ import {
   clearContainerMemories,
   ingestFileMemory,
   getMemoryStats,
+  getScaleMetrics,
 } from '../lib/memory-engine';
 
 export const memoryRouter = new Hono<{ Bindings: Env }>();
@@ -82,6 +83,7 @@ async function handleStoreMemory(c: any) {
         ? (obj.memory_type || obj.type) 
         : 'fact') as MemoryType;
       const sessionId = typeof obj.session_id === 'string' ? obj.session_id : (typeof raw.session_id === 'string' ? raw.session_id : '');
+      const scale = typeof obj.scale === 'string' ? obj.scale : (typeof raw.scale === 'string' ? raw.scale : (typeof obj.category === 'string' ? obj.category : undefined));
       const metadata = (typeof obj.metadata === 'object' && obj.metadata !== null) ? (obj.metadata as Record<string, unknown>) : {};
 
       const memory = await storeMemory(c.env, {
@@ -91,6 +93,7 @@ async function handleStoreMemory(c: any) {
         containerTag: extractContainerTag(obj, container),
         sessionId,
         memoryType:   memType,
+        scale,
         metadata,
         ctx:          getSafeExecutionCtx(c),
       });
@@ -122,6 +125,7 @@ async function handleStoreMemory(c: any) {
   const memoryType   = (['fact', 'preference', 'entity', 'document', 'file', 'conversation', 'rule', 'instruction'].includes(rawType) 
     ? rawType 
     : 'fact') as MemoryType;
+  const scale        = typeof raw.scale === 'string' ? raw.scale : (typeof raw.category === 'string' ? raw.category : undefined);
   const title        = typeof raw.title === 'string' && raw.title.trim() ? raw.title.trim() : undefined;
   const metadata     = typeof raw.metadata === 'object' && raw.metadata !== null ? raw.metadata : {};
 
@@ -133,6 +137,7 @@ async function handleStoreMemory(c: any) {
       containerTag,
       sessionId,
       memoryType,
+      scale,
       metadata,
       ctx:          getSafeExecutionCtx(c),
     });
@@ -163,6 +168,7 @@ async function handleQueryMemory(c: any) {
   let containerTag = c.req.query('container_tag') || c.req.query('tag') || c.req.query('agent_id');
   let sessionId = c.req.query('session_id') || c.req.query('sessionId');
   let memoryType = c.req.query('memory_type') || c.req.query('type');
+  let scale = c.req.query('scale') || c.req.query('category');
   let limit = parseInt(c.req.query('limit') || c.req.query('top_k') || '10', 10);
   const format = c.req.query('format') || 'json';
 
@@ -175,6 +181,7 @@ async function handleQueryMemory(c: any) {
     }
     if (body.session_id || body.sessionId) sessionId = String(body.session_id || body.sessionId);
     if (body.memory_type || body.type) memoryType = String(body.memory_type || body.type);
+    if (body.scale || body.category) scale = String(body.scale || body.category);
     if (body.limit || body.top_k) limit = parseInt(String(body.limit || body.top_k), 10);
   } else {
     // Read query from GET params
@@ -192,6 +199,7 @@ async function handleQueryMemory(c: any) {
       containerTag: containerTag || undefined,
       sessionId:    sessionId || undefined,
       memoryType:   memoryType || undefined,
+      scale:        scale || undefined,
       limit:        isNaN(limit) ? 10 : limit,
       ctx:          getSafeExecutionCtx(c),
     });
@@ -221,11 +229,19 @@ memoryRouter.get('/recall', handleQueryMemory);
 memoryRouter.get('/search', handleQueryMemory);
 memoryRouter.get('/query', handleQueryMemory);
 
+// ── GET /v1/memory/scales — UltraMemory Scales Telemetry & Categories ──────────
+memoryRouter.get('/scales', async (c) => {
+  const record = c.get('keyRecord');
+  const stats = await getScaleMetrics(c.env, record.user_id);
+  return c.json(stats);
+});
+
 // ── GET /v1/memory/context & POST /v1/memory/context — Direct LLM Prompt Context
 async function handleContextMemory(c: any) {
   const record = c.get('keyRecord');
   let query = '';
   let containerTag = c.req.query('container_tag') || c.req.query('tag') || c.req.query('agent_id');
+  let scale = c.req.query('scale') || c.req.query('category');
   let limit = parseInt(c.req.query('limit') || c.req.query('top_k') || '5', 10);
 
   if (c.req.method === 'POST') {
@@ -234,6 +250,7 @@ async function handleContextMemory(c: any) {
     if (body.container_tag || body.tag || body.agent_id) {
       containerTag = String(body.container_tag || body.tag || body.agent_id);
     }
+    if (body.scale || body.category) scale = String(body.scale || body.category);
     if (body.limit || body.top_k) limit = parseInt(String(body.limit || body.top_k), 10);
   } else {
     query = String(c.req.query('q') || c.req.query('query') || c.req.query('prompt') || '').trim();
@@ -247,6 +264,7 @@ async function handleContextMemory(c: any) {
     userId: record.user_id,
     query,
     containerTag: containerTag || undefined,
+    scale: scale || undefined,
     limit: isNaN(limit) ? 5 : limit,
     ctx: getSafeExecutionCtx(c),
   });

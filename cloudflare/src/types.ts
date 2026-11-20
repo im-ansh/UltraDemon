@@ -78,6 +78,7 @@ export interface ApiKeyRecord {
 // ── UltraMemory Types ─────────────────────────────────────────────────────────
 
 export type MemoryType = 'fact' | 'preference' | 'entity' | 'document' | 'file' | 'conversation' | 'rule' | 'instruction';
+export type MemoryScale = 'ephemeral' | 'entity' | 'knowledge' | 'cognitive' | 'swarm';
 
 export interface MemoryRecord {
   memory_id: string;
@@ -85,6 +86,7 @@ export interface MemoryRecord {
   container_tag: string;
   session_id: string;
   memory_type: MemoryType;
+  scale?: MemoryScale | string;
   title: string;
   content: string;
   metadata_json: string;
@@ -101,6 +103,7 @@ export interface MemoryQueryResult {
   container_tag: string;
   session_id: string;
   memory_type: MemoryType;
+  scale?: MemoryScale | string;
   title: string;
   content: string;
   metadata: Record<string, unknown>;
@@ -115,6 +118,7 @@ export interface MemoryQueryResponse {
   total: number;
   retrieval_time_ms: number;
   container_tag?: string;
+  scale?: MemoryScale | string;
   context?: string;
   cache_tier?: 'RAM' | 'KV' | 'D1';
 }
