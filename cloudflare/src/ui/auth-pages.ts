@@ -252,6 +252,12 @@ export function renderAuthPage(initialMode: 'login' | 'signup', origin: string, 
 
     ${CUSTOM_CURSORS_CSS}
   </style>
+  
+  <!-- Vercel Web Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body class="min-h-screen bg-[#f7f7f7] text-neutral-950 flex flex-col justify-between selection:bg-black selection:text-white">
 
@@ -806,6 +812,12 @@ export function renderAuthCallbackPage(origin: string): string {
     }
     ${CUSTOM_CURSORS_CSS}
   </style>
+  
+  <!-- Vercel Web Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body class="min-h-screen bg-[#f7f7f7] text-neutral-950 flex flex-col justify-between selection:bg-black selection:text-white">
 
