@@ -6,6 +6,7 @@ import { Hono } from 'hono';
 import type { Context } from 'hono';
 import type { Env, ApiKeyRecord } from '../types';
 import { validateApiKey, incrementUsage } from '../lib/api-keys';
+import { getSafeExecutionCtx } from '../lib/auth';
 
 export const analyticsRouter = new Hono<{ Bindings: Env }>();
 
@@ -431,7 +432,7 @@ async function handleCapture(c: Context<{ Bindings: Env }>) {
 
   // Real-time API key metrics counter increment
   const hashedKey = keyRecord ? keyRecord.hashed_key : 'sandbox_public_guest_hash';
-  const ctx = c.executionCtx as { waitUntil?: (p: Promise<unknown>) => void } | undefined;
+  const ctx = getSafeExecutionCtx(c);
   if (ctx && typeof ctx.waitUntil === 'function') {
     ctx.waitUntil(
       incrementUsage(c.env, hashedKey, {

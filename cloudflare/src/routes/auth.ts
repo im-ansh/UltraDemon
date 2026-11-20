@@ -6,6 +6,7 @@
 import { Hono } from 'hono';
 import type { Env } from '../types';
 import { createApiKey, listUserKeys } from '../lib/api-keys';
+import { getSafeExecutionCtx } from '../lib/auth';
 
 export const authRouter = new Hono<{ Bindings: Env }>();
 
@@ -190,7 +191,7 @@ authRouter.post('/signup', async (c) => {
 
   // Optional background sync to Supabase without blocking user flow
   if (c.env.SUPABASE_URL && c.env.SUPABASE_ANON_KEY) {
-    const ctx = c.executionCtx as { waitUntil?: (p: Promise<unknown>) => void } | undefined;
+    const ctx = getSafeExecutionCtx(c);
     if (ctx && typeof ctx.waitUntil === 'function') {
       ctx.waitUntil(
         fetch(`${c.env.SUPABASE_URL}/auth/v1/signup`, {
@@ -705,7 +706,7 @@ authRouter.post('/signout', async (c) => {
   if (authHeader.toLowerCase().startsWith('bearer ')) {
     const token = authHeader.slice(7).trim();
     if (token.startsWith('edge_sess_')) {
-      const ctx = c.executionCtx as { waitUntil?: (p: Promise<unknown>) => void } | undefined;
+      const ctx = getSafeExecutionCtx(c);
       if (ctx && typeof ctx.waitUntil === 'function') {
         ctx.waitUntil(safeDeleteKeyCache(c.env, `sess:${token}`));
       } else {

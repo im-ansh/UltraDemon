@@ -3,7 +3,7 @@
 
 import { Hono } from 'hono';
 import type { Env } from '../types';
-import { authMiddleware } from '../lib/auth';
+import { authMiddleware, getSafeExecutionCtx } from '../lib/auth';
 import { runSearch, asyncIngestSearchResults } from '../lib/search-engine';
 import { getCachedSearch, setCachedSearch } from '../lib/cache';
 import { getPlanSpec } from '../lib/api-keys';
@@ -65,7 +65,7 @@ searchRouter.post('/', async (c) => {
   c.header('Cache-Control', 'public, max-age=180, s-maxage=300, stale-while-revalidate=600');
 
   // Cache the result (non-blocking)
-  const ctx = c.executionCtx as { waitUntil?: (p: Promise<unknown>) => void } | undefined;
+  const ctx = getSafeExecutionCtx(c);
   if (useCache && ctx && typeof ctx.waitUntil === 'function') {
     ctx.waitUntil(
       setCachedSearch(c.env, body.query, cacheParams, result)
@@ -159,7 +159,7 @@ searchRouter.get('/', async (c) => {
   c.header('Server-Timing', `engine;dur=${tookMs};desc="D1 FTS5 BM25"`);
   c.header('Cache-Control', 'public, max-age=180, s-maxage=300, stale-while-revalidate=600');
 
-  const ctx = c.executionCtx as { waitUntil?: (p: Promise<unknown>) => void } | undefined;
+  const ctx = getSafeExecutionCtx(c);
   if (ctx && typeof ctx.waitUntil === 'function') {
     ctx.waitUntil(setCachedSearch(c.env, query, cacheParams, result));
   }

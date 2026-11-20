@@ -4,7 +4,7 @@
 
 import { Hono } from 'hono';
 import type { Env, MemoryType, MemoryRecord } from '../types';
-import { authMiddleware } from '../lib/auth';
+import { authMiddleware, getSafeExecutionCtx } from '../lib/auth';
 import {
   storeMemory,
   queryMemories,
@@ -92,7 +92,7 @@ async function handleStoreMemory(c: any) {
         sessionId,
         memoryType:   memType,
         metadata,
-        ctx:          c.executionCtx,
+        ctx:          getSafeExecutionCtx(c),
       });
       stored.push(memory);
     }
@@ -134,7 +134,7 @@ async function handleStoreMemory(c: any) {
       sessionId,
       memoryType,
       metadata,
-      ctx:          c.executionCtx,
+      ctx:          getSafeExecutionCtx(c),
     });
 
     const duration = Math.round(performance.now() - t0);
@@ -193,7 +193,7 @@ async function handleQueryMemory(c: any) {
       sessionId:    sessionId || undefined,
       memoryType:   memoryType || undefined,
       limit:        isNaN(limit) ? 10 : limit,
-      ctx:          c.executionCtx,
+      ctx:          getSafeExecutionCtx(c),
     });
 
     const cacheTier = response.cache_tier || 'D1';
@@ -248,7 +248,7 @@ async function handleContextMemory(c: any) {
     query,
     containerTag: containerTag || undefined,
     limit: isNaN(limit) ? 5 : limit,
-    ctx: c.executionCtx,
+    ctx: getSafeExecutionCtx(c),
   });
 
   const cacheTier = response.cache_tier || 'D1';
@@ -379,7 +379,7 @@ memoryRouter.post('/file', async (c) => {
       fileType:     body.file_type,
       containerTag: body.container_tag || body.tag || 'documents',
       metadata:     body.metadata,
-      ctx:          c.executionCtx,
+      ctx:          getSafeExecutionCtx(c),
     });
 
     return c.json({

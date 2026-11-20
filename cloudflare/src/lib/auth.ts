@@ -14,6 +14,14 @@ declare module 'hono' {
   }
 }
 
+export function getSafeExecutionCtx(c: unknown): { waitUntil?: (p: Promise<unknown>) => void } | undefined {
+  try {
+    return (c as { executionCtx?: { waitUntil?: (p: Promise<unknown>) => void } }).executionCtx;
+  } catch {
+    return undefined;
+  }
+}
+
 export async function authMiddleware(c: Context<{ Bindings: Env }>, next: Next) {
   const authStart = performance.now();
 
@@ -115,7 +123,8 @@ export async function authMiddleware(c: Context<{ Bindings: Env }>, next: Next) 
   } else {
     // Case 4: Standard API key validation
     try {
-      record = await validateApiKey(c.env, plainKey, c.executionCtx as { waitUntil?: (p: Promise<unknown>) => void });
+      const safeCtx = getSafeExecutionCtx(c);
+      record = await validateApiKey(c.env, plainKey, safeCtx);
     } catch (e: unknown) {
       return c.json({ error: (e as Error).message }, 403);
     }
@@ -178,7 +187,7 @@ export async function authMiddleware(c: Context<{ Bindings: Env }>, next: Next) 
 
   // Track usage in D1 (non-blocking — fire and forget)
   const latencyMs = Date.now() - startTime;
-  const ctx = c.executionCtx as { waitUntil?: (p: Promise<unknown>) => void } | undefined;
+  const ctx = getSafeExecutionCtx(c);
   if (ctx && typeof ctx.waitUntil === 'function') {
     ctx.waitUntil(
       incrementUsage(c.env, record.hashed_key, {
