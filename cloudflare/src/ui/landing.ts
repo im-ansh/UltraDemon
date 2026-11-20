@@ -6,6 +6,7 @@
 import { MICHELANGELUS_BOLD_ITALIC_WOFF2_B64, MICHELANGELUS_REGULAR_WOFF2_B64, NB_INTERNATIONAL_PRO_WOFF2_B64, NB_INTERNATIONAL_PRO_LIGHT_WOFF2_B64 } from './font-data';
 import { BLUEPRINT_CIRCUIT_SVG, VINTAGE_TERMINAL_SVG, MATH_MANUSCRIPT_SVG, TECHNICAL_SCHEMATIC_SVG } from './science-assets';
 import { CUSTOM_CURSORS_CSS } from './cursors';
+import { VERCEL_ANALYTICS_SCRIPT } from './vercel-analytics';
 import { ULTRADEMON_LOGO_URI, ULTRADEMON_FAVICON_URI } from './logo-data';
 import { FOUNDER_FONT_CSS } from './founder-font';
 
@@ -975,6 +976,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     };
     window.closeDemoModal = function() {};
   </script>
+  ${VERCEL_ANALYTICS_SCRIPT}
 </head>
 <body class="min-h-screen bg-white text-neutral-900 selection:bg-neutral-900 selection:text-white flex flex-col justify-between">
 

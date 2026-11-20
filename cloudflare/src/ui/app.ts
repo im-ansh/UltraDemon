@@ -5,6 +5,7 @@
 
 import { MICHELANGELUS_BOLD_ITALIC_WOFF2_B64, MICHELANGELUS_REGULAR_WOFF2_B64, NB_INTERNATIONAL_PRO_WOFF2_B64, NB_INTERNATIONAL_PRO_LIGHT_WOFF2_B64 } from './font-data';
 import { CUSTOM_CURSORS_CSS } from './cursors';
+import { VERCEL_ANALYTICS_SCRIPT } from './vercel-analytics';
 import { ULTRADEMON_LOGO_URI, ULTRADEMON_FAVICON_URI } from './logo-data';
 
 export function renderAppDashboard(origin: string, supabaseUrl: string, supabaseAnonKey: string, initialView: string = 'overview'): string {
@@ -1176,6 +1177,7 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       }
     });
   </script>
+  ${VERCEL_ANALYTICS_SCRIPT}
 </head>
 <body class="min-h-screen bg-white text-neutral-950 flex flex-col md:flex-row antialiased selection:bg-black selection:text-white">
 
