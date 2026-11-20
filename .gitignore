@@ -4,3 +4,4 @@ node_modules/
 dist/
 .wrangler/
 .npmrc
+worker-configuration.d.ts

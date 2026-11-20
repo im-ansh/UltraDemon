@@ -975,6 +975,12 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     };
     window.closeDemoModal = function() {};
   </script>
+  
+  <!-- Vercel Web Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body class="min-h-screen bg-white text-neutral-900 selection:bg-neutral-900 selection:text-white flex flex-col justify-between">
 

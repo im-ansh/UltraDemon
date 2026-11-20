@@ -1176,6 +1176,12 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       }
     });
   </script>
+  
+  <!-- Vercel Web Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body class="min-h-screen bg-white text-neutral-950 flex flex-col md:flex-row antialiased selection:bg-black selection:text-white">
 
