@@ -277,6 +277,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
   }
   </script>
   <link rel="icon" type="image/png" href="${ULTRADEMON_FAVICON_URI}">
+  ${VERCEL_ANALYTICS_SCRIPT}
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -631,97 +632,6 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       }
     }
 
-
-    /* Motion Design Tokens (from motion-design skill) */
-    :root {
-      --dur-1: 120ms;
-      --dur-2: 180ms;
-      --dur-3: 240ms;
-      --dur-4: 300ms;
-      --dur-5: 500ms;
-      --dur-illustrative: 600ms;
-
-      --ease-out-quad: cubic-bezier(.25, .46, .45, .94);
-      --ease-out-cubic: cubic-bezier(.215, .61, .355, 1);
-      --ease-out-quart: cubic-bezier(.165, .84, .44, 1);
-      --ease-out-quint: cubic-bezier(.23, 1, .32, 1);
-      --ease-out-expo: cubic-bezier(.19, 1, .22, 1);
-
-      --ease-in-out-cubic: cubic-bezier(.645, .045, .355, 1);
-      --ease-in-out-quart: cubic-bezier(.77, 0, .175, 1);
-    }
-
-    /* Scroll Entrance Motion (Progressive Disclosure) */
-    .motion-reveal {
-      opacity: 0;
-      transform: translateY(16px);
-      transition: opacity 450ms var(--ease-out-quart), transform 450ms var(--ease-out-quart);
-      will-change: opacity, transform;
-    }
-    .motion-reveal.motion-revealed {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .motion-delay-1 { transition-delay: 60ms; }
-    .motion-delay-2 { transition-delay: 120ms; }
-    .motion-delay-3 { transition-delay: 180ms; }
-    .motion-delay-4 { transition-delay: 240ms; }
-    .motion-delay-5 { transition-delay: 300ms; }
-
-    /* Interactive Card Motion Feedback */
-    .motion-card {
-      transition: transform var(--dur-2) var(--ease-out-quart), box-shadow var(--dur-3) var(--ease-out-quart), border-color var(--dur-2) ease;
-      will-change: transform, box-shadow;
-    }
-    @media (hover: hover) {
-      .motion-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
-        border-color: rgba(0, 0, 0, 0.2);
-      }
-    }
-
-    /* Button Press Micro-interaction (Snappy direct feedback) */
-    button, a[role="button"], .btn-interactive {
-      transition: transform var(--dur-1) var(--ease-out-quad), background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow var(--dur-2) var(--ease-out-quart);
-    }
-    button:active, a[role="button"]:active {
-      transform: scale(0.975);
-    }
-
-    /* Modal Animation */
-    #authModal:not(.hidden) > div {
-      animation: modalEnter var(--dur-3) var(--ease-out-quart);
-    }
-    @keyframes modalEnter {
-      from {
-        opacity: 0;
-        transform: scale(0.96) translateY(-8px);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
-
-    /* Accessibility: Universal Reduced Motion Respect */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-      }
-      .motion-reveal {
-        opacity: 1 !important;
-        transform: none !important;
-        transition: none !important;
-      }
-      #authModal:not(.hidden) > div {
-        animation: none !important;
-      }
-    }
-
   </style>
 
   <!-- Early-Bound Bulletproof Handlers (Available Millisecond 0) -->
@@ -886,33 +796,9 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         }, 200);
       } catch (error) {
         if (err) {
-          err.innerHTML = '';
+          err.innerText = error.message || 'Authentication error';
           err.classList.remove('hidden');
-
-          var refId = 'UD-AUTH-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-          var isInternal = error.message && (error.message.includes('Internal server error') || error.message.includes('fetch') || error.message.includes('network') || error.message.includes('Failed'));
-          var userMessage = isInternal
-            ? 'Unable to connect to sovereign edge authentication service. Please retry or continue in demo mode.'
-            : (error.message || 'Authentication error');
-
-          var msgDiv = document.createElement('div');
-          msgDiv.className = 'font-semibold text-red-600 mb-1';
-          msgDiv.innerText = userMessage;
-          err.appendChild(msgDiv);
-
-          var refDiv = document.createElement('div');
-          refDiv.className = 'text-[10px] text-neutral-400 font-mono mb-2';
-          refDiv.innerText = 'Support Identifier: ' + refId;
-          err.appendChild(refDiv);
-
-          if (isInternal) {
-            var retryBtn = document.createElement('button');
-            retryBtn.type = 'button';
-            retryBtn.className = 'px-3 py-1 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-md text-[11px] font-sans font-medium mr-2 cursor-pointer transition';
-            retryBtn.innerText = 'Retry Connection';
-            retryBtn.onclick = function() { window.handleAuthModalSubmit(); };
-            err.appendChild(retryBtn);
-          } else if (error.message && (error.message.includes('switch to Create Account') || error.message.includes('Incorrect password') || error.message.includes('not found') || error.message.includes('password'))) {
+          if (error.message && (error.message.includes('switch to Create Account') || error.message.includes('Incorrect password') || error.message.includes('not found') || error.message.includes('password'))) {
             var switchBtn = document.createElement('button');
             switchBtn.type = 'button';
             switchBtn.className = 'block mt-2 underline font-semibold text-neutral-900 cursor-pointer';
@@ -936,10 +822,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       if (btn) { btn.disabled = true; btn.innerText = 'Initializing demo workspace...'; }
       try {
         var plan = window.selectedModalPlan || 'free';
-        var edgeBase = (window.location.hostname.includes('ultrademon.site') && !window.location.hostname.includes('workers.dev'))
-          ? 'https://ultrasearch-api.aaronvanoss.workers.dev'
-          : '';
-        var res = await fetch(edgeBase + '/v1/auth/anonymous', {
+        var res = await fetch('/v1/auth/anonymous', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ plan: plan })
@@ -976,7 +859,6 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     };
     window.closeDemoModal = function() {};
   </script>
-  ${VERCEL_ANALYTICS_SCRIPT}
 </head>
 <body class="min-h-screen bg-white text-neutral-900 selection:bg-neutral-900 selection:text-white flex flex-col justify-between">
 
@@ -1241,7 +1123,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     </section>
 
     <!-- SECTION 4: TRUST / BUILT-FOR STRIP (Quiet, Editorial) -->
-    <section class="py-14 border-y border-neutral-100 bg-[#fbfbfd] motion-reveal">
+    <section class="py-14 border-y border-neutral-100 bg-[#fbfbfd]">
       <div class="max-w-6xl mx-auto px-4 sm:px-6">
         <div class="text-xs uppercase tracking-wider font-mono text-neutral-400 mb-6 font-semibold">Trusted edge fabric for autonomous agents and developer swarms</div>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 items-center">
@@ -1281,7 +1163,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     </section>
 
     <!-- SECTION 5: CORE VALUE PROPOSITION (The Architecture Contrast) -->
-    <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto motion-reveal" id="value">
+    <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto" id="value">
       <div class="text-left max-w-2xl mb-12">
         <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950">
           Engineered for agents that refuse third-party latency.
@@ -1355,7 +1237,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           
           <!-- Card 1: Sub-15ms Anycast Memory Recall -->
-          <div class="devin-card motion-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between motion-reveal">
+          <div class="devin-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
             <div>
               <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-5">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
@@ -1373,7 +1255,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
           </div>
 
           <!-- Card 2: Edge Web Search Studio -->
-          <div class="devin-card motion-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between motion-reveal">
+          <div class="devin-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
             <div>
               <div class="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 mb-5">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -1466,7 +1348,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
       <div class="space-y-24">
         
         <!-- Stage 01: Ingest & Index (Text Left, Image Right) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center motion-reveal">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div class="lg:col-span-5 space-y-4">
             <span class="font-mono text-sm font-semibold text-neutral-400">01</span>
             <h3 class="text-2xl sm:text-3xl font-bold text-neutral-950 tracking-tight">Ingest &amp; Index</h3>
@@ -1499,7 +1381,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
 
         <!-- Stage 02: Search & Crawl (Image Left, Text Right) -->
-        <div id="search-stage-card" class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center motion-reveal">
+        <div id="search-stage-card" class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div class="lg:col-span-7 order-2 lg:order-1">
             <div class="window-frame">
               <div class="h-8 px-3.5 bg-[#f8f8fa] border-b border-neutral-200/80 flex items-center justify-between select-none">
@@ -1565,7 +1447,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
         </div>
 
         <!-- Stage 04: Persist & Scale (Image Left, Text Right) -->
-        <div id="search-stage-card" class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center motion-reveal">
+        <div id="search-stage-card" class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div class="lg:col-span-7 order-2 lg:order-1">
             <div class="window-frame">
               <div class="h-8 px-3.5 bg-[#f8f8fa] border-b border-neutral-200/80 flex items-center justify-between select-none">
@@ -1601,7 +1483,7 @@ export function renderLandingPage(origin: string, supabaseUrl: string, supabaseA
     </section>
 
     <!-- SECTION 7.5: ULTRAMEMORY SCALES — PARTITIONED CATEGORICAL MEMORY -->
-    <section class="py-24 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100 motion-reveal" id="scales">
+    <section class="py-24 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="scales">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div class="max-w-2xl text-left">
           <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-neutral-100 border border-neutral-200/80 text-[11px] font-mono text-neutral-800 font-semibold mb-3">
@@ -1745,7 +1627,7 @@ curl "https://ultrademon.site/v1/memory/recall?q=user+theme&scale=entity" \
     </section>
 
     <!-- SECTION 8: USE CASES & AUDIENCES -->
-    <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100 motion-reveal" id="usecases">
+    <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="usecases">
       <div class="text-left max-w-2xl mb-12">
         <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950">
           Built for teams shipping production autonomy
@@ -1785,7 +1667,7 @@ curl "https://ultrademon.site/v1/memory/recall?q=user+theme&scale=entity" \
     </section>
 
     <!-- SECTION 9: INTEGRATIONS GRID -->
-    <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100 motion-reveal" id="integrations">
+    <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="integrations">
       <div class="text-left max-w-2xl mb-12">
         <div class="text-xs uppercase tracking-wider font-mono text-neutral-400 mb-2 font-semibold">Ecosystem &amp; SDKs</div>
         <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950">
@@ -1890,7 +1772,7 @@ curl "https://ultrademon.site/v1/memory/recall?q=user+theme&scale=entity" \
     </section>
 
     <!-- SECTION 10: RECENTLY SHIPPED / CHANGELOG TABLE (Devin Style with Preview Thumbnail) -->
-    <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100 motion-reveal" id="changelog">
+    <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="changelog">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         <!-- Left: Section Title & Thumbnail -->
@@ -1963,7 +1845,7 @@ curl "https://ultrademon.site/v1/memory/recall?q=user+theme&scale=entity" \
     </section>
 
     <!-- SECTION 11: SECURITY & ENTERPRISE CONTROLS -->
-    <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100 motion-reveal" id="security">
+    <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="security">
       <div class="text-left max-w-2xl mb-12">
         <div class="text-xs uppercase tracking-wider font-mono text-neutral-400 mb-2 font-semibold">Single-Tenant Governance</div>
         <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950">
@@ -2010,7 +1892,7 @@ curl "https://ultrademon.site/v1/memory/recall?q=user+theme&scale=entity" \
     </section>
 
     <!-- SECTION 12: INTERACTIVE DEVELOPER SANDBOX -->
-    <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100 motion-reveal" id="sandbox">
+    <section class="py-20 px-4 sm:px-6 max-w-6xl mx-auto border-t border-neutral-100" id="sandbox">
       <div class="text-left max-w-2xl mb-8">
         <div class="text-xs uppercase tracking-wider font-mono text-neutral-400 mb-2 font-semibold">Live Edge Latency Probe</div>
         <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950">
@@ -2168,7 +2050,7 @@ curl "https://ultrademon.site/v1/memory/recall?q=user+theme&scale=entity" \
     </section>
 
     <!-- SECTION: FREQUENTLY ASKED QUESTIONS (Matching FAQPage Schema for Rich Snippets) -->
-    <section class="py-20 px-4 sm:px-6 max-w-4xl mx-auto border-t border-neutral-100 motion-reveal" id="faq">
+    <section class="py-20 px-4 sm:px-6 max-w-4xl mx-auto border-t border-neutral-100" id="faq">
       <div class="text-left mb-12">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-neutral-200/90 bg-white text-xs text-neutral-600 mb-3 shadow-2xs font-mono">
           <span class="w-1.5 h-1.5 rounded-full bg-neutral-950"></span>
@@ -2531,7 +2413,7 @@ curl "https://ultrademon.site/v1/memory/recall?q=user+theme&scale=entity" \
         </div>
 
         <!-- Letter Card (Editorial Stationery / Parchment feel with Devin minimalist design) -->
-        <div class="bg-white rounded-3xl border border-neutral-200/90 p-8 sm:p-14 shadow-xl relative overflow-hidden motion-reveal motion-card">
+        <div class="bg-white rounded-3xl border border-neutral-200/90 p-8 sm:p-14 shadow-xl relative overflow-hidden">
           
           <!-- Subtle Top Demon Head Watermark in corner -->
           <div class="absolute top-6 right-6 opacity-[0.05] pointer-events-none select-none">
@@ -2762,33 +2644,6 @@ curl "https://ultrademon.site/v1/memory/recall?q=user+theme&scale=entity" \
 
   <!-- Client-Side Runtime Script -->
   <script>
-    // Motion Design Scroll Reveal Observer
-    function initMotionObserver() {
-      if (typeof IntersectionObserver === 'undefined') {
-        var elements = document.querySelectorAll('.motion-reveal');
-        for (var i = 0; i < elements.length; i++) {
-          elements[i].classList.add('motion-revealed');
-        }
-        return;
-      }
-      var observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('motion-revealed');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, {
-        rootMargin: '0px 0px -40px 0px',
-        threshold: 0.08
-      });
-
-      var targets = document.querySelectorAll('.motion-reveal');
-      targets.forEach(function(el) {
-        observer.observe(el);
-      });
-    }
-
     // One-Time Cookie & Privacy Consent Logic
     window.initCookieConsent = function() {
       try {
@@ -3067,7 +2922,6 @@ curl "https://ultrademon.site/v1/memory/recall?q=user+theme&scale=entity" \
 
     document.addEventListener('DOMContentLoaded', function() {
       checkAuthSession();
-      initMotionObserver();
       window.initCookieConsent();
 
       // Dual-defense button event binding for modal
