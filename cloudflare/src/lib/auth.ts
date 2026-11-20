@@ -78,38 +78,44 @@ export async function authMiddleware(c: Context<{ Bindings: Env }>, next: Next) 
           created_at: 1730000000000,
           revoked: false,
         };
-        KEY_ISOLATE_CACHE.set(plainKey, { record, cachedAt: Date.now() });
+        KEY_ISOLATE_CACHE.set(plainKey, { record, hashedKey: `sess_hash_${session.id}`, cachedAt: Date.now() });
       } else {
         return c.json({ error: 'Session expired or invalid. Please sign in again.' }, 401);
       }
     }
   } else if (plainKey.startsWith('eyJ')) {
     // Case 3: Supabase JWT from web client
-    const sbUser = await getSupabaseUser(c.env, `Bearer ${plainKey}`);
-    if (sbUser && sbUser.id) {
-      const d1User = await c.env.DB.prepare('SELECT user_id, plan FROM users WHERE user_id = ? OR email = ?')
-        .bind(sbUser.id, sbUser.email || '')
-        .first<{ user_id: string; plan?: string }>();
-      const plan = d1User?.plan || 'free';
-      const userId = d1User?.user_id || sbUser.id;
-      record = {
-        hashed_key: `sb_hash_${userId}`,
-        key_id: `key_${userId.slice(0, 12)}`,
-        user_id: userId,
-        plan,
-        key_type: 'unified',
-        label: 'Supabase Session Key',
-        created_at: 1730000000000,
-        revoked: false,
-      };
-      KEY_ISOLATE_CACHE.set(plainKey, { record, cachedAt: Date.now() });
+    // Check isolate cache first to skip Supabase fetch + D1 query on warm isolates
+    const jwtCached = KEY_ISOLATE_CACHE.get(plainKey);
+    if (jwtCached && (Date.now() - jwtCached.cachedAt < KEY_ISOLATE_TTL_MS)) {
+      record = jwtCached.record;
     } else {
-      return c.json({ error: 'Supabase session expired or invalid. Please sign in again.' }, 401);
+      const sbUser = await getSupabaseUser(c.env, `Bearer ${plainKey}`);
+      if (sbUser && sbUser.id) {
+        const d1User = await c.env.DB.prepare('SELECT user_id, plan FROM users WHERE user_id = ? OR email = ?')
+          .bind(sbUser.id, sbUser.email || '')
+          .first<{ user_id: string; plan?: string }>();
+        const plan = d1User?.plan || 'free';
+        const userId = d1User?.user_id || sbUser.id;
+        record = {
+          hashed_key: `sb_hash_${userId}`,
+          key_id: `key_${userId.slice(0, 12)}`,
+          user_id: userId,
+          plan,
+          key_type: 'unified',
+          label: 'Supabase Session Key',
+          created_at: 1730000000000,
+          revoked: false,
+        };
+        KEY_ISOLATE_CACHE.set(plainKey, { record, hashedKey: `sb_hash_${userId}`, cachedAt: Date.now() });
+      } else {
+        return c.json({ error: 'Supabase session expired or invalid. Please sign in again.' }, 401);
+      }
     }
   } else {
     // Case 4: Standard API key validation
     try {
-      record = await validateApiKey(c.env, plainKey);
+      record = await validateApiKey(c.env, plainKey, c.executionCtx as { waitUntil?: (p: Promise<unknown>) => void });
     } catch (e: unknown) {
       return c.json({ error: (e as Error).message }, 403);
     }
@@ -272,6 +278,11 @@ async function checkRateLimit(env: Env, record: ApiKeyRecord): Promise<RateLimit
 
 // ── Supabase User Verification ────────────────────────────────────────────────
 
+// In-isolate Supabase user cache (<0.05ms) — survives across requests in the same isolate
+const SUPABASE_USER_CACHE = new Map<string, { user: { id: string; email?: string }; cachedAt: number }>();
+const SUPABASE_USER_CACHE_TTL_MS = 120_000; // 2 min isolate TTL
+const MAX_SUPABASE_CACHE_ENTRIES = 500;
+
 export async function getSupabaseUser(
   env: Env,
   authHeader?: string,
@@ -293,13 +304,30 @@ export async function getSupabaseUser(
 
   // 2. Supabase JWT verification
   const cacheKey = `sb_user:${token.slice(-32)}`;
+
+  // Tier 0: In-isolate RAM cache (<0.05ms) — eliminates KV + Supabase fetch on warm isolates
+  const ramCached = SUPABASE_USER_CACHE.get(cacheKey);
+  if (ramCached && (Date.now() - ramCached.cachedAt < SUPABASE_USER_CACHE_TTL_MS)) {
+    return ramCached.user;
+  }
+
+  // Tier 1: KV cache
   if (env.KEY_CACHE && typeof env.KEY_CACHE.get === 'function') {
     try {
       const cached = await env.KEY_CACHE.get<{ id: string; email?: string }>(cacheKey, 'json');
-      if (cached) return cached;
+      if (cached) {
+        // Warm up isolate cache on KV hit
+        if (SUPABASE_USER_CACHE.size >= MAX_SUPABASE_CACHE_ENTRIES) {
+          const oldest = SUPABASE_USER_CACHE.keys().next().value;
+          if (oldest) SUPABASE_USER_CACHE.delete(oldest);
+        }
+        SUPABASE_USER_CACHE.set(cacheKey, { user: cached, cachedAt: Date.now() });
+        return cached;
+      }
     } catch {}
   }
 
+  // Tier 2: Supabase remote verification (100-400ms — only on full cache miss)
   try {
     const res = await fetch(`${env.SUPABASE_URL}/auth/v1/user`, {
       headers: {
@@ -311,14 +339,23 @@ export async function getSupabaseUser(
     if (!res.ok) return null;
     const user = await res.json<{ id: string; email?: string }>();
     if (user && user.id) {
-      if (env.KEY_CACHE && typeof env.KEY_CACHE.put === 'function') {
-        try {
-          await env.KEY_CACHE.put(cacheKey, JSON.stringify({ id: user.id, email: user.email }), {
-            expirationTtl: 300, // 5 min cache
-          });
-        } catch {}
+      const userData = { id: user.id, email: user.email };
+
+      // Populate isolate cache
+      if (SUPABASE_USER_CACHE.size >= MAX_SUPABASE_CACHE_ENTRIES) {
+        const oldest = SUPABASE_USER_CACHE.keys().next().value;
+        if (oldest) SUPABASE_USER_CACHE.delete(oldest);
       }
-      return { id: user.id, email: user.email };
+      SUPABASE_USER_CACHE.set(cacheKey, { user: userData, cachedAt: Date.now() });
+
+      // NON-BLOCKING: Populate KV cache (30 min TTL — JWTs have their own expiry)
+      if (env.KEY_CACHE && typeof env.KEY_CACHE.put === 'function') {
+        env.KEY_CACHE.put(cacheKey, JSON.stringify(userData), {
+          expirationTtl: 1800,
+        }).catch(() => {});
+      }
+
+      return userData;
     }
   } catch (err) {
     console.warn('Supabase auth verification failed:', err);

@@ -429,10 +429,13 @@ async function executeStandardSearch(
 
     let rawList = results || [];
 
+    // Cache live web results to avoid duplicate external fetches in the same request
+    let liveWebResults: SearchResult[] | null = null;
+
     if (rawList.length < 2) {
-      const live = await fetchLiveOnlineResults(query, count);
-      if (live.length > 0) {
-        return live;
+      liveWebResults = await fetchLiveOnlineResults(query, count);
+      if (liveWebResults.length > 0) {
+        return liveWebResults;
       }
 
       const orMatch = prepareOrFts5Query(query);
@@ -493,7 +496,7 @@ async function executeStandardSearch(
     ranked.sort((a, b) => b.score - a.score);
 
     if (ranked.length < 3) {
-      const live = await fetchLiveOnlineResults(query, count);
+      const live = liveWebResults ?? await fetchLiveOnlineResults(query, count);
       if (live.length > 0) {
         const seen = new Set(ranked.map(r => r.url));
         for (const item of live) {

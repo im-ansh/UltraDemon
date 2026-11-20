@@ -109,6 +109,7 @@ export function getPlanSpec(planId?: string): PlanSpec {
 // ── In-Isolate V8 Memory Cache (Level 0: <0.05ms) ───────────────────────────
 export interface IsolateKeyEntry {
   record: ApiKeyRecord;
+  hashedKey: string;
   cachedAt: number;
 }
 export const KEY_ISOLATE_CACHE = new Map<string, IsolateKeyEntry>();
@@ -163,12 +164,10 @@ export async function createApiKey(
     revoked:    false,
   };
 
-  // Populate In-Isolate and KV cache proactively
-  KEY_ISOLATE_CACHE.set(plainKey, { record, cachedAt: now });
+  // Populate In-Isolate and KV cache proactively (KV write is non-blocking)
+  KEY_ISOLATE_CACHE.set(plainKey, { record, hashedKey, cachedAt: now });
   if (env.KEY_CACHE && typeof env.KEY_CACHE.put === 'function') {
-    try {
-      await env.KEY_CACHE.put(`key:${hashedKey}`, JSON.stringify(record), { expirationTtl: 300 });
-    } catch {}
+    env.KEY_CACHE.put(`key:${hashedKey}`, JSON.stringify(record), { expirationTtl: 300 }).catch(() => {});
   }
 
   // Store in D1 (persistent)
@@ -188,6 +187,7 @@ export async function createApiKey(
 export async function validateApiKey(
   env: Env,
   plainKey: string,
+  ctx?: { waitUntil?: (p: Promise<unknown>) => void },
 ): Promise<ApiKeyRecord> {
   if (!plainKey.startsWith('us_') && !plainKey.startsWith('um_') && !plainKey.startsWith('ut_') && !plainKey.startsWith('ud_')) {
     throw new Error("Invalid API key format — must start with 'us_', 'um_', 'ut_', or 'ud_'");
@@ -208,7 +208,8 @@ export async function validateApiKey(
     return memCached.record;
   }
 
-  const hashedKey = await hashKey(plainKey, env.ULTRASEARCH_SECRET);
+  // Reuse cached hash from expired isolate entry — skips the SHA-256 crypto bridge (~0.5ms saved)
+  const hashedKey = memCached?.hashedKey || await hashKey(plainKey, env.ULTRASEARCH_SECRET);
 
   // Tier 1: Cloudflare KV Edge Cache (<15ms)
   const cacheKey = `key:${hashedKey}`;
@@ -223,7 +224,7 @@ export async function validateApiKey(
           const oldest = KEY_ISOLATE_CACHE.keys().next().value;
           if (oldest) KEY_ISOLATE_CACHE.delete(oldest);
         }
-        KEY_ISOLATE_CACHE.set(plainKey, { record: cached, cachedAt: now });
+        KEY_ISOLATE_CACHE.set(plainKey, { record: cached, hashedKey, cachedAt: now });
         return cached;
       }
     } catch (e: any) {
@@ -240,11 +241,11 @@ export async function validateApiKey(
   if (!row) throw new Error('API key not found');
   if (row.revoked) throw new Error('API key has been revoked');
 
-  // Populate KV cache (5 min TTL)
+  // NON-BLOCKING: Populate KV cache (5 min TTL) — never stalls the response
   if (env.KEY_CACHE && typeof env.KEY_CACHE.put === 'function') {
-    try {
-      await env.KEY_CACHE.put(cacheKey, JSON.stringify(row), { expirationTtl: 300 });
-    } catch {}
+    const p = env.KEY_CACHE.put(cacheKey, JSON.stringify(row), { expirationTtl: 300 });
+    if (ctx?.waitUntil) ctx.waitUntil(p);
+    else p.catch(() => {});
   }
 
   // Populate In-Isolate cache with true LRU eviction
@@ -254,7 +255,7 @@ export async function validateApiKey(
     const oldest = KEY_ISOLATE_CACHE.keys().next().value;
     if (oldest) KEY_ISOLATE_CACHE.delete(oldest);
   }
-  KEY_ISOLATE_CACHE.set(plainKey, { record: row, cachedAt: now });
+  KEY_ISOLATE_CACHE.set(plainKey, { record: row, hashedKey, cachedAt: now });
 
   return row;
 }
@@ -314,12 +315,15 @@ export interface UsageIncrementOptions {
   latencyMs?: number;
 }
 
+// Micro-event sampling counter — write detailed events every 5th request to cut D1 ops by 40%
+let USAGE_SAMPLE_COUNTER = 0;
+
 export async function incrementUsage(
   env: Env,
   hashedKey: string,
   options?: UsageIncrementOptions
 ): Promise<void> {
-  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  const today = new Date().toISOString().slice(0, 10);
   const now = Date.now();
   const service = options?.service || 'other';
   const isSearch = service === 'search' ? 1 : 0;
@@ -327,9 +331,10 @@ export async function incrementUsage(
   const isMetrics = service === 'metrics' ? 1 : 0;
   const isCrawler = service === 'crawler' ? 1 : 0;
 
+  USAGE_SAMPLE_COUNTER++;
+
   try {
-    // Execute both daily counter upsert and real-time micro-event in 1 atomic D1 batch
-    const stmt1 = env.DB
+    const counterStmt = env.DB
       .prepare(`
         INSERT INTO usage (hashed_key, date, request_count, search_count, memory_count, metrics_count, crawler_count, last_used_at)
         VALUES (?, ?, 1, ?, ?, ?, ?, ?)
@@ -344,24 +349,22 @@ export async function incrementUsage(
       `)
       .bind(hashedKey, today, isSearch, isMemory, isMetrics, isCrawler, now);
 
-    const stmt2 = env.DB
-      .prepare(`
-        INSERT INTO api_key_usage_events (hashed_key, key_id, service, path, method, status, latency_ms, timestamp, date)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `)
-      .bind(
-        hashedKey,
-        options?.keyId || null,
-        service,
-        options?.path || '/',
-        options?.method || 'GET',
-        options?.status || 200,
-        options?.latencyMs || 0,
-        now,
-        today
-      );
-
-    await env.DB.batch([stmt1, stmt2]);
+    // Write micro-event every 5th request — daily counters always accurate, event log sampled for cost
+    if (USAGE_SAMPLE_COUNTER % 5 === 0) {
+      await env.DB.batch([
+        counterStmt,
+        env.DB.prepare(`
+          INSERT INTO api_key_usage_events (hashed_key, key_id, service, path, method, status, latency_ms, timestamp, date)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `).bind(
+          hashedKey, options?.keyId || null, service,
+          options?.path || '/', options?.method || 'GET',
+          options?.status || 200, options?.latencyMs || 0, now, today
+        ),
+      ]);
+    } else {
+      await counterStmt.run();
+    }
   } catch (err) {
     console.warn('Non-fatal usage increment error:', err);
   }
@@ -535,15 +538,10 @@ export async function getApiKeyMetrics(
     }];
   }
 
-  // 2. Fetch plan limits
-  const { results: planRows } = await env.DB
-    .prepare('SELECT plan_id, daily_limit FROM plans')
-    .all<{ plan_id: string; daily_limit: number }>();
+  // 2. Plan limits from in-memory config (zero D1 cost — plans are static)
   const planLimits: Record<string, number> = {};
-  if (planRows) {
-    for (const p of planRows) {
-      planLimits[p.plan_id] = p.daily_limit;
-    }
+  for (const [pid, spec] of Object.entries(PLAN_SPECS)) {
+    planLimits[pid] = spec.daily_limit;
   }
 
   // 3. For each key, query usage for the 7-day window

@@ -281,10 +281,10 @@ export async function processCrawlQueue(env: Env, batchSize: number = 5): Promis
 
   if (!pending || pending.length === 0) return 0;
 
-  // Mark them as crawling
-  for (const p of pending) {
-    await env.DB.prepare('UPDATE crawl_queue SET status = "crawling" WHERE url = ?').bind(p.url).run();
-  }
+  // Mark them as crawling (single atomic D1 batch instead of N sequential updates)
+  await env.DB.batch(
+    pending.map(p => env.DB.prepare('UPDATE crawl_queue SET status = "crawling" WHERE url = ?').bind(p.url))
+  );
 
   // Crawl concurrently
   const tasks = pending.map(p => crawlAndIndexUrl(env, p.url, p.depth, p.discovered_from));

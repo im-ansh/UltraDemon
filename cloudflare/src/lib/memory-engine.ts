@@ -549,6 +549,7 @@ export async function ingestFileMemory(
   const memoryIds: string[] = [];
   const now = Date.now();
 
+  const insertStmts: ReturnType<D1Database['prepare']>[] = [];
   for (let i = 0; i < chunks.length; i++) {
     const memoryId = generateMemoryId();
     const title = `${params.fileName} (Part ${i + 1}/${chunks.length})`;
@@ -559,30 +560,37 @@ export async function ingestFileMemory(
       total_chunks: chunks.length,
     };
 
-    await env.DB.prepare(`
-      INSERT INTO memories (
-        memory_id, user_id, container_tag, session_id, memory_type,
-        title, content, metadata_json, file_name, file_type, file_size,
-        chunk_index, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).bind(
-      memoryId,
-      params.userId,
-      containerTag,
-      '',
-      'file',
-      title,
-      chunks[i],
-      JSON.stringify(meta),
-      params.fileName,
-      fileType,
-      content.length,
-      i,
-      now,
-      now,
-    ).run();
+    insertStmts.push(
+      env.DB.prepare(`
+        INSERT INTO memories (
+          memory_id, user_id, container_tag, session_id, memory_type,
+          title, content, metadata_json, file_name, file_type, file_size,
+          chunk_index, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).bind(
+        memoryId,
+        params.userId,
+        containerTag,
+        '',
+        'file',
+        title,
+        chunks[i],
+        JSON.stringify(meta),
+        params.fileName,
+        fileType,
+        content.length,
+        i,
+        now,
+        now,
+      )
+    );
 
     memoryIds.push(memoryId);
+  }
+
+  // Single atomic D1 batch — 1 roundtrip instead of N sequential writes
+  if (insertStmts.length > 0) {
+    await env.DB.batch(insertStmts);
   }
 
   // Atomically bump container version to invalidate edge caches

@@ -1197,11 +1197,9 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
       <!-- Breadcrumbs & Dynamic Session Indicator -->
       <div class="hidden sm:flex items-center gap-2 min-w-0">
-        <span class="text-xs text-neutral-500 font-sans">ultrademon.site</span>
-        <span class="text-neutral-300">/</span>
-        <span id="topBreadcrumbView" class="font-semibold text-neutral-900 text-xs font-sans">Overview</span>
+        <span id="topBreadcrumbView" class="font-semibold text-neutral-950 text-xs font-sans">Overview</span>
         <span id="userPlanBadgeTop" class="hidden">free</span>
-        <span id="topSessionStateBadge" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-neutral-100 text-neutral-700 border border-neutral-300">Guest Demo</span>
+        <span id="topSessionStateBadge" class="px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-neutral-100 text-neutral-700 border border-neutral-200">Guest Demo</span>
       </div>
     </div>
 
@@ -1564,29 +1562,21 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
   <div class="app-main-wrapper flex-1 md:pl-60 pt-[52px] min-h-screen w-full flex flex-col">
     <main class="flex-1 py-6 px-3.5 sm:px-8 max-w-7xl w-full min-w-0 mx-auto">
 
-    <!-- Sovereign Engine Header Bar (Calm, Contextual, Zero Duplication) -->
-    <header class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 pb-4 border-b border-neutral-200/80">
-      <div class="space-y-1">
-        <div class="flex items-center gap-2 text-xs font-mono text-neutral-500">
-          <span class="inline-flex items-center justify-center w-5 h-5 rounded bg-neutral-950 text-white shrink-0 font-bold text-[10px]" title="UltraDemon Sovereign Engine">
-            UD
-          </span>
-          <span class="font-semibold text-neutral-900">UltraDemon OS</span>
-          <span class="text-neutral-300">/</span>
-          <span id="userEmailDisplay" class="text-neutral-900 font-medium truncate max-w-[140px]">Workspace</span>
-          <span class="text-neutral-300">/</span>
-          <span class="text-neutral-500">330+ Anycast PoPs</span>
-        </div>
-        <div class="flex items-center gap-3 flex-wrap pt-1">
-          <h1 id="viewHeaderTitle" class="text-2xl sm:text-3xl font-semibold text-neutral-950 tracking-tight font-sans">
-            Developer Workspace
-          </h1>
-          <span class="px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-mono font-semibold">Anycast Active · &lt;10ms</span>
-        </div>
-        <p id="viewHeaderDesc" class="text-xs text-neutral-500 font-sans mt-0.5">
-          Sovereign Autonomous Memory, Full-Text Edge Search, and Custom Model Context Protocol (MCP) across 330+ Anycast edge locations.
-        </p>
+    <!-- Sovereign Minimalist Header Bar -->
+    <header class="flex items-center justify-between gap-4 mb-6 pb-4 border-b border-neutral-200/80">
+      <div class="flex items-center gap-3">
+        <h1 id="viewHeaderTitle" class="text-xl sm:text-2xl font-semibold text-neutral-950 tracking-tight font-sans">
+          Overview
+        </h1>
+        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono font-medium text-emerald-800 bg-emerald-50 border border-emerald-200">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span>Anycast Active</span>
+        </span>
       </div>
+      <p id="viewHeaderDesc" class="hidden sm:block text-xs text-neutral-500 font-sans max-w-md text-right truncate">
+        Edge API metrics, active session, and live test bench.
+      </p>
+      <span id="userEmailDisplay" class="hidden"></span>
     </header>
 
         <!-- Hidden compatibility dropdowns to maintain DOM contract -->
@@ -1602,8 +1592,8 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
       <option value="">Actions</option>
     </select>
 
-    <!-- In-App Flow Sub-Navigation Ribbon (Articulated Line-Based Tabs with Dividers) -->
-    <nav class="line-subnav border border-neutral-200 bg-white mb-6 overflow-x-auto no-scrollbar shadow-none select-none flex items-stretch justify-between" aria-label="In-App Navigation Flow">
+    <!-- In-App Flow Sub-Navigation Ribbon (Preserved in DOM for script compat, hidden to remove clutter) -->
+    <nav class="line-subnav hidden" aria-label="In-App Navigation Flow">
       <div class="flex items-stretch divide-x divide-neutral-200 min-w-max">
         <button type="button" id="suiteBtn-overview" onclick="switchSuite('overview', event)" class="suite-tab-btn py-2.5 px-3.5 sm:px-4 font-semibold text-neutral-950 border-b-2 border-neutral-950 cursor-pointer flex items-center gap-1.5 shrink-0 transition text-xs font-mono">
           <span class="text-neutral-400 font-normal">01</span>
@@ -1663,8 +1653,8 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
 
 <section id="view-overview" class="space-y-6">
 
-  <!-- 01 // SOVEREIGN WORKSPACE ONBOARDING (Articulated Line-Divided Stepper) -->
-  <div id="onboardingGuidePanel" class="border border-neutral-200 bg-white">
+  <!-- 01 // SOVEREIGN WORKSPACE ONBOARDING (Preserved in DOM for script compat, hidden to remove clutter) -->
+  <div id="onboardingGuidePanel" class="hidden">
     <!-- Stepper Header Rule -->
     <div class="px-4 py-3 bg-neutral-50/70 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
       <div class="flex items-center gap-2.5">
@@ -1771,128 +1761,60 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     </div>
   </div>
 
-  <!-- 02 // SYSTEM METRICS & SESSION TELEMETRY (Unified 4x2 Line Grid Table) -->
+  <!-- SYSTEM METRICS & SESSION TELEMETRY (Clean 4-Cell Line Grid Table) -->
   <div class="border border-neutral-200 bg-white">
-    <div class="px-4 py-2.5 bg-neutral-50/70 border-b border-neutral-200 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <span class="inline-flex items-center justify-center w-5 h-5 bg-neutral-950 text-white font-mono text-[10px] font-bold">02</span>
-        <span class="text-xs font-bold font-mono tracking-wider uppercase text-neutral-950">System Telemetry &amp; Session State</span>
-      </div>
-      <span class="text-[10px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 font-semibold">330+ Anycast PoPs · Active</span>
+    <div class="px-4 py-2 bg-neutral-50 border-b border-neutral-200 flex items-center justify-between">
+      <span class="text-xs font-bold font-mono tracking-wider uppercase text-neutral-950">Edge Telemetry</span>
+      <span class="text-[10px] font-mono text-emerald-800 font-semibold flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        <span id="overviewColoBadge">Anycast</span> · <span id="overviewRttBadge">&lt;12ms</span>
+      </span>
     </div>
 
-    <!-- Row 1: Session, Key, Quota, Edge Network -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-neutral-200 border-b border-neutral-200">
-      
-      <!-- Cell 1: Session -->
-      <div class="p-4 flex flex-col justify-between space-y-2">
-        <div class="space-y-1">
-          <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center justify-between">
-            <span>Session State</span>
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          </div>
-          <div class="text-sm font-bold text-neutral-950 font-sans truncate" id="overviewSessionStatus">Guest Demo Mode</div>
-        </div>
-        <div class="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs font-mono">
-          <button type="button" onclick="openAppAuthModal('signin')" id="overviewSessionActionBtn" class="font-semibold text-neutral-900 hover:underline cursor-pointer text-[11px]">
-            Sign In / Switch &rarr;
-          </button>
-          <span class="text-[10px] text-neutral-400" id="overviewSessionSubtext">Public Sandbox</span>
-        </div>
-      </div>
-
-      <!-- Cell 2: Key -->
-      <div class="p-4 flex flex-col justify-between space-y-2">
-        <div class="space-y-1">
-          <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center justify-between">
-            <span>Active Sovereign Key</span>
-            <span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-1 font-semibold">Verified</span>
-          </div>
-          <div class="text-xs font-bold font-mono text-neutral-950 truncate select-all" id="overviewActiveKeyDisplay">ud_live_demo_console_key</div>
-        </div>
-        <div class="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs font-mono">
-          <button type="button" onclick="copyActiveKeyFromOverview()" id="btnOverviewCopyKey" class="font-semibold text-neutral-900 hover:underline cursor-pointer text-[11px] flex items-center gap-1">
-            <svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            <span id="overviewCopyKeyLabel">Copy Key</span>
-          </button>
-          <button type="button" onclick="setAppView('keys')" class="text-[11px] text-neutral-500 hover:text-black cursor-pointer font-sans">
-            Manage &rarr;
-          </button>
-        </div>
-      </div>
-
-      <!-- Cell 3: Plan & Quota -->
-      <div class="p-4 flex flex-col justify-between space-y-2">
-        <div class="space-y-1">
-          <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center justify-between">
-            <span>Plan &amp; Quota</span>
-            <span class="text-[9px] font-mono uppercase text-neutral-600 bg-neutral-100 border border-neutral-200 px-1 font-semibold" id="overviewPlanBadge">Free</span>
-          </div>
-          <div class="text-sm font-bold text-neutral-950 font-sans truncate" id="overviewPlanDisplay">Free Tier · 100 req/day</div>
-        </div>
-        <div class="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs font-mono">
-          <button type="button" onclick="setAppView('membership')" class="font-semibold text-neutral-900 hover:underline cursor-pointer text-[11px] font-sans">
-            Upgrade Quota &rarr;
-          </button>
-          <span class="text-[10px] text-neutral-400">Zero Overage</span>
-        </div>
-      </div>
-
-      <!-- Cell 4: Edge Network -->
-      <div class="p-4 flex flex-col justify-between space-y-2">
-        <div class="space-y-1">
-          <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold flex items-center justify-between">
-            <span>Edge Network</span>
-            <span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-1 font-semibold">&lt;10ms</span>
-          </div>
-          <div class="text-sm font-bold text-neutral-950 font-sans truncate">Global Anycast PoP</div>
-        </div>
-        <div class="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs font-mono">
-          <span class="text-[11px] text-neutral-600 font-sans font-medium">330+ Cities</span>
-          <span class="text-[10px] text-emerald-700 font-semibold"><span id="overviewColoBadge">Auto</span> · <span id="overviewRttBadge">&lt;10ms</span></span>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Row 2: Four Key Telemetry Metrics -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-neutral-200 font-sans">
+    <!-- Clean Single-Row Telemetry Metrics -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-neutral-200 font-sans">
       <div class="p-4 space-y-1">
         <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">Requests Today</div>
-        <div class="text-2xl font-bold font-mono text-neutral-950" id="overviewMetricsRequests"><span id="metricUsed">0</span> / <span id="metricLimit">100</span></div>
-        <div class="text-[11px] text-neutral-500 font-sans">Daily Free Limit · Resets 00:00 UTC</div>
+        <div class="text-2xl font-bold font-mono text-neutral-950" id="overviewMetricsRequests"><span id="metricUsed">0</span> / <span id="metricLimit">1000</span></div>
+        <div class="text-[11px] text-neutral-500 font-sans">Resets 00:00 UTC</div>
       </div>
       <div class="p-4 space-y-1">
         <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">Median Latency (P50)</div>
         <div class="text-2xl font-bold font-mono text-emerald-700">&lt;12ms</div>
-        <div class="text-[11px] text-neutral-500 font-sans">P99: 38ms · BM25 In-Memory Edge</div>
+        <div class="text-[11px] text-neutral-500 font-sans">Sub-15ms BM25 Edge</div>
       </div>
       <div class="p-4 space-y-1">
         <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">Active API Keys</div>
         <div class="text-2xl font-bold font-mono text-neutral-950" id="overviewMetricsKeysCount"><span id="metricKeys">1</span> Active</div>
-        <div class="text-[11px] text-neutral-500 font-sans">D1 SQLite FTS5 Key Vault</div>
+        <div class="text-[11px] text-neutral-500 font-sans">Key Vault</div>
       </div>
       <div class="p-4 space-y-1">
         <div class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-bold">Search Corpus</div>
         <div class="text-2xl font-bold font-mono text-neutral-950" id="overviewMetricsIndexDocs"><span id="metricIndexed">369</span> Docs</div>
-        <div class="text-[11px] text-neutral-500 font-sans">BM25 Porter-Stemmed Web Index</div>
+        <div class="text-[11px] text-neutral-500 font-sans">Indexed Documents</div>
       </div>
+    </div>
+
+    <!-- Hidden preserved elements for script DOM compatibility -->
+    <div class="hidden">
+      <span id="overviewSessionStatus">Guest Demo Mode</span>
+      <button type="button" id="overviewSessionActionBtn"></button>
+      <span id="overviewSessionSubtext">Public Sandbox</span>
+      <span id="overviewActiveKeyDisplay">ud_live_demo_console_key</span>
+      <button type="button" id="btnOverviewCopyKey"></button>
+      <span id="overviewCopyKeyLabel">Copy Key</span>
+      <span id="overviewPlanBadge">Free</span>
+      <span id="overviewPlanDisplay">Free Tier · 100 req/day</span>
     </div>
   </div>
 
-  <!-- 03 // LIVE ENDPOINT & API TEST BENCH (Line-Divided Workbench) -->
+  <!-- LIVE ENDPOINT & API TEST BENCH -->
   <div class="border border-neutral-200 bg-white">
-    <div class="px-4 py-3 bg-neutral-50/70 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-      <div class="flex items-center gap-2.5">
-        <span class="inline-flex items-center justify-center w-5 h-5 bg-neutral-950 text-white font-mono text-[10px] font-bold">03</span>
-        <div>
-          <h3 class="text-xs font-bold font-mono tracking-wider uppercase text-neutral-950">Live Endpoint &amp; API Test Bench</h3>
-          <p class="text-[11px] text-neutral-500 font-sans">Real-time request dispatch directly to Cloudflare edge nodes with live latency feedback</p>
-        </div>
-      </div>
+    <div class="px-4 py-2.5 bg-neutral-50 border-b border-neutral-200 flex items-center justify-between">
+      <h3 class="text-xs font-bold font-mono tracking-wider uppercase text-neutral-950">Live API Test Bench</h3>
       <div class="flex items-center gap-2">
-        <span id="overviewTestStatusBadge" class="hidden px-2.5 py-0.5 text-[10px] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200"></span>
-        <span id="overviewTestLatencyBadge" class="hidden px-2.5 py-0.5 text-[10px] font-mono font-bold bg-neutral-100 text-neutral-900 border border-neutral-300"></span>
+        <span id="overviewTestStatusBadge" class="hidden px-2 py-0.5 text-[10px] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200"></span>
+        <span id="overviewTestLatencyBadge" class="hidden px-2 py-0.5 text-[10px] font-mono font-bold bg-neutral-100 text-neutral-900 border border-neutral-300"></span>
       </div>
     </div>
 
@@ -1931,16 +1853,10 @@ export function renderAppDashboard(origin: string, supabaseUrl: string, supabase
     </div>
   </div>
 
-  <!-- 04 // SDK & PROTOCOL CODE (Line-Divided Console) -->
+  <!-- INTEGRATION SNIPPETS -->
   <div class="border border-neutral-200 bg-white">
-    <div class="px-4 py-3 bg-neutral-50/70 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-      <div class="flex items-center gap-2.5">
-        <span class="inline-flex items-center justify-center w-5 h-5 bg-neutral-950 text-white font-mono text-[10px] font-bold">04</span>
-        <div>
-          <h3 class="text-xs font-bold font-mono tracking-wider uppercase text-neutral-950">Integration Snippets</h3>
-          <p class="text-[11px] text-neutral-500 font-sans">Active sovereign key automatically injected into copyable code</p>
-        </div>
-      </div>
+    <div class="px-4 py-2.5 bg-neutral-50 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+      <h3 class="text-xs font-bold font-mono tracking-wider uppercase text-neutral-950">Integration Snippets</h3>
       <div class="flex items-center divide-x divide-neutral-200 border border-neutral-200 bg-white text-xs font-mono">
         <button type="button" id="overviewTab-curl" onclick="switchOverviewSnippetTab('curl')" class="py-1 px-3 bg-neutral-950 text-white font-semibold transition cursor-pointer text-[11px]">cURL</button>
         <button type="button" id="overviewTab-python" onclick="switchOverviewSnippetTab('python')" class="py-1 px-3 text-neutral-600 hover:text-black font-medium transition cursor-pointer text-[11px]">Python</button>
@@ -1982,194 +1898,48 @@ console.log(searchRes.results);</pre>
     </div>
   </div>
 
-  <!-- 05 // SERVICE DIRECTORY & STUDIOS (Articulated Line-Divided Table) -->
-  <div class="border border-neutral-200 bg-white">
-    <div class="px-4 py-3 bg-neutral-50/70 border-b border-neutral-200 flex items-center justify-between">
-      <div class="flex items-center gap-2.5">
-        <span class="inline-flex items-center justify-center w-5 h-5 bg-neutral-950 text-white font-mono text-[10px] font-bold">05</span>
-        <h3 class="text-xs font-bold font-mono tracking-wider uppercase text-neutral-950">Sovereign Service Studios &amp; Protocols</h3>
-      </div>
-      <span class="text-[10px] font-mono text-neutral-500">6 Edge Services · Sub-15ms Anycast</span>
-    </div>
-
-    <div class="overflow-x-auto">
-      <table class="line-table">
-        <thead>
-          <tr>
-            <th class="w-16">#</th>
-            <th>Protocol / Studio</th>
-            <th>Core Capability</th>
-            <th>Edge Substrate</th>
-            <th>Latency Target</th>
-            <th class="text-right">Action</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-neutral-200 font-sans">
-          
-          <tr class="hover:bg-neutral-50/80 transition-colors">
-            <td class="font-mono text-neutral-400 text-xs">01</td>
-            <td>
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-xs text-neutral-950">UltraSearch Studio</span>
-                <span class="text-[9px] font-mono font-semibold px-1.5 py-0.2 bg-emerald-50 text-emerald-800 border border-emerald-200">&lt;15ms</span>
-              </div>
-            </td>
-            <td class="text-xs text-neutral-600">BM25 Porter-stemmed search, live web crawler, and deep query modes for LLM agents.</td>
-            <td class="font-mono text-[11px] text-neutral-500">Cloudflare D1 FTS5</td>
-            <td class="font-mono text-xs font-semibold text-emerald-700">11.8ms P50</td>
-            <td class="text-right">
-              <button type="button" onclick="setAppView('search')" class="font-mono text-xs text-neutral-950 hover:underline font-semibold cursor-pointer">
-                Open Studio &rarr;
-              </button>
-            </td>
-          </tr>
-
-          <tr class="hover:bg-neutral-50/80 transition-colors">
-            <td class="font-mono text-neutral-400 text-xs">02</td>
-            <td>
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-xs text-neutral-950">UltraMemory Lab</span>
-                <span class="text-[9px] font-mono font-semibold px-1.5 py-0.2 bg-emerald-50 text-emerald-800 border border-emerald-200">&lt;10ms</span>
-              </div>
-            </td>
-            <td class="text-xs text-neutral-600">Autonomous agent memory recall, facts extraction, and permanent contextual retention.</td>
-            <td class="font-mono text-[11px] text-neutral-500">Edge SQLite + KV</td>
-            <td class="font-mono text-xs font-semibold text-emerald-700">8.4ms P50</td>
-            <td class="text-right">
-              <button type="button" onclick="setAppView('memory')" class="font-mono text-xs text-neutral-950 hover:underline font-semibold cursor-pointer">
-                Open Lab &rarr;
-              </button>
-            </td>
-          </tr>
-
-          <tr class="hover:bg-neutral-50/80 transition-colors">
-            <td class="font-mono text-neutral-400 text-xs">03</td>
-            <td>
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-xs text-neutral-950">Custom MCP Server</span>
-                <span class="text-[9px] font-mono font-semibold px-1.5 py-0.2 bg-neutral-100 text-neutral-800 border border-neutral-300">MCP 2.0</span>
-              </div>
-            </td>
-            <td class="text-xs text-neutral-600">Native Model Context Protocol server connecting to Claude Desktop, Cursor, and Antigravity.</td>
-            <td class="font-mono text-[11px] text-neutral-500">HTTP + SSE RPC</td>
-            <td class="font-mono text-xs font-semibold text-neutral-900">Sub-15ms</td>
-            <td class="text-right">
-              <button type="button" onclick="setAppView('keys')" class="font-mono text-xs text-neutral-950 hover:underline font-semibold cursor-pointer">
-                Open Hub &rarr;
-              </button>
-            </td>
-          </tr>
-
-          <tr class="hover:bg-neutral-50/80 transition-colors">
-            <td class="font-mono text-neutral-400 text-xs">04</td>
-            <td>
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-xs text-neutral-950">Seamless Summoning</span>
-                <span class="text-[9px] font-mono font-semibold px-1.5 py-0.2 bg-emerald-50 text-emerald-800 border border-emerald-200">Sub-10ms</span>
-              </div>
-            </td>
-            <td class="text-xs text-neutral-600">Zero-cold-start isolate tunnel with self-healing dual-tier fallback and fastest edge API keys.</td>
-            <td class="font-mono text-[11px] text-neutral-500">Pre-warmed V8 RAM</td>
-            <td class="font-mono text-xs font-semibold text-emerald-700">0.00ms Cold</td>
-            <td class="text-right">
-              <button type="button" onclick="setAppView('summoning')" class="font-mono text-xs text-neutral-950 hover:underline font-semibold cursor-pointer">
-                Open Console &rarr;
-              </button>
-            </td>
-          </tr>
-
-          <tr class="hover:bg-neutral-50/80 transition-colors">
-            <td class="font-mono text-neutral-400 text-xs">05</td>
-            <td>
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-xs text-neutral-950">Edge Benchmarks</span>
-                <span class="text-[9px] font-mono font-semibold px-1.5 py-0.2 bg-neutral-100 text-neutral-800 border border-neutral-300">10k Runs</span>
-              </div>
-            </td>
-            <td class="text-xs text-neutral-600">Audited latency comparisons against Tavily (842ms) and Exa (910ms) across 330+ Anycast cities.</td>
-            <td class="font-mono text-[11px] text-neutral-500">Global Anycast SLA</td>
-            <td class="font-mono text-xs font-semibold text-emerald-700">70x Faster</td>
-            <td class="text-right">
-              <button type="button" onclick="setAppView('benchmarks')" class="font-mono text-xs text-neutral-950 hover:underline font-semibold cursor-pointer">
-                Run Audit &rarr;
-              </button>
-            </td>
-          </tr>
-
-          <tr class="hover:bg-neutral-50/80 transition-colors">
-            <td class="font-mono text-neutral-400 text-xs">06</td>
-            <td>
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-xs text-neutral-950">Telemetry &amp; ICP</span>
-                <span class="text-[9px] font-mono font-semibold px-1.5 py-0.2 bg-neutral-100 text-neutral-800 border border-neutral-300">PostHog-Edge</span>
-              </div>
-            </td>
-            <td class="text-xs text-neutral-600">Real-time edge event capture and autonomous Ideal Customer Profile intelligence synthesis.</td>
-            <td class="font-mono text-[11px] text-neutral-500">Edge Event Log</td>
-            <td class="font-mono text-xs font-semibold text-neutral-900">Real-Time</td>
-            <td class="text-right">
-              <button type="button" onclick="setAppView('analytics')" class="font-mono text-xs text-neutral-950 hover:underline font-semibold cursor-pointer">
-                Open Telemetry &rarr;
-              </button>
-            </td>
-          </tr>
-
-        </tbody>
-      </table>
-    </div>
-  </div>
-
 </section>
 
 
     <!-- SECTION: SEAMLESS SUMMONING PROTOCOL (ZERO-COLD-START ANYCAST TUNNEL) -->
     <section id="view-summoning" class="space-y-6 hidden">
-      <!-- Hero Banner -->
-      <div class="card-elevated p-6 sm:p-8 rounded-2xl border border-neutral-200/90 bg-white space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="space-y-1.5">
-            <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-mono font-bold uppercase tracking-wider">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>UltraDemon Sovereign Protocol · Sub-10ms Anycast Edge Tunnel</span>
-            </div>
-            <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 font-sans">
-              Seamless Summoning: Zero-Cold-Start Edge Connection
-            </h2>
-            <p class="text-xs text-neutral-500 max-w-3xl leading-relaxed">
-              Summon pre-warmed V8 isolates across 330+ Anycast edge locations. UltraDemon provides an instant zero-latency connection between your AI applications and sovereign APIs with self-healing dual-tier fallback and 0.000% error rate guarantee.
-            </p>
+      <!-- Fast Summon Header Strip -->
+      <div class="border border-neutral-200 bg-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-xs font-bold font-mono tracking-wider uppercase text-neutral-950">Seamless Summoning Protocol</span>
+            <span class="text-[10px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded">&lt;10ms Edge Tunnel</span>
           </div>
-
-          <div class="flex items-center gap-2.5 shrink-0">
-            <button type="button" onclick="summonFastestKey()" id="btnSummonHero" class="px-4 py-2.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-mono font-semibold transition cursor-pointer flex items-center gap-2 shadow-xs">
-              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              <span>Summon Edge Key Now</span>
-            </button>
-          </div>
+          <p class="text-xs text-neutral-500 font-sans">Summon pre-warmed V8 isolates with zero-cold-start edge key generation.</p>
         </div>
+        <button type="button" onclick="summonFastestKey()" id="btnSummonHero" class="px-4 py-2 bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-mono font-semibold transition cursor-pointer flex items-center gap-2 shadow-xs shrink-0">
+          <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span>Summon Edge Key Now</span>
+        </button>
+      </div>
 
-        <!-- 4 Key Summoning Performance Pillars -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-3 border-t border-neutral-100 font-mono">
-          <div class="p-3.5 bg-neutral-50/70 border border-neutral-200 rounded-xl">
-            <div class="text-[10px] uppercase text-neutral-500 tracking-wider">Cold Start SLA</div>
-            <div class="text-xl sm:text-2xl font-bold text-neutral-950 mt-1">0.00<span class="text-xs text-neutral-500 font-normal">ms</span></div>
-            <div class="text-[10px] text-emerald-700 mt-1 font-semibold">Pre-warmed V8 Isolates</div>
-          </div>
-          <div class="p-3.5 bg-neutral-50/70 border border-neutral-200 rounded-xl">
-            <div class="text-[10px] uppercase text-neutral-500 tracking-wider">Error Rate Guarantee</div>
-            <div class="text-xl sm:text-2xl font-bold text-neutral-950 mt-1">0.000<span class="text-xs text-neutral-500 font-normal">%</span></div>
-            <div class="text-[10px] text-emerald-700 mt-1 font-semibold">Dual-Tier KV+D1 Fallback</div>
-          </div>
-          <div class="p-3.5 bg-neutral-50/70 border border-neutral-200 rounded-xl">
-            <div class="text-[10px] uppercase text-neutral-500 tracking-wider">Median Latency</div>
-            <div class="text-xl sm:text-2xl font-bold text-neutral-950 mt-1">&lt;9.5<span class="text-xs text-neutral-500 font-normal">ms</span></div>
-            <div class="text-[10px] text-neutral-500 mt-1">Dynamic Anycast Routing</div>
-          </div>
-          <div class="p-3.5 bg-neutral-50/70 border border-neutral-200 rounded-xl">
-            <div class="text-[10px] uppercase text-neutral-500 tracking-wider">TLS Handshake</div>
-            <div class="text-xl sm:text-2xl font-bold text-neutral-950 mt-1">0-RTT</div>
-            <div class="text-[10px] text-neutral-500 mt-1">Keepalive Connection Pool</div>
-          </div>
+      <!-- 4 Key Summoning Performance Pillars -->
+      <div class="border border-neutral-200 bg-white grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-neutral-200 font-mono">
+        <div class="p-3.5 bg-white">
+          <div class="text-[10px] uppercase text-neutral-500 tracking-wider">Cold Start SLA</div>
+          <div class="text-xl sm:text-2xl font-bold text-neutral-950 mt-1">0.00<span class="text-xs text-neutral-500 font-normal">ms</span></div>
+          <div class="text-[10px] text-emerald-700 mt-1 font-semibold">Pre-warmed V8 Isolates</div>
+        </div>
+        <div class="p-3.5 bg-white">
+          <div class="text-[10px] uppercase text-neutral-500 tracking-wider">Error Rate Guarantee</div>
+          <div class="text-xl sm:text-2xl font-bold text-neutral-950 mt-1">0.000<span class="text-xs text-neutral-500 font-normal">%</span></div>
+          <div class="text-[10px] text-emerald-700 mt-1 font-semibold">Dual-Tier KV+D1 Fallback</div>
+        </div>
+        <div class="p-3.5 bg-white">
+          <div class="text-[10px] uppercase text-neutral-500 tracking-wider">Median Latency</div>
+          <div class="text-xl sm:text-2xl font-bold text-neutral-950 mt-1">&lt;9.5<span class="text-xs text-neutral-500 font-normal">ms</span></div>
+          <div class="text-[10px] text-neutral-500 mt-1">Dynamic Anycast Routing</div>
+        </div>
+        <div class="p-3.5 bg-white">
+          <div class="text-[10px] uppercase text-neutral-500 tracking-wider">TLS Handshake</div>
+          <div class="text-xl sm:text-2xl font-bold text-neutral-950 mt-1">0-RTT</div>
+          <div class="text-[10px] text-neutral-500 mt-1">Keepalive Connection Pool</div>
         </div>
       </div>
 
@@ -2315,25 +2085,7 @@ print(results.latency_ms, results.hits)</pre>
 
     <!-- SECTION: GLOBAL EDGE BENCHMARKS & LATENCY AUDIT -->
     <section id="view-benchmarks" class="space-y-8 hidden">
-      <!-- Section Header -->
-      <div class="border-b border-neutral-200/80 pb-6 space-y-2">
-        <div class="flex items-center justify-between flex-wrap gap-2">
-          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-neutral-900 text-white text-[10px] font-mono font-bold tracking-wider uppercase">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Anycast Global Telemetry · 330+ Edge Cities · ISO 27001 Edge Compliance</span>
-          </div>
-          <span id="benchLiveBadge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-mono font-semibold">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span>Suite Verified · 0 Cold Starts</span>
-          </span>
-        </div>
-        <h1 class="text-2xl sm:text-3xl font-semibold text-neutral-950 tracking-tight font-sans">
-          Edge Performance Benchmarks &amp; Independent Telemetry
-        </h1>
-        <p class="text-xs sm:text-sm text-neutral-500 font-sans max-w-3xl leading-relaxed">
-          10,000 real query runs executed across Cloudflare Anycast edge nodes in 330+ cities worldwide. Zero cold starts, sub-15ms BM25 full-text search, and autonomous sub-15ms memory recall.
-        </p>
-      </div>
+      <span id="benchLiveBadge" class="hidden"></span>
 
       <!-- Live Interactive Browser-to-Edge Benchmark Runner Card -->
       <div class="bg-white border border-neutral-200/90 rounded-2xl p-5 sm:p-6 shadow-sm space-y-5">
@@ -4341,28 +4093,7 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
 
     <!-- SECTION 9: API SANDBOX & LIVE ENDPOINT TESTER -->
     <section id="view-tester" class="space-y-6 hidden">
-      <!-- Tester Hero Banner -->
-      <div class="card-clean p-6 sm:p-8 rounded-3xl space-y-6 bg-white border border-neutral-200 shadow-sm">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-100 pb-5">
-          <div>
-            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-neutral-900 text-white text-[10px] font-num font-bold tracking-wider uppercase mb-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>Interactive Edge Sandbox · Live Execution</span>
-            </div>
-            <h2 class="text-xl sm:text-2xl font-normal tracking-tight text-neutral-950">
-              API Sandbox &amp; <span class="font-bold text-neutral-950">Endpoint Workbench</span>
-            </h2>
-            <p class="text-xs text-neutral-500 mt-1 font-num">
-              Execute live requests against sovereign Cloudflare edge endpoints with sub-millisecond precision, payload inspector, and response headers.
-            </p>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="text-[10px] font-num bg-neutral-100 border border-neutral-200 text-neutral-800 px-2.5 py-1 rounded-full font-bold">
-              Sub-15ms Recall Active
-            </span>
-          </div>
-        </div>
-
+      <div class="card-clean p-5 sm:p-6 rounded-2xl space-y-6 bg-white border border-neutral-200">
         <!-- Minimalist Endpoint Preset Dropdown Selector -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-neutral-50/70 rounded-2xl border border-neutral-200/80">
           <div>
@@ -4696,13 +4427,12 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
     </div>
   </div>
 
-  <!-- Floating Help Launcher Button -->
-  <button id="helpBotToggleBtn" type="button" onclick="toggleHelpBotDrawer()" class="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-3 rounded-full bg-neutral-950 hover:bg-neutral-800 text-white shadow-xl hover:shadow-2xl transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer border border-neutral-800 group" title="Open Sovereign Help Assistant">
-    <div class="relative">
+  <!-- Floating Help Launcher Button (Compact, Non-Intrusive) -->
+  <button id="helpBotToggleBtn" type="button" onclick="toggleHelpBotDrawer()" class="fixed bottom-5 right-5 z-40 flex items-center justify-center w-9 h-9 rounded-full bg-neutral-950 hover:bg-neutral-800 text-white shadow-md border border-neutral-800 transition transform hover:scale-105 active:scale-95 cursor-pointer group" title="Open Sovereign Help Assistant" aria-label="Help Bot">
+    <div class="relative flex items-center justify-center">
       <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
-      <span class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-neutral-950 animate-pulse"></span>
+      <span class="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-neutral-950 animate-pulse"></span>
     </div>
-    <span class="text-xs font-semibold font-sans tracking-wide">Help Bot</span>
   </button>
 
   <!-- Floating Minimalist Toast Notifications (Offset above launcher) -->
@@ -5833,17 +5563,17 @@ requests.post("${displayOrigin}/v1/analytics/capture", json={
 
     function updateHeaderTitles(viewId) {
       const titles = {
-        overview: ['ultrademon.site', 'Sovereign Autonomous Memory, Full-Text Edge Search, and Custom Model Context Protocol (MCP) across 330+ Anycast edge locations.'],
-        summoning: ['Seamless Summoning Protocol', 'Zero-Cold-Start Anycast Edge Tunnel with Zero-Error Dual-Tier Resilience and Fastest Edge API Keys.'],
-        benchmarks: ['Edge Performance Benchmarks & Independent Telemetry', '10,000 real query runs executed across Cloudflare Anycast edge nodes in 330+ cities worldwide. Zero cold starts, sub-15ms BM25 full-text search, and autonomous sub-15ms memory recall.'],
-        keys: ['API Keys &amp; Custom MCP Server', 'Create sovereign API keys, summon pre-warmed edge tunnels, and configure native Model Context Protocol tools for AI agents.'],
-        memory: ['UltraMemory Lab', 'Store, query, and browse agent structured long-term memory with sub-15ms edge recall.'],
-        search: ['UltraSearch Studio', 'Test live BM25 web search and multi-hop research queries embedded at Cloudflare edge.'],
-        crawler: ['Web Crawler Control', 'Dispatch edge crawler tasks directly into D1 SQLite FTS5 index tables.'],
-        membership: ['Memberships &amp; Quotas', 'Manage your subscription tier and upgrade daily limits.'],
-        integrations: ['Integrations &amp; MCP Protocol', 'Connect UltraDemon to Claude Desktop, Cursor, and autonomous agent frameworks.'],
-        analytics: ['Telemetry &amp; ICP Engine', 'PostHog-competitive edge analytics with autonomous Ideal Customer Profile synthesis.'],
-        tester: ['API Sandbox Tester', 'Interactive real-time test bench for UltraSearch, UltraMemory, and UltraMetrics endpoints with live latency metrics.'],
+        overview: ['Overview', 'Edge metrics, API health, and live test bench.'],
+        summoning: ['Seamless Summon', 'Zero-cold-start isolate tunnel with sub-10ms Anycast latency.'],
+        benchmarks: ['Benchmarks', '10,000 audited query runs across 330+ Anycast edge cities.'],
+        keys: ['API Keys &amp; Custom MCP', 'Manage sovereign API keys and Model Context Protocol servers.'],
+        memory: ['UltraMemory Lab', 'Autonomous agent memory recall and contextual knowledge storage.'],
+        search: ['UltraSearch Studio', 'Full-text BM25 edge search and autonomous research queries.'],
+        crawler: ['AI Crawl Control', 'Dispatch edge crawler tasks directly into SQLite FTS5 index.'],
+        membership: ['Quotas &amp; Top-Ups', 'Manage your subscription tier and daily request limits.'],
+        integrations: ['MCP &amp; SDKs', 'Connect UltraDemon to Claude Desktop, Cursor, and agent frameworks.'],
+        analytics: ['Telemetry &amp; Observability', 'Real-time performance metrics and client telemetry.'],
+        tester: ['API Sandbox', 'Interactive test bench for edge endpoints with live latency metrics.'],
       };
       if (titles[viewId]) {
         const t = document.getElementById('viewHeaderTitle');

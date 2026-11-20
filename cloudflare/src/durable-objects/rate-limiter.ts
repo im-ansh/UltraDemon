@@ -30,12 +30,17 @@ export class RateLimiter {
 
     if (allowed) {
       this.count++;
-      // Persist — DO storage is durable, survives restarts
-      await this.state.storage.put('count', this.count);
+      // Persist every 50th increment to cut DO storage write ops by ~50x
+      // DO memory is single-threaded and consistent — safe to batch persist
+      if (this.count % 50 === 0 || this.count >= limit) {
+        await this.state.storage.put('count', this.count);
+      }
 
-      // Auto-delete DO at midnight UTC (saves memory)
-      const msUntilMidnight = tomorrow.getTime() - Date.now();
-      await this.state.storage.setAlarm(Date.now() + msUntilMidnight);
+      // Set midnight reset alarm once per session (not every request)
+      if (this.count <= 50) {
+        const msUntilMidnight = tomorrow.getTime() - Date.now();
+        await this.state.storage.setAlarm(Date.now() + msUntilMidnight);
+      }
     }
 
     return Response.json({

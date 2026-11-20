@@ -494,9 +494,17 @@ analyticsRouter.get('/', async (c) => {
 
 // ── 1.6. GET /realtime — Ultra-Fast Sub-Millisecond Heartbeat ─────────────────
 
+let cachedRealtime: { data: Record<string, unknown>; ts: number } | null = null;
+const REALTIME_CACHE_TTL_MS = 10_000; // 10s isolate RAM cache to avoid hammering D1
+
 analyticsRouter.get('/realtime', async (c) => {
-  const cf = (c.req.raw as unknown as { cf?: { colo?: string; city?: string; country?: string; httpProtocol?: string } }).cf;
   const now = Date.now();
+  if (cachedRealtime && (now - cachedRealtime.ts < REALTIME_CACHE_TTL_MS)) {
+    c.header('X-Cache-Status', 'HIT-RAM');
+    return c.json(cachedRealtime.data);
+  }
+
+  const cf = (c.req.raw as unknown as { cf?: { colo?: string; city?: string; country?: string; httpProtocol?: string } }).cf;
   const fiveMinAgo = now - 5 * 60 * 1000;
 
   const active = await c.env.DB.prepare(
@@ -505,7 +513,7 @@ analyticsRouter.get('/realtime', async (c) => {
 
   const qps = Number(((active?.events_5m || 0) / 300).toFixed(2));
 
-  return c.json({
+  const responseData = {
     timestamp: now,
     status: 'ONLINE',
     edge_pop: cf?.colo || 'SIN',
@@ -518,18 +526,32 @@ analyticsRouter.get('/realtime', async (c) => {
     edge_p95_ms: 12,
     cache_health: 'OPTIMAL',
     cache_hit_ratio: 0.966
-  });
+  };
+
+  cachedRealtime = { data: responseData, ts: now };
+  c.header('X-Cache-Status', 'MISS');
+  return c.json(responseData);
 });
 
 // ── 1.7. GET /stats — Comprehensive Deep Telemetry Statistics ─────────────────
 
+const STATS_ISOLATE_CACHE = new Map<string, { data: Record<string, unknown>; ts: number }>();
+const STATS_CACHE_TTL_MS = 15_000; // 15s isolate RAM cache
+
 analyticsRouter.get('/stats', async (c) => {
   const { projectId, isGuest } = await resolveProjectId(c);
-  await ensureProjectHasData(c.env, projectId, isGuest);
-
   const now = Date.now();
   const timeframe = (c.req.query('timeframe') || '24h').toLowerCase();
   const engine = (c.req.query('engine') || 'all').toLowerCase();
+  const cacheKey = `${projectId}:${timeframe}:${engine}`;
+
+  const cached = STATS_ISOLATE_CACHE.get(cacheKey);
+  if (cached && (now - cached.ts < STATS_CACHE_TTL_MS)) {
+    c.header('X-Cache-Status', 'HIT-RAM');
+    return c.json(cached.data);
+  }
+
+  await ensureProjectHasData(c.env, projectId, isGuest);
 
   let timeWindowMs = 24 * 60 * 60 * 1000;
   if (timeframe === '5m') timeWindowMs = 5 * 60 * 1000;
@@ -626,7 +648,7 @@ analyticsRouter.get('/stats', async (c) => {
   const currentQps = Number(((coreStats?.total_events || 0) / windowSec).toFixed(3));
   const totalEventsCount = coreStats?.total_events || 0;
 
-  return c.json({
+  const finalResult = {
     status: 'success',
     project_id: projectId,
     query_parameters: {
@@ -728,7 +750,11 @@ analyticsRouter.get('/stats', async (c) => {
       total_events: allTime?.total_events_all || totalEventsCount,
       total_visitors: allTime?.total_visitors_all || coreStats?.unique_visitors || 0,
     }
-  });
+  };
+
+  STATS_ISOLATE_CACHE.set(cacheKey, { data: finalResult, ts: now });
+  c.header('X-Cache-Status', 'MISS');
+  return c.json(finalResult);
 });
 
 // ── 2. GET /v1/analytics/overview — High-Level KPI & Realtime Metrics ─────────
